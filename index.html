@@ -87,11 +87,11 @@
     </button>
   </header>
 
-  <!-- ── 增量抓取面板 ── -->
+  <!-- ── 资料库面板：只做两件事——存到本机、更新内容 ── -->
   <div id="sync-panel" class="sheet" hidden>
-    <div class="sheet-card" role="dialog" aria-modal="true" aria-label="Sync library">
+    <div class="sheet-card" role="dialog" aria-modal="true" aria-label="Library">
       <div class="sheet-head">
-        <strong>Sync library</strong>
+        <strong>Library</strong>
         <button id="sync-close" class="plain-btn" type="button" aria-label="Close">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
                stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -99,10 +99,9 @@
       </div>
 
       <div class="sheet-body">
-        <p class="field-hint" id="sync-status">Checking the local service…</p>
-
+        <p class="field-hint section-title">Offline copy</p>
         <div class="device-block">
-          <p class="field-hint" id="device-status">Checking device storage…</p>
+          <p class="field-hint" id="device-status">Checking storage…</p>
           <div class="field-row">
             <button id="device-save" class="btn" type="button">Save library to this device</button>
             <button id="device-clear" class="btn" type="button">Remove device copy</button>
@@ -110,6 +109,13 @@
         </div>
 
         <hr class="sheet-sep" />
+
+        <p class="field-hint section-title">Update from alphaXiv</p>
+        <p class="field-hint">
+          A GitHub Action scans alphaXiv, picks up papers that have a podcast,
+          translates the transcripts and commits them back here. No machine of yours
+          needs to be running.
+        </p>
 
         <div class="field-row">
           <label class="field"><span>Window</span>
@@ -136,38 +142,6 @@
           ≤ 7 days needs &gt; 300 views · ≤ 14 days needs &gt; 400 · ≤ 30 days needs &gt; 500
         </p>
 
-        <button id="sync-scan" class="btn" type="button">Scan for new episodes</button>
-
-        <div id="sync-result" hidden>
-          <p class="field-hint" id="sync-summary"></p>
-          <ul id="sync-list" class="sync-list"></ul>
-
-          <label class="field">
-            <span>Translation API key</span>
-            <input id="sync-key" type="password" placeholder="sk-…" autocomplete="off" />
-          </label>
-          <div class="field-row">
-            <label class="field"><span>Model</span>
-              <input id="sync-model" value="gpt-4o-mini" autocomplete="off" />
-            </label>
-            <label class="field"><span>Base URL</span>
-              <input id="sync-base" value="https://api.openai.com/v1" autocomplete="off" />
-            </label>
-          </div>
-          <p class="field-hint">The key is sent only to the local service on this machine,
-            then used to call your translation provider directly.</p>
-          <button id="sync-import" class="btn primary" type="button">Import selected &amp; translate</button>
-        </div>
-
-        <pre id="sync-log" class="sync-log" hidden></pre>
-
-        <hr class="sheet-sep" />
-
-        <p class="field-hint">
-          <strong>Or run it in the cloud.</strong> The GitHub Action installs ffmpeg and the
-          speech model on its own runner, crawls, translates and commits the new episodes back.
-          This machine can stay off.
-        </p>
         <label class="field">
           <span>Repository</span>
           <input id="cloud-repo" placeholder="owner/name" autocomplete="off" />
