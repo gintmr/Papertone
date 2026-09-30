@@ -1,0 +1,202 @@
+{
+  "id": "2609.19644",
+  "title": "ScientistTwo: Pioneering the Human Knowledge Frontier with Autonomous AI",
+  "authors": [
+    "Jaehyun Nam",
+    "Jinsung Yoon",
+    "Yanzhou Pan",
+    "Yubo Wang",
+    "Rui Meng",
+    "Parthasarathy Ranganathan",
+    "Tomas Pfister"
+  ],
+  "abstract": "Scientific discovery is defined by the ability to identify the boundaries of existing knowledge and venture into unexplored territory. The ultimate vision for AI in science is problem-driven autonomous research: given a fundamental challenge by a human expert, the AI independently navigates the scientific landscape, uncovers theoretical and empirical bottlenecks, and systematically expands the frontier of knowledge. In this paper, we introduce ScientistTwo, a fully autonomous multi-agent framework designed to realize this vision. Specifically, ScientistTwo takes an initial problem as input, establishes state-of-the-art baselines, formulates novel hypotheses, and coordinates specialized agents to orchestrate an end-to-end discovery cycle without human intervention. Moreover, the framework rigorously conducts experiments using diverse datasets and metrics, refines methodologies through automated ablation studies, and validates research findings via a closed-loop simulated peer-review rebuttal engine. To evaluate ScientistTwo's capabilities against the highest standards of human scientific achievement, we benchmark it across papers accepted at top-tier conferences such as ICLR, ICML, and NeurIPS. As a result, ScientistTwo autonomously generates expert-level, publishable papers and fully verified, executable codebases. Its solutions consistently outperform human state-of-the-art models, and achieve higher average review ratings than human-authored papers under automated AI review agents. These results show that ScientistTwo is not merely an assistive tool but an autonomous scientific pioneer capable of pushing the frontiers of human discovery. Project website: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.19644",
+    "arxiv": "https://arxiv.org/abs/2609.19644"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0b31b-5185-7477-a048-6de11493d0a7/podcast.mp3",
+  "duration": 326.766,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.76,
+      "en": "Welcome to our seminar on Agentic AI Systems. Today's lecture is on the paper 'ScientistTwo: Pioneering the Human Knowledge Frontier with Autonomous AI' from researchers at Google Cloud AI Research. We've seen a recent surge in systems aiming to automate science, like 'The AI Scientist-v2' and 'AutoResearchClaw', which focus on tasks from hypothesis to execution. This paper pushes that trend by proposing a more structured, end-to-end framework that tries to mimic the human scientific process, including peer review. It’s an attempt to move beyond just optimizing a single metric. Yes, Noah?"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.26,
+      "end": 47.58,
+      "en": "Excuse me, Professor. You mentioned it mimics the human process. How is its approach fundamentally different from those earlier systems that also tried to automate the research workflow?"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 47.88,
+      "end": 82.64,
+      "en": "Good question. The key difference is that ScientistTwo treats research as a multi-stage pipeline with verification at each step, rather than a single optimization loop. It's designed to address what the authors see as gaps in prior work: limited problem diagnosis, narrow experimentation on single datasets, and a lack of causal attribution for why a new method works. The central goal is to take a problem description and autonomously produce not just a better model, but a full paper-and-code package that is reproducible and internally consistent."
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 82.64,
+      "end": 87.96,
+      "en": "So it’s not just about getting a higher score, but about building a robust argument for why the score is higher?"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 89.06,
+      "end": 128.4,
+      "en": "Exactly. The system's methodology is built around a series of specialized agents. It starts with a Limitation Extractor that analyzes a state-of-the-art method to find its weaknesses. From there, it generates seed ideas. Promising ideas are first tested on a small subset of the benchmark. The ones that show potential are then scaled up, evolved, and refined. Two of the most interesting stages are the ablation-driven refinement and the simulated peer review. The system doesn't just claim a component is useful; it runs experiments to prove it by removing that component and measuring the impact. This adds a layer of scientific rigor that is often missing."
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 128.68,
+      "end": 131.42,
+      "en": "And what about the peer review part? Is it just a text-based critique?"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 131.8,
+      "end": 165.28,
+      "en": "That's one of its main contributions. The Peer-Review Agent doesn't just suggest textual revisions. If it identifies a weakness in the experimental evidence, it triggers a rebuttal phase where a Rebuttal Coding Agent actually conducts new experiments to address the reviewer's concerns. The manuscript is then updated with this new evidence. This cycle can repeat, which is a more dynamic and scientifically grounded process than simply rewriting paragraphs. The paper shows this review process significantly improves the acceptance rates of the generated papers when evaluated by other automated systems."
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 165.28,
+      "end": 171.76,
+      "en": "That sounds computationally expensive. The report mentioned a cost of nearly four thousand dollars per task. Is that feasible to scale?"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.18,
+      "end": 213.04,
+      "en": "You've hit on a major practical challenge. The cost and time, about two to three days per problem, are substantial. Most of that expense comes from the iterative code execution, refinement, and the multiple rounds of experiments for rebuttal. This highlights a trade-off: increased rigor and reliability come at a high computational price. The system also relies on large, proprietary models like Gemini and Claude, which limits accessibility. Furthermore, the framework includes several integrity checks to ensure the final paper aligns with the code, the references are valid, and the reported scores are reproducible from the provided scripts. These checks add to the overhead but are crucial for the system’s claims of reliability."
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 213.68,
+      "end": 220.84,
+      "en": "Wait, one of the evaluators, ScholarPeer, is also used inside the optimization loop. Doesn't that risk overfitting to the evaluator's preferences?"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 220.84,
+      "end": 246.58,
+      "en": "That's an excellent critique and a known issue in this type of research. The authors acknowledge this by also using a held-out evaluator, the Stanford Agentic Reviewer, which provides a more objective assessment. While the scores from the held-out evaluator are lower, they still show a substantial improvement over baseline systems. It points to a broader challenge in the field: how do we develop unbiased evaluation methods for AI-generated scientific work?"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 246.82,
+      "end": 290.86,
+      "en": "This research shifts the field by framing autonomous research as a closed-loop, self-correcting process. It moves the conversation from 'can an AI beat a benchmark?' to 'can an AI produce a reliable, verifiable, and well-reasoned scientific contribution?' It connects to the broader vision of 'Agentic Science' that we've seen discussed in recent surveys. However, we must be clear about its limitations. The evaluation is confined to machine learning problems where code and benchmarks are readily available. It doesn't address fields requiring physical experiments or deep theoretical insight. And as you pointed out, improving a metric isn't the same as generating true scientific novelty."
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 291.32,
+      "end": 296.28,
+      "en": "So it's more of an autonomous empirical research pipeline for computational fields, rather than a general 'AI Scientist'?"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 297.64,
+      "end": 326.766,
+      "en": "Precisely. It's a significant step in automating the empirical and reporting aspects of computational science. The main takeaway is that by integrating stages for criticism, rebuttal, and integrity checks, systems like ScientistTwo can produce more reliable and robust results than agents focused solely on performance optimization. It's a template for building more scientifically rigorous autonomous agents. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment."
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{nam2026scientisttwopioneeringhumanknowledge,\n      title={ScientistTwo: Pioneering the Human Knowledge Frontier with Autonomous AI}, \n      author={Jaehyun Nam and Jinsung Yoon and Yanzhou Pan and Yubo Wang and Rui Meng and Parthasarathy Ranganathan and Tomas Pfister},\n      year={2026},\n      eprint={2609.19644},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.19644}, \n}",
+  "topics": [
+    "Agents",
+    "Generative Models",
+    "Ml Systems"
+  ],
+  "peaks": [
+    1.0,
+    0.663,
+    0.444,
+    0.646,
+    0.552,
+    0.379,
+    0.579,
+    0.581,
+    0.523,
+    0.577,
+    0.556,
+    0.389,
+    0.2,
+    0.389,
+    0.461,
+    0.309,
+    0.691,
+    0.459,
+    0.676,
+    0.581,
+    0.472,
+    0.477,
+    0.525,
+    0.426,
+    0.552,
+    0.587,
+    0.867,
+    0.735,
+    0.609,
+    0.824,
+    0.52,
+    0.585,
+    0.501,
+    0.524,
+    0.461,
+    0.597,
+    0.43,
+    0.519,
+    0.438,
+    0.289,
+    0.44,
+    0.48,
+    0.447,
+    0.629,
+    0.589,
+    0.555,
+    0.483,
+    0.483,
+    0.612,
+    0.714,
+    0.578,
+    0.511,
+    0.529,
+    0.6,
+    0.516,
+    0.406,
+    0.578,
+    0.579,
+    0.41,
+    0.416,
+    0.511,
+    0.495,
+    0.357,
+    0.49,
+    0.665,
+    0.492,
+    0.431,
+    0.912,
+    0.506,
+    0.429,
+    0.519,
+    0.431
+  ],
+  "license": "CC BY"
+}

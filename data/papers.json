@@ -2,6 +2,29 @@
   "generated_at": null,
   "episodes": [
     {
+      "id": "2609.19644",
+      "title": "ScientistTwo: Pioneering the Human Knowledge Frontier with Autonomous AI",
+      "authors": [
+        "Jaehyun Nam",
+        "Jinsung Yoon",
+        "Yanzhou Pan",
+        "Yubo Wang",
+        "Rui Meng",
+        "Parthasarathy Ranganathan",
+        "Tomas Pfister"
+      ],
+      "duration": 326.76575,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Generative Models",
+        "Ml Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2609.19644",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b31b-5185-7477-a048-6de11493d0a7/podcast.mp3"
+    },
+    {
       "id": "2609.17523",
       "title": "ScienceBuddy: Recursive-in-Recursive Self-Improvement for Interactive Scientific Agents",
       "authors": [
@@ -27,6 +50,68 @@
       "cover": "cover.png",
       "path": "2609.17523",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a80f-9abb-7fec-ad94-9de7532f0d1b/podcast.mp3"
+    },
+    {
+      "id": "2609.13356",
+      "title": "ZGCM-1: A Fully Open and Extremely Efficient Foundation Model for Math and Agentic Search",
+      "authors": [
+        "Jiyan He",
+        "Guang Liang",
+        "Hao Liu",
+        "Haoxiang Guan",
+        "Jinbo Sun",
+        "Junyi Guo",
+        "Wenjun Feng",
+        "Yantai Xie",
+        "Yifei Shen",
+        "Bin Shao",
+        "Chuyang Wei",
+        "Kai Chen",
+        "Kexin Zhou",
+        "Minghang Zhu",
+        "Shuxin Zheng",
+        "Tie-Yan Liu",
+        "Taine Zhao",
+        "Wenhui Zhu",
+        "Xueyin Xu",
+        "Xiaoqing Zhang",
+        "Yatao Li",
+        "Yuxuan Ren"
+      ],
+      "duration": 336.013167,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Data Curation",
+        "Transformers"
+      ],
+      "cover": "cover.png",
+      "path": "2609.13356",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a2c6-b28f-7a1d-97ba-43616035643f/podcast.mp3"
+    },
+    {
+      "id": "2609.12039",
+      "title": "Reality Is the Final Verifier: On Two Key Gaps in Agentic Software Engineering",
+      "authors": [
+        "Alexander Krentsel",
+        "Shubham Agarwal",
+        "Mert Cemri",
+        "Shu Liu",
+        "Sidharth Sankhe",
+        "Ziming Mao",
+        "Matei Zaharia",
+        "Ion Stoica"
+      ],
+      "duration": 369.502083,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Continual Learning",
+        "Human-AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.12039",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a09db5-d43c-7d84-9f6d-401a8501bb14/podcast.mp3"
     },
     {
       "id": "2609.11896",

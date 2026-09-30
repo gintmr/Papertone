@@ -1,0 +1,231 @@
+{
+  "id": "2609.13356",
+  "title": "ZGCM-1: A Fully Open and Extremely Efficient Foundation Model for Math and Agentic Search",
+  "authors": [
+    "Jiyan He",
+    "Guang Liang",
+    "Hao Liu",
+    "Haoxiang Guan",
+    "Jinbo Sun",
+    "Junyi Guo",
+    "Wenjun Feng",
+    "Yantai Xie",
+    "Yifei Shen",
+    "Bin Shao",
+    "Chuyang Wei",
+    "Kai Chen",
+    "Kexin Zhou",
+    "Minghang Zhu",
+    "Shuxin Zheng",
+    "Tie-Yan Liu",
+    "Taine Zhao",
+    "Wenhui Zhu",
+    "Xueyin Xu",
+    "Xiaoqing Zhang",
+    "Yatao Li",
+    "Yuxuan Ren"
+  ],
+  "abstract": "In this work, we present ZGCM-1, a fully open 7B dense foundation model trained from scratch with extreme data, system, and algorithmic efficiency. ZGCM-1 is founded on a core premise: compact models cannot passively memorize the open web, but can overcome parametric capacity limits by coupling deliberate internal thinking with active external tool use. To support this paradigm across a 256K context, we develop an end-to-end, high-efficiency open training recipe: Architecture &amp; System Co-design: interleaved gated sliding-window and full attention, and a stable FP8 Muon optimizer; Progressive Curriculum &amp; MDP Mid-Training: context scaling across 16K, 64K, and 256K, and the reformulation of interaction traces into Markov Decision Processes. Furthermore, we establish an AI-native R&amp;D workflow where agent swarms autonomously manage cluster operations, data curation, and rapid diagnostic evaluation. Extensive evaluations show that ZGCM-1-7B is competitive across 7B model family on general benchmarks. On several challenging mathematical reasoning and agentic search suites, it remains competitive with frontier models orders of magnitude larger, such as Qwen3-235B-A22B and GLM-5.1. We also show that our pre-training design offers a ~4.2x efficiency improvement in 16K pre-training time-to-loss. Across the full development lifecycle, we distill eight actionable empirical findings-spanning architectural scaling, SFT quality pruning, long-context generalization, and agentic co-training dynamics. To facilitate community research, we open-source model weights from the pre-training, mid-training, and post-training stages, intermediate checkpoints, training code, per-stage data and data recipes, and W&amp;B logs.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.13356",
+    "arxiv": "https://arxiv.org/abs/2609.13356"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a2c6-b28f-7a1d-97ba-43616035643f/podcast.mp3",
+  "duration": 336.013,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.54,
+      "en": "Welcome to Advanced Topics in Foundation Models. Today's lecture is on “ZGCM-1: A Fully Open and Extremely Efficient Foundation Model for Math and Agentic Search”. We've seen a trend towards massive agentic systems, like those in the “Tongyi DeepResearch Technical Report,” often developed by large labs with immense computational resources. This paper from the Zhongguancun Academy offers a counterpoint, exploring what's possible at a much smaller scale. It's an attempt to build a highly capable and reproducible 7-billion-parameter model."
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 33.82,
+      "end": 34.0,
+      "en": "Yes, Noah?"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 34.6,
+      "end": 40.06,
+      "en": "Excuse me, Professor. So is the main argument here that we don't need hundred-billion-parameter models for complex reasoning?"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 40.68,
+      "end": 79.92,
+      "en": "Not exactly. The paper’s thesis isn't necessarily that larger models are unnecessary, but that a smaller model can tackle difficult tasks differently. Instead of relying purely on knowledge stored in its parameters, it can combine internal deliberation with external tool use, like searching for information. This shifts the model's role from a static knowledge base to a dynamic problem-solver. A central motivation is also transparency. The team is releasing not just weights, but intermediate checkpoints, data recipes, and logs. This is a significant departure from the 'black box' releases we often see. They aim to show the entire process, warts and all."
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 80.22,
+      "end": 83.06,
+      "en": "So it's as much about the methodology as the final model?"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 83.34,
+      "end": 125.7,
+      "en": "Precisely. The main contribution isn't a single new component, but an integrated recipe. They combine architectural tweaks for long context, training optimizations to reduce cost, and a novel supervision strategy for agentic behavior. A key goal was to build agentic capabilities directly into the foundational training stages, rather than tacking them on at the end. They did this through what they call MDP-style supervision, where they reformulate agent interaction traces into state-action pairs. This provides a much denser, step-level signal for learning how to use tools, compared to just showing the model a complete, successful trajectory."
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 126.18,
+      "end": 132.32,
+      "en": "Hold on, can you elaborate on the architecture? How do they support a 256K context length efficiently in a 7B model?"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 132.62,
+      "end": 172.92,
+      "en": "That's one of the most interesting parts of their approach. They use a hybrid attention schedule. Most of the transformer layers—twenty-seven of them—use a form of sparse attention called gated sliding-window attention. This only looks at a local window of 128 tokens, which is computationally cheap. However, to maintain global context, they strategically place five layers with full causal attention throughout the network. This 5-to-1 local-to-global pattern gives them a significant throughput advantage and a huge reduction in the KV-cache size needed for inference. They report a 6.4-fold reduction in the KV-cache at 256K context, which makes deploying such a long-context model much more practical."
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 173.42,
+      "end": 176.04,
+      "en": "So that handles the inference cost. What about training cost?"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 176.3,
+      "end": 212.14,
+      "en": "For that, they used a combination of techniques. They trained using hybrid FP8 precision, which lowers memory and accelerates computation. To maintain stability with this lower precision, they applied an activation regularization method. They also used an optimizer called Muon instead of the standard AdamW for most parameters. The combination of these architectural and systems optimizations led to what they estimate is a 4.2-fold improvement in training time-to-loss compared to a standard baseline. This focus on efficiency at every stage is what makes the project feasible."
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 212.62,
+      "end": 219.4,
+      "en": "So the model is efficient, but does it perform? The report mentioned strong math results but weaknesses in other areas."
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 219.9,
+      "end": 255.12,
+      "en": "Correct. Its performance on certain math competition benchmarks like MATH-500 and AIME is very strong, competitive with much larger systems. This suggests the combination of reasoning-focused data and long context for chain-of-thought is effective. However, its success doesn't translate everywhere. For instance, its result on a formal theorem-proving benchmark was quite low. And while it did well on structured search tasks like WebWalkerQA, it struggled with more open-ended software engineering and terminal tasks. This highlights an important boundary: specialized agentic skills don't necessarily generalize automatically."
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 255.6,
+      "end": 263.4,
+      "en": "That makes sense. It sounds like a specialized tool rather than an all-purpose one. How does this fit in with the push for full openness we're seeing in projects like the OLMo series?"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 263.7,
+      "end": 295.86,
+      "en": "It aligns well with that philosophy but adds a strong focus on agentic search and efficiency. While OLMo provides the full suite of training artifacts for a general-purpose model, ZGCM-1 provides a detailed public recipe for a more specialized one. The paper's real significance is as a case study. It demonstrates how to combine multiple existing techniques to create a small but powerful model, and by opening up their process, they allow other researchers to study how these capabilities emerge during training. It shows a path forward that doesn't solely rely on scaling up parameters."
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 296.42,
+      "end": 330.76,
+      "en": "So, to wrap up, the main takeaway from ZGCM-1 is its integrated, open, and efficient recipe for building a small foundation model with strong reasoning and agentic search capabilities. It challenges the idea that cutting-edge performance in these domains is exclusive to massive, closed models. Instead, it suggests a complementary approach that emphasizes a blend of internal reasoning, external tool use, and meticulous training methodology. This work provides a valuable roadmap for future research in efficient and transparent AI development."
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 331.18,
+      "end": 336.013,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment."
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{he2026zgcm1fullyopenextremely,\n      title={ZGCM-1: A Fully Open and Extremely Efficient Foundation Model for Math and Agentic Search}, \n      author={Jiyan He and Guang Liang and Hao Liu and Haoxiang Guan and Jinbo Sun and Junyi Guo and Wenjun Feng and Yantai Xie and Yifei Shen and Bin Shao and Chuyang Wei and Kai Chen and Kexin Zhou and Minghang Zhu and Shuxin Zheng and Tie-Yan Liu and Taine Zhao and Wenhui Zhu and Xueyin Xu and Xiaoqing Zhang and Yatao Li and Yuxuan Ren},\n      year={2026},\n      eprint={2609.13356},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.13356}, \n}",
+  "topics": [
+    "Agents",
+    "Data Curation",
+    "Transformers"
+  ],
+  "peaks": [
+    0.571,
+    0.349,
+    0.246,
+    0.335,
+    0.206,
+    0.269,
+    0.334,
+    0.492,
+    0.586,
+    0.576,
+    0.52,
+    0.579,
+    0.45,
+    0.533,
+    0.558,
+    0.429,
+    0.394,
+    0.546,
+    1.0,
+    0.541,
+    0.461,
+    0.479,
+    0.367,
+    0.541,
+    0.337,
+    0.469,
+    0.237,
+    0.712,
+    0.544,
+    0.476,
+    0.525,
+    0.305,
+    0.633,
+    0.433,
+    0.308,
+    0.423,
+    0.3,
+    0.581,
+    0.813,
+    0.696,
+    0.774,
+    0.754,
+    0.515,
+    0.515,
+    0.336,
+    0.383,
+    0.264,
+    0.46,
+    0.204,
+    0.455,
+    0.292,
+    0.597,
+    0.488,
+    0.358,
+    0.368,
+    0.478,
+    0.642,
+    0.576,
+    0.409,
+    0.317,
+    0.439,
+    0.437,
+    0.282,
+    0.763,
+    0.54,
+    0.2,
+    0.422,
+    0.274,
+    0.44,
+    0.388,
+    0.305,
+    0.547
+  ],
+  "license": "CC BY"
+}
