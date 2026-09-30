@@ -1,0 +1,243 @@
+{
+  "id": "2609.26891",
+  "title": "Harness as a Language: A Minimalist Agent Framework With Maximal Expressivity",
+  "authors": [
+    "Zhening Li",
+    "Joshua Liu",
+    "Mateja Vukelic",
+    "Nicole Shen",
+    "Supriya Lall",
+    "Amitayush Thakur",
+    "Alex Zhang",
+    "Omar Khattab",
+    "Jonathan Light",
+    "Armando Solar-Lezama"
+  ],
+  "abstract": "Modern language-model agents are built around the \\textit{agent loop}, where the LLM is placed in an environment exposing a set of tools, and the LLM has full control over the workflow by alternating between tool calls and observing their output. However, certain workflows currently require additional engineering beyond the agent loop itself, such as memory systems and self-improving systems. We built an LLM agent framework, JAZ, to explore the extent to which a minimal harness that is little more than the agent loop itself can accomplish tasks these specialized systems are built for. JAZ exposes a single LLM-based primitive invoke and provides a set of built-in hooks that allow the programmer to apply constraints and monitoring. Generalizing existing code-mode agent loops, \\texttt{invoke} is the simplest loop that satisfies two defining properties: (1) the LLM can write arbitrary executable code that can include recursive \\texttt{invoke}; (2) everything visible to the LLM --- all inputs to \\texttt{invoke} as well as its interaction history with the code environment --- are variables in the code environment. We motivate our design from first principles, viewing \\texttt{invoke} as a language primitive representing a function whose implementation is provided at runtime by an LLM every time it is called. To validate the design of our core \\texttt{invoke} primitive, we evaluate \\texttt{invoke} --- with only prompting, no manually designed tools, harness, or external systems (e.g., memory or the file system) --- on workflows traditionally implemented through specialized external harnesses. On long-horizon workflows requiring recall beyond the context window, JAZ invoke outperforms Letta (MemGPT) by 8\\% at half its cost on the recall-heavy portion of StuLife. On continual self-improvement, JAZ invoke outperforms ACE by 4\\% at a lower cost on AppWorld.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.26891",
+    "arxiv": "https://arxiv.org/abs/2609.26891"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0d100-910e-7e34-b9ee-89cc60882162/podcast.mp3",
+  "duration": 417.489,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.26,
+      "en": "In a graduate course on Language Model Agents and Systems, today’s lecture is on “Harness as a Language: A Minimalist Agent Framework With Maximal Expressivity.” Recent work such as “Agentic Context Engineering” and “A Self-Improving Coding Agent” reflects a trend toward specialized tools for memory and agent improvement. This paper, from researchers at MIT CSAIL, asks whether those capabilities can instead arise from a flexible programming environment. I see Noah raising a hand—go ahead.",
+      "zh": "在一门关于语言模型智能体与系统的研究生课程中，今天的讲座主题是“把脚手架当作语言：一个极简却极具表达力的智能体框架”。最近的一些工作，比如“智能体上下文工程”和“一个自我改进的编程智能体”，反映出一种趋势，就是为记忆和智能体改进开发专门工具。而这篇来自MIT CSAIL研究人员的论文则提出一个问题：这些能力能不能反过来从一个灵活的编程环境中自然涌现出来。我看到Noah举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.3,
+      "end": 38.18,
+      "en": "Hi Professor, does JAZ replace the language model, or mainly change the environment it operates in?",
+      "zh": "教授您好，JAZ是取代语言模型，还是主要改变它所运行的环境？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.88,
+      "end": 63.64,
+      "en": "It changes the environment, not the underlying model. JAZ gives the model a programming-language primitive called invoke, which generates executable code at runtime. That code runs in a read-eval-print loop, or REPL, and can call invoke again. The central proposal is that an agent can build its own workflows in this environment, rather than relying on a framework that prescribes how it should remember, delegate, or improve.",
+      "zh": "它改变的是环境，而不是底层模型。JAZ给模型提供了一个叫做invoke的编程语言原语，能在运行时生成可执行代码。这些代码在一个读取-求值-打印循环（也就是REPL）里运行，并且可以再次调用invoke。核心主张是，智能体可以在这个环境中构建自己的工作流，而不必依赖某个框架来规定它该如何记忆、委托或改进。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 64.6,
+      "end": 91.08,
+      "en": "The design rests on two kinds of access. First, generated code can make recursive calls to the same model primitive, allowing an agent to delegate work to subagents. Second, information available to the model, including its inputs and prior interaction history, is exposed as program variables. Think of this as giving an agent both a workshop and its working notes, rather than requiring it to describe every tool and remember every step from scratch.",
+      "zh": "这个设计依赖两种访问方式。第一，生成的代码可以递归调用同一个模型原语，让智能体把工作委派给子智能体。第二，模型能获取的信息，包括输入和之前的交互历史，都会作为程序变量暴露出来。可以把它理解为既给了智能体一个工作台，也给了它工作笔记，而不是要求它从头描述每一个工具、记住每一步。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 92.0,
+      "end": 97.2,
+      "en": "Quick question: what makes that different from ordinary code-based agents that already call tools?",
+      "zh": "问个简单的问题：这跟那些已经能调用工具的普通代码智能体到底有什么不同？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 98.14,
+      "end": 126.94,
+      "en": "In a typical code-based agent, the model can write code and call tools, but the framework often controls what history or state the model can access. JAZ exposes the interaction history through a variable called underscore underscore history underscore underscore, and makes recursive invocation available in the generated code. So the distinction is not simply that the agent can run code; it can also inspect and programmatically reorganize the context that shapes its next action.",
+      "zh": "在典型的基于代码的智能体中，模型可以写代码、调用工具，但框架通常会控制模型能访问哪些历史或状态。JAZ 通过一个叫 __history__ 的变量把交互历史暴露出来，并让生成的代码可以递归调用。所以区别不只是智能体能运行代码，而是它还能查看并以编程方式重新组织塑造其下一步行动的上下文。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 128.66,
+      "end": 160.62,
+      "en": "JAZ also includes practical controls around this flexible core. Dynamic scoping lets tools and variables remain available in recursive calls. Hooks can record trajectories, manage budgets, impose iteration or recursion limits, and validate returned values. These mechanisms matter because the paper is not arguing for unconstrained execution. It proposes a compact agent primitive, then surrounds it with configurable systems support for tracing, resource management, and safe completion checks.",
+      "zh": "JAZ 在这个灵活的核心之外，还配了一些实用的控制机制。动态作用域让工具和变量在递归调用中依然可用。钩子可以记录轨迹、管理预算、限制迭代或递归次数，以及校验返回值。这些机制之所以重要，是因为这篇论文并不是在主张无约束的执行。它提出的是一个紧凑的智能体原语，然后围绕它配上可配置的系统支持，用于追踪、资源管理和安全的完成检查。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 161.6,
+      "end": 166.94,
+      "en": "Can you clarify how the history variable helps with a task whose key fact appeared hundreds of steps earlier?",
+      "zh": "你能说明一下，当任务的关键信息出现在几百步之前时，history变量是如何帮助处理这个任务的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 167.88,
+      "end": 196.7,
+      "en": "The agent can search or filter its accumulated history using ordinary code, then pass relevant state to another invocation. In the StuLife evaluation, the authors used tail-recursive delegation: as the context window approached its limit, an agent handed remaining work to a subagent, passing both a progress summary and the earlier history by reference. The new agent could inspect that history rather than depending only on a short summary or manually copied notes.",
+      "zh": "智能体可以用普通代码搜索或过滤自己积累的历史，然后把相关状态传给下一次调用。在 StuLife 的评估中，作者采用了尾递归式委派：当上下文窗口接近上限时，智能体把剩余工作交给一个子智能体，同时按引用传递进度摘要和更早的历史。新的智能体可以查看那段历史，而不是只能依赖一份简短摘要或手动复制的笔记。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 197.6,
+      "end": 230.66,
+      "en": "This mattered in a fictional final-exam task where the needed protocol had been introduced 497 tasks earlier. JAZ searched raw history for protocol names and recovered the relevant lecture. On StuLife’s 207 far-recall tasks, it reached a 69.9% pass rate, compared with 61.8% for Letta. The CodeAct-plus-subagents ablation scored 32%, suggesting that recursion by itself was not enough; access to manipulable prompts and history also mattered.",
+      "zh": "这一点在一个虚构的期末考试任务中很关键，因为所需的协议是在497个任务之前引入的。JAZ在原始历史中搜索协议名称，找回了相关课程内容。在StuLife的207个远距离回忆任务上，它达到了69.9%的通过率，而Letta是61.8%。CodeAct加子智能体的消融实验只拿到32%，说明光靠递归还不够，能操作提示词和历史也同样重要。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 230.66,
+      "end": 237.66,
+      "en": "Does JAZ’s advantage come at a higher cost, or is the history search efficient enough to offset the extra reasoning?",
+      "zh": "JAZ的优势是不是以更高的成本为代价换来的，还是说历史搜索足够高效，足以抵消额外的推理开销？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 238.68,
+      "end": 269.6,
+      "en": "In this evaluation, the reported average cost was $18.3 per run for JAZ and $42.1 for Letta, alongside JAZ’s higher far-recall pass rate. That comparison is encouraging but should be read in context: costs depend on model, prompting, and execution choices. Long histories can still consume memory and computation, and searching them is not free. The result shows a promising tradeoff in this setting, not a general guarantee that history access always reduces cost.",
+      "zh": "在这次评估中，JAZ 报告的平均每次运行成本是 18.3 美元，Letta 是 42.1 美元，同时 JAZ 的远距离召回通过率更高。这个对比令人鼓舞，但需要结合背景来看：成本取决于模型、提示方式和执行选择。长历史仍然会消耗内存和计算资源，搜索历史也不是免费的。这个结果说明在该设定下存在一个有前景的权衡，而不是一个通用保证，说访问历史总能降低成本。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 270.48,
+      "end": 306.92,
+      "en": "The second case study tests continual improvement on 417 AppWorld tasks. A top-level JAZ invocation acts as a meta-agent, while recursive calls solve individual tasks. The meta-agent reviews outcomes and histories, modifies prompts or skills, and adjusts batch sizes. JAZ achieved 74.2% task goal completion at an average cost of $20.9. ACE reached 69.9% at $30.6, while prompt-only CodeAct with subagents reached 71.1% at $21.6.",
+      "zh": "第二个案例研究测试了在417个AppWorld任务上的持续改进能力。顶层JAZ调用充当元智能体，而递归调用则解决单个任务。元智能体会审查结果和历史记录，修改提示词或技能，并调整批处理大小。JAZ实现了74.2%的任务目标完成率，平均成本为20.9美元。ACE达到了69.9%，成本为30.6美元，而仅使用提示词的CodeAct配合子智能体达到了71.1%，成本为21.6美元。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 309.48,
+      "end": 315.24,
+      "en": "How does that compare with ACE’s playbook updates, and what should we infer from only a few runs?",
+      "zh": "这和ACE的策略手册更新相比如何？只有几次运行结果，我们该怎么解读？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 316.42,
+      "end": 347.86,
+      "en": "ACE uses a predefined reflector-and-curator pipeline to update a playbook, whereas JAZ’s meta-agent can choose what to inspect and when, and can alter both prompts and skills. That flexibility may help explain its results, but the evidence is limited: the evaluation covers 2 benchmarks, particular model and prompt choices, and a small number of independent runs. The comparison supports a useful hypothesis about adaptable orchestration; it does not establish that JAZ will outperform specialized methods across tasks.",
+      "zh": "ACE 用一套预定义的反思器加整理器流水线来更新 playbook，而 JAZ 的元智能体可以自己决定检查什么、什么时候检查，还能同时改动提示词和技能。这种灵活性或许能解释它的结果，但证据有限：评估只覆盖了 2 个基准、特定的模型和提示词选择，以及少量独立运行。这个对比支持了一个关于可适应编排的有用假设，但并不能证明 JAZ 会在各类任务上胜过专门方法。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 348.8,
+      "end": 379.8,
+      "en": "Conceptually, JAZ shifts attention from asking which memory or self-improvement module to add toward asking what the agent’s programming environment lets it express. This connects to work such as “Agentic Context Engineering,” while taking a different route: rather than centering a dedicated context-editing pipeline, it gives the model a general substrate for constructing its own procedures. That raises important future questions about code reliability, recursion management, and when human-designed constraints improve performance.",
+      "zh": "概念上，JAZ把注意力从该加哪个记忆或自我改进模块，转向了智能体的编程环境允许它表达什么。这与“智能体上下文工程”等工作相关，但走的是另一条路：它不把专门的上下文编辑流程当作核心，而是给模型一个通用底座，让它自己构建程序。这就引出了未来一些重要问题：代码可靠性、递归管理，以及人类设计的约束在什么时候能提升表现。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 380.78,
+      "end": 417.489,
+      "en": "The main takeaway is that memory, delegation, and improvement can sometimes be treated as programs an agent constructs, rather than as fixed modules supplied by a framework. JAZ offers evidence for that idea through long-range recall and sequential task adaptation, while leaving open questions about scaling, reliability, and generality. When evaluating agent systems, look not only at the components they contain, but also at what state the model can access and what workflows it can build. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，记忆、委派和改进有时可以被当作智能体自己构建的程序，而不是框架提供的固定模块。JAZ 通过长程回忆和顺序任务适配为这一想法提供了证据，同时也留下了关于扩展性、可靠性和通用性的开放问题。评估智能体系统时，不要只看它包含哪些组件，还要看模型能访问什么状态、能构建什么工作流。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026harnesslanguageminimalistagent,\n      title={Harness as a Language: A Minimalist Agent Framework With Maximal Expressivity}, \n      author={Zhening Li and Joshua Liu and Mateja Vukelic and Nicole Shen and Supriya Lall and Amitayush Thakur and Alex Zhang and Omar Khattab and Jonathan Light and Armando Solar-Lezama},\n      year={2026},\n      eprint={2609.26891},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.26891}, \n}",
+  "topics": [
+    "Agents",
+    "Continual Learning",
+    "Meta-Learning"
+  ],
+  "peaks": [
+    0.835,
+    0.527,
+    0.711,
+    0.527,
+    0.467,
+    0.68,
+    0.569,
+    0.686,
+    0.549,
+    0.55,
+    0.534,
+    1.0,
+    0.699,
+    0.669,
+    0.641,
+    0.43,
+    0.599,
+    0.672,
+    0.452,
+    0.59,
+    0.447,
+    0.377,
+    0.877,
+    0.713,
+    0.576,
+    0.401,
+    0.393,
+    0.385,
+    0.588,
+    0.766,
+    0.787,
+    0.508,
+    0.647,
+    0.369,
+    0.872,
+    0.668,
+    0.607,
+    0.302,
+    0.675,
+    0.322,
+    0.508,
+    0.768,
+    0.676,
+    0.541,
+    0.369,
+    0.471,
+    0.392,
+    0.735,
+    0.373,
+    0.242,
+    0.52,
+    0.239,
+    0.418,
+    0.338,
+    0.679,
+    0.706,
+    0.628,
+    0.513,
+    0.397,
+    0.266,
+    0.73,
+    0.539,
+    0.551,
+    0.449,
+    0.442,
+    0.558,
+    0.398,
+    0.356,
+    0.308,
+    0.364,
+    0.2,
+    0.211
+  ],
+  "license": "CC BY"
+}

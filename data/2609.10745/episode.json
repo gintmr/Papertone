@@ -1,0 +1,276 @@
+{
+  "id": "2609.10745",
+  "title": "Think Before You Link: Rarity, Reasoning, and Retrieval in Multilingual Entity Linking",
+  "authors": [
+    "Parinthapat Pengpun",
+    "Simran Khanuja",
+    "Graham Neubig"
+  ],
+  "abstract": "Multimodal entity linking grounds entity mentions in text and images to knowledge-base entries. These systems degrade on rare entities, but prior work measures rarity primarily through popularity-based metrics such as pageviews. We broaden this view using knowledge-graph structural metrics that capture how well an entity is documented and connected. These metrics identify many rare entities that popularity metrics miss. Across the resulting rare-entity slices, state-of-the-art accuracy drops by 15.4-39.9%, showing that different rarity definitions expose different failure modes. To address these failures, we introduce a simple, training-free framework in which a reasoning-capable vision-language model iteratively searches and reasons over Wikipedia, gathering evidence dynamically. Controlled experiments show that reasoning and retrieval are complementary. Reasoning alone does not significantly improve accuracy on rare entities. Retrieval without reasoning improves rare-entity accuracy but can hurt overall accuracy. Their combination performs best. On MERLIN, a multilingual multimodal entity linking benchmark over five languages (Hindi, Indonesian, Japanese, Tamil, Vietnamese), our best system improves over the state of the art by 6.9% overall and by up to 23.3% on rare-entity slices. We release MERLIN-Rare, rare-entity test slices for targeted evaluation, with our framework.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.10745",
+    "arxiv": "https://arxiv.org/abs/2609.10745"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a08eeb-a318-7eab-bab5-07d35f31787e/podcast.mp3",
+  "duration": 404.558,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.08,
+      "en": "Welcome to Advanced Topics in Multimodal AI. Today's lecture is on 'Think Before You Link: Rarity, Reasoning, and Retrieval in Multilingual Entity Linking.' We've seen a lot of recent work like 'mRAG' and 'MMSearch-R1' focusing on retrieval-augmented generation for multimodal tasks. This paper, from researchers at Carnegie Mellon University, pushes that further by challenging a core assumption: how we define what makes an entity 'rare' and difficult for these systems to handle. Yes, Noah?",
+      "zh": "欢迎来到多模态AI进阶专题。今天的讲座主题是“链接之前先思考：多语言实体链接中的稀有性、推理与检索”。最近我们看到了不少相关工作，比如mRAG和MMSearch-R1，它们都聚焦于多模态任务中的检索增强生成。而这篇来自卡内基梅隆大学研究人员的论文则更进一步，挑战了一个核心假设：我们到底该如何定义什么让一个实体变得“稀有”、变得难以被这些系统处理。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 31.56,
+      "end": 39.56,
+      "en": "Excuse me, Professor. Could you clarify the specific task here? Multilingual multimodal entity linking sounds complex. What's the input and expected output?",
+      "zh": "不好意思，教授。您能具体说明一下这里的任务吗？多语言多模态实体链接听起来挺复杂的。输入是什么，期望的输出又是什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.98,
+      "end": 62.24,
+      "en": "A fair question. The input is a passage of text in a non-English language—say, Hindi or Japanese—along with a related image. Within that text, a specific entity mention is highlighted. The system's job is to output the correct English Wikipedia title for that entity. The image might contain crucial, language-independent clues, like a ship's name on its hull.",
+      "zh": "这个问题问得好。输入是一段非英语的文本，比如印地语或日语，再加上一张相关的图片。文本里会标出一个特定的实体提及。系统的任务就是输出这个实体对应的正确英文维基百科标题。图片里可能包含关键的、与语言无关的线索，比如船体上的船名。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 62.76,
+      "end": 66.42,
+      "en": "Okay, so it's a cross-lingual and multimodal problem. What's the main concept they're introducing?",
+      "zh": "好，所以这是个跨语言、多模态的问题。他们引入的核心概念是什么？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 66.92,
+      "end": 100.12,
+      "en": "Their core argument is that the field's definition of entity rarity is too narrow. Traditionally, rarity is tied to popularity metrics like Wikipedia pageviews. But the authors argue this is insufficient. An entity could be very popular within a specific culture but have poor representation in a knowledge graph like Wikidata or few Wikipedia language editions. These different kinds of sparsity cause different kinds of failures. So their first contribution is proposing a multidimensional view of rarity using 15 different metrics, covering everything from pageviews and backlinks to Wikidata statement counts and graph connectivity.",
+      "zh": "他们的核心论点是，这个领域对实体稀有度的定义太狭隘了。传统上，稀有度是跟维基百科页面浏览量这类流行度指标挂钩的。但作者认为这还不够。一个实体可能在某个特定文化圈里非常流行，但在Wikidata这样的知识图谱里表示很差，或者只有很少的维基百科语言版本。这些不同类型的稀疏性会导致不同类型的失败。所以他们的第一个贡献就是提出了一个多维度的稀有度视角，用了15种不同的指标，涵盖从页面浏览量和反向链接，到Wikidata声明数量和图的连通性等各个方面。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 100.7,
+      "end": 106.82,
+      "en": "So they're not creating one universal 'rarity score,' but instead analyzing failures across different slices of rarity?",
+      "zh": "所以他们并不是在搞一个通用的“稀有度分数”，而是从不同稀有度维度去分析失败情况？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 107.16,
+      "end": 132.12,
+      "en": "Precisely. And their second objective is to see if retrieval-augmented generation can help with these newly defined rare entities. The hypothesis is that retrieval can supply the factual knowledge missing from the model's parameters, while an explicit reasoning step helps the model use that retrieved information more effectively—formulating better search queries, interpreting the results, and deciding when to stop searching.",
+      "zh": "正是如此。他们的第二个目标，是看检索增强生成能不能帮上这些新定义出来的稀有实体。假设是：检索可以补上模型参数里缺失的事实知识，而一个显式的推理步骤能帮模型更有效地利用检索到的信息——包括构造更好的搜索查询、解读检索结果，以及判断什么时候该停止搜索。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 132.4,
+      "end": 134.86,
+      "en": "And that leads to their third objective, the controlled comparison?",
+      "zh": "这就引出了他们的第三个目标，也就是那个控制变量对比？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 135.86,
+      "end": 146.9,
+      "en": "Exactly. They use a factorial design to isolate the effects of model scale, retrieval method, and the model's reasoning capability. This allows them to draw clearer conclusions about what component contributes what.",
+      "zh": "没错。他们用析因设计来分离模型规模、检索方法和模型推理能力各自的影响，这样就能更清楚地判断哪个组件起了什么作用。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 147.22,
+      "end": 183.94,
+      "en": "To test this, they use the MERLIN benchmark, which covers Hindi, Indonesian, Japanese, Tamil, and Vietnamese. Their proposed system is a two-module framework. The first module is the thinker. It takes the text, image, and mention, and it has access to a search tool for English Wikipedia. In the retrieval-enabled settings, it's forced to perform at least one search. It can then reason about the results and conduct up to 20 iterative searches to gather evidence. The second module just takes this entire reasoning trace and is prompted to extract the final, correctly formatted Wikipedia title.",
+      "zh": "为了验证这一点，他们使用了MERLIN基准，涵盖印地语、印尼语、日语、泰米尔语和越南语。他们提出的系统是一个双模块框架。第一个模块是思考者。它接收文本、图像和提及，并且可以访问一个用于搜索英文维基百科的搜索工具。在启用检索的设置中，它被强制至少执行一次搜索。然后它可以对结果进行推理，并最多进行20次迭代搜索来收集证据。第二个模块只是接收这整个推理轨迹，并被提示提取最终格式正确的维基百科标题。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 183.94,
+      "end": 187.3,
+      "en": "What kinds of retrieval did they test? And did they find one was better?",
+      "zh": "他们测试了哪些检索方式？有没有发现哪种更好？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 187.64,
+      "end": 216.52,
+      "en": "They compare two types. The first is standard lexical BM25 search. The second is multilingual embedding-based retrieval. And yes, the embedding retrieval was significantly better, especially for non-Latin scripts where transliteration can be inconsistent. The embeddings bridge the cross-lingual gap more effectively than simple keyword matching. For instance, the first-search hit rate for embedding retrieval was around 25 to 40 percent, compared to just 6 to 15 percent for BM25.",
+      "zh": "他们比较了两种类型。第一种是标准的词汇BM25搜索。第二种是基于多语言嵌入的检索。没错，嵌入检索明显更好，尤其是在非拉丁文字的场景下，因为音译往往不太一致。嵌入比简单的关键词匹配更能有效地弥合跨语言的差距。比如，嵌入检索的首次搜索命中率大约在25%到40%之间，而BM25只有6%到15%。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 218.04,
+      "end": 223.18,
+      "en": "Wait, a 40 percent hit rate on the first try still sounds low. Does that mean retrieval is still a major bottleneck?",
+      "zh": "等等，第一次尝试只有40%的命中率，听起来还是偏低啊。这是不是意味着检索仍然是个主要瓶颈？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 223.52,
+      "end": 243.74,
+      "en": "You've hit on a critical finding. Yes, retrieval remains the primary source of error. About 72 percent of the remaining mistakes happen because the correct entity was never surfaced by the search tool in the first place. The model can't reason about information it never sees. This is a crucial insight for anyone working on retrieval-augmented systems.",
+      "zh": "你点出了一个关键发现。没错，检索仍然是错误的主要来源。剩下的大约72%的错误，都是因为搜索工具从一开始就没能把正确的实体找出来。模型没法对根本看不到的信息进行推理。对于任何做检索增强系统的人来说，这都是一个至关重要的洞见。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 244.16,
+      "end": 254.24,
+      "en": "So you're saying even with a sophisticated reasoning model, the quality of the retriever is paramount. What about the reasoning itself? Did they find that the 'Thinking' models were always better than the standard 'Instruct' models?",
+      "zh": "所以你的意思是，就算推理模型再复杂，检索器的质量还是最关键的。那推理本身呢？他们有没有发现“思考”模型总是比标准的“指令”模型更好？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 254.62,
+      "end": 285.7,
+      "en": "This is another interesting result. Reasoning and retrieval are complementary; one is not consistently useful without the other. Without retrieval, the reasoning-enabled 'Thinking' models showed no significant improvement on rare entities. They had no new facts to reason about. However, when paired with retrieval, the reasoning models excelled. They made fewer, more targeted searches and were better at interpreting the results. The Instruct models, in contrast, tended to issue more searches without much refinement, sometimes drowning in irrelevant information.",
+      "zh": "这又是一个有意思的结果。推理和检索是互补的，缺了任何一个，另一个都不能持续发挥作用。没有检索的话，具备推理能力的“Thinking”模型在稀有实体上并没有明显提升，因为它们没有新的事实可以拿来推理。但一旦配合检索，推理模型就表现得非常出色。它们发起的搜索更少、更有针对性，也更擅长解读搜索结果。相比之下，Instruct模型往往发起更多搜索却不太会优化，有时反而被大量无关信息淹没。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 286.22,
+      "end": 297.48,
+      "en": "That's a significant finding. It reminds me of some of the agentic frameworks like 'Struct-Searcher', where the quality of thinking and planning is key to navigating information. How does this work shift our understanding of the problem?",
+      "zh": "这是个很重要的发现。它让我想到一些智能体框架，比如Struct-Searcher，在这类框架里，思考和规划的质量是驾驭信息的关键。这项工作如何改变我们对这个问题的理解？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 297.84,
+      "end": 331.76,
+      "en": "The primary shift is in how we should evaluate and address long-tail entity linking. It's not just about popular versus unpopular. It's about understanding the specific knowledge gaps, whether they are cross-lingual, structural, or editorial. The paper makes a strong case that metrics like Wikidata statement count or the number of language editions are as important as pageviews for diagnosing model failures. This also clarifies the division of labor: retrieval's job is to externalize knowledge, while reasoning's job is to internalize and synthesize it. One without the other is insufficient for these hard cases.",
+      "zh": "最主要的转变在于我们该如何评估和解决长尾实体链接的问题。这不只是热门与冷门之分，而是要理解具体的知识缺口，无论是跨语言的、结构性的，还是编辑层面的。这篇论文有力地证明了，像Wikidata陈述数量或语言版本数量这样的指标，在诊断模型失败时和页面浏览量一样重要。这也厘清了分工：检索的任务是外化知识，而推理的任务是内化和综合知识。面对这些困难案例，缺了哪一个都不够。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 332.14,
+      "end": 336.98,
+      "en": "But this approach seems computationally expensive. You mentioned up to 20 searches and long reasoning traces.",
+      "zh": "但这种方法在计算上似乎很昂贵。你提到最多要进行20次搜索，还有很长的推理轨迹。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 337.42,
+      "end": 366.26,
+      "en": "It is. The best-performing system took about 177 seconds and over 11,000 tokens per example, a substantial increase over simpler models. This highlights a key trade-off between accuracy on rare entities and inference cost. However, they also showed that a smaller 4-billion parameter reasoning model with retrieval could outperform a larger 8-billion parameter instruction-tuned model without it, suggesting that inference-time computation can be an effective substitute for model scale.",
+      "zh": "确实如此。表现最好的系统每个样本大约需要177秒、超过11000个token，相比更简单的模型开销大幅增加。这凸显了在稀有实体准确率和推理成本之间的关键权衡。不过他们也证明了，一个40亿参数、带检索的推理模型，可以胜过80亿参数、不带检索的指令微调模型，这说明推理时的计算量可以有效替代模型规模。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 366.62,
+      "end": 399.22,
+      "en": "So, to wrap up, this work provides a more nuanced framework for understanding and addressing failures in multilingual entity linking. The core takeaway is that 'rarity' is not a single dimension. To help entities that are underrepresented in our knowledge systems, we need to diagnose the specific type of information scarcity. The results strongly suggest that future progress on culturally specific and long-tail entities will depend heavily on improving cross-lingual retrieval, not just on scaling up models or making them reason longer.",
+      "zh": "总之，总结一下，这项工作提供了一个更细致的框架，来理解和解决多语言实体链接中的失败问题。核心结论是，“稀有”并不是一个单一的维度。要帮助那些在知识体系中代表性不足的实体，我们需要诊断具体是哪种类型的信息稀缺。结果强烈表明，未来在文化特定和长尾实体上的进展，将在很大程度上取决于改进跨语言检索，而不仅仅是对模型进行扩展或让它们推理更长时间。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 399.64,
+      "end": 404.558,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{pengpun2026thinklinkrarityreasoning,\n      title={Think Before You Link: Rarity, Reasoning, and Retrieval in Multilingual Entity Linking}, \n      author={Parinthapat Pengpun and Simran Khanuja and Graham Neubig},\n      year={2026},\n      eprint={2609.10745},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.10745}, \n}",
+  "topics": [
+    "Agents",
+    "Information Extraction",
+    "Multi Modal Learning"
+  ],
+  "peaks": [
+    0.735,
+    0.395,
+    0.497,
+    0.244,
+    0.313,
+    0.243,
+    0.469,
+    0.628,
+    0.511,
+    0.359,
+    0.504,
+    0.551,
+    0.298,
+    0.236,
+    0.442,
+    0.361,
+    0.516,
+    0.385,
+    0.564,
+    0.568,
+    0.472,
+    0.351,
+    0.336,
+    0.325,
+    0.613,
+    0.733,
+    0.343,
+    0.37,
+    0.448,
+    0.395,
+    0.292,
+    0.2,
+    0.331,
+    0.456,
+    0.393,
+    0.274,
+    0.3,
+    0.397,
+    0.294,
+    0.45,
+    0.571,
+    0.477,
+    0.832,
+    0.443,
+    0.438,
+    0.396,
+    0.548,
+    0.335,
+    0.498,
+    0.417,
+    0.461,
+    0.481,
+    0.287,
+    1.0,
+    0.47,
+    0.275,
+    0.397,
+    0.312,
+    0.276,
+    0.348,
+    0.586,
+    0.313,
+    0.412,
+    0.542,
+    0.391,
+    0.722,
+    0.601,
+    0.536,
+    0.508,
+    0.533,
+    0.592,
+    0.276
+  ],
+  "license": "CC BY"
+}

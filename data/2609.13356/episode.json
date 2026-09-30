@@ -38,112 +38,128 @@
       "speaker": "John",
       "start": 0.0,
       "end": 33.54,
-      "en": "Welcome to Advanced Topics in Foundation Models. Today's lecture is on “ZGCM-1: A Fully Open and Extremely Efficient Foundation Model for Math and Agentic Search”. We've seen a trend towards massive agentic systems, like those in the “Tongyi DeepResearch Technical Report,” often developed by large labs with immense computational resources. This paper from the Zhongguancun Academy offers a counterpoint, exploring what's possible at a much smaller scale. It's an attempt to build a highly capable and reproducible 7-billion-parameter model."
+      "en": "Welcome to Advanced Topics in Foundation Models. Today's lecture is on “ZGCM-1: A Fully Open and Extremely Efficient Foundation Model for Math and Agentic Search”. We've seen a trend towards massive agentic systems, like those in the “Tongyi DeepResearch Technical Report,” often developed by large labs with immense computational resources. This paper from the Zhongguancun Academy offers a counterpoint, exploring what's possible at a much smaller scale. It's an attempt to build a highly capable and reproducible 7-billion-parameter model.",
+      "zh": "欢迎来到基础模型进阶专题。今天的讲座主题是“ZGCM-1：一个面向数学和智能体搜索的完全开放且极其高效的基础模型”。我们最近看到一种趋势，就是大家都在做大规模的智能体系统，比如“通义DeepResearch技术报告”里那种，通常都是大实验室用海量算力搞出来的。而中关村学院这篇论文提供了一个不同的思路，探索在更小规模下能做到什么程度。它试图构建一个能力很强、可复现的70亿参数模型。"
     },
     {
       "i": 1,
       "speaker": "John",
       "start": 33.82,
       "end": 34.0,
-      "en": "Yes, Noah?"
+      "en": "Yes, Noah?",
+      "zh": "好的，诺亚？"
     },
     {
       "i": 2,
       "speaker": "Noah",
       "start": 34.6,
       "end": 40.06,
-      "en": "Excuse me, Professor. So is the main argument here that we don't need hundred-billion-parameter models for complex reasoning?"
+      "en": "Excuse me, Professor. So is the main argument here that we don't need hundred-billion-parameter models for complex reasoning?",
+      "zh": "不好意思，教授。所以这里的主要论点是，我们不需要千亿参数的模型来做复杂的推理吗？"
     },
     {
       "i": 3,
       "speaker": "John",
       "start": 40.68,
       "end": 79.92,
-      "en": "Not exactly. The paper’s thesis isn't necessarily that larger models are unnecessary, but that a smaller model can tackle difficult tasks differently. Instead of relying purely on knowledge stored in its parameters, it can combine internal deliberation with external tool use, like searching for information. This shifts the model's role from a static knowledge base to a dynamic problem-solver. A central motivation is also transparency. The team is releasing not just weights, but intermediate checkpoints, data recipes, and logs. This is a significant departure from the 'black box' releases we often see. They aim to show the entire process, warts and all."
+      "en": "Not exactly. The paper’s thesis isn't necessarily that larger models are unnecessary, but that a smaller model can tackle difficult tasks differently. Instead of relying purely on knowledge stored in its parameters, it can combine internal deliberation with external tool use, like searching for information. This shifts the model's role from a static knowledge base to a dynamic problem-solver. A central motivation is also transparency. The team is releasing not just weights, but intermediate checkpoints, data recipes, and logs. This is a significant departure from the 'black box' releases we often see. They aim to show the entire process, warts and all.",
+      "zh": "不完全是。这篇论文的核心论点并不一定是说更大的模型没有必要，而是说一个更小的模型可以用不同的方式来解决困难的任务。它不必纯粹依赖存储在参数里的知识，而是可以把内部思考和外部工具的使用结合起来，比如搜索信息。这就把模型的角色从一个静态的知识库转变成了一个动态的问题解决者。一个核心动机还有透明度。团队不仅公开了权重，还公开了中间检查点、数据配方和日志。这和我们经常看到的“黑箱”式发布有很大不同。他们想展示整个过程，包括不完美的地方。"
     },
     {
       "i": 4,
       "speaker": "Noah",
       "start": 80.22,
       "end": 83.06,
-      "en": "So it's as much about the methodology as the final model?"
+      "en": "So it's as much about the methodology as the final model?",
+      "zh": "所以这既是关于方法论，也是关于最终模型？"
     },
     {
       "i": 5,
       "speaker": "John",
       "start": 83.34,
       "end": 125.7,
-      "en": "Precisely. The main contribution isn't a single new component, but an integrated recipe. They combine architectural tweaks for long context, training optimizations to reduce cost, and a novel supervision strategy for agentic behavior. A key goal was to build agentic capabilities directly into the foundational training stages, rather than tacking them on at the end. They did this through what they call MDP-style supervision, where they reformulate agent interaction traces into state-action pairs. This provides a much denser, step-level signal for learning how to use tools, compared to just showing the model a complete, successful trajectory."
+      "en": "Precisely. The main contribution isn't a single new component, but an integrated recipe. They combine architectural tweaks for long context, training optimizations to reduce cost, and a novel supervision strategy for agentic behavior. A key goal was to build agentic capabilities directly into the foundational training stages, rather than tacking them on at the end. They did this through what they call MDP-style supervision, where they reformulate agent interaction traces into state-action pairs. This provides a much denser, step-level signal for learning how to use tools, compared to just showing the model a complete, successful trajectory.",
+      "zh": "正是如此。主要贡献不是某个单一的新组件，而是一套整合的方案。他们把面向长上下文的架构调整、降低成本的训练优化，以及一种新的智能体行为监督策略结合在了一起。一个关键目标是，把智能体能力直接构建进基础训练阶段，而不是到最后才附加上去。他们通过所谓的MDP式监督来实现这一点，把智能体的交互轨迹重新表述为状态-动作对。相比仅仅给模型展示一条完整的成功轨迹，这为学习如何使用工具提供了更密集的、步骤级的信号。"
     },
     {
       "i": 6,
       "speaker": "Noah",
       "start": 126.18,
       "end": 132.32,
-      "en": "Hold on, can you elaborate on the architecture? How do they support a 256K context length efficiently in a 7B model?"
+      "en": "Hold on, can you elaborate on the architecture? How do they support a 256K context length efficiently in a 7B model?",
+      "zh": "等一下，你能详细讲讲这个架构吗？他们是怎么在一个70亿参数的模型里高效支持256K上下文长度的？"
     },
     {
       "i": 7,
       "speaker": "John",
       "start": 132.62,
       "end": 172.92,
-      "en": "That's one of the most interesting parts of their approach. They use a hybrid attention schedule. Most of the transformer layers—twenty-seven of them—use a form of sparse attention called gated sliding-window attention. This only looks at a local window of 128 tokens, which is computationally cheap. However, to maintain global context, they strategically place five layers with full causal attention throughout the network. This 5-to-1 local-to-global pattern gives them a significant throughput advantage and a huge reduction in the KV-cache size needed for inference. They report a 6.4-fold reduction in the KV-cache at 256K context, which makes deploying such a long-context model much more practical."
+      "en": "That's one of the most interesting parts of their approach. They use a hybrid attention schedule. Most of the transformer layers—twenty-seven of them—use a form of sparse attention called gated sliding-window attention. This only looks at a local window of 128 tokens, which is computationally cheap. However, to maintain global context, they strategically place five layers with full causal attention throughout the network. This 5-to-1 local-to-global pattern gives them a significant throughput advantage and a huge reduction in the KV-cache size needed for inference. They report a 6.4-fold reduction in the KV-cache at 256K context, which makes deploying such a long-context model much more practical.",
+      "zh": "这是他们方法里最有意思的部分之一。他们用了一种混合注意力调度。大多数Transformer层——一共二十七层——用的是一种叫门控滑动窗口注意力的稀疏注意力。它只看128个token的局部窗口，计算上很便宜。但为了维持全局上下文，他们在整个网络里策略性地放了五层完整的因果注意力。这种5比1的局部对全局模式，带来了显著的吞吐优势，也大幅减少了推理所需的KV缓存大小。他们报告说，在256K上下文下，KV缓存减少了6.4倍，这让部署这种长上下文模型变得实际得多。"
     },
     {
       "i": 8,
       "speaker": "Noah",
       "start": 173.42,
       "end": 176.04,
-      "en": "So that handles the inference cost. What about training cost?"
+      "en": "So that handles the inference cost. What about training cost?",
+      "zh": "这就解决了推理成本的问题。那训练成本呢？"
     },
     {
       "i": 9,
       "speaker": "John",
       "start": 176.3,
       "end": 212.14,
-      "en": "For that, they used a combination of techniques. They trained using hybrid FP8 precision, which lowers memory and accelerates computation. To maintain stability with this lower precision, they applied an activation regularization method. They also used an optimizer called Muon instead of the standard AdamW for most parameters. The combination of these architectural and systems optimizations led to what they estimate is a 4.2-fold improvement in training time-to-loss compared to a standard baseline. This focus on efficiency at every stage is what makes the project feasible."
+      "en": "For that, they used a combination of techniques. They trained using hybrid FP8 precision, which lowers memory and accelerates computation. To maintain stability with this lower precision, they applied an activation regularization method. They also used an optimizer called Muon instead of the standard AdamW for most parameters. The combination of these architectural and systems optimizations led to what they estimate is a 4.2-fold improvement in training time-to-loss compared to a standard baseline. This focus on efficiency at every stage is what makes the project feasible.",
+      "zh": "为此，他们组合使用了多种技术。训练时采用了混合FP8精度，这能降低内存占用并加速计算。为了在较低精度下保持稳定性，他们应用了一种激活正则化方法。对于大多数参数，他们还使用了名为Muon的优化器，而不是标准的AdamW。这些架构和系统优化的结合，使他们估计训练时间到损失相比标准基线提升了4.2倍。正是这种在每个阶段都注重效率的做法，让这个项目变得可行。"
     },
     {
       "i": 10,
       "speaker": "Noah",
       "start": 212.62,
       "end": 219.4,
-      "en": "So the model is efficient, but does it perform? The report mentioned strong math results but weaknesses in other areas."
+      "en": "So the model is efficient, but does it perform? The report mentioned strong math results but weaknesses in other areas.",
+      "zh": "那么这个模型效率很高，但它的表现如何呢？报告提到了它在数学方面成绩很强，但在其他领域存在不足。"
     },
     {
       "i": 11,
       "speaker": "John",
       "start": 219.9,
       "end": 255.12,
-      "en": "Correct. Its performance on certain math competition benchmarks like MATH-500 and AIME is very strong, competitive with much larger systems. This suggests the combination of reasoning-focused data and long context for chain-of-thought is effective. However, its success doesn't translate everywhere. For instance, its result on a formal theorem-proving benchmark was quite low. And while it did well on structured search tasks like WebWalkerQA, it struggled with more open-ended software engineering and terminal tasks. This highlights an important boundary: specialized agentic skills don't necessarily generalize automatically."
+      "en": "Correct. Its performance on certain math competition benchmarks like MATH-500 and AIME is very strong, competitive with much larger systems. This suggests the combination of reasoning-focused data and long context for chain-of-thought is effective. However, its success doesn't translate everywhere. For instance, its result on a formal theorem-proving benchmark was quite low. And while it did well on structured search tasks like WebWalkerQA, it struggled with more open-ended software engineering and terminal tasks. This highlights an important boundary: specialized agentic skills don't necessarily generalize automatically.",
+      "zh": "没错。它在MATH-500和AIME这类数学竞赛基准上的表现非常强，足以和规模大得多的系统竞争。这说明以推理为重点的数据加上长上下文做思维链是有效的。但它的成功并不能复制到所有地方。比如，它在一个形式化定理证明基准上的成绩就相当低。虽然它在WebWalkerQA这类结构化搜索任务上表现不错，但在更开放的软件工程和终端任务上就很吃力。这凸显了一个重要的边界：专门的智能体技能不一定能自动泛化。"
     },
     {
       "i": 12,
       "speaker": "Noah",
       "start": 255.6,
       "end": 263.4,
-      "en": "That makes sense. It sounds like a specialized tool rather than an all-purpose one. How does this fit in with the push for full openness we're seeing in projects like the OLMo series?"
+      "en": "That makes sense. It sounds like a specialized tool rather than an all-purpose one. How does this fit in with the push for full openness we're seeing in projects like the OLMo series?",
+      "zh": "这很合理。听起来它更像是一个专用工具，而不是一个通用工具。那它和我们在OLMo系列等项目中看到的全面开放趋势是怎么契合的呢？"
     },
     {
       "i": 13,
       "speaker": "John",
       "start": 263.7,
       "end": 295.86,
-      "en": "It aligns well with that philosophy but adds a strong focus on agentic search and efficiency. While OLMo provides the full suite of training artifacts for a general-purpose model, ZGCM-1 provides a detailed public recipe for a more specialized one. The paper's real significance is as a case study. It demonstrates how to combine multiple existing techniques to create a small but powerful model, and by opening up their process, they allow other researchers to study how these capabilities emerge during training. It shows a path forward that doesn't solely rely on scaling up parameters."
+      "en": "It aligns well with that philosophy but adds a strong focus on agentic search and efficiency. While OLMo provides the full suite of training artifacts for a general-purpose model, ZGCM-1 provides a detailed public recipe for a more specialized one. The paper's real significance is as a case study. It demonstrates how to combine multiple existing techniques to create a small but powerful model, and by opening up their process, they allow other researchers to study how these capabilities emerge during training. It shows a path forward that doesn't solely rely on scaling up parameters.",
+      "zh": "这和那套理念很契合，但更强调智能体搜索和效率。OLMo提供的是通用模型的完整训练产物，而ZGCM-1给出的则是一个更专用模型的详细公开配方。这篇论文真正的意义在于它是一个案例研究。它展示了如何把多种现有技术结合起来，做出一个小而强的模型，而且通过公开整个流程，让其他研究者可以研究这些能力在训练中是如何涌现的。它指出了一条不只依赖扩大参数规模的路。"
     },
     {
       "i": 14,
       "speaker": "John",
       "start": 296.42,
       "end": 330.76,
-      "en": "So, to wrap up, the main takeaway from ZGCM-1 is its integrated, open, and efficient recipe for building a small foundation model with strong reasoning and agentic search capabilities. It challenges the idea that cutting-edge performance in these domains is exclusive to massive, closed models. Instead, it suggests a complementary approach that emphasizes a blend of internal reasoning, external tool use, and meticulous training methodology. This work provides a valuable roadmap for future research in efficient and transparent AI development."
+      "en": "So, to wrap up, the main takeaway from ZGCM-1 is its integrated, open, and efficient recipe for building a small foundation model with strong reasoning and agentic search capabilities. It challenges the idea that cutting-edge performance in these domains is exclusive to massive, closed models. Instead, it suggests a complementary approach that emphasizes a blend of internal reasoning, external tool use, and meticulous training methodology. This work provides a valuable roadmap for future research in efficient and transparent AI development.",
+      "zh": "总之，ZGCM-1 的核心结论是：它提供了一套集成、开放且高效的方案，用来构建一个规模不大但具备强推理和智能体搜索能力的基础模型。它挑战了这样一种观念，即这些领域的顶尖表现只能由大规模闭源模型来实现。相反，它提出了一条互补的路径，强调内部推理、外部工具使用和精细训练方法的结合。这项工作为未来高效、透明的 AI 开发研究提供了一份有价值的路线图。"
     },
     {
       "i": 15,
       "speaker": "John",
       "start": 331.18,
       "end": 336.013,
-      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment."
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
     }
   ],
   "cover": "cover.png",

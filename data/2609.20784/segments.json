@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 370.599,
+  "word_match_rate": 0.9498,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Agentic AI. Today's lecture is on “RetireOPD: Self-Retiring On-Policy Distillation for Agentic Reinforcement Learning,” a recent paper from researchers at Zhejiang University and Alibaba Group. We've seen a lot of work in this space, like “Self-Distilled Reasoner” and “SEED,” that uses on-policy distillation to provide dense, token-level supervision for agents. This paper fits into that trend but asks a critical question: should that supervision last forever? It challenges the assumption that a teacher's guidance is uniformly beneficial throughout training. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.14
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. You mentioned on-policy distillation. Can you quickly recap the core problem it's trying to solve?",
+      "start": 37.54,
+      "end": 43.14
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Of course. The fundamental challenge is credit assignment in long-horizon tasks. An LLM agent might interact with an environment for dozens of steps, but only receive a single reward—success or failure—at the very end. Reinforcement learning struggles with this because it's hard to know which of the hundreds of tokens generated were actually helpful. On-policy distillation, or OPD, tries to fix this by introducing a 'teacher' model. This teacher has access to privileged information, like a pre-computed solution or a list of required skills, and it provides token-by-token guidance to the 'student' agent, which doesn't have that extra info.",
+      "start": 43.5,
+      "end": 80.38
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the teacher provides a dense reward signal.",
+      "start": 80.78,
+      "end": 82.64
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. Instead of just a final outcome, the student gets feedback on every single step. However, the RetireOPD paper identifies two key flaws in this common approach. First, just giving a model privileged information doesn't automatically make it a competent teacher. It might not know how to use that information effectively to succeed at the task. Second, even a great teacher can become a crutch. Early in training, imitating the teacher is beneficial. But later on, the student might discover novel, even better strategies. If it's still forced to match the teacher, its performance can be limited.",
+      "start": 82.64,
+      "end": 118.5
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Wait, so is the teacher a completely separate, more powerful model?",
+      "start": 118.96,
+      "end": 121.76
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "That's a great question. In this case, the teacher and student start from the same base model. But crucially, RetireOPD's method separates their training. It proposes a three-stage pipeline. First is Privileged Teacher Construction. They take the teacher model and train it independently on the environment using the privileged information. They use an RL algorithm called GRPO to ensure the teacher actually becomes proficient at the task. Only after it's competent do they freeze its weights. This addresses the first problem of assuming the teacher is inherently good.",
+      "start": 121.84,
+      "end": 153.54
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "And the second stage is training the student?",
+      "start": 153.72,
+      "end": 155.46
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Correct. In the second stage, they do joint training. The student, which has no access to the privileged skills, learns from two signals simultaneously. It gets the sparse, trajectory-level reward from the environment, optimized with GRPO. At the same time, it gets the dense, token-level distillation loss, which encourages it to match the frozen teacher's predictions. This is the classic OPD setup, but with a teacher that's been explicitly verified as competent.",
+      "start": 155.64,
+      "end": 182.96
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Okay, that brings us to the core idea. How does it know when to 'retire' the teacher? Is it just a fixed schedule?",
+      "start": 183.58,
+      "end": 188.66
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That's the main contribution. Instead of a fixed schedule, the retirement is adaptive. They monitor two signals during training. The first is alignment stagnation. They measure the difference between the teacher's and student's token predictions. If this gap stops shrinking or starts growing, it suggests the student has learned all it can from the teacher, or their strategies are beginning to diverge. The second signal is relative competence. They check if the student's success rate on the task is close to the teacher's, say, at least 90 percent. When both conditions are met—the student isn't getting any closer to the teacher and is already almost as good—the distillation is 'retired.'",
+      "start": 188.98,
+      "end": 229.74
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "And then it just continues with standard reinforcement learning?",
+      "start": 230.68,
+      "end": 233.2
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Precisely. The OPD loss term is dropped, they stop running the teacher model, and the student finishes training using only the environment rewards. The results on benchmarks like ALFWorld and WebShop are quite compelling. The student model consistently ends up outperforming not only the baseline RL agent but also its own teacher, which supports the idea that the teacher's guidance eventually becomes a constraint.",
+      "start": 233.56,
+      "end": 258.54
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "This work shifts the perspective on distillation. Instead of viewing it as a continuous process of knowledge transfer, it frames it as temporary scaffolding. You use the teacher for dense guidance to bootstrap the student's learning, but you remove it to allow for task-specific optimization and exploration once the student is capable enough. This aligns with a broader idea that different learning signals are valuable at different phases of training. Imitation is useful early on, but eventually, the agent needs to be grounded in the true task objective.",
+      "start": 258.96,
+      "end": 292.4
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "This approach of first ensuring teacher competence and then dynamically removing the teacher... it seems like a response to some critiques we've seen. For instance, the paper 'Does On-Policy Distillation Really Distill?' highlighted that teacher supervision can be noisy. Is this a way to mitigate that?",
+      "start": 292.4,
+      "end": 308.48
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "That's an excellent connection. Yes, you can see it as a direct answer to that family of problems. By pre-training the teacher on the task reward, they explicitly reduce the noise and ensure the guidance is effective. And by retiring it, they prevent the student from overfitting to any remaining imperfections or suboptimal strategies from that teacher. It avoids the performance ceiling that a persistent, imperfect teacher might impose, allowing the student to surpass it by focusing purely on the environment reward.",
+      "start": 308.66,
+      "end": 338.8
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "So, the key takeaway from RetireOPD is that in agentic training, the lifecycle of supervision matters. The focus is shifting from just using privileged information to using it intelligently. This means ensuring your source of guidance is actually competent at the task and, critically, knowing when to let the student learn on its own. It's a move toward more adaptive, dynamic training regimes that are responsive to the agent's learning progress. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 339.26,
+      "end": 370.599
+    }
+  ]
+}

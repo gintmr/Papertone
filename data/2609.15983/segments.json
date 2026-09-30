@@ -1,0 +1,102 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 301.714,
+  "word_match_rate": 0.9266,
+  "line_count": 13,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our 'AI for Scientific Discovery' course, we've seen a trend towards building more complex reasoning systems. Today's lecture is on “Stellar Colosseum: A Many-Agent Harness for Long-Horizon Research in Mathematics and Theoretical Computer Science” from researchers at Google. We've discussed works like 'AI co-mathematician' and 'DeepSeekMath-V2', which focus on iterative refinement and self-verification. This paper pushes that idea further, treating research not as a single task for a model, but as a structured, multi-agent process. It addresses a key failure mode of LLMs: they're good at short steps but struggle to maintain coherence over a long proof. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.46
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor. So the idea is to move beyond just prompting a model for an answer and instead build an entire computational workflow around it?",
+      "start": 39.7,
+      "end": 46.08
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. The core problem Colosseum tackles is that models can generate plausible-sounding steps but often pursue a flawed high-level strategy, leading to dead ends. The paper's main contribution is a five-stage pipeline designed to manage this strategic uncertainty. It explicitly separates strategy discovery from the detailed work of proof writing. A key feature is a 'readiness gate,' an evaluator that decides if a proposed strategy is mature enough to be broken down into a proof skeleton.",
+      "start": 46.28,
+      "end": 76.24
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "What does it mean for a strategy to be 'mature'? Does it have to be fully proven?",
+      "start": 76.76,
+      "end": 80.48
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Not at all. It just needs to be specific enough that its main ideas are clear and any remaining uncertainties can be framed as precise subproblems. This prevents the system from wasting computation writing a long proof for a vague or fundamentally unsound idea. The system then decomposes the strategy into a dependency graph of subproblems, allowing for parallel work and targeted revisions if one part fails. It's a much more modular approach.",
+      "start": 80.48,
+      "end": 104.02
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Let's walk through that pipeline. It begins with 'strategy exploration,' where multiple agents propose different high-level plans. Then comes the 'readiness gate' we just discussed. Once a strategy passes, it enters 'proof decomposition,' where it's broken into a sectioned proof skeleton. In the 'subproblem solving' stage, agents work on these sections in parallel. If a section fails verification, it's regenerated with the criticism attached, but other completed sections are preserved. Finally, a 'global verification' agent reads the entire assembled proof.",
+      "start": 104.28,
+      "end": 138.52
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How does it avoid just picking the most popular idea at each stage? A majority vote could still lead to a dead end.",
+      "start": 138.84,
+      "end": 144.4
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That's a critical point. The paper uses a technique called adversarial generation and aggregation. Instead of voting, it pairs each proposed solution with a dedicated 'falsifier' agent that actively tries to find counterexamples or logical flaws. The aggregation process then constructively merges these critiqued ideas. It might combine two compatible proofs, repair a small flaw, or even preserve a conflict if it's unresolved. Critiques stay attached to the ideas they target, so objections don't get lost in the synthesis.",
+      "start": 144.8,
+      "end": 173.52
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "So it's less about consensus and more about surviving criticism. What about the results? How does this complex architecture perform in practice?",
+      "start": 174.18,
+      "end": 181.1
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The results are interesting. On a new benchmark called TCS-Bench, derived from top theory papers, Colosseum with Gemini 3.1 Pro achieved 54% accuracy. For comparison, the report states that GPT-5.6 Pro reached 68% in their setup. However, when Colosseum used critiques to select between two of its own runs, its accuracy jumped to 71%. This suggests the adversarial critique mechanism is a powerful signal for selecting correct solutions. The paper also documents contributions to five open research problems, with the full proofs in companion papers.",
+      "start": 181.52,
+      "end": 220.32
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "A 71% accuracy is quite high, but relying on an automated grader for TCS-Bench feels like a potential weakness. How reliable is that? And how does this compare to formal provers like those in the 'LEAP' or 'DeepSeek-Prover-V2' papers?",
+      "start": 220.66,
+      "end": 233.78
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "You're right to be cautious. The paper reports the grader's accuracy is over 90% on an expert-labeled set, but it's not infallible. This system generates natural-language proofs, which distinguishes it from formal provers like LEAP that operate in environments like Lean. Colosseum is aimed at the messier, more exploratory phase of research, whereas formal provers are about ultimate correctness. The real significance here is the architectural shift—viewing research as a managed process of exploration, decomposition, and adversarial refinement, which is a big step towards more autonomous scientific agents.",
+      "start": 234.22,
+      "end": 267.3
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The main takeaway from Stellar Colosseum is its framework for organizing long-horizon reasoning. By separating strategy from execution and using adversarial checks with critique-preserving aggregation, it provides a more robust way to manage complex, multi-step tasks than single-shot generation. This architecture isn't just for math; it could be adapted for algorithm design, scientific discovery, or any domain where progress requires managing failed attempts and complex dependencies. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 267.68,
+      "end": 301.714
+    }
+  ]
+}

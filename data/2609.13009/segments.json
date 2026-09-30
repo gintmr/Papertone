@@ -1,0 +1,116 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 335.282,
+  "word_match_rate": 0.9262,
+  "line_count": 15,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to our seminar on Evaluating AI in Scientific Domains. Today's lecture is on 'How Good Are Frontier Models at Physics? Expert Re-Grading Reveals Broken Evaluations and Near-Saturation of Leading Benchmarks'. We've seen a trend of creating increasingly difficult scientific benchmarks, like 'PHYBench' and 'OlympiadBench', to test model limits. This paper, primarily from a large team at Yale University, takes a step back and questions whether these benchmarks are actually measuring what we think they are. It challenges the narrative that frontier models are still weak at physics reasoning. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.16
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, so are you saying this paper is less about a new model and more about the methodology of how we even measure what these models can do?",
+      "start": 38.66,
+      "end": 45.72
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Precisely. The authors were motivated by a contradiction: on one hand, models were scoring below 50 percent on many physics benchmarks. On the other, physicists were anecdotally reporting that these same models were useful research assistants. The paper investigates if these low scores are genuine failures of reasoning or simply artifacts of flawed evaluation. They focus on three questions. First, how often are apparent errors actually due to bad questions or broken graders? Second, how much do scores improve after experts fix the benchmarks? And third, do corrected scores suggest we're actually close to maxing out these tests?",
+      "start": 45.96,
+      "end": 85.42
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "That makes sense. So how did they actually go about auditing these benchmarks? It sounds like a massive undertaking.",
+      "start": 85.76,
+      "end": 90.4
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "It was. They selected six text-based physics benchmarks, ranging from undergraduate to advanced condensed matter theory. The list includes UGPhysics, PHYBench, and the expert-curated CritPt. They then evaluated three frontier models: GPT-5.6-Sol, Claude Fable 5, and Gemini 3.1 Pro. The core of their method was a two-step process. First, they ran the models through the standard evaluation pipeline to get a baseline score. Second, and this is the crucial part, they had domain experts meticulously review every instance where the top-performing model, GPT-5.6-Sol, was marked incorrect on a subset of the benchmarks.",
+      "start": 91.04,
+      "end": 133.44
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "What were the experts looking for, exactly?",
+      "start": 133.98,
+      "end": 135.58
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "They categorized each failure into one of three buckets. First, a 'model error,' where the question was fair and the model was just wrong. Second, a 'grader error,' where the model's answer was correct, but the automated grading system failed to recognize it. And third, a 'benchmark error,' where the question itself or the provided reference solution was flawed, ambiguous, or incorrect.",
+      "start": 136.1,
+      "end": 158.34
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So 'grader error' could be something as simple as a formatting issue?",
+      "start": 158.7,
+      "end": 161.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. A classic example they found was on PHYBench, where a model's answer was rejected because it was written in a different but algebraically identical form to the reference solution. Other errors involved different sign conventions or equivalent formulations of differential equations. The findings were quite dramatic. After expert re-grading, GPT-5.6-Sol's score on PHYBench jumped from about 26 percent to over 90 percent. On PRISM-Physics, the increase was even starker, from 13 percent to nearly 95 percent. Out of 152 audited failures on these public benchmarks, only four were confirmed to be genuine model errors.",
+      "start": 162.02,
+      "end": 204.0
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "What about the expert-authored benchmarks? Were they any better?",
+      "start": 204.46,
+      "end": 207.1
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "They also saw significant score increases, though the flaws were often more subtle. On CMT-Benchmark, which covers advanced condensed matter theory, experts found defects in 30 of the 50 questions. These included things like missing assumptions about spatial dimensions or unclear definitions. After repairing these, GPT-5.6-Sol’s score rose from 61 percent to 87 percent. The study did find some genuine model errors, for example, making an unjustified assumption about a particle's properties, but these were the exception, not the rule.",
+      "start": 207.4,
+      "end": 239.28
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Those score jumps are dramatic. But does solving these textbook problems really mean these models can do physics? It feels different from the kind of open-ended work that papers like 'Deep Research in Physical Sciences' or 'PhysMaster' are trying to enable.",
+      "start": 239.54,
+      "end": 252.54
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "An excellent point, and the authors are careful to make that same distinction. They do not claim that success on these corrected, closed-ended problems translates to an ability to perform autonomous scientific research. The primary significance of this paper is methodological. It's a strong piece of evidence that our current evaluation infrastructure for scientific reasoning is unreliable. The findings suggest that for this specific type of problem, frontier models are approaching saturation, meaning the tests are no longer difficult enough to distinguish model capabilities. The paper serves as a call to action: we need to build more robust benchmarks with expert-verified questions and more flexible, intelligent grading systems before we can accurately measure progress on the path toward more complex scientific discovery.",
+      "start": 252.96,
+      "end": 297.98
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So the takeaway isn't that 'AI has solved physics,' but rather 'we've been using a broken ruler to measure AI's ability in physics'?",
+      "start": 297.98,
+      "end": 304.94
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That's a perfect way to put it. This work suggests we've significantly underestimated what current models can do on these specific tasks, not because of the models, but because of our flawed measurements. The true challenge now is to develop evaluations that probe deeper, open-ended scientific reasoning. It’s a crucial reminder that as our models get better, our methods for evaluating them must improve just as quickly, if not faster. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 305.74,
+      "end": 335.282
+    }
+  ]
+}

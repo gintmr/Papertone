@@ -1,0 +1,265 @@
+{
+  "id": "2609.35318",
+  "title": "DexAgent: An Agentic Human2Sim2Robot Framework for Dexterous Manipulation with Self-Evolving Tool Library",
+  "authors": [
+    "Youhui Wang",
+    "Yunzhu Li",
+    "Li Fei-Fei",
+    "Jiajun Wu",
+    "Huang Huang"
+  ],
+  "abstract": "Human videos offer a scalable source of demonstrations for dexterous robot manipulation. However, existing human-to-simulation-to-robot (Human2Sim2Robot) pipelines rely on predefined procedures that struggle to accommodate diverse object properties and interactions, particularly those involving articulated and deformable objects. We introduce DexAgent, an agentic Human2Sim2Robot framework that converts a single egocentric human video and a task prompt into physically grounded robot trajectories for policy training. It operates through four stages: semantic understanding of human videos, property-based simulation reconstruction, robot trajectory optimization, and robot data generation. At each stage, DexAgent adapts its approach to the task and object properties by selecting suitable skills from its tool library or developing new ones when needed. Property-specific verifiers assess stage outcomes for physical validity and task-specific requirements and provide feedback for refinement, preventing error propagation through the workflow. This adaptive, verification-guided process allows DexAgent to process diverse objects and long-horizon tasks. In the final stage, DexAgent varies object and robot states in simulation to generate diverse robot trajectories from a single human video, then retextures the rendered observations to facilitate sim-to-real transfer. Newly developed skills and verifiers are retained in its tool library, making it self-evolving to accumulate reusable capabilities. This reduces processing time as DexAgent encounters more human videos. Across eleven real-world tasks, policies trained with DexAgent-generated data achieve a 3.5x higher success rate than competing baselines. Project website: this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.35318",
+    "arxiv": "https://arxiv.org/abs/2609.35318"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0ebdf-531d-781a-beae-adab43a13055/podcast.mp3",
+  "duration": 430.994,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.44,
+      "en": "In a graduate course on Dexterous Robot Learning, today’s lecture is on DexAgent: Self-Evolving Agents for Human-to-Robot Dexterous Manipulation. A rope-knotting video captures what a person did, but not a robot-ready motion or the many examples needed to train a reliable policy. Recent work such as HumanEgo and Crossing the Human-Robot Embodiment Gap with Sim-to-Real R-L using One Human Demonstration reflects a broader move toward learning from human video. DexAgent asks how to make that conversion adaptable and checkable. Yes, Noah?",
+      "zh": "在一门关于灵巧机器人学习的研究生课程上，今天的讲座讲的是DexAgent：用于从人到机器人的灵巧操作的自进化智能体。一段打绳结的视频记录了一个人做了什么，但并没有给出机器人可以直接执行的动作，也没有提供训练一个可靠策略所需的大量样本。最近的一些工作，比如HumanEgo，以及用单次人类演示通过仿真到现实的强化学习跨越人机具身差距，都反映出一种更广泛的趋势，就是从人类视频中学习。DexAgent要问的是，怎么让这种转换变得可适配、可检验。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.52,
+      "end": 38.52,
+      "en": "Hi Professor, why is a human video not enough to simply copy the motion?",
+      "zh": "教授您好，为什么光靠人类视频不足以直接复制动作呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.38,
+      "end": 69.92,
+      "en": "Because the video shows appearances, not all the information a robot needs to act. The robot must infer object properties, choose motions that its fingers can execute, and produce observations paired with actions for training. A motion that looks plausible can fail when an object is articulated, deformable, or constrained by its surroundings. DexAgent’s central idea is to select or build tools for the task at hand, check intermediate results in simulation, and revise them when they fail.",
+      "zh": "因为视频呈现的是外观，而不是机器人行动所需的全部信息。机器人必须推断物体属性，选择手指能执行的动作，并生成观测与动作配对的数据用于训练。一个看起来合理的动作，在物体有关节、可变形或受周围环境约束时，就可能失败。DexAgent的核心思路是：为手头的任务选择或构建工具，在仿真中检查中间结果，并在失败时进行修正。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 70.82,
+      "end": 73.5,
+      "en": "Quick question: what does the system receive as input?",
+      "zh": "快速问一下：这个系统接收的输入是什么？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.4,
+      "end": 103.58,
+      "en": "It starts with one egocentric color video and a natural-language task prompt. In its understanding stage, it identifies objects and likely properties, checks those interpretations against video frames, and creates a structured description of the scene and task. That description records object types, subgoals, which hand or hands act, and the intended goals. It gives later stages a working plan rather than asking them to infer every detail again from the original footage.",
+      "zh": "它一开始只拿到一段第一视角的彩色视频，外加一句用自然语言写的任务提示。在理解阶段，它会先识别出画面里有哪些物体、可能有什么属性，再拿这些判断去跟视频帧逐一对照，最后生成一份对场景和任务的结构化描述。这份描述里会记下物体类型、子目标、用哪只手或哪几只手来操作，以及想要达成的目标。这样一来，后面的阶段就有了一份可执行的工作计划，不用再从原始画面里把所有细节重新推一遍。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 104.64,
+      "end": 107.6,
+      "en": "How does it make the simulated scene fit different kinds of objects?",
+      "zh": "它如何让模拟场景适配不同类型的物体？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 109.32,
+      "end": 139.82,
+      "en": "DexAgent reconstructs only the task-relevant parts of a scene, then chooses checks suited to the properties that matter. For a rigid object, checks can examine silhouette, scale, mass, and stability. An articulated object calls for checks of joints, axes, movement limits, and whether it stays in position. For deformable objects, such as a rope, topology matters. The distinction is practical: the system does not assume one reconstruction recipe will adequately represent every interaction.",
+      "zh": "DexAgent只重建场景中与任务相关的部分，然后根据真正重要的属性来选择合适的检查项。对于刚性物体，检查可以关注轮廓、尺度、质量和稳定性。对于铰接物体，则需要检查关节、轴、运动范围，以及它是否保持在原位。对于绳索这类可变形物体，拓扑结构才是关键。这种区分很务实：系统并不假设一套重建方案就能充分表示所有交互。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 140.8,
+      "end": 144.12,
+      "en": "So what happens when a proposed motion looks right but fails a check?",
+      "zh": "那么，如果提出的动作看起来没问题，却没通过检查，会怎么样呢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 145.02,
+      "end": 176.66,
+      "en": "The motion stage breaks the task into subgoals, each with a task-specific success condition. DexAgent can select or create a skill to retarget a demonstrated hand pose, optimize robot finger joints, or generate a suitable grasp. Simulation tests can probe whether a grasp holds up to lifting and shaking, or whether an articulated joint moves as intended. Inverse kinematics and generated code connect verified poses, and earlier subgoals can be revisited if they obstruct later ones.",
+      "zh": "动作阶段会把任务拆成若干子目标，每个子目标都有针对该任务的成败条件。DexAgent 可以选择或创建一个技能，用来重定向演示的手部姿态、优化机器人手指关节，或者生成合适的抓取。仿真测试可以检验抓取能否经受住抬起和晃动，或者铰接关节是否按预期运动。逆运动学和生成的代码把已验证的姿态连接起来，如果较早的子目标妨碍了后续子目标，也可以回头重新处理。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 177.6,
+      "end": 180.28,
+      "en": "Does it then train directly on the reconstructed demonstration?",
+      "zh": "那它是直接在重建后的演示数据上训练吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 181.44,
+      "end": 213.7,
+      "en": "Not just on a single fixed trajectory. For data generation, the system varies reachable starting states for the robot and objects, adapts and rechecks trajectories, and renders observations of the resulting robot motions. It removes the demonstrator and objects from the original video, composites in rendered robot observations, and retextures them. It can also generate additional wrist-camera views. The aim is to turn one demonstration into varied training examples, rather than treating that video as a complete dataset.",
+      "zh": "不只是基于单条固定轨迹。在数据生成方面，系统会改变机器人和物体可达的起始状态，对轨迹进行调整和重新检查，并渲染出机器人运动结果的观测画面。它会从原始视频中移除演示者和物体，合成渲染出的机器人观测画面，并重新进行纹理处理。它还能生成额外的腕部摄像头视角。这样做的目的是把一次演示转化为多样化的训练样本，而不是把那段视频当作一个完整的数据集。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 214.82,
+      "end": 217.8,
+      "en": "Can you clarify what the physical evaluation actually measures?",
+      "zh": "你能说明一下物理评估实际衡量的是什么吗？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 218.92,
+      "end": 252.12,
+      "en": "The learned policies were tested on 11 real-world tasks, with 10 closed-loop physical trials per task. DexAgent averaged 63.6% success, compared with 18.2% for Spider, the strongest baseline by this average, or about three point five times its rate. The average is calculated across task-level success fractions, not by pooling all trials into one count. Tasks included rigid-object manipulation, articulated objects, rope knotting, tool use, and longer sequences involving multiple steps.",
+      "zh": "学到的策略在11个真实世界任务上做了测试，每个任务进行10次闭环物理试验。DexAgent平均成功率为63.6%，而Spider——按此平均值计算的最强基线——为18.2%，大约是它的3.5倍。平均值是按任务级成功率计算的，而不是把所有试验合并成一个总数。任务包括刚性物体操作、铰接物体、绳子打结、工具使用，以及涉及多个步骤的更长序列。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 253.08,
+      "end": 256.02,
+      "en": "Did the comparison isolate the effect of those simulation checks?",
+      "zh": "这个对比有没有单独分离出那些仿真检查的效果？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 256.96,
+      "end": 287.24,
+      "en": "No. The methods shared the downstream data-augmentation and visual-processing protocol and trained the same policy model, which makes the policy comparison more controlled. But that does not isolate whether verification, retained skills, or another part of DexAgent caused the performance difference. A narrower trajectory comparison on OakInk found 85.7% of DexAgent’s converted clips passed a physics check, versus 81% for Do as I Do. That is clip-level retargeting quality, not real-world policy success.",
+      "zh": "没有。这些方法共用同一套下游数据增强和视觉处理流程，训练的是同一个策略模型，所以策略对比更可控。但这并不能单独区分出到底是验证机制、保留的技能，还是DexAgent的其他部分造成了性能差异。在OakInk上做的更窄的轨迹对比发现，DexAgent转换后的片段有85.7%通过了物理检查，而Do as I Do是81%。这只是片段层面的重定向质量，不是真实世界里的策略成功率。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 288.22,
+      "end": 291.8,
+      "en": "What does “self-evolving” mean beyond selecting a tool for each task?",
+      "zh": "除了为每个任务挑选工具之外，“自进化”还意味着什么？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 293.16,
+      "end": 326.06,
+      "en": "Skills and verifiers that have been built are retained for possible reuse, so later tasks need not begin with an empty toolkit. Across 100 EgoDex videos, the system had accumulated 85 skills and 168 verifiers by sample 78. The paper reports processing time falling from 4.3 hours for the first video to 2.2 hours with skill reuse, and to 13.1 minutes when assets could also be reused. Those figures describe elapsed processing time, not fewer tokens or attempts.",
+      "zh": "已经构建好的技能和验证器会被保留下来，供后续复用，这样后面的任务就不必从空工具箱开始。在100个EgoDex视频上，到第78个样本时，系统已经积累了85个技能和168个验证器。论文报告称，处理时间从第一个视频的4.3小时，降到有技能复用时的2.2小时，再到资产也能复用时只需13.1分钟。这些数字描述的是实际处理耗时，而不是更少的token或尝试次数。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 327.12,
+      "end": 361.12,
+      "en": "This reuse connects DexAgent to the wider effort to scale robot learning from human demonstrations. HumanEgo learns from egocentric video, while the work titled Crossing the Human-Robot Embodiment Gap with Sim-to-Real R-L using One Human Demonstration emphasizes learning from a single demonstration. DexAgent focuses on a different bottleneck: adapting the conversion tools and checks to varied tasks. Its examples span rope, articulated objects, and tool use, but the reported end-to-end advantage does not establish which component produced the gain.",
+      "zh": "这种复用把DexAgent和更广泛的从人类演示中扩展机器人学习的努力联系了起来。HumanEgo从第一人称视频中学习，而《Crossing the Human-Robot Embodiment Gap with Sim-to-Real R-L using One Human Demonstration》这篇工作则强调从单次演示中学习。DexAgent关注的是另一个瓶颈：让转换工具和检查机制适应各种不同任务。它的示例涵盖绳索、铰接物体和工具使用，但所报告的端到端优势并不能确定究竟是哪个组件带来了增益。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 361.96,
+      "end": 366.74,
+      "en": "If simulation checks pass, how much confidence should we place in the real robot motion?",
+      "zh": "如果仿真检查通过了，我们对真实机器人的动作应该有多大信心？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 367.46,
+      "end": 398.02,
+      "en": "They provide useful evidence, but not a guarantee of physical success. The paper reports semantic and geometric errors, incomplete verification, and sim-to-real gaps. A motion can pass a simulation check and still fail when success depends on forces that the simulation does not capture well. The broader implication is that reusable tools may make human-video conversion more scalable, while evaluation must still test closed-loop behavior on real robots and scrutinize the assumptions behind each check.",
+      "zh": "它们能提供有用的证据，但不能保证在物理世界中一定成功。论文报告了语义和几何错误、验证不完整以及仿真到现实的差距。一个动作可能通过了仿真检查，但当成功取决于仿真无法很好捕捉的力时，仍然会失败。更广泛的启示是，可复用的工具可能让人类视频转换更具可扩展性，但评估仍然必须在真实机器人上测试闭环行为，并审视每项检查背后的假设。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 398.02,
+      "end": 430.994,
+      "en": "The key takeaway is that DexAgent treats conversion as an adaptable process: understand the task, reconstruct what matters, check and refine motion, then generate varied training data. Retaining verified skills can give later demonstrations a useful starting point, but verification is not certainty. The challenge ahead is to make those checks more complete and their predictions more reliable in physical settings. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键结论是，DexAgent把转换看作一个可调整的过程：先理解任务，再重建关键要素，然后检查和优化动作，最后生成多样化的训练数据。保留已经验证过的技能，可以为后续的演示提供一个有用的起点，但验证并不等于确定性。接下来的挑战是让这些检查更完整，并让它们在真实物理环境中的预测更可靠。感谢收听。如果还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wang2026dexagentagentichuman2sim2robotframework,\n      title={DexAgent: An Agentic Human2Sim2Robot Framework for Dexterous Manipulation with Self-Evolving Tool Library}, \n      author={Youhui Wang and Yunzhu Li and Li Fei-Fei and Jiajun Wu and Huang Huang},\n      year={2026},\n      eprint={2609.35318},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.35318}, \n}",
+  "peaks": [
+    0.462,
+    0.204,
+    0.222,
+    0.219,
+    0.213,
+    0.272,
+    0.839,
+    0.889,
+    0.649,
+    0.901,
+    0.474,
+    0.352,
+    0.576,
+    0.445,
+    0.393,
+    0.393,
+    0.394,
+    0.311,
+    0.667,
+    0.554,
+    0.472,
+    0.525,
+    0.318,
+    0.528,
+    0.558,
+    0.54,
+    0.668,
+    0.576,
+    0.74,
+    0.639,
+    0.453,
+    0.434,
+    0.408,
+    0.2,
+    0.323,
+    0.348,
+    0.567,
+    0.35,
+    0.305,
+    0.366,
+    0.316,
+    0.306,
+    0.363,
+    0.583,
+    0.369,
+    0.353,
+    0.247,
+    0.364,
+    0.596,
+    0.549,
+    0.357,
+    0.341,
+    0.398,
+    0.364,
+    0.401,
+    0.705,
+    0.628,
+    0.523,
+    0.442,
+    0.422,
+    0.486,
+    0.731,
+    0.509,
+    0.662,
+    0.52,
+    0.692,
+    0.578,
+    0.548,
+    1.0,
+    0.633,
+    0.508,
+    0.43
+  ],
+  "license": "CC BY"
+}

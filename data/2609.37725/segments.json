@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 455.627,
+  "word_match_rate": 0.9336,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Long-Horizon Language Agents, today’s lecture is on Context Language Models. Recent work such as Recursive Language Models and Agentic Context Engineering reflects a broader shift toward giving agents more control over how they handle long inputs. This paper asks a related but distinct question: can a model edit the conversation it is actively using? Before I explain the mechanism, yes, Noah?",
+      "start": 0.0,
+      "end": 28.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does that mean the model can actually remove parts of its conversation?",
+      "start": 28.12,
+      "end": 33.36
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Yes. Consider an Erdős minimum-overlap optimization run, where a model coordinated subagents and maintained a compact scoreboard of who was running and what they had found. The paper reports 163 in-place edits while the context stayed around 6,000 to 8,000 tokens. That example illustrates context management, not successful completion of the optimization problem. The underlying tension is simple: useful history matters, but an agent may not need every old message in its working context.",
+      "start": 34.42,
+      "end": 66.98
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central mechanism is a live transcript mirrored into an editable file. The model can use ordinary shell commands to revise that file, and the changes are synchronized into its next model call. If it makes no edit, newly generated text is appended as usual. A standard language model accumulates a conversation; a context language model can influence what the next conversation state contains. In a multi-agent run, each agent can have its own synchronized context file.",
+      "start": 68.02,
+      "end": 97.16
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how is that different from asking a system to summarize the conversation when it gets long?",
+      "start": 98.06,
+      "end": 103.22
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "A summary trigger is a schedule or policy supplied by the surrounding software; the model may have limited choices about what happens. Here, the model edits its live context directly. That does not mean every edit is useful, or that the software disappears. It changes where a context-management decision can be made. The paper probes this capability with ContextBench, a diagnostic designed to test context handling apart from broad knowledge or reasoning ability.",
+      "start": 104.02,
+      "end": 133.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "ContextBench includes four synthetic tasks: retaining a particular passage, making precise updates to a Sudoku board, recalling exact key-value pairs, and finding or counting exact log entries. The tests increase input pressure relative to a 32,000-token context limit. They expose different failure modes: summaries may lose details, while approaches without in-place edits may need to regenerate a carefully maintained state. But this is a diagnostic, not proof that results transfer to every real-world task.",
+      "start": 135.0,
+      "end": 166.32
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the file interface is the contribution, but what evidence shows it helps on an actual task?",
+      "start": 167.28,
+      "end": 172.04
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The paper compares methods on BrowseComp-Plus with the same Mini S-W-E Agent backbone, using quen three point six, 27 billion parameters, a 32,000-token context limit, and no additional training. The context language model reaches 59.4% accuracy across 830 questions. That is an 11.4% relative improvement over Codex-style summarization, with 21.5% fewer prefix-reuse flops. Accuracy means answers were judged correct and complete.",
+      "start": 172.92,
+      "end": 209.78
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The compute measure needs careful interpretation. Prefix-reuse flops estimate the work of generating tokens and re-prefilling tokens after an edit disrupts a cached prefix; they are not elapsed time or a server measurement. The results also vary by task: on TerminalBench 2.1, the context language model matches the strongest baseline’s accuracy while using fewer of these estimated flops. So the evidence is encouraging in some settings, but it is not a universal win.",
+      "start": 209.78,
+      "end": 243.06
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Another question: does this scale beyond one agent and a benchmark with individual questions?",
+      "start": 243.94,
+      "end": 248.88
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A separate Software World experiment uses six agents to optimize repositories over more than 24 hours. At the same spend, the context language model achieves 65% greater downstream speedup than a summary-based swarm. The metric is the geometric mean across 17 held-out CPU benchmarks in four packages the agents did not see; a broken benchmark counts as 1.0. This is a speedup comparison, not a 65-point accuracy gain.",
+      "start": 249.92,
+      "end": 280.38
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "There is also a serving cost: changing an earlier part of context usually breaks the matching cached prefix, so the system must recompute that changed region and the surviving suffix. The authors propose Suffix Cache Reuse, or S-C-R, to reuse cached states for unchanged suffix tokens. On the reported BrowseComp-Plus comparison, both standard serving and S-C-R reach 60.2% accuracy, while estimated compute drops from 10.98 to 7.14 petaflops per question. Reused states are approximate, not guaranteed equivalent.",
+      "start": 281.3,
+      "end": 317.58
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Can the model learn better editing strategies, or does someone have to write each policy by hand?",
+      "start": 317.58,
+      "end": 323.7
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The authors explore natural-language guidance and a skill-evolution loop that selects reusable context-management instructions. In one specific result, an evolved skill raises held-out key-value-store accuracy from 38.3% to 74.2%, a 35.9-point gain. That result is for one task, not all four ContextBench tasks or all models. It suggests the editing behavior can be shaped, while leaving open how reliably such skills transfer to different agents and settings.",
+      "start": 324.54,
+      "end": 358.4
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "This work sits alongside approaches that give agents tools for handling long histories, but the distinctions matter. Recursive Language Models place a long input in an environment for inspection and processing; this paper emphasizes editing the evolving live conversation. Agentic Context Engineering studies context evolution through reusable playbooks. The comparisons here support the file-based approach in tested agent settings, but they do not isolate unrestricted editing as the sole cause of the gains or establish universal superiority.",
+      "start": 359.28,
+      "end": 393.16
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "What should researchers test next to find out where this approach really helps?",
+      "start": 393.16,
+      "end": 398.28
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "A useful next step is to separate the interface’s effects from other parts of the agent harness, and to test how edit policies behave across longer tasks and different serving systems. Researchers should also examine the consequences of carrying edited content forward, including whether mistaken or adversarial instructions persist. The broader shift is from treating context as a fixed input or externally managed resource toward treating its maintenance as a decision an agent can make and potentially learn.",
+      "start": 399.18,
+      "end": 430.46
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The practical idea is not simply to give an agent a larger context window. It is to let the agent decide what its next reasoning step needs to see, while accounting for the computational cost of changing that view. Context becomes a capability that can be managed and learned. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 431.24,
+      "end": 455.627
+    }
+  ]
+}

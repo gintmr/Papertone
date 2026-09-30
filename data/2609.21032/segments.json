@@ -1,0 +1,116 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 384.575,
+  "word_match_rate": 0.9501,
+  "line_count": 15,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Multi-Agent Systems. Today's lecture is on “Scaling Discovery through Test-Time Communication,” a paper from researchers at UC Berkeley and Microsoft Research. We've seen a lot of work recently in this space, like “AutoScientists” and “AgentRxiv,” which focus on building collaborative frameworks for agents. This paper takes a slightly different angle, focusing specifically on how unstructured, peer-to-peer communication during inference time can improve problem-solving, rather than relying on a central coordinator or explicit task decomposition. It's a key question as we try to scale agent capabilities. Yes, Noah?",
+      "start": 0.0,
+      "end": 39.46
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. You mentioned it differs from task decomposition. So if the agents aren't being assigned sub-problems, how do they actually collaborate instead of just running in parallel?",
+      "start": 39.88,
+      "end": 48.24
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's the central question the paper addresses. The core concept is what they call 'verified progress sharing.' Instead of having ten agents independently trying to solve a problem from start to finish, this approach has them work on the same problem in a shared environment. When one agent makes a verifiable improvement—say, it writes a piece of code that scores higher on a test—it shares that progress. Another agent can then pick up that improved code and build on it. The main comparison they make is between a communicating team of 'k' agents, which they call 'team at k', and the best result from 'k' independent agents, or 'best at k'.",
+      "start": 48.64,
+      "end": 85.14
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the hypothesis is that a team can combine breakthroughs more efficiently than any single agent can discover them all sequentially?",
+      "start": 85.94,
+      "end": 92.24
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Precisely. Think of it like a relay race versus a set of individual sprints. In independent sampling, or 'best at k', you're betting that one of your sprinters is fast enough to win the whole race alone. With 'team at k', you're letting the fastest agent for each leg of the race hand off the baton. If a problem requires ten sequential discoveries, independent agents each have to make all ten discoveries on their own. The communicating team can, in theory, combine the single fastest discovery for each of the ten steps, even if those discoveries come from ten different agents. This allows for a cumulative search process, rather than a purely parallel one.",
+      "start": 92.74,
+      "end": 130.5
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "That makes sense in theory, but how does that work in practice? Is there a risk of them all converging on the same mediocre idea too early?",
+      "start": 130.7,
+      "end": 136.88
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "A very real risk, and the methodology tries to account for that. The communication protocol is surprisingly simple. There's no central orchestrator. The agents, which are identical, communicate through a shared digital workspace. This includes an append-only log for findings, a log for failed ideas, and a shared artifact, like a codebase, that they can all edit. To prevent premature convergence, agents are explicitly instructed to select different initial approaches and to only adopt another agent's work after observing a measured, objective improvement. Even then, they're told to try and maintain some variation. The key is the 'verified' part of progress sharing—it relies on tasks where you can get a reliable score for partial solutions.",
+      "start": 137.2,
+      "end": 180.52
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "What kinds of tasks did they use? That verification requirement seems like it would be hard to satisfy for many real-world problems.",
+      "start": 180.94,
+      "end": 187.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "You've hit on a critical point. The tasks were chosen specifically because they have clear, intermediate scoring mechanisms. First, they used ARC-AGI-3, a benchmark of interactive grid-world games where progress is measured by levels cleared. Second, they used a polyomino packing problem, which is an algorithmic task where a submitted program gets a continuous packing score. The third was an MNIST classifier compression task, where the goal is to minimize file size while maintaining high accuracy. In all these cases, an agent can test a new idea and get immediate, objective feedback on whether it's an improvement. The results were quite telling. For instance, on the ARC games, a team of 5 agents performed as well as 33 independent agents, a more than six-fold efficiency gain.",
+      "start": 188.36,
+      "end": 239.4
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "That's a significant multiplier. In the polyomino packing and MNIST tasks, did they just find solutions faster, or did they find qualitatively different or better solutions?",
+      "start": 239.62,
+      "end": 247.74
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "They found better solutions that independent agents couldn't reach. In the polyomino task, the team surpassed the previous best-known result after independent agents had already plateaued. Trace analysis showed one agent would invent a concept, another would implement it more efficiently, and a third would add a complementary heuristic on top. Similarly, for MNIST compression, the team produced a final classifier that was about 20% smaller than a human reference solution by combining several distinct techniques discovered by different agents during the run, including one from a branch that was no longer the individual leader.",
+      "start": 248.22,
+      "end": 287.7
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The significance here is that communication can change the scaling dynamics of test-time compute. It suggests that for complex, open-ended problems common in science and engineering, the path forward might not just be more independent shots on goal, but smarter collaboration. This shifts the focus toward designing agent systems with reliable intermediate verifiers. However, the paper is also clear about the limitations. The authors ran an experiment on Terminal-Bench 2.0, where feedback is often delayed or ambiguous.",
+      "start": 288.08,
+      "end": 316.38
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "And what happened there? Did communication hurt performance?",
+      "start": 316.38,
+      "end": 319.3
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "It performed worse than two independent attempts. The takeaway is that without a clear, objective signal of progress, agents can get stuck reinforcing each other's mistakes or converging on a flawed solution. This aligns with findings from other work like CooperBench, which also shows that collaboration can fail without the right conditions. This paper's contribution is in isolating one of those key conditions: the ability to verify progress. When that condition is met, communication can be remarkably effective.",
+      "start": 319.86,
+      "end": 347.93
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "So, to wrap up, this work provides strong evidence for a conditional claim. It's not saying communication is always better. It's saying that when agents have enough compute and a reliable way to measure partial progress, a team can solve problems that are out of reach for individual agents working alone. The key takeaway is that effective collaboration isn't just about talking; it's about sharing verifiable success. This insight helps steer the design of future multi-agent systems toward creating environments with clear feedback loops. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 348.43,
+      "end": 384.575
+    }
+  ]
+}

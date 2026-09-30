@@ -1,0 +1,240 @@
+{
+  "id": "2609.34085",
+  "title": "AD-E2E-JEPA: A Joint-Embedding Predictive Architecture For End-to-End Autonomous Driving",
+  "authors": [
+    "Haoran Zhu",
+    "Wancong Zhang",
+    "Yann LeCun",
+    "Anna Choromanska"
+  ],
+  "abstract": "Autonomous driving requires \\textit{world models} that can understand the physical world, reason and plan, and operate safely. In this paper, we first systematically evaluate existing action-conditioned joint-embedding predictive architecture (JEPA) world models, including LeWM, DINO-WM, and JEPA-WM for end-to-end autonomous driving (E2EAD). To isolate world-model quality from policy learning, we employ a goal-conditioned zero-shot planning setting that evaluates these models using ground-truth future observations as goals, without training any driving policy. We find that existing JEPA-based world models are either accurate for driving but computationally expensive, or computationally efficient but insufficient for planning. To address this trade-off, we propose \\textbf{AD-E2E-JEPA}, which introduces a SIGReg-regularized learnable projector applied to projected patch embeddings. The projector reduces the number of planning patches by $16\\times$ and the embedding dimension by $4\\times$, achieving a $100\\times$ inference speedup while retaining planning performance, with a 0.8-second runtime for an 8-frame rollout over 256 candidate trajectories. \\textit{Without} training any driving policy, the world model itself reaches the goals located 20 meters away on average within the displacement of respectively 4.0/2.8 meters, using world-model rollouts over trajectory vocabularies of respectively 256/8,192 candidates. On the NAVSIMv2 benchmark, it achieves 67.3/72.9 EPDMS with multiplicative safety metrics and 84.1/86.5 EPDMS$^{\\dagger}$ without them in goal-conditioned zero-shot planning. Experiments further show that the self-supervised pretrained projector improves downstream imitation learning performance from 80.2 to 85.4 EPDMS. The source code is available at this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.34085",
+    "arxiv": "https://arxiv.org/abs/2609.34085"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0eb99-de6d-7aec-8bc6-289a98344fc3/podcast.mp3",
+  "duration": 412.212,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.76,
+      "en": "In our graduate course on world models and autonomous driving, today’s lecture is on A-D E-to-E jepa: A Joint-Embedding Predictive Architecture for End-to-End Autonomous Driving. Researchers at New York University and AMI Labs ask how a car can plan by predicting what the world will look like after different actions. Recent work such as Drive-JEPA and WoTE reflects growing interest in learned driving representations and world models. The field is moving toward planning with learned futures. Yes, Noah?",
+      "zh": "在我们关于世界模型和自动驾驶的研究生课程里，今天的讲座讲的是A-D E-to-E jepa：一种用于端到端自动驾驶的联合嵌入预测架构。纽约大学和AMI Labs的研究人员提出的问题是，一辆车如何通过预测不同动作之后世界会变成什么样来做规划。最近像Drive-JEPA和WoTE这样的工作，反映出人们对学习到的驾驶表征和世界模型越来越感兴趣。这个领域正在朝着用学到的未来做规划的方向发展。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.72,
+      "end": 38.46,
+      "en": "Hi Professor, does this paper train a driving policy, or does it test the world model directly?",
+      "zh": "教授您好，这篇论文是训练了一个驾驶策略，还是直接测试世界模型？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.46,
+      "end": 63.28,
+      "en": "It tests the world model directly. The planner receives a history of front-camera images and vehicle poses, along with a future image as its goal. It evaluates candidate trajectories and selects the one whose predicted future representation is closest to that goal. No driving policy is trained for this experiment, so the results focus on whether the model predicts action-conditioned changes in the scene.",
+      "zh": "它直接测试世界模型。规划器接收前视摄像头图像和车辆位姿的历史信息，以及一张未来图像作为目标。它评估候选轨迹，并选出预测未来表示最接近该目标的那一条。这个实验没有训练任何驾驶策略，所以结果关注的是模型能否预测场景中由动作引起的变化。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 64.18,
+      "end": 69.54,
+      "en": "Quick question: why compare representations instead of predicting the future image pixel by pixel?",
+      "zh": "问个简单的问题：为什么要比较表征，而不是逐像素预测未来的图像呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 70.52,
+      "end": 99.74,
+      "en": "Pixel reconstruction can spend capacity reproducing details that do not matter for planning, such as texture or small lighting changes. A jepa instead predicts the target image’s representation from context, aiming to retain structure useful for anticipating the future. The authors build on this idea but address a practical tension: dense image patches preserve spatial information, while processing them repeatedly for many candidate paths can be prohibitively slow.",
+      "zh": "像素重建会把容量花在复现那些对规划无关紧要的细节上，比如纹理或细微的光照变化。而JEPA则是从上下文预测目标图像的表示，目标是保留对预判未来有用的结构。作者基于这一思路，但解决了一个实际矛盾：密集的图像块能保留空间信息，但为大量候选路径反复处理这些图像块会慢得让人无法接受。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 100.6,
+      "end": 129.14,
+      "en": "The key architectural change is a learnable projector between a frozen dino three visual encoder and the predictive model. It compresses the patch grid by a factor of 16 and reduces each feature dimension from 1,024 to 256. The predictor then estimates future compressed representations conditioned on relative vehicle motion. This keeps more spatial detail than a single global summary while making each simulated trajectory much cheaper to evaluate.",
+      "zh": "关键的架构改动是在冻结的 DINO 3 视觉编码器和预测模型之间加了一个可学习的投影器。它把图像块网格压缩 16 倍，并将每个特征维度从 1024 降到 256。预测器随后根据车辆相对运动来估计未来的压缩表示。相比单一的全局摘要，这保留了更多空间细节，同时让每条模拟轨迹的评估成本大幅降低。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 130.24,
+      "end": 135.26,
+      "en": "How do they keep that learned compression from collapsing different scenes into nearly identical representations?",
+      "zh": "他们是怎么防止这种学到的压缩把不同场景都压成几乎一模一样的表示的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 136.42,
+      "end": 163.74,
+      "en": "They regularize the projector with sigreg, which encourages the projected features to have an approximately isotropic Gaussian distribution. The target embeddings also use stop-gradient, so prediction loss does not simply pull both sides toward a trivial shared output. The model is trained to predict future embeddings, and one variant adds multi-step rollout losses. Those losses encourage consistency when predictions are fed back in autoregressively.",
+      "zh": "他们用sigreg对投影器做正则化，促使投影后的特征大致呈各向同性的高斯分布。目标嵌入也用了停止梯度，这样预测损失就不会简单地把两边都拉向一个平凡共享输出。模型被训练来预测未来的嵌入，其中一个变体还加入了多步轨迹损失。这些损失在预测结果被自回归地反馈回去时，有助于保持一致性。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 165.56,
+      "end": 197.58,
+      "en": "For planning, the system considers a vocabulary of candidate driving trajectories, from 256 up to 8,192. Each candidate supplies relative pose changes, rather than steering and throttle commands, and the model predicts the resulting future representation. It ranks candidates by distance to the representation of an image 8 frames ahead. That setup makes the evaluation interpretable, but it also relies on a goal image that a deployed car usually would not have.",
+      "zh": "在规划方面，系统会考虑一个候选驾驶轨迹的词汇表，规模从256到8192不等。每个候选提供的是相对位姿变化，而不是转向和油门指令，模型则预测由此产生的未来表征。它根据与8帧之后图像表征的距离来对候选进行排序。这种设置让评估变得可解释，但它也依赖于一张目标图像，而部署中的车辆通常不会有这张图像。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 197.58,
+      "end": 203.56,
+      "en": "So the future image is an evaluation aid, not an ordinary input available to a real car?",
+      "zh": "所以那张未来图像只是评估时的辅助手段，并不是真车能拿到的常规输入，对吧？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 204.4,
+      "end": 236.98,
+      "en": "Exactly. The study uses that image to test whether the world model can identify a trajectory leading toward a specified visual goal. On the full 12,146-scene test set, the rollout-trained model with 256 candidates reaches an EPDMS of 67.3 and a 4-meter final displacement error, taking about 0.8 seconds per scene on an A-one-hundred G-P-U. That is far faster than dense-patch baselines, which take roughly 92 to 101 seconds.",
+      "zh": "没错。这项研究用那张图来测试世界模型能否找出一条通向指定视觉目标的轨迹。在完整的12146个场景测试集上，用256个候选轨迹训练出的模型达到了67.3的EPDMS和4米的最终位移误差，在A100 GPU上每个场景大约耗时0.8秒。这比密集块基线快得多，后者大约需要92到101秒。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 237.92,
+      "end": 273.3,
+      "en": "Candidate count reveals the remaining efficiency trade-off. With 8,192 candidates, final displacement error falls to 2.8 meters and EPDMS rises to 72.9, but planning takes 18.2 seconds. More options can improve the best match, yet the added rollouts cost time. The method also transfers beyond zero-shot planning: using its pretrained projector in an imitation-learning model raises EPDMS from 80.2 to 85.4 compared with a random projector.",
+      "zh": "候选数量揭示了剩下的效率权衡。用8192个候选时，最终位移误差降到2.8米，EPDMS升到72.9，但规划要花18.2秒。更多选项能改善最佳匹配，但增加的轨迹会耗费时间。这个方法还能迁移到零样本规划之外：把预训练好的投影器用在模仿学习模型里，相比随机投影器，EPDMS从80.2提升到85.4。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 274.16,
+      "end": 280.14,
+      "en": "Could that transfer gain mean the projector learns generally useful visual features, rather than only features for this planner?",
+      "zh": "这种迁移带来的提升，是否说明投影器学到的是普遍有用的视觉特征，而不只是服务于这个规划器的特征？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 280.14,
+      "end": 309.76,
+      "en": "That is a reasonable interpretation, though the evidence is specific to this downstream setup. The transfer experiment retains the frozen visual encoder and pretrained projector, removes the world-model predictor, and fine-tunes a trajectory decoder. The improved score suggests world-model training can shape features useful for imitation learning too. It does not establish that the same representation will transfer across sensors, driving datasets, or closed-loop conditions.",
+      "zh": "这是一种合理的解释，不过证据只针对这个下游设置。迁移实验保留了冻结的视觉编码器和预训练投影器，移除了世界模型预测器，并微调了一个轨迹解码器。分数的提升表明，世界模型训练也能塑造对模仿学习有用的特征。但这并不能证明同样的表征会跨传感器、驾驶数据集或闭环条件迁移。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 310.98,
+      "end": 343.2,
+      "en": "The broader contribution is a demonstration that action-conditioned latent prediction can be tested separately from policy imitation, while a compact spatial representation makes that test substantially more practical. This complements Drive-JEPA’s emphasis on video pretraining and trajectory distillation, and differs from WoTE’s use of a bird’s-eye-view world model for online trajectory evaluation. Together, these directions show researchers exploring several ways to connect learned scene futures with driving decisions.",
+      "zh": "更广泛的贡献在于，它证明了动作条件下的潜在预测可以与策略模仿分开测试，而紧凑的空间表示让这种测试变得实际可行得多。这补充了Drive-JEPA对视频预训练和轨迹蒸馏的侧重，也不同于WoTE使用鸟瞰图世界模型进行在线轨迹评估的做法。这些方向共同表明，研究者正在探索多种方式，把学到的场景未来与驾驶决策连接起来。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 344.26,
+      "end": 348.6,
+      "en": "What should we be cautious about before treating these results as evidence of deployment readiness?",
+      "zh": "在把这些结果当作可部署就绪的证据之前，我们应该警惕什么？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 349.6,
+      "end": 380.98,
+      "en": "The evaluation is open-loop, uses only a front camera, and selects from a fixed trajectory vocabulary. Its latent-distance objective does not directly optimize safety metrics, and the future-image goal is unavailable in normal driving. Even the faster result takes 0.8 seconds for 256 candidates, while the larger vocabulary is much slower. So this is evidence about representation and planning efficiency, not proof of real-time, safety-critical vehicle performance.",
+      "zh": "这个评估是开环的，只用了一个前置摄像头，而且是从固定的轨迹词表里做选择。它的隐空间距离目标并不直接优化安全指标，而未来图像这个目标在正常驾驶中根本拿不到。即便是更快的那个结果，256个候选也要花0.8秒，词表再大就更慢了。所以这只能说明表征和规划效率方面的问题，并不能证明它在实时、安全攸关的车辆性能上站得住脚。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 380.98,
+      "end": 412.212,
+      "en": "The takeaway is that compression need not mean discarding all spatial structure: a learned, regularized projector can preserve useful information while reducing the cost of imagining candidate futures. The work also shows why planning quality and computational budget must be considered together. Its next tests should examine deployable goal specifications, closed-loop behavior, and safety-aware objectives. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，压缩并不一定意味着丢掉所有空间结构：一个经过学习、带正则化的投影器，可以在降低想象候选未来成本的同时保留有用信息。这项工作也说明了为什么规划质量和计算预算必须放在一起考虑。它接下来的测试应该考察可部署的目标设定、闭环行为，以及安全感知的目标。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhu2026ade2ejepajointembeddingpredictivearchitecture,\n      title={AD-E2E-JEPA: A Joint-Embedding Predictive Architecture For End-to-End Autonomous Driving}, \n      author={Haoran Zhu and Wancong Zhang and Yann LeCun and Anna Choromanska},\n      year={2026},\n      eprint={2609.34085},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.34085}, \n}",
+  "peaks": [
+    0.879,
+    0.687,
+    0.637,
+    0.557,
+    0.708,
+    0.595,
+    0.551,
+    0.723,
+    0.541,
+    0.392,
+    0.264,
+    0.439,
+    0.833,
+    0.533,
+    0.607,
+    0.573,
+    0.589,
+    0.675,
+    0.648,
+    0.414,
+    0.394,
+    0.705,
+    0.537,
+    0.923,
+    0.572,
+    0.625,
+    0.591,
+    0.716,
+    0.411,
+    0.529,
+    0.5,
+    0.503,
+    0.47,
+    0.541,
+    0.563,
+    0.838,
+    1.0,
+    0.995,
+    0.533,
+    0.741,
+    0.628,
+    0.826,
+    0.865,
+    0.43,
+    0.61,
+    0.77,
+    0.475,
+    0.457,
+    0.705,
+    0.842,
+    0.755,
+    0.911,
+    0.751,
+    0.604,
+    0.401,
+    0.204,
+    0.207,
+    0.271,
+    0.26,
+    0.2,
+    0.594,
+    0.741,
+    0.369,
+    0.473,
+    0.411,
+    0.382,
+    0.367,
+    0.605,
+    0.636,
+    0.438,
+    0.663,
+    0.414
+  ],
+  "license": "arXiv 默认许可"
+}

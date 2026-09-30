@@ -1,0 +1,262 @@
+{
+  "id": "2609.37725",
+  "title": "Context Language Models",
+  "authors": [
+    "Rulin Shao",
+    "Shannon Zejiang Shen",
+    "Junjie Oscar Yin",
+    "Yuetai Li",
+    "Minheng Wang",
+    "Hamish Ivison",
+    "Radha Poovendran",
+    "Nathan Lambert",
+    "Teng Xiao",
+    "Mike Lewis",
+    "Wen-tau Yih",
+    "Luke Zettlemoyer",
+    "Pang Wei Koh"
+  ],
+  "abstract": "We introduce Context Language Models (CLMs), language models that natively manage their own context. We implement this by treating the context as a file and allowing the model to make unrestricted updates to this file. This allows the model to learn what is most important to maintain in context, and naturally extends to multi-agent systems where multiple agent contexts coexist as files. Building CLMs zero-shot with existing models outperforms SOTA context management strategies across a variety of tasks: 11.4% higher accuracy with 21.5% fewer FLOPs on BrowseComp-Plus, 5% higher scores with 59% fewer FLOPs on 12-hour EdgeBench, and 65% greater improvement with the same compute on a 24-hour multi-repository agent-swarm task. Moreover, by shifting context management from external harness control to intrinsic model behavior, CLMs naturally enable both in-context and parametric learning of context-management strategies. We show that CLMs can be steered with natural-language instructions evolved through a standard skill-optimization loop, improving held-out accuracy by up to 35.9 points on a context-management task while reducing compute. We also introduce an online reinforcement learning method for CLMs, improving Qwen3.5-9B performance on BrowseComp-Plus by 47.6% while using 12% fewer FLOPs. Finally, we co-design Suffix Cache Reuse for CLM serving, further reducing server-side compute by 35% relative to standard SGLang at matched performance.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.37725",
+    "arxiv": "https://arxiv.org/abs/2609.37725"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f021-099c-733f-926f-dcaf0fedf90f/podcast.mp3",
+  "duration": 455.627,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 28.12,
+      "en": "In a graduate course on Long-Horizon Language Agents, today’s lecture is on Context Language Models. Recent work such as Recursive Language Models and Agentic Context Engineering reflects a broader shift toward giving agents more control over how they handle long inputs. This paper asks a related but distinct question: can a model edit the conversation it is actively using? Before I explain the mechanism, yes, Noah?",
+      "zh": "在一门关于长时程语言智能体的研究生课程中，今天的讲座主题是上下文语言模型。最近的一些工作，比如递归语言模型和智能体上下文工程，反映出一种更广泛的转变，就是让智能体对自己如何处理长输入拥有更多控制权。这篇论文问了一个相关但不同的问题：模型能不能编辑它正在使用的对话？在我解释具体机制之前，先请Noah提问，可以吗？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 28.12,
+      "end": 33.36,
+      "en": "Hi Professor, does that mean the model can actually remove parts of its conversation?",
+      "zh": "教授，这是说模型真的能删掉自己对话里的部分内容吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 34.42,
+      "end": 66.98,
+      "en": "Yes. Consider an Erdős minimum-overlap optimization run, where a model coordinated subagents and maintained a compact scoreboard of who was running and what they had found. The paper reports 163 in-place edits while the context stayed around 6,000 to 8,000 tokens. That example illustrates context management, not successful completion of the optimization problem. The underlying tension is simple: useful history matters, but an agent may not need every old message in its working context.",
+      "zh": "是的。以一次埃尔德什最小重叠优化任务为例，模型在其中协调多个子代理，并维护一个简洁的记分板，记录谁在运行、发现了什么。论文报告了163次原地编辑，而上下文始终维持在6000到8000个token左右。这个例子说明的是上下文管理，而不是优化问题的成功解决。背后的矛盾很简单：有用的历史很重要，但代理的工作上下文中未必需要每一条旧消息。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 68.02,
+      "end": 97.16,
+      "en": "The central mechanism is a live transcript mirrored into an editable file. The model can use ordinary shell commands to revise that file, and the changes are synchronized into its next model call. If it makes no edit, newly generated text is appended as usual. A standard language model accumulates a conversation; a context language model can influence what the next conversation state contains. In a multi-agent run, each agent can have its own synchronized context file.",
+      "zh": "核心机制是一份实时转录，同步镜像到一个可编辑文件中。模型可以用普通的 shell 命令修改这个文件，改动会同步到它下一次模型调用中。如果它没有做任何编辑，新生成的文本就照常追加进去。标准语言模型只是累积对话；而上下文语言模型可以影响下一次对话状态里包含什么。在多智能体运行中，每个智能体都可以有自己的同步上下文文件。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 98.06,
+      "end": 103.22,
+      "en": "Quick question: how is that different from asking a system to summarize the conversation when it gets long?",
+      "zh": "问个简单的问题：这跟让系统在对话变长时做摘要有什么区别？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.02,
+      "end": 133.42,
+      "en": "A summary trigger is a schedule or policy supplied by the surrounding software; the model may have limited choices about what happens. Here, the model edits its live context directly. That does not mean every edit is useful, or that the software disappears. It changes where a context-management decision can be made. The paper probes this capability with ContextBench, a diagnostic designed to test context handling apart from broad knowledge or reasoning ability.",
+      "zh": "摘要触发是由外围软件提供的调度或策略，模型对发生什么可能只有有限的选择权。而在这里，模型直接编辑自己的实时上下文。这并不意味着每次编辑都有用，也不意味着软件消失了。它改变的是上下文管理决策可以在哪里做出。论文用ContextBench来探究这一能力，这是一个诊断工具，旨在测试上下文处理能力，而非宽泛的知识或推理能力。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 135.0,
+      "end": 166.32,
+      "en": "ContextBench includes four synthetic tasks: retaining a particular passage, making precise updates to a Sudoku board, recalling exact key-value pairs, and finding or counting exact log entries. The tests increase input pressure relative to a 32,000-token context limit. They expose different failure modes: summaries may lose details, while approaches without in-place edits may need to regenerate a carefully maintained state. But this is a diagnostic, not proof that results transfer to every real-world task.",
+      "zh": "ContextBench包含四个合成任务：保留特定段落、对数独棋盘做精确更新、回忆精确的键值对，以及查找或计数精确的日志条目。这些测试相对于32,000个token的上下文上限逐步加大输入压力。它们暴露出不同的失败模式：摘要可能会丢失细节，而没有原地编辑能力的方法则可能需要重新生成精心维护的状态。但这是一个诊断工具，并不能证明结果可以迁移到所有现实任务中。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.28,
+      "end": 172.04,
+      "en": "So the file interface is the contribution, but what evidence shows it helps on an actual task?",
+      "zh": "所以文件接口才是核心贡献，但有什么证据能证明它在实际任务中确实有用呢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.92,
+      "end": 209.78,
+      "en": "The paper compares methods on BrowseComp-Plus with the same Mini S-W-E Agent backbone, using quen three point six, 27 billion parameters, a 32,000-token context limit, and no additional training. The context language model reaches 59.4% accuracy across 830 questions. That is an 11.4% relative improvement over Codex-style summarization, with 21.5% fewer prefix-reuse flops. Accuracy means answers were judged correct and complete.",
+      "zh": "这篇论文在BrowseComp-Plus上比较了各方法，用的是同一个Mini S-W-E Agent主干，模型是Qwen 3.6、270亿参数、32000 token上下文上限，没有额外训练。上下文语言模型在830道题上达到59.4%的准确率。相比Codex风格的摘要方法，相对提升了11.4%，同时前缀复用flops少了21.5%。准确率指的是答案被判定为正确且完整。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 209.78,
+      "end": 243.06,
+      "en": "The compute measure needs careful interpretation. Prefix-reuse flops estimate the work of generating tokens and re-prefilling tokens after an edit disrupts a cached prefix; they are not elapsed time or a server measurement. The results also vary by task: on TerminalBench 2.1, the context language model matches the strongest baseline’s accuracy while using fewer of these estimated flops. So the evidence is encouraging in some settings, but it is not a universal win.",
+      "zh": "这个计算量的指标需要仔细解读。前缀复用FLOPs估算的是生成token以及在编辑打断缓存前缀后重新预填充token的工作量，它并不等于实际耗时，也不是服务器端的测量结果。结果也因任务而异：在TerminalBench 2.1上，上下文语言模型达到了最强基线的准确率，同时使用的估算FLOPs更少。所以这些证据在某些场景下是令人鼓舞的，但并不是普遍性的胜利。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 243.94,
+      "end": 248.88,
+      "en": "Another question: does this scale beyond one agent and a benchmark with individual questions?",
+      "zh": "还有一个问题：这种做法的规模能不能超出一个智能体，以及一个由单个问题组成的基准？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 249.92,
+      "end": 280.38,
+      "en": "A separate Software World experiment uses six agents to optimize repositories over more than 24 hours. At the same spend, the context language model achieves 65% greater downstream speedup than a summary-based swarm. The metric is the geometric mean across 17 held-out CPU benchmarks in four packages the agents did not see; a broken benchmark counts as 1.0. This is a speedup comparison, not a 65-point accuracy gain.",
+      "zh": "另一个独立的软件世界实验用六个智能体在超过24小时里优化代码仓库。在相同开销下，上下文语言模型带来的下游加速比基于摘要的群体高出65%。这个指标是17个留出CPU基准在四个智能体未见过的软件包上的几何平均值；跑挂的基准按1.0计。这是加速比的比较，不是65个百分点的准确率提升。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 281.3,
+      "end": 317.58,
+      "en": "There is also a serving cost: changing an earlier part of context usually breaks the matching cached prefix, so the system must recompute that changed region and the surviving suffix. The authors propose Suffix Cache Reuse, or S-C-R, to reuse cached states for unchanged suffix tokens. On the reported BrowseComp-Plus comparison, both standard serving and S-C-R reach 60.2% accuracy, while estimated compute drops from 10.98 to 7.14 petaflops per question. Reused states are approximate, not guaranteed equivalent.",
+      "zh": "还有一个服务成本的问题：改动上下文靠前的部分，通常会破坏匹配的缓存前缀，所以系统必须重新计算被改动的区域以及后面还存活的后缀。作者提出了后缀缓存复用，也就是S-C-R，用来复用未改动后缀token的缓存状态。在报告的BrowseComp-Plus对比中，标准服务和S-C-R都达到了60.2%的准确率，而估计计算量从每题10.98千万亿次浮点运算降到7.14千万亿次。复用的状态是近似的，并不保证等价。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 317.58,
+      "end": 323.7,
+      "en": "Can the model learn better editing strategies, or does someone have to write each policy by hand?",
+      "zh": "模型能不能自己学会更好的编辑策略，还是每条策略都得靠人手写？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 324.54,
+      "end": 358.4,
+      "en": "The authors explore natural-language guidance and a skill-evolution loop that selects reusable context-management instructions. In one specific result, an evolved skill raises held-out key-value-store accuracy from 38.3% to 74.2%, a 35.9-point gain. That result is for one task, not all four ContextBench tasks or all models. It suggests the editing behavior can be shaped, while leaving open how reliably such skills transfer to different agents and settings.",
+      "zh": "作者探索了自然语言引导，以及一个技能演化循环，用来筛选可复用的上下文管理指令。在一个具体结果中，演化出的技能把留出的键值存储准确率从38.3%提升到74.2%，涨了35.9个百分点。这个结果只针对一个任务，并不是全部四个ContextBench任务或所有模型。它说明编辑行为是可以被塑造的，但这类技能能否可靠迁移到不同的智能体和场景，仍然没有定论。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 359.28,
+      "end": 393.16,
+      "en": "This work sits alongside approaches that give agents tools for handling long histories, but the distinctions matter. Recursive Language Models place a long input in an environment for inspection and processing; this paper emphasizes editing the evolving live conversation. Agentic Context Engineering studies context evolution through reusable playbooks. The comparisons here support the file-based approach in tested agent settings, but they do not isolate unrestricted editing as the sole cause of the gains or establish universal superiority.",
+      "zh": "这项工作与那些为智能体提供处理长历史工具的思路属于同一方向，但区别很重要。递归语言模型把长输入放进一个环境里供检查和加工；这篇论文强调的则是对不断演变的实时对话进行编辑。智能体上下文工程通过可复用的操作手册来研究上下文的演化。这里的对比在受测的智能体设置中支持基于文件的做法，但并没有把不受限制的编辑单独认定为收益的唯一原因，也没有确立普遍的优越性。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 393.16,
+      "end": 398.28,
+      "en": "What should researchers test next to find out where this approach really helps?",
+      "zh": "研究者接下来应该测试什么，才能弄清楚这种方法真正在哪些地方有帮助？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 399.18,
+      "end": 430.46,
+      "en": "A useful next step is to separate the interface’s effects from other parts of the agent harness, and to test how edit policies behave across longer tasks and different serving systems. Researchers should also examine the consequences of carrying edited content forward, including whether mistaken or adversarial instructions persist. The broader shift is from treating context as a fixed input or externally managed resource toward treating its maintenance as a decision an agent can make and potentially learn.",
+      "zh": "一个有用的下一步，是把接口的影响和智能体框架的其他部分分开，并测试编辑策略在更长任务和不同服务系统中的表现。研究者还应该考察把编辑后的内容继续向前传递会带来什么后果，包括错误指令或对抗性指令是否会持续存在。更广泛的转变在于，不再把上下文当作固定输入或外部管理的资源，而是把它的维护视为智能体可以做出、并且有可能学会的决策。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 431.24,
+      "end": 455.627,
+      "en": "The practical idea is not simply to give an agent a larger context window. It is to let the agent decide what its next reasoning step needs to see, while accounting for the computational cost of changing that view. Context becomes a capability that can be managed and learned. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "实际的做法并不是简单地给智能体一个更大的上下文窗口，而是让智能体自己决定下一步推理需要看到什么，同时考虑改变这一视图的计算成本。上下文由此成为一种可以被管理和学习的能力。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{shao2026contextlanguagemodels,\n      title={Context Language Models}, \n      author={Rulin Shao and Shannon Zejiang Shen and Junjie Oscar Yin and Yuetai Li and Minheng Wang and Hamish Ivison and Radha Poovendran and Nathan Lambert and Teng Xiao and Mike Lewis and Wen-tau Yih and Luke Zettlemoyer and Pang Wei Koh},\n      year={2026},\n      eprint={2609.37725},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.37725}, \n}",
+  "topics": [
+    "Agents",
+    "Transformers",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    1.0,
+    0.685,
+    0.914,
+    0.474,
+    0.595,
+    0.957,
+    0.855,
+    0.795,
+    0.504,
+    0.461,
+    0.541,
+    0.497,
+    0.297,
+    0.256,
+    0.215,
+    0.318,
+    0.693,
+    0.934,
+    0.844,
+    0.769,
+    0.635,
+    0.31,
+    0.569,
+    0.454,
+    0.49,
+    0.449,
+    0.479,
+    0.563,
+    0.418,
+    0.305,
+    0.266,
+    0.334,
+    0.288,
+    0.482,
+    0.567,
+    0.877,
+    0.62,
+    0.485,
+    0.486,
+    0.695,
+    0.699,
+    0.638,
+    0.707,
+    0.609,
+    0.938,
+    0.687,
+    0.815,
+    0.821,
+    0.515,
+    0.622,
+    0.85,
+    0.951,
+    0.681,
+    0.61,
+    0.471,
+    0.382,
+    0.676,
+    0.668,
+    0.586,
+    0.397,
+    0.324,
+    0.302,
+    0.487,
+    0.45,
+    0.277,
+    0.254,
+    0.307,
+    0.2,
+    0.519,
+    0.35,
+    0.376,
+    0.368
+  ],
+  "license": "CC BY"
+}

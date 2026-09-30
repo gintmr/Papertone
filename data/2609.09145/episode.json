@@ -1,0 +1,245 @@
+{
+  "id": "2609.09145",
+  "title": "Point4D: Long-range 4D Motion Reconstruction",
+  "authors": [
+    "Minsik Jeon",
+    "Jay Karhade",
+    "Deva Ramanan",
+    "Shubham Tulsiani"
+  ],
+  "abstract": "We introduce Point4D, a feed-forward model for 4D reconstruction of long-range video sequences. Point4D is able to reliably infer dense per-point 3D trajectories across multi-hundred-frame videos, unlike existing 4D methods that are limited to short input windows of at most a few dozen frames. A key innovation that enables this is our flexible 3D query-based motion decoder that decouples trajectory prediction from image-plane visibility. The predicted 3D endpoints are then directly re-queried in the next chunk without re-projection or matching. Furthermore, we show that extracting and reusing a visual descriptor from an arbitrary frame where the point is visible leads to better performance than relying solely on the source patch. Overall, Point4D achieves state-of-the-art performance across diverse long-video tracking benchmarks spanning over 200 frames and largely outperforms previous feed-forward 4D method. Project page: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.09145",
+    "arxiv": "https://arxiv.org/abs/2609.09145"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0846e-bd31-7482-b836-bb31614745d5/podcast.mp3",
+  "duration": 342.805,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.66,
+      "end": 35.3,
+      "en": "Alright, welcome to our seminar on Computer Vision and Neural Networks. Today's lecture is on 'Point4D: Long-range 4D Motion Reconstruction,' a paper from researchers at Carnegie Mellon University. We've seen a trend in feed-forward models for 4D reconstruction, with influential works like Google's D4RT unifying various tasks into a query-based framework. However, most of these models are limited to short video clips. Point4D directly confronts the challenge of scaling these methods to long-range videos spanning hundreds of frames. Yes, Noah?",
+      "zh": "好，欢迎来到我们的计算机视觉与神经网络研讨会。今天的讲座主题是“Point4D：长程4D运动重建”，这是卡内基梅隆大学研究人员的论文。我们在4D重建的前馈模型上看到了一种趋势，像谷歌的D4RT这样有影响力的工作，把各种任务统一到了一个基于查询的框架里。然而，这些模型大多局限于短视频片段。Point4D直接面对了把这些方法扩展到跨越数百帧的长程视频这一挑战。好，诺亚？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.72,
+      "end": 43.76,
+      "en": "Excuse me, Professor. Could you quickly clarify the main bottleneck for those earlier feed-forward models on long videos? Is it purely computational, or is there a more fundamental issue?",
+      "zh": "不好意思，教授。您能简单说明一下，之前那些前馈模型处理长视频时的主要瓶颈是什么吗？是纯粹的计算问题，还是有更根本的问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.04,
+      "end": 72.06,
+      "en": "That's an excellent question. It's both. Computationally, feeding hundreds of frames into a transformer is infeasible. But the more fundamental problem, which Point4D focuses on, is tracking. Existing methods use 2D pixel coordinates as queries. If a point gets occluded or moves out of the frame, its 2D query becomes invalid, and the trajectory is lost. This makes chaining predictions from one video chunk to the next extremely unreliable.",
+      "zh": "这是个很好的问题。两个原因都有。从计算角度来说，把几百帧喂进Transformer是不可行的。但更根本的问题，也是Point4D关注的重点，是跟踪。现有方法用2D像素坐标作为查询。如果一个点被遮挡或者移出画面，它的2D查询就失效了，轨迹也就丢了。这就导致从一个视频块到下一个视频块的链式预测变得极其不可靠。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 72.52,
+      "end": 74.28,
+      "en": "Okay, so the 2D dependency is the weak link.",
+      "zh": "好，所以问题就出在对2D的依赖上。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.66,
+      "end": 99.04,
+      "en": "Precisely. The main contribution of Point4D is a shift in this paradigm. Instead of querying with 2D pixels, it uses 3D point coordinates as queries. This simple but effective change decouples the identity of a point from its visibility on the image plane. A point can be tracked in 3D space even if it's temporarily not visible in the camera's view. This makes the entire process far more robust to the occlusions that are inevitable in long videos.",
+      "zh": "正是如此。Point4D 的主要贡献就在于对这一范式的转变。它不再用 2D 像素进行查询，而是用 3D 点坐标作为查询。这个简单却有效的改变，将点的身份与其在图像平面上的可见性解耦开来。一个点即使在相机视野中暂时不可见，也依然能在 3D 空间中被追踪。这使得整个过程对长视频中不可避免的遮挡问题变得鲁棒得多。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 99.44,
+      "end": 105.62,
+      "en": "Wait, how can you query with a 3D point if the input is just a 2D monocular video? Where does that initial 3D coordinate come from?",
+      "zh": "等等，如果输入只是单目2D视频，你怎么能用3D点来查询呢？那个初始的3D坐标是从哪来的？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 105.94,
+      "end": 138.74,
+      "en": "Good point. The model leverages a strong geometry backbone, in this case, one pretrained on Depth Anything 3. For an initial frame, it predicts depth to lift 2D pixels into a 3D point cloud. From that point on, the queries are 3D coordinates. This is paired with a second key idea: a visibility-agnostic visual descriptor. The small image patch used to identify the point is extracted from any frame where the point is clearly visible, not necessarily the source frame of the query. This prevents the system from failing if the point is occluded at the start of a new chunk.",
+      "zh": "问得好。这个模型用了一个很强的几何主干网络，具体来说，是在Depth Anything 3上预训练过的。对于初始帧，它会预测深度，把2D像素提升成3D点云。从那一刻起，查询用的就是3D坐标了。这和第二个关键思路搭配使用：一个对可见性不敏感的视觉描述子。用来识别这个点的小图像块，是从任意一个该点清晰可见的帧里提取的，不一定是查询的源帧。这样就能避免在新片段开始时，如果这个点被遮挡，系统就失效了。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 139.14,
+      "end": 145.74,
+      "en": "So the model has two components for robustness: the 3D coordinate for spatial location and a flexible visual descriptor for identity.",
+      "zh": "所以这个模型有两个组件来保证鲁棒性：一个是用3D坐标来确定空间位置，另一个是用灵活的视觉描述符来确定身份。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 146.22,
+      "end": 168.34,
+      "en": "Exactly. Now, let's look at how this enables their long-range tracking. The core of their technical approach is an autoregressive trajectory chaining mechanism. They process a long video in short, overlapping chunks. For each chunk, the model predicts the 4D structure. To connect them, they first estimate a Sim(3) transformation to align the coordinate systems of adjacent chunks using their overlapping frames.",
+      "zh": "没错。接下来我们看看这是如何实现长距离跟踪的。他们技术方案的核心是一种自回归的轨迹链接机制。他们把一段长视频切成短的、有重叠的片段来处理。对每个片段，模型预测出4D结构。为了把它们连起来，他们首先估计一个Sim(3)变换，利用相邻片段的重叠帧来对齐它们的坐标系。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 168.76,
+      "end": 175.72,
+      "en": "That alignment step sounds critical. Isn't that susceptible to drift over many chunks? I'd imagine small errors in the Sim(3) estimation could compound.",
+      "zh": "这个对齐步骤听起来很关键。它是不是在经历很多个片段之后容易产生漂移？我猜Sim(3)估计里的小误差可能会不断累积。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 176.1,
+      "end": 207.94,
+      "en": "That is a limitation the authors acknowledge, and yes, drift can occur. However, their re-querying method helps mitigate the tracking errors. At the boundary between two chunks, the model takes the predicted 3D position of a point from the end of the first chunk, applies the Sim(3) transform to move it into the second chunk's coordinate system, and uses that new 3D point as the query to continue the trajectory. The visual descriptor for that point is carried over without being re-extracted. This direct 3D-to-3D handoff is what makes the chaining work.",
+      "zh": "这是作者自己也承认的一个局限，确实会出现漂移。不过他们的重查询方法有助于缓解跟踪误差。在两个chunk的边界处，模型会取第一个chunk末尾某个点的预测3D位置，施加Sim(3)变换把它移到第二个chunk的坐标系中，然后用这个新的3D点作为查询来延续轨迹。该点的视觉描述子会直接沿用，不需要重新提取。正是这种直接的3D到3D交接让链式处理得以成立。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 208.28,
+      "end": 216.36,
+      "en": "So you're saying because they never have to project the 3D point back to a 2D pixel to re-query, they bypass the main failure mode of previous methods?",
+      "zh": "所以你的意思是，因为他们不需要把3D点投影回2D像素再重新查询，就绕过了之前那些方法的主要失效模式？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 216.82,
+      "end": 248.2,
+      "en": "That is the central insight. Their ablations confirm this. A version of their model that used 3D coordinates but still required the visual patch from the source frame performed worse. And a version that used 2D queries, like D4RT, performed worst of all on long-range tasks. Both the 3D query and the visibility-agnostic descriptor are crucial for robust chaining. This is what allows Point4D to achieve performance competitive with iterative trackers, but with the speed of a feed-forward model.",
+      "zh": "这正是核心洞见。他们的消融实验也证实了这一点。他们模型的一个版本虽然用了3D坐标，但仍然需要从源帧获取视觉patch，表现就差一些。而另一个版本用了2D查询，就像D4RT那样，在长程任务上表现最差。3D查询和可见性无关的描述符，这两者对稳健的链式追踪都至关重要。正是这一点让Point4D达到了能与迭代式跟踪器媲美的性能，同时又有前馈模型的速度。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 248.54,
+      "end": 261.86,
+      "en": "So this work essentially makes feed-forward 4D reconstruction practical for long videos. It seems like a direct answer to the scalability problem we see in methods like Uni4D or Geo4D, which are powerful but often operate on shorter sequences.",
+      "zh": "所以这项工作基本上让前馈式4D重建在长视频上变得实用了。它似乎直接回应了我们在Uni4D或Geo4D这类方法中看到的可扩展性问题，这些方法虽然强大，但通常只能处理较短的序列。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 262.34,
+      "end": 288.0,
+      "en": "That's a good way to put it. It shifts the field by providing a robust mechanism for temporal scalability. While work like LoGeR tackles long-context reconstruction for static scenes, Point4D does so for dynamic 4D motion. The implication is that we can now build dense, long-term motion maps of dynamic scenes, which is foundational for applications in robotics, augmented reality, and even video generation, where temporal consistency is paramount.",
+      "zh": "这个说法很到位。它通过提供一种稳健的时间可扩展性机制，推动了整个领域的进步。LoGeR 这类工作解决的是静态场景的长上下文重建，而 Point4D 则针对动态的 4D 运动做到了同样的事。这意味着我们现在可以为动态场景构建密集的长期运动地图，而这对于机器人、增强现实乃至视频生成等应用来说是基础性的，因为在这些应用中，时间一致性至关重要。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 288.32,
+      "end": 293.3,
+      "en": "And what about that compounding error from the depth and pose estimation? Is that the next major hurdle?",
+      "zh": "那深度和位姿估计带来的误差累积呢？这是下一个主要障碍吗？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 293.32,
+      "end": 312.38,
+      "en": "I believe so. The current method also doesn't pass any feature-level scene memory between chunks, which means if a point is occluded for an entire chunk, its prediction is essentially a guess. Integrating a more robust global scene representation or memory mechanism would be a logical next step. Still, the paper makes a very clear and impactful contribution.",
+      "zh": "我觉得是这样。目前的方法在块与块之间也没有传递任何特征层面的场景记忆，这意味着如果一个点在整个块中都被遮挡，那它的预测基本上就是靠猜。引入更稳健的全局场景表示或记忆机制会是合乎逻辑的下一步。不过，这篇论文的贡献依然非常清晰且有影响力。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 312.66,
+      "end": 342.805,
+      "en": "To wrap up, the key takeaway from Point4D is that changing the query space from 2D pixels to 3D coordinates fundamentally solves the problem of trajectory continuity in long-range 4D reconstruction. By decoupling a point's identity from its fleeting visibility on the image plane, the model can chain predictions across occlusions and out-of-frame movements, making feed-forward methods viable for arbitrarily long videos. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "最后总结一下，Point4D 的核心结论是：把查询空间从 2D 像素换成 3D 坐标，从根本上解决了长距离 4D 重建中轨迹连续性的问题。通过把一个点的身份和它在图像平面上转瞬即逝的可见性解耦，模型就能跨越遮挡和出画运动把预测串起来，让前馈方法能处理任意长度的视频。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{jeon2026point4dlongrange4dmotion,\n      title={Point4D: Long-range 4D Motion Reconstruction}, \n      author={Minsik Jeon and Jay Karhade and Deva Ramanan and Shubham Tulsiani},\n      year={2026},\n      eprint={2609.09145},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.09145}, \n}",
+  "topics": [
+    "Geometric Deep Learning",
+    "Representation Learning",
+    "Robotics Perception"
+  ],
+  "peaks": [
+    1.0,
+    0.613,
+    0.417,
+    0.542,
+    0.446,
+    0.547,
+    0.525,
+    0.512,
+    0.66,
+    0.2,
+    0.457,
+    0.376,
+    0.414,
+    0.353,
+    0.384,
+    0.699,
+    0.603,
+    0.54,
+    0.52,
+    0.598,
+    0.604,
+    0.754,
+    0.669,
+    0.55,
+    0.627,
+    0.494,
+    0.55,
+    0.591,
+    0.519,
+    0.661,
+    0.588,
+    0.55,
+    0.53,
+    0.48,
+    0.592,
+    0.61,
+    0.59,
+    0.352,
+    0.479,
+    0.415,
+    0.422,
+    0.343,
+    0.409,
+    0.483,
+    0.552,
+    0.554,
+    0.559,
+    0.679,
+    0.692,
+    0.586,
+    0.502,
+    0.49,
+    0.721,
+    0.634,
+    0.542,
+    0.539,
+    0.584,
+    0.516,
+    0.553,
+    0.491,
+    0.56,
+    0.43,
+    0.547,
+    0.563,
+    0.548,
+    0.792,
+    0.569,
+    0.519,
+    0.45,
+    0.488,
+    0.509,
+    0.624
+  ],
+  "license": "arXiv 默认许可"
+}

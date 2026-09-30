@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 404.558,
+  "word_match_rate": 0.943,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Multimodal AI. Today's lecture is on 'Think Before You Link: Rarity, Reasoning, and Retrieval in Multilingual Entity Linking.' We've seen a lot of recent work like 'mRAG' and 'MMSearch-R1' focusing on retrieval-augmented generation for multimodal tasks. This paper, from researchers at Carnegie Mellon University, pushes that further by challenging a core assumption: how we define what makes an entity 'rare' and difficult for these systems to handle. Yes, Noah?",
+      "start": 0.0,
+      "end": 31.08
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. Could you clarify the specific task here? Multilingual multimodal entity linking sounds complex. What's the input and expected output?",
+      "start": 31.56,
+      "end": 39.56
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A fair question. The input is a passage of text in a non-English language—say, Hindi or Japanese—along with a related image. Within that text, a specific entity mention is highlighted. The system's job is to output the correct English Wikipedia title for that entity. The image might contain crucial, language-independent clues, like a ship's name on its hull.",
+      "start": 39.98,
+      "end": 62.24
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Okay, so it's a cross-lingual and multimodal problem. What's the main concept they're introducing?",
+      "start": 62.76,
+      "end": 66.42
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Their core argument is that the field's definition of entity rarity is too narrow. Traditionally, rarity is tied to popularity metrics like Wikipedia pageviews. But the authors argue this is insufficient. An entity could be very popular within a specific culture but have poor representation in a knowledge graph like Wikidata or few Wikipedia language editions. These different kinds of sparsity cause different kinds of failures. So their first contribution is proposing a multidimensional view of rarity using 15 different metrics, covering everything from pageviews and backlinks to Wikidata statement counts and graph connectivity.",
+      "start": 66.92,
+      "end": 100.12
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So they're not creating one universal 'rarity score,' but instead analyzing failures across different slices of rarity?",
+      "start": 100.7,
+      "end": 106.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Precisely. And their second objective is to see if retrieval-augmented generation can help with these newly defined rare entities. The hypothesis is that retrieval can supply the factual knowledge missing from the model's parameters, while an explicit reasoning step helps the model use that retrieved information more effectively—formulating better search queries, interpreting the results, and deciding when to stop searching.",
+      "start": 107.16,
+      "end": 132.12
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "And that leads to their third objective, the controlled comparison?",
+      "start": 132.4,
+      "end": 134.86
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. They use a factorial design to isolate the effects of model scale, retrieval method, and the model's reasoning capability. This allows them to draw clearer conclusions about what component contributes what.",
+      "start": 135.86,
+      "end": 146.9
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "To test this, they use the MERLIN benchmark, which covers Hindi, Indonesian, Japanese, Tamil, and Vietnamese. Their proposed system is a two-module framework. The first module is the thinker. It takes the text, image, and mention, and it has access to a search tool for English Wikipedia. In the retrieval-enabled settings, it's forced to perform at least one search. It can then reason about the results and conduct up to 20 iterative searches to gather evidence. The second module just takes this entire reasoning trace and is prompted to extract the final, correctly formatted Wikipedia title.",
+      "start": 147.22,
+      "end": 183.94
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "What kinds of retrieval did they test? And did they find one was better?",
+      "start": 183.94,
+      "end": 187.3
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "They compare two types. The first is standard lexical BM25 search. The second is multilingual embedding-based retrieval. And yes, the embedding retrieval was significantly better, especially for non-Latin scripts where transliteration can be inconsistent. The embeddings bridge the cross-lingual gap more effectively than simple keyword matching. For instance, the first-search hit rate for embedding retrieval was around 25 to 40 percent, compared to just 6 to 15 percent for BM25.",
+      "start": 187.64,
+      "end": 216.52
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Wait, a 40 percent hit rate on the first try still sounds low. Does that mean retrieval is still a major bottleneck?",
+      "start": 218.04,
+      "end": 223.18
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "You've hit on a critical finding. Yes, retrieval remains the primary source of error. About 72 percent of the remaining mistakes happen because the correct entity was never surfaced by the search tool in the first place. The model can't reason about information it never sees. This is a crucial insight for anyone working on retrieval-augmented systems.",
+      "start": 223.52,
+      "end": 243.74
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "So you're saying even with a sophisticated reasoning model, the quality of the retriever is paramount. What about the reasoning itself? Did they find that the 'Thinking' models were always better than the standard 'Instruct' models?",
+      "start": 244.16,
+      "end": 254.24
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "This is another interesting result. Reasoning and retrieval are complementary; one is not consistently useful without the other. Without retrieval, the reasoning-enabled 'Thinking' models showed no significant improvement on rare entities. They had no new facts to reason about. However, when paired with retrieval, the reasoning models excelled. They made fewer, more targeted searches and were better at interpreting the results. The Instruct models, in contrast, tended to issue more searches without much refinement, sometimes drowning in irrelevant information.",
+      "start": 254.62,
+      "end": 285.7
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "That's a significant finding. It reminds me of some of the agentic frameworks like 'Struct-Searcher', where the quality of thinking and planning is key to navigating information. How does this work shift our understanding of the problem?",
+      "start": 286.22,
+      "end": 297.48
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The primary shift is in how we should evaluate and address long-tail entity linking. It's not just about popular versus unpopular. It's about understanding the specific knowledge gaps, whether they are cross-lingual, structural, or editorial. The paper makes a strong case that metrics like Wikidata statement count or the number of language editions are as important as pageviews for diagnosing model failures. This also clarifies the division of labor: retrieval's job is to externalize knowledge, while reasoning's job is to internalize and synthesize it. One without the other is insufficient for these hard cases.",
+      "start": 297.84,
+      "end": 331.76
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "But this approach seems computationally expensive. You mentioned up to 20 searches and long reasoning traces.",
+      "start": 332.14,
+      "end": 336.98
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "It is. The best-performing system took about 177 seconds and over 11,000 tokens per example, a substantial increase over simpler models. This highlights a key trade-off between accuracy on rare entities and inference cost. However, they also showed that a smaller 4-billion parameter reasoning model with retrieval could outperform a larger 8-billion parameter instruction-tuned model without it, suggesting that inference-time computation can be an effective substitute for model scale.",
+      "start": 337.42,
+      "end": 366.26
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "So, to wrap up, this work provides a more nuanced framework for understanding and addressing failures in multilingual entity linking. The core takeaway is that 'rarity' is not a single dimension. To help entities that are underrepresented in our knowledge systems, we need to diagnose the specific type of information scarcity. The results strongly suggest that future progress on culturally specific and long-tail entities will depend heavily on improving cross-lingual retrieval, not just on scaling up models or making them reason longer.",
+      "start": 366.62,
+      "end": 399.22
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 399.64,
+      "end": 404.558
+    }
+  ]
+}

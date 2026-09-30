@@ -23,98 +23,112 @@
       "speaker": "John",
       "start": 0.0,
       "end": 38.76,
-      "en": "Welcome to our seminar on Agentic AI Systems. Today's lecture is on the paper 'ScientistTwo: Pioneering the Human Knowledge Frontier with Autonomous AI' from researchers at Google Cloud AI Research. We've seen a recent surge in systems aiming to automate science, like 'The AI Scientist-v2' and 'AutoResearchClaw', which focus on tasks from hypothesis to execution. This paper pushes that trend by proposing a more structured, end-to-end framework that tries to mimic the human scientific process, including peer review. It’s an attempt to move beyond just optimizing a single metric. Yes, Noah?"
+      "en": "Welcome to our seminar on Agentic AI Systems. Today's lecture is on the paper 'ScientistTwo: Pioneering the Human Knowledge Frontier with Autonomous AI' from researchers at Google Cloud AI Research. We've seen a recent surge in systems aiming to automate science, like 'The AI Scientist-v2' and 'AutoResearchClaw', which focus on tasks from hypothesis to execution. This paper pushes that trend by proposing a more structured, end-to-end framework that tries to mimic the human scientific process, including peer review. It’s an attempt to move beyond just optimizing a single metric. Yes, Noah?",
+      "zh": "欢迎来到我们的智能体AI系统研讨会。今天的讲座围绕Google Cloud AI Research研究人员的论文《ScientistTwo：以自主AI开拓人类知识前沿》展开。最近，旨在自动化科学研究的系统大量涌现，比如《AI科学家-v2》和《AutoResearchClaw》，它们聚焦于从假设到执行的任务。这篇论文推动了这一趋势，提出了一个更结构化、端到端的框架，试图模仿人类的科学过程，包括同行评审。它试图超越仅仅优化单一指标的做法。诺亚，你有什么问题？"
     },
     {
       "i": 1,
       "speaker": "Noah",
       "start": 39.26,
       "end": 47.58,
-      "en": "Excuse me, Professor. You mentioned it mimics the human process. How is its approach fundamentally different from those earlier systems that also tried to automate the research workflow?"
+      "en": "Excuse me, Professor. You mentioned it mimics the human process. How is its approach fundamentally different from those earlier systems that also tried to automate the research workflow?",
+      "zh": "不好意思，教授。您提到它模仿了人类的过程。那它的方法跟那些同样试图自动化研究工作流的早期系统相比，根本区别在哪里？"
     },
     {
       "i": 2,
       "speaker": "John",
       "start": 47.88,
       "end": 82.64,
-      "en": "Good question. The key difference is that ScientistTwo treats research as a multi-stage pipeline with verification at each step, rather than a single optimization loop. It's designed to address what the authors see as gaps in prior work: limited problem diagnosis, narrow experimentation on single datasets, and a lack of causal attribution for why a new method works. The central goal is to take a problem description and autonomously produce not just a better model, but a full paper-and-code package that is reproducible and internally consistent."
+      "en": "Good question. The key difference is that ScientistTwo treats research as a multi-stage pipeline with verification at each step, rather than a single optimization loop. It's designed to address what the authors see as gaps in prior work: limited problem diagnosis, narrow experimentation on single datasets, and a lack of causal attribution for why a new method works. The central goal is to take a problem description and autonomously produce not just a better model, but a full paper-and-code package that is reproducible and internally consistent.",
+      "zh": "这个问题问得好。关键区别在于，ScientistTwo把研究看作一个多阶段的流程，每一步都有验证，而不是一个单一的优化循环。它的设计初衷是解决作者认为前人工作中的几个缺口：问题诊断有限、实验局限于单一数据集、以及缺乏对新方法为何有效的因果归因。核心目标是：给定一个问题描述，自主地产出的不只是一个更好的模型，而是一整套可复现、内部自洽的论文加代码包。"
     },
     {
       "i": 3,
       "speaker": "Noah",
       "start": 82.64,
       "end": 87.96,
-      "en": "So it’s not just about getting a higher score, but about building a robust argument for why the score is higher?"
+      "en": "So it’s not just about getting a higher score, but about building a robust argument for why the score is higher?",
+      "zh": "所以关键不只是拿到更高的分数，而是要构建一套扎实的论证，说明为什么分数会更高？"
     },
     {
       "i": 4,
       "speaker": "John",
       "start": 89.06,
       "end": 128.4,
-      "en": "Exactly. The system's methodology is built around a series of specialized agents. It starts with a Limitation Extractor that analyzes a state-of-the-art method to find its weaknesses. From there, it generates seed ideas. Promising ideas are first tested on a small subset of the benchmark. The ones that show potential are then scaled up, evolved, and refined. Two of the most interesting stages are the ablation-driven refinement and the simulated peer review. The system doesn't just claim a component is useful; it runs experiments to prove it by removing that component and measuring the impact. This adds a layer of scientific rigor that is often missing."
+      "en": "Exactly. The system's methodology is built around a series of specialized agents. It starts with a Limitation Extractor that analyzes a state-of-the-art method to find its weaknesses. From there, it generates seed ideas. Promising ideas are first tested on a small subset of the benchmark. The ones that show potential are then scaled up, evolved, and refined. Two of the most interesting stages are the ablation-driven refinement and the simulated peer review. The system doesn't just claim a component is useful; it runs experiments to prove it by removing that component and measuring the impact. This adds a layer of scientific rigor that is often missing.",
+      "zh": "没错。这个系统的方法论是围绕一系列专门的智能体构建的。它首先用一个局限性提取器来分析某个最先进的方法，找出它的弱点。然后在此基础上生成种子想法。有潜力的想法会先在基准的一个小规模子集上测试。那些展现出潜力的想法随后会被扩展、演化和精炼。其中最有趣的两个阶段是消融驱动的精炼和模拟同行评审。这个系统不只是声称某个组件有用，而是通过移除该组件并测量影响来做实验证明。这增加了一层往往缺失的科学严谨性。"
     },
     {
       "i": 5,
       "speaker": "Noah",
       "start": 128.68,
       "end": 131.42,
-      "en": "And what about the peer review part? Is it just a text-based critique?"
+      "en": "And what about the peer review part? Is it just a text-based critique?",
+      "zh": "那同行评审这部分呢？只是基于文本的批评吗？"
     },
     {
       "i": 6,
       "speaker": "John",
       "start": 131.8,
       "end": 165.28,
-      "en": "That's one of its main contributions. The Peer-Review Agent doesn't just suggest textual revisions. If it identifies a weakness in the experimental evidence, it triggers a rebuttal phase where a Rebuttal Coding Agent actually conducts new experiments to address the reviewer's concerns. The manuscript is then updated with this new evidence. This cycle can repeat, which is a more dynamic and scientifically grounded process than simply rewriting paragraphs. The paper shows this review process significantly improves the acceptance rates of the generated papers when evaluated by other automated systems."
+      "en": "That's one of its main contributions. The Peer-Review Agent doesn't just suggest textual revisions. If it identifies a weakness in the experimental evidence, it triggers a rebuttal phase where a Rebuttal Coding Agent actually conducts new experiments to address the reviewer's concerns. The manuscript is then updated with this new evidence. This cycle can repeat, which is a more dynamic and scientifically grounded process than simply rewriting paragraphs. The paper shows this review process significantly improves the acceptance rates of the generated papers when evaluated by other automated systems.",
+      "zh": "这是它的主要贡献之一。同行评审智能体不只是给出文字修改建议。如果它发现实验证据存在薄弱之处，就会触发一个反驳阶段，由反驳编码智能体实际开展新的实验来回应审稿人的关切。随后，新的证据会被补充进稿件。这个循环可以反复进行，比单纯重写段落更动态，也更有科学依据。论文表明，当由其他自动化系统进行评估时，这一评审流程显著提高了生成论文的接收率。"
     },
     {
       "i": 7,
       "speaker": "Noah",
       "start": 165.28,
       "end": 171.76,
-      "en": "That sounds computationally expensive. The report mentioned a cost of nearly four thousand dollars per task. Is that feasible to scale?"
+      "en": "That sounds computationally expensive. The report mentioned a cost of nearly four thousand dollars per task. Is that feasible to scale?",
+      "zh": "这听起来计算成本很高。报告里提到每个任务的花费接近四千美元。这种规模能扩展吗？"
     },
     {
       "i": 8,
       "speaker": "John",
       "start": 172.18,
       "end": 213.04,
-      "en": "You've hit on a major practical challenge. The cost and time, about two to three days per problem, are substantial. Most of that expense comes from the iterative code execution, refinement, and the multiple rounds of experiments for rebuttal. This highlights a trade-off: increased rigor and reliability come at a high computational price. The system also relies on large, proprietary models like Gemini and Claude, which limits accessibility. Furthermore, the framework includes several integrity checks to ensure the final paper aligns with the code, the references are valid, and the reported scores are reproducible from the provided scripts. These checks add to the overhead but are crucial for the system’s claims of reliability."
+      "en": "You've hit on a major practical challenge. The cost and time, about two to three days per problem, are substantial. Most of that expense comes from the iterative code execution, refinement, and the multiple rounds of experiments for rebuttal. This highlights a trade-off: increased rigor and reliability come at a high computational price. The system also relies on large, proprietary models like Gemini and Claude, which limits accessibility. Furthermore, the framework includes several integrity checks to ensure the final paper aligns with the code, the references are valid, and the reported scores are reproducible from the provided scripts. These checks add to the overhead but are crucial for the system’s claims of reliability.",
+      "zh": "你点出了一个很实际的重大挑战。成本和时间确实很高，每个问题大概要花两到三天。大部分开销来自反复执行代码、改进，以及为反驳进行多轮实验。这凸显了一个权衡：更高的严谨性和可靠性，代价是高昂的计算成本。这个系统还依赖Gemini和Claude这类大型专有模型，限制了可及性。此外，这个框架包含多项完整性检查，确保最终论文与代码一致、参考文献有效，并且报告的成绩能通过提供的脚本复现。这些检查增加了额外开销，但对系统所声称的可靠性至关重要。"
     },
     {
       "i": 9,
       "speaker": "Noah",
       "start": 213.68,
       "end": 220.84,
-      "en": "Wait, one of the evaluators, ScholarPeer, is also used inside the optimization loop. Doesn't that risk overfitting to the evaluator's preferences?"
+      "en": "Wait, one of the evaluators, ScholarPeer, is also used inside the optimization loop. Doesn't that risk overfitting to the evaluator's preferences?",
+      "zh": "等等，其中一个评估器ScholarPeer也被用在了优化循环里面。这难道不会有对评估器偏好过拟合的风险吗？"
     },
     {
       "i": 10,
       "speaker": "John",
       "start": 220.84,
       "end": 246.58,
-      "en": "That's an excellent critique and a known issue in this type of research. The authors acknowledge this by also using a held-out evaluator, the Stanford Agentic Reviewer, which provides a more objective assessment. While the scores from the held-out evaluator are lower, they still show a substantial improvement over baseline systems. It points to a broader challenge in the field: how do we develop unbiased evaluation methods for AI-generated scientific work?"
+      "en": "That's an excellent critique and a known issue in this type of research. The authors acknowledge this by also using a held-out evaluator, the Stanford Agentic Reviewer, which provides a more objective assessment. While the scores from the held-out evaluator are lower, they still show a substantial improvement over baseline systems. It points to a broader challenge in the field: how do we develop unbiased evaluation methods for AI-generated scientific work?",
+      "zh": "这是一个很好的批评，也是这类研究中公认的问题。作者也意识到了这一点，所以额外使用了一个留出的评估器——斯坦福智能体审稿人，来提供更客观的评估。虽然留出评估器给出的分数更低，但相比基线系统仍然有显著提升。这指向了该领域一个更广泛的挑战：我们该如何为AI生成的科研工作开发无偏的评估方法？"
     },
     {
       "i": 11,
       "speaker": "John",
       "start": 246.82,
       "end": 290.86,
-      "en": "This research shifts the field by framing autonomous research as a closed-loop, self-correcting process. It moves the conversation from 'can an AI beat a benchmark?' to 'can an AI produce a reliable, verifiable, and well-reasoned scientific contribution?' It connects to the broader vision of 'Agentic Science' that we've seen discussed in recent surveys. However, we must be clear about its limitations. The evaluation is confined to machine learning problems where code and benchmarks are readily available. It doesn't address fields requiring physical experiments or deep theoretical insight. And as you pointed out, improving a metric isn't the same as generating true scientific novelty."
+      "en": "This research shifts the field by framing autonomous research as a closed-loop, self-correcting process. It moves the conversation from 'can an AI beat a benchmark?' to 'can an AI produce a reliable, verifiable, and well-reasoned scientific contribution?' It connects to the broader vision of 'Agentic Science' that we've seen discussed in recent surveys. However, we must be clear about its limitations. The evaluation is confined to machine learning problems where code and benchmarks are readily available. It doesn't address fields requiring physical experiments or deep theoretical insight. And as you pointed out, improving a metric isn't the same as generating true scientific novelty.",
+      "zh": "这项研究把自主研究定义为一个闭环、自我纠错的过程，从而推动了整个领域的转变。它把讨论从“AI能不能刷爆一个基准”推进到了“AI能不能产出可靠、可验证、推理严谨的科学贡献”。这也呼应了我们在近期综述里看到的“智能体科学”这一更宏大的愿景。不过，我们必须清楚它的局限。它的评估仅限于机器学习的那些代码和基准都现成可用的问题，并没有涉及需要物理实验或深层理论洞察的领域。而且正如你指出的，提升一个指标并不等于产生了真正的科学新意。"
     },
     {
       "i": 12,
       "speaker": "Noah",
       "start": 291.32,
       "end": 296.28,
-      "en": "So it's more of an autonomous empirical research pipeline for computational fields, rather than a general 'AI Scientist'?"
+      "en": "So it's more of an autonomous empirical research pipeline for computational fields, rather than a general 'AI Scientist'?",
+      "zh": "所以它更像是一个面向计算领域的自主实证研究流水线，而不是一个通用的“AI科学家”？"
     },
     {
       "i": 13,
       "speaker": "John",
       "start": 297.64,
       "end": 326.766,
-      "en": "Precisely. It's a significant step in automating the empirical and reporting aspects of computational science. The main takeaway is that by integrating stages for criticism, rebuttal, and integrity checks, systems like ScientistTwo can produce more reliable and robust results than agents focused solely on performance optimization. It's a template for building more scientifically rigorous autonomous agents. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment."
+      "en": "Precisely. It's a significant step in automating the empirical and reporting aspects of computational science. The main takeaway is that by integrating stages for criticism, rebuttal, and integrity checks, systems like ScientistTwo can produce more reliable and robust results than agents focused solely on performance optimization. It's a template for building more scientifically rigorous autonomous agents. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "正是如此。这是把计算科学的实证和报告环节自动化的重要一步。核心结论是，通过把批评、反驳和诚信检查这些阶段整合进来，像ScientistTwo这样的系统能产出比那些只专注性能优化的智能体更可靠、更稳健的结果。它为构建更严谨的自主智能体提供了一个模板。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
     }
   ],
   "cover": "cover.png",

@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 421.067,
+  "word_match_rate": 0.9282,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning Methods, today's lecture is on the Representation World Model, or R-W-M. Recent work such as LeWorldModel learns latent predictive dynamics, while Temporal Straightening explores how latent geometry can support planning. The broader direction is toward representations that help agents act, but many model-based systems still search through imagined action sequences. R-W-M takes a different route: it makes a constructed path between current and goal representations directly decodable into actions. I see your hand, Noah.",
+      "start": 0.0,
+      "end": 33.3
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if a model can predict possible futures, why isn’t that already enough to reach a goal?",
+      "start": 34.42,
+      "end": 39.92
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Prediction alone does not specify which actions will reliably move an agent toward its target. A conventional planner may generate candidate action sequences, predict their outcomes, and search for a promising sequence. That can work, but it creates an online planning problem. R-W-M instead uses the current and goal observations to define a path in latent space, then learns how to turn local steps along that path into actions. The distinction matters for visual control, where an agent must act on its representation, not merely describe it.",
+      "start": 41.16,
+      "end": 72.64
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Here is the training idea. The model encodes two observations from the same action-labeled trajectory, such as the beginning and end of a segment. It then places evenly spaced intermediate representations between those endpoint codes. Those points are a geometric construction, not a guarantee that the corresponding transitions are physically valid. The method therefore needs a learning signal that connects each neighboring pair of representations to an action demonstrated in the trajectory.",
+      "start": 73.1,
+      "end": 100.6
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does the model know which action belongs to an interpolated pair?",
+      "start": 101.68,
+      "end": 106.32
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It trains a shared inverse-dynamics model, or I-D-M, to predict the action from two neighboring representations. The demonstrated actions supervise transitions along the constructed path. Because the intermediate codes depend on the endpoint encodings, this objective also shapes the representations and the geometry between them. In effect, the model is not told that every straight line is a valid route; it is trained to make local sections of its constructed route support recovery of the demonstrated actions.",
+      "start": 106.32,
+      "end": 136.9
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "At standard inference, when the goal observation is available, R-W-M encodes the current and goal observations, constructs intermediate codes between them, and applies the I-D-M to neighboring pairs to produce actions. It can decode those actions in parallel for open-loop execution. For closed-loop control, it can re-encode after an action chunk and reconstruct a path toward the goal. In this procedure, search-free means no recursive forward-model rollouts or action-space search are required; it does not mean proven faster wall-clock inference.",
+      "start": 137.76,
+      "end": 171.4
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The objective ablation tests whether action supervision along the constructed path matters. On PushT, the full objective reaches 96% success. Removing interpolation-based I-D-M supervision and keeping only the auxiliary encoded-state I-D-M and consistency terms lowers success to 39.37%. Tested variants that retain the interpolation term score from 95.23% to 96.17%. These ablations use training seed 3072, so they support the importance of the path-action loss on this task, not a claim that it is the only cause of success.",
+      "start": 172.34,
+      "end": 210.18
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "So the ablation suggests that interpolation alone is not doing the work; action grounding is essential?",
+      "start": 210.18,
+      "end": 216.98
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "That is the supported interpretation, with an important qualification: the comparison is on one task and one ablation setup. Across four tasks, R-W-M reports a macro success rate of 98.25%, the unweighted mean of its PushT, Cube, Reacher, and TwoRoom rates: 95.44%, 100%, 97.89%, and 99.67%. The published INTACT goal-conditioned I-D-M reference has a 95.33% macro. Table 1 labels published rows as external references, not paired controls, so this is a reported comparison, not a paired causal test.",
+      "start": 218.02,
+      "end": 258.68
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Another question: does the same goal-to-goal path work when the robot never sees the goal observation?",
+      "start": 258.68,
+      "end": 264.94
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Not unchanged. LIBERO-Goal is a separate, goal-unobserved setting. There, R-W-M adds a latent-delta predictor that iteratively proposes displacements rather than constructing a path from an encoded goal. It reports 93% mean success with a 0.03 billion parameter model, compared with 71.2% for LeWorldModel plus an O-F-T head and 81.2% for R-C-aux plus an O-F-T head, both 0.07 billion. OpenVLA-OFT reports 97% at 7 billion parameters, an external reference rather than a same-scale comparison.",
+      "start": 266.12,
+      "end": 302.9
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The contrast with prior work clarifies the contribution. LeWorldModel learns action-conditioned latent forward dynamics and uses cross-entropy method search over rollouts. INTACT’s goal-conditioned inverse-dynamics model directly maps current and goal representations to actions. R-W-M is closer to direct control than to rollout-based search, but it adds intermediate representations and decodes neighboring transitions along them. This makes the comparison with INTACT especially relevant, while the external-reference status of the published table rows limits what we can infer from the numerical gap.",
+      "start": 302.9,
+      "end": 339.52
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we interpret the efficiency claim, then, without comparable timing measurements?",
+      "start": 340.26,
+      "end": 344.42
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Precisely and narrowly: the standard inference procedure avoids recursive forward-model rollouts and action-space search. The paper does not establish faster elapsed inference, fewer training attempts, or lower total computation. That distinction matters as the field explores latent planning, including work such as AdaJEPA and LeWorldModel, because avoiding one online search procedure is not the same as eliminating planning costs. Future evaluations could measure wall-clock performance and compare methods under matched controls while testing when constructed latent paths remain useful.",
+      "start": 345.44,
+      "end": 380.42
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The central lesson is that a geometric path becomes useful for control only when the representation and its intermediate regions are trained to support local action recovery. The ablation connects that mechanism to the reported search-free benchmark results, while leaving open questions about generalization and computational tradeoffs. R-W-M shifts attention from searching through imagined actions toward learning planning structure in the representation itself. Its claim is not that interpolation always creates a physically valid route, but that action supervision can make a constructed route executable. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 381.28,
+      "end": 421.067
+    }
+  ]
+}

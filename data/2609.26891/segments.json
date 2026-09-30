@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 417.489,
+  "word_match_rate": 0.9161,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Language Model Agents and Systems, today’s lecture is on “Harness as a Language: A Minimalist Agent Framework With Maximal Expressivity.” Recent work such as “Agentic Context Engineering” and “A Self-Improving Coding Agent” reflects a trend toward specialized tools for memory and agent improvement. This paper, from researchers at MIT CSAIL, asks whether those capabilities can instead arise from a flexible programming environment. I see Noah raising a hand—go ahead.",
+      "start": 0.0,
+      "end": 31.26
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does JAZ replace the language model, or mainly change the environment it operates in?",
+      "start": 32.3,
+      "end": 38.18
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It changes the environment, not the underlying model. JAZ gives the model a programming-language primitive called invoke, which generates executable code at runtime. That code runs in a read-eval-print loop, or REPL, and can call invoke again. The central proposal is that an agent can build its own workflows in this environment, rather than relying on a framework that prescribes how it should remember, delegate, or improve.",
+      "start": 38.88,
+      "end": 63.64
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The design rests on two kinds of access. First, generated code can make recursive calls to the same model primitive, allowing an agent to delegate work to subagents. Second, information available to the model, including its inputs and prior interaction history, is exposed as program variables. Think of this as giving an agent both a workshop and its working notes, rather than requiring it to describe every tool and remember every step from scratch.",
+      "start": 64.6,
+      "end": 91.08
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what makes that different from ordinary code-based agents that already call tools?",
+      "start": 92.0,
+      "end": 97.2
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "In a typical code-based agent, the model can write code and call tools, but the framework often controls what history or state the model can access. JAZ exposes the interaction history through a variable called underscore underscore history underscore underscore, and makes recursive invocation available in the generated code. So the distinction is not simply that the agent can run code; it can also inspect and programmatically reorganize the context that shapes its next action.",
+      "start": 98.14,
+      "end": 126.94
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "JAZ also includes practical controls around this flexible core. Dynamic scoping lets tools and variables remain available in recursive calls. Hooks can record trajectories, manage budgets, impose iteration or recursion limits, and validate returned values. These mechanisms matter because the paper is not arguing for unconstrained execution. It proposes a compact agent primitive, then surrounds it with configurable systems support for tracing, resource management, and safe completion checks.",
+      "start": 128.66,
+      "end": 160.62
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the history variable helps with a task whose key fact appeared hundreds of steps earlier?",
+      "start": 161.6,
+      "end": 166.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The agent can search or filter its accumulated history using ordinary code, then pass relevant state to another invocation. In the StuLife evaluation, the authors used tail-recursive delegation: as the context window approached its limit, an agent handed remaining work to a subagent, passing both a progress summary and the earlier history by reference. The new agent could inspect that history rather than depending only on a short summary or manually copied notes.",
+      "start": 167.88,
+      "end": 196.7
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "This mattered in a fictional final-exam task where the needed protocol had been introduced 497 tasks earlier. JAZ searched raw history for protocol names and recovered the relevant lecture. On StuLife’s 207 far-recall tasks, it reached a 69.9% pass rate, compared with 61.8% for Letta. The CodeAct-plus-subagents ablation scored 32%, suggesting that recursion by itself was not enough; access to manipulable prompts and history also mattered.",
+      "start": 197.6,
+      "end": 230.66
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does JAZ’s advantage come at a higher cost, or is the history search efficient enough to offset the extra reasoning?",
+      "start": 230.66,
+      "end": 237.66
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "In this evaluation, the reported average cost was $18.3 per run for JAZ and $42.1 for Letta, alongside JAZ’s higher far-recall pass rate. That comparison is encouraging but should be read in context: costs depend on model, prompting, and execution choices. Long histories can still consume memory and computation, and searching them is not free. The result shows a promising tradeoff in this setting, not a general guarantee that history access always reduces cost.",
+      "start": 238.68,
+      "end": 269.6
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The second case study tests continual improvement on 417 AppWorld tasks. A top-level JAZ invocation acts as a meta-agent, while recursive calls solve individual tasks. The meta-agent reviews outcomes and histories, modifies prompts or skills, and adjusts batch sizes. JAZ achieved 74.2% task goal completion at an average cost of $20.9. ACE reached 69.9% at $30.6, while prompt-only CodeAct with subagents reached 71.1% at $21.6.",
+      "start": 270.48,
+      "end": 306.92
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does that compare with ACE’s playbook updates, and what should we infer from only a few runs?",
+      "start": 309.48,
+      "end": 315.24
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "ACE uses a predefined reflector-and-curator pipeline to update a playbook, whereas JAZ’s meta-agent can choose what to inspect and when, and can alter both prompts and skills. That flexibility may help explain its results, but the evidence is limited: the evaluation covers 2 benchmarks, particular model and prompt choices, and a small number of independent runs. The comparison supports a useful hypothesis about adaptable orchestration; it does not establish that JAZ will outperform specialized methods across tasks.",
+      "start": 316.42,
+      "end": 347.86
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Conceptually, JAZ shifts attention from asking which memory or self-improvement module to add toward asking what the agent’s programming environment lets it express. This connects to work such as “Agentic Context Engineering,” while taking a different route: rather than centering a dedicated context-editing pipeline, it gives the model a general substrate for constructing its own procedures. That raises important future questions about code reliability, recursion management, and when human-designed constraints improve performance.",
+      "start": 348.8,
+      "end": 379.8
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The main takeaway is that memory, delegation, and improvement can sometimes be treated as programs an agent constructs, rather than as fixed modules supplied by a framework. JAZ offers evidence for that idea through long-range recall and sequential task adaptation, while leaving open questions about scaling, reliability, and generality. When evaluating agent systems, look not only at the components they contain, but also at what state the model can access and what workflows it can build. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 380.78,
+      "end": 417.489
+    }
+  ]
+}

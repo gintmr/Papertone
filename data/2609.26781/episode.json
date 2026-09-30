@@ -1,0 +1,256 @@
+{
+  "id": "2609.26781",
+  "title": "Agensh: Scaling Organizational Intelligence to 1,024 Agents",
+  "authors": [
+    "Zhihao Zhan",
+    "Ting Song",
+    "Li Dong",
+    "Shaohan Huang",
+    "Jianxun Lian",
+    "Yan Xia",
+    "Furu Wei"
+  ],
+  "abstract": "A multi-agent system can reduce latency on complex tasks by executing work concurrently. Several pioneering harness frameworks support multi-agent systems. However, the scalability of current multi-agent harnesses is often constrained by a central orchestrator's capacity to allocate tasks and coordinate workers. To address this limitation, we introduce Agensh, a scalable self-organized multi-agent harness without a central orchestrator: concurrent workers execute a multi-agent cooperation loop, continuously gathering context, claiming and self-assigning sub-tasks, taking action and sharing findings, verifying results, and merging progress in an asynchronous manner. The loop is supported by the agentic organization infrastructure comprising three components: a shared workspace holds proposed, ongoing, and completed work; a message interface lets workers communicate; and shared context retains reusable findings and work intentions. To test the scalability of Agensh, we evaluate it on the five hardest ProgramBench tasks with GPT-5.6-sol (high). Scaling from 1 to 128 agents raises the mean final test-pass rate from 19.31% to 28.78%, an approximately 49% relative improvement. Larger organizations reach comparable test-pass rates earlier. On pandoc, scaling from 1 to 1,024 agents raises the final test-pass rate from 33.89% to 55.06%. Worker trajectories further show that different forms of self-organized cooperation gradually emerges and standardizes as the organization grows. These results reveal the number of agents as a new scaling dimension for multi-agent organizations to expand the frontier of general intelligence, offering a practical solution for complex tasks under hard latency constraints or time budgets.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.26781",
+    "arxiv": "https://arxiv.org/abs/2609.26781"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0cc19-ecfe-7317-9d49-b2425be67228/podcast.mp3",
+  "duration": 375.928,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.14,
+      "en": "Welcome to Advanced Topics in Multi-Agent Systems. Today's lecture is on Agensh, a system for large-scale, decentralized agent coordination. We've seen a lot of recent work on this topic, like 'Decentralized Multi-Agent Systems with Shared Context', or DELM, and AgentNet, which also try to eliminate central orchestration. Research from Microsoft suggests a move away from single, powerful agents or centrally-managed teams, towards more autonomous, self-organizing groups. This paper investigates what happens when you remove the central coordinator entirely and let the workers figure it out themselves. Yes, Noah?",
+      "zh": "欢迎来到多智能体系统进阶专题。今天这节课讲的是Agensh，一个用于大规模去中心化智能体协调的系统。最近这个方向有不少工作，比如《共享上下文的去中心化多智能体系统》，简称DELM，还有AgentNet，它们也都试图去掉中心化的编排。微软的研究表明，趋势正在从单一强大的智能体或集中管理的团队，转向更自主、自组织的群体。这篇论文研究的就是：当你把中心协调者完全去掉，让各个工作单元自己想办法，会发生什么。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.66,
+      "end": 42.42,
+      "en": "Excuse me, Professor. So is the core problem here not about the capability of the individual agent, but rather how a large team of them is managed? The bottleneck is the manager, not the worker?",
+      "zh": "教授，不好意思打断一下。所以这里的核心问题其实不在于单个智能体的能力，而在于一大群智能体怎么被管理？瓶颈在管理者，不在执行者？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.92,
+      "end": 60.62,
+      "en": "Exactly. The central thesis is that a central lead agent can become a bottleneck, slowing everything down as the team grows. Agensh’s approach is to change the coordination pattern. Instead of routing every task assignment and integration step through a manager, concurrent workers decide for themselves what to do.",
+      "zh": "没错。核心论点就是，一个中央主导的智能体可能会成为瓶颈，随着团队扩大，它会拖慢一切。Agensh 的做法是改变协调模式。不再让每个任务分配和整合步骤都经过一个管理者，而是由并发的 worker 自己决定该做什么。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 60.88,
+      "end": 63.66,
+      "en": "How do they coordinate without a leader? Does it just become chaos?",
+      "zh": "那它们没有领导者要怎么协调？难道不会乱成一团吗？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 64.04,
+      "end": 91.86,
+      "en": "That's the central question. They use a continuous, asynchronous loop. Each worker starts by gathering context: it reads the main goal, the current state of the project, messages from peers, and a repository of shared findings. Then, it proposes and claims a subtask, works on it locally, verifies its own work against set criteria, and finally merges the verified contribution back into the main project. After merging, it posts an update so other agents can immediately build on its progress.",
+      "zh": "这是核心问题。他们用的是持续异步的循环。每个工作单元先收集上下文：读取主目标、项目当前状态、同伴的消息，以及一个共享发现的仓库。然后它提出并认领一个子任务，在本地完成，按照既定标准验证自己的工作，最后把验证过的成果合并回主项目。合并之后，它会发布更新，让其他智能体可以立即基于它的进展继续推进。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 92.22,
+      "end": 96.8,
+      "en": "So what's the infrastructure that supports this? It sounds a lot like a typical software development workflow.",
+      "zh": "那支撑这一切的基础设施是什么呢？听起来很像典型的软件开发工作流。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 97.26,
+      "end": 136.44,
+      "en": "The tools are familiar, but the process is autonomous. The paper describes three key components. First, a shared workspace, implemented with Gitea, which holds all the code—proposed, in-progress, and finished. Second, a message interface, using Mattermost, for team-wide announcements or direct peer-to-peer coordination to resolve overlaps. And third, a shared context, which is a database of facts, observations, failed attempts, and summaries of changes. It's important to remember that Agensh organizes the team; the underlying single-agent harness, in this case Copilot, still controls the individual worker's model calls and tool use.",
+      "zh": "工具都是我们熟悉的，但整个流程是自主运行的。论文描述了三个关键组件。第一，一个共享工作区，用Gitea实现，存放所有代码——包括提议中的、进行中的和已完成的。第二，一个消息接口，用Mattermost实现，用于团队公告或点对点的直接协调，以解决工作重叠的问题。第三，一个共享上下文，这是一个数据库，包含事实、观察、失败的尝试和变更摘要。需要记住的是，Agensh负责组织团队；底层的单智能体执行框架，在这里是Copilot，仍然控制着每个工作个体的模型调用和工具使用。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 136.78,
+      "end": 162.18,
+      "en": "Let's look at how this plays out in practice. The paper's main demonstration is a difficult task: rebuilding the Pandoc software tool from a reference program. The constraints were a six-hour time budget and no internet access. When they ran this with a single agent, it achieved a test-pass rate of about 34%. But with 1,024 agents coordinating through the Agensh framework, that rate rose to over 55%.",
+      "zh": "我们来看看这在实践中是怎么运作的。这篇论文的主要演示是一个很难的任务：根据一个参考程序重建Pandoc软件工具。限制条件是六小时的时间预算和无法访问互联网。当他们用单个智能体来跑这个任务时，测试通过率大约是34%。但用1024个智能体通过Agensh框架协调之后，通过率升到了55%以上。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 162.18,
+      "end": 172.66,
+      "en": "That's a significant jump. But how do we know it was the decentralized coordination that caused it, and not just having more raw compute power? Did they compare it to a centrally-orchestrated system with the same number of agents?",
+      "zh": "这是很大的提升。但我们怎么知道是去中心化协调带来的，而不只是算力更强呢？他们有没有拿同样数量的智能体、但用中心化编排的系统来做对比？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 173.06,
+      "end": 204.92,
+      "en": "That is a critical point. The paper does not report a direct, head-to-head comparison against a centralized orchestrator, nor an ablation study removing one of the coordination components. The experiment supports the claim that performance scales within the Agensh framework, but it doesn't isolate decentralization as the sole cause of the gain. To test the approach more broadly, they also evaluated it on five of the hardest tasks from the ProgramBench benchmark, which involves rebuilding programs like FFmpeg and PHP from scratch based on their observed behavior.",
+      "zh": "这一点很关键。论文并没有报告与集中式编排器的直接正面对比，也没有做移除某个协调组件的消融实验。实验支持了在Agensh框架内性能会随规模提升这一说法，但并没有把去中心化单独分离出来作为性能提升的唯一原因。为了更广泛地测试这个方法，他们还在ProgramBench基准中最难的五个任务上做了评估，这些任务涉及根据观察到的行为从零重建FFmpeg和PHP这样的程序。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 205.32,
+      "end": 206.54,
+      "en": "And what were the results there?",
+      "zh": "那结果怎么样？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 206.76,
+      "end": 244.88,
+      "en": "Using the same underlying agent model, the mean final test-pass rate across those five tasks rose from 19.31% with one agent to 28.78% with 128 agents. That's a relative improvement of about 49%. The trend was generally increasing, but not strictly monotonic for every task at every scale. The paper also provides evidence of earlier progress. On the Pandoc task, the 128-agent team reached a 30% pass rate in just 30 minutes, while the 32-agent team took an hour. The single agent didn't reach that threshold within the first two hours.",
+      "zh": "在底层智能体模型相同的情况下，这五项任务的平均最终测试通过率从单智能体的19.31%提升到了128个智能体时的28.78%。相对提升了大约49%。整体趋势是上升的，但并不是每个任务在每种规模下都严格单调递增。论文还提供了更早取得进展的证据。在Pandoc任务上，128个智能体的团队仅用30分钟就达到了30%的通过率，而32个智能体的团队用了一个小时。单智能体在两个小时内都没有达到这个阈值。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 245.14,
+      "end": 253.34,
+      "en": "Hold on, does reaching that threshold faster imply greater efficiency? Or is it just a result of more total computation being performed in the same amount of wall-clock time?",
+      "zh": "等一下，更快达到那个阈值就意味着效率更高吗？还是说，这只是在相同的实际时间内做了更多的总计算量而已？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 253.64,
+      "end": 275.18,
+      "en": "Another good methodological question. The paper is careful to frame this as earlier wall-clock progress, not as evidence of lower total computation, fewer tokens, or lower cost. In fact, the workers were staggered into the runs, so we can't assume equal total compute at any given checkpoint. The finding is about speed to a result, not computational efficiency.",
+      "zh": "又是一个很好的方法论问题。论文很谨慎地把这一点表述为更早的挂钟时间进展，而不是总计算量更低、token更少或成本更低的证据。事实上，各个worker是错开加入运行的，所以我们不能假设在任何一个检查点上总计算量是相等的。这个发现说的是出结果的速度，而不是计算效率。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 275.7,
+      "end": 300.24,
+      "en": "This brings us to the broader implications. As I mentioned, the idea of decentralized agents isn't entirely new. The DELM paper already described a system with asynchronous workers and shared context. Agensh builds on that by adapting the concept specifically for collaborative software engineering. It adds the mergeable code workspace and the direct messaging layer, which are crucial for that domain.",
+      "zh": "这就引出了更广泛的意义。就像我之前提到的，去中心化智能体的想法并不完全新鲜。DELM那篇论文已经描述了一个有异步工作节点和共享上下文的系统。Agensh在此基础上做了推进，把这个概念专门适配到了协作式软件工程场景。它增加了可合并的代码工作区和直接消息传递层，这两者对那个领域来说至关重要。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 300.84,
+      "end": 304.48,
+      "en": "So the main contribution is the engineering extension and demonstration at scale?",
+      "zh": "所以主要贡献就是工程上的扩展和大规模验证？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 304.88,
+      "end": 337.28,
+      "en": "That's a fair summary. And part of that demonstration includes observing how the agents' behavior changes with scale. For instance, in one 128-agent Pandoc run, workers organically developed a protocol where an author would update a branch and then send the commit hash to a peer for validation and merging. When that process failed, the agents collectively revised it, shifting to a procedure where a peer handled the entire update-test-merge cycle. This emergent coordination is an interesting result, though it's an observation, not a controlled finding.",
+      "zh": "这个总结很到位。而且这种展示的一部分就包括观察智能体的行为如何随规模变化。比如，在一次128个智能体的Pandoc运行中，工作节点自发形成了一套协议：一个作者更新分支，然后把提交哈希发给同伴去验证和合并。当这个流程失败时，智能体们集体修改了它，转向由同伴负责整个更新-测试-合并周期的流程。这种涌现出来的协调是个有意思的结果，不过它只是一个观察，不是受控实验的发现。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 337.76,
+      "end": 370.78,
+      "en": "So, to wrap up, Agensh's important contribution isn't just about adding more workers. It's about providing an effective structure for them to coordinate and integrate their work without a central bottleneck. The results show this decentralized pattern can scale effectively on complex software reconstruction tasks, with the Pandoc experiment reaching 1,024 agents and the five-task benchmark showing clear gains up to 128 agents. This provides a compelling model for how to organize very large teams of autonomous agents for collaborative work.",
+      "zh": "总之，Agensh的重要贡献不只是增加更多工作单元，更在于提供了一种有效的结构，让它们能够协调和整合各自的工作，而不会形成中心瓶颈。结果表明，这种去中心化模式能够在复杂的软件重建任务上有效扩展，Pandoc实验达到了1024个智能体，而五项任务基准在128个智能体以内都显示出明显收益。这为如何组织超大规模的自主智能体团队进行协作提供了一个很有说服力的模型。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 371.02,
+      "end": 375.928,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhan2026agenshscalingorganizationalintelligence,\n      title={Agensh: Scaling Organizational Intelligence to 1,024 Agents}, \n      author={Zhihao Zhan and Ting Song and Li Dong and Shaohan Huang and Jianxun Lian and Yan Xia and Furu Wei},\n      year={2026},\n      eprint={2609.26781},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.26781}, \n}",
+  "topics": [
+    "Agents",
+    "Distributed Learning",
+    "Ml Systems"
+  ],
+  "peaks": [
+    1.0,
+    0.482,
+    0.398,
+    0.474,
+    0.231,
+    0.395,
+    0.275,
+    0.37,
+    0.502,
+    0.344,
+    0.425,
+    0.542,
+    0.226,
+    0.375,
+    0.315,
+    0.559,
+    0.279,
+    0.404,
+    0.714,
+    0.495,
+    0.516,
+    0.489,
+    0.37,
+    0.352,
+    0.653,
+    0.487,
+    0.531,
+    0.268,
+    0.529,
+    0.307,
+    0.427,
+    0.413,
+    0.367,
+    0.561,
+    0.594,
+    0.394,
+    0.343,
+    0.568,
+    0.35,
+    0.583,
+    0.322,
+    0.218,
+    0.444,
+    0.249,
+    0.366,
+    0.306,
+    0.436,
+    0.48,
+    0.35,
+    0.536,
+    0.467,
+    0.376,
+    0.608,
+    0.687,
+    0.691,
+    0.421,
+    0.739,
+    0.36,
+    0.447,
+    0.423,
+    0.346,
+    0.295,
+    0.313,
+    0.2,
+    0.553,
+    0.468,
+    0.338,
+    0.48,
+    0.543,
+    0.334,
+    0.465,
+    0.562
+  ],
+  "license": "arXiv 默认许可"
+}
