@@ -113,7 +113,25 @@ jobs:
             exit 0
           fi
           git commit -m "Sync: 新增播客 $(date -u +%Y-%m-%d)"
-          git push
+
+          # 工作流运行期间可能有人推了新提交（比如改了前端）。
+          # 直接 push 会被拒（non-fast-forward），而且运行器是临时的，
+          # 一被拒这次抓到的内容就全丢了。所以先 rebase 到远端再推，并重试几次。
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "推送成功"
+              exit 0
+            fi
+            echo "第 $attempt 次推送被拒，先 rebase 到远端再试"
+            if ! git pull --rebase --autostash origin main; then
+              git rebase --abort 2>/dev/null || true
+              echo "::error::rebase 失败，需要人工处理"
+              exit 1
+            fi
+            sleep 5
+          done
+          echo "::error::连续三次推送失败，请检查分支保护设置"
+          exit 1
 
       - name: 汇总
         if: always()
