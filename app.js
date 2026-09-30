@@ -909,6 +909,7 @@ function openSync() {
   try {
     $('#cloud-repo').value = localStorage.getItem(CLOUD_REPO_KEY) || '';
     $('#cloud-token').value = localStorage.getItem(CLOUD_TOKEN_KEY) || '';
+    $('#sync-ids').value = localStorage.getItem(CLOUD_IDS_KEY) || '';
   } catch (e) { /* 隐私模式忽略 */ }
 }
 
@@ -1015,12 +1016,15 @@ $('#device-clear').addEventListener('click', clearDevice);
    ────────────────────────────────────────────────────── */
 const CLOUD_REPO_KEY = 'podcast-cloud-repo';
 const CLOUD_TOKEN_KEY = 'podcast-cloud-token';
+const CLOUD_IDS_KEY = 'podcast-cloud-ids';
 
 async function cloudSync() {
   const repo = $('#cloud-repo').value.trim();
   const token = $('#cloud-token').value.trim();
   const st = $('#cloud-status');
   if (!repo || !token) { st.textContent = 'Fill in the repository and a token first.'; return; }
+  // 填了具体论文就让工作流跳过推荐流扫描，只抓这几篇
+  const ids = ($('#sync-ids').value || '').trim();
 
   const btn = $('#cloud-run');
   btn.disabled = true;
@@ -1042,6 +1046,7 @@ async function cloudSync() {
             pages: $('#sync-pages').value,
             limit: '20',
             translate: 'yes',
+            ids,
           },
         }),
       });
@@ -1051,6 +1056,7 @@ async function cloudSync() {
       try {
         localStorage.setItem(CLOUD_REPO_KEY, repo);
         localStorage.setItem(CLOUD_TOKEN_KEY, token);
+        localStorage.setItem(CLOUD_IDS_KEY, ids);
       } catch (e) { /* 隐私模式忽略 */ }
     } else {
       const body = await res.text();
@@ -1118,6 +1124,13 @@ async function route() {
 (async function boot() {
   const want = new URLSearchParams(location.search).get('mode');
   if (want && MODE_LABEL[want]) setMode(want); else setMode('en');
+
+  // ?add=<id>[,<id>] —— 直接把这几篇填进同步面板并打开，省得手打
+  const addIds = new URLSearchParams(location.search).get('add');
+  if (addIds) {
+    openSync();
+    $('#sync-ids').value = addIds;
+  }
 
   try {
     await loadIndex();
