@@ -19,7 +19,11 @@
   "license": "arXiv 默认许可",
   "bibtex": "@misc{yin2026simplememvlasimpleeffectivenativevideo,\n      title={SimpleMemVLA: A Simple but Effective Native-Video Memory for Vision-Language-Action Models}, \n      author={Cheng Yin and Wang Xu and Junpeng Yang and Sikyuen Tam and Hanyu Liu and Yuan Yao and Xiangrui Zeng and Junbo Cui and Yequan Wang and Zhouping Yin and Yankai Lin},\n      year={2026},\n      eprint={2609.05533},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.05533}, \n}",
   "audio_url": "https://paper-podcasts.alphaxiv.org/01a083b8-377c-782f-904d-a6aca8518add/podcast.mp3",
-  "topics": [],
+  "topics": [
+    "Computer Vision",
+    "Robotics",
+    "Machine Learning"
+  ],
   "raw_topics": [
     "Computer Science",
     "cs.CV",

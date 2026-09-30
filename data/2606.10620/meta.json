@@ -10,7 +10,10 @@
   "license": "CC BY",
   "bibtex": "@misc{wu2026imagemodelsimaginetime,\n      title={Can Image Models Imagine Time? ImageTime: A Novel Benchmark for Probing Visual World Modeling Through Spatiotemporal Consistency}, \n      author={Xinrui Wu and Lichen Huang},\n      year={2026},\n      eprint={2606.10620},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2606.10620}, \n}",
   "audio_url": "https://paper-podcasts.alphaxiv.org/019eaf93-3bfe-7d68-8979-bde50c06611b/podcast.mp3",
-  "topics": [],
+  "topics": [
+    "Computer Vision",
+    "AI"
+  ],
   "raw_topics": [
     "Computer Science",
     "cs.AI",

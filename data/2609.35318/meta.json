@@ -13,7 +13,9 @@
   "license": "CC BY",
   "bibtex": "@misc{wang2026dexagentagentichuman2sim2robotframework,\n      title={DexAgent: An Agentic Human2Sim2Robot Framework for Dexterous Manipulation with Self-Evolving Tool Library}, \n      author={Youhui Wang and Yunzhu Li and Li Fei-Fei and Jiajun Wu and Huang Huang},\n      year={2026},\n      eprint={2609.35318},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.35318}, \n}",
   "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebdf-531d-781a-beae-adab43a13055/podcast.mp3",
-  "topics": [],
+  "topics": [
+    "Robotics"
+  ],
   "raw_topics": [
     "Computer Science",
     "cs.RO"

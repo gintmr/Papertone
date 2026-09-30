@@ -11,7 +11,9 @@
   "license": "CC BY",
   "bibtex": "@misc{tagliabue2026painaxisllmsrepresent,\n      title={The Pain Axis: LLMs Represent Self-Directed Harm and Act to Relieve It}, \n      author={Valen Tagliabue and Leonard Dung and Cameron Berg},\n      year={2026},\n      eprint={2609.16247},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.16247}, \n}",
   "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a7f8-2213-76e4-8998-70346ceb80aa/podcast.mp3",
-  "topics": [],
+  "topics": [
+    "AI"
+  ],
   "raw_topics": [
     "Computer Science",
     "cs.AI"

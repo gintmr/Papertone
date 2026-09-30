@@ -186,7 +186,7 @@
   "bibtex": "@misc{huang2026optical,\n  title = {OCG: Optical Character Grounded Visual Reasoning with Flow Matching},\n  author = {Huang, Lichen and Wu, Xinrui},\n  year = {2026},\n  publisher = {alphaXiv},\n  url = {https://www.alphaxiv.org/abs/2608.ocg-optical-character-grounded-reasoning}\n}",
   "topics": [
     "Generative Models",
-    "Visual Qa"
+    "Visual QA"
   ],
   "peaks": [
     0.915,

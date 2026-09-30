@@ -43,7 +43,9 @@
       ],
       "duration": 430.993563,
       "license": "CC BY",
-      "topics": [],
+      "topics": [
+        "Robotics"
+      ],
       "cover": "cover.png",
       "path": "2609.35318",
       "published": "2026-09-28",
@@ -60,7 +62,11 @@
       ],
       "duration": 412.211688,
       "license": "arXiv 默认许可",
-      "topics": [],
+      "topics": [
+        "Computer Vision",
+        "Robotics",
+        "Machine Learning"
+      ],
       "cover": "cover.png",
       "path": "2609.34085",
       "published": "2026-09-28",
@@ -160,7 +166,7 @@
       "topics": [
         "Agents",
         "Distributed Learning",
-        "Ml Systems"
+        "ML Systems"
       ],
       "cover": "cover.png",
       "path": "2609.26781",
@@ -186,7 +192,9 @@
       ],
       "duration": 412.525667,
       "license": "arXiv 默认许可",
-      "topics": [],
+      "topics": [
+        "Computer Vision"
+      ],
       "cover": "cover.png",
       "path": "2609.24170",
       "published": "2026-09-21",
@@ -237,7 +245,7 @@
       "topics": [
         "Agents",
         "Inference Optimization",
-        "Ml Systems"
+        "ML Systems"
       ],
       "cover": "cover.png",
       "path": "2609.21032",
@@ -288,7 +296,7 @@
       "topics": [
         "Agents",
         "Generative Models",
-        "Ml Systems"
+        "ML Systems"
       ],
       "cover": "cover.png",
       "path": "2609.19644",
@@ -352,7 +360,7 @@
       "topics": [
         "Inference Optimization",
         "Lightweight Models",
-        "Multi Modal Learning"
+        "Multimodal Learning"
       ],
       "cover": "cover.png",
       "path": "2609.17895",
@@ -397,7 +405,9 @@
       ],
       "duration": 378.645,
       "license": "CC BY",
-      "topics": [],
+      "topics": [
+        "AI"
+      ],
       "cover": "cover.png",
       "path": "2609.16247",
       "published": "2026-09-14",
@@ -416,7 +426,11 @@
       ],
       "duration": 301.71425,
       "license": "arXiv 默认许可",
-      "topics": [],
+      "topics": [
+        "NLP",
+        "Machine Learning",
+        "AI"
+      ],
       "cover": "cover.png",
       "path": "2609.15983",
       "published": "2026-09-14",
@@ -547,7 +561,9 @@
       ],
       "duration": 335.281667,
       "license": "CC BY",
-      "topics": [],
+      "topics": [
+        "AI"
+      ],
       "cover": "cover.png",
       "path": "2609.13009",
       "published": "2026-09-11",
@@ -607,7 +623,7 @@
       "topics": [
         "Agents",
         "Information Extraction",
-        "Multi Modal Learning"
+        "Multimodal Learning"
       ],
       "cover": "cover.png",
       "path": "2609.10745",
@@ -673,7 +689,11 @@
       ],
       "duration": 368.065333,
       "license": "arXiv 默认许可",
-      "topics": [],
+      "topics": [
+        "Computer Vision",
+        "Robotics",
+        "Machine Learning"
+      ],
       "cover": "cover.png",
       "path": "2609.05533",
       "published": "2026-09-02",
@@ -716,7 +736,7 @@
       "license": "User Uploaded",
       "topics": [
         "Generative Models",
-        "Visual Qa"
+        "Visual QA"
       ],
       "cover": "cover.png",
       "path": "2608.ocg-optical-character-grounded-reasoning",
@@ -732,7 +752,10 @@
       ],
       "duration": 385.175583,
       "license": "CC BY",
-      "topics": [],
+      "topics": [
+        "Computer Vision",
+        "AI"
+      ],
       "cover": "cover.png",
       "path": "2606.10620",
       "published": "2026-06-09",

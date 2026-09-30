@@ -245,5 +245,8 @@
     0.432
   ],
   "published": "2026-09-21",
-  "license": "arXiv 默认许可"
+  "license": "arXiv 默认许可",
+  "topics": [
+    "Computer Vision"
+  ]
 }

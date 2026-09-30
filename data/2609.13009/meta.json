@@ -59,7 +59,9 @@
   "license": "CC BY",
   "bibtex": "@misc{ansari2026goodfrontiermodelsphysics,\n      title={How Good Are Frontier Models at Physics? Expert Re-Grading Reveals Broken Evaluations and Near-Saturation of Leading Benchmarks}, \n      author={Ali Ansari and Haoran Sun and Andy Zeyi Liu and Mark Jabbour and Yongshan Ding and Steven Girvin and Yu He and Sohrab Ismail-Beigi and Aleksander Kubica and Owen D. Miller and Corey O'Hern and Vidvuds Ozolins and David Poland and A. Douglas Stone and Frank C. van den Bosch and Logan Wright and Navid Akbari and Santanu Antu and Kangle Cai and Andrew Calabrese-Day and Mateo Cárdenes Wuttig and Meng Cheng and Barry T. Chiang and Ali Ghorashi and Shouzhen Gu and Haoyang Huang and Zhibo Kang and Lukas Kienesberger and Hantian Liu and Charles Lomba and Zhongling Lu and Wenchao Ma and Rohin E. McIntosh and Evan McKinney and Ivan Rojkov and Xulei Sun and Yarone Meir Tokayer and Naveen Balaji Umasankar and Mira Varma and Leda Wang and Qimin Wang and Tyler Wang and Haoyu Wei and Jinming Yang and Jinchen Zhao and Sherlock Tingrui Zhao and Qinyuan Zheng and Jay S. Zou and Lucas Baker and Arman Cohan and John Sous},\n      year={2026},\n      eprint={2609.13009},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.13009}, \n}",
   "audio_url": "https://paper-podcasts.alphaxiv.org/01a09d7c-a686-70d2-a144-b49a96b5d307/podcast.mp3",
-  "topics": [],
+  "topics": [
+    "AI"
+  ],
   "raw_topics": [
     "Computer Science",
     "cs.AI"

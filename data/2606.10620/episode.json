@@ -267,5 +267,9 @@
     0.65
   ],
   "published": "2026-06-09",
-  "license": "CC BY"
+  "license": "CC BY",
+  "topics": [
+    "Computer Vision",
+    "AI"
+  ]
 }

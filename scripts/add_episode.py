@@ -32,6 +32,7 @@ from datetime import datetime, timezone
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126 Safari/537.36"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 META_API = "https://api.alphaxiv.org/papers/v3"
+CDN = "https://paper-podcasts.alphaxiv.org"
 
 JSONLD_RE = re.compile(
     r'<script[^>]*data-alphaxiv-id="json-ld-paper-detail-view"[^>]*>(.*?)</script>', re.S)
@@ -61,6 +62,11 @@ TAG_ALIASES = {
     "computer-vision": "Computer Vision",
     "robotics": "Robotics",
     "reasoning": "Reasoning",
+    # 这几个是 .title() 会自动拼错大小写的缩写
+    "ml-systems": "ML Systems",
+    "tabular-ml": "Tabular ML",
+    "visual-qa": "Visual QA",
+    "multi-modal-learning": "Multimodal Learning",
     "hep-ph": "Particle Physics",
     "hep-th": "Particle Physics",
     "math-ph": "Particle Physics",
@@ -71,18 +77,47 @@ TAG_DROP = {
     "Computer Science", "Physics", "Mathematics", "Statistics", "Biology",
     "Economics", "Electrical Engineering", "Quantitative Biology",
 }
+# arXiv 分类号太粗（cs.AI 覆盖半个 AI），铺到筛选条上没有筛选意义；
+# 但有些论文的标签只剩分类号，全丢掉卡片上就一个关键词都没有。
+# 折中：只在没有更具体的标签时，用分类号兜一个「大方向」。
+CATEGORY_LABELS = {
+    "cs.AI": "AI",
+    "cs.LG": "Machine Learning", "stat.ML": "Machine Learning",
+    "cs.NE": "Machine Learning", "cs.CL": "NLP",
+    "cs.CV": "Computer Vision", "cs.RO": "Robotics", "cs.MA": "Multi-Agent",
+    "cs.SE": "Software Engineering", "cs.IR": "Information Retrieval",
+    "cs.SD": "Speech", "eess.AS": "Speech", "cs.HC": "Human-AI",
+    "cs.CR": "Security", "cs.DC": "Distributed Learning", "math.OC": "Optimization",
+}
 CATEGORY_RE = re.compile(r"^[a-z]{2}\.[A-Z]{2}$")
+# 兜底标签里的先后：卡片只显示第一个，所以越具体的方向越靠前，
+# AI 覆盖太广，放最后。
+BROAD_RANK = {"AI": 2, "Machine Learning": 1}
 
 
 def normalize_topics(raw: list[str]) -> list[str]:
-    out: list[str] = []
+    """标签收敛成最多 MAX_TAGS 个。
+
+    具体标签（agents、tool-use…）优先；一个都没剩下时，才退回分类号
+    兜出来的大方向，避免卡片底栏空着。
+    """
+    specific: list[str] = []
+    broad: list[str] = []
     for t in raw:
-        if t in TAG_DROP or CATEGORY_RE.match(t):
+        if t in TAG_DROP:
             continue
-        label = TAG_ALIASES.get(t, t.replace("-", " ").title())
-        if label not in out:
-            out.append(label)
-    return out[:MAX_TAGS]
+        if t in TAG_ALIASES:
+            label, bucket = TAG_ALIASES[t], specific
+        elif t in CATEGORY_LABELS:
+            label, bucket = CATEGORY_LABELS[t], broad
+        elif CATEGORY_RE.match(t):
+            continue
+        else:
+            label, bucket = t.replace("-", " ").title(), specific
+        if label not in bucket:
+            bucket.append(label)
+    broad.sort(key=lambda label: BROAD_RANK.get(label, 0))
+    return (specific or broad)[:MAX_TAGS]
 
 
 def compute_peaks(path: str, buckets: int = 72) -> list[float]:
@@ -111,9 +146,12 @@ def compute_peaks(path: str, buckets: int = 72) -> list[float]:
     return [round(0.2 + 0.8 * ((p - lo) / span) ** 1.3, 3) for p in raw]
 
 
-def curl(url: str, out: str | None = None, timeout: int = 90) -> str:
+def curl(url: str, out: str | None = None, timeout: int = 90,
+         headers: list[str] | None = None) -> str:
     cmd = ["curl", "-s", "-L", url, "--max-time", str(timeout), "-A", UA,
            "-w", "%{http_code}", "-o", out or "/dev/null"]
+    for h in headers or []:
+        cmd += ["-H", h]
     r = subprocess.run(cmd, capture_output=True, text=True)
     return r.stdout.strip()
 
@@ -191,17 +229,30 @@ def fetch_meta(arxiv_id: str) -> dict:
         ld = json.loads(m.group(1))
 
     audio = AUDIO_RE.search(html)
+    group_id = js_string(html, "groupId")
     topics_m = TOPICS_RE.search(html)
     raw_topics = [t for t in re.findall(r'"([^"]*)"', topics_m.group(1)) if t] if topics_m else []
+
+    if audio:
+        audio_url = audio.group(0).replace("&amp;", "&")
+    elif group_id:
+        # 有些论文页不把音频地址写进 HTML（播客改成客户端实时拉取了），
+        # 但地址格式固定，用 groupId 拼出来探一下就知道有没有。
+        probe = f"{CDN}/{group_id}/podcast.mp3"
+        ok = curl(probe, timeout=25, headers=["Range: bytes=0-100"]) == "206"
+        audio_url = probe if ok else None
+    else:
+        audio_url = None
+
     return {
         "id": arxiv_id,
         "title": ld.get("headline"),
         "authors": [a.get("name") for a in ld.get("author", []) if a.get("name")],
         "abstract": (ld.get("abstract") or "").strip(),
-        "group_id": js_string(html, "groupId"),
+        "group_id": group_id,
         "license": classify_license(js_string(html, "license")),
         "bibtex": js_string(html, "citationBibtex"),
-        "audio_url": audio.group(0).replace("&amp;", "&") if audio else None,
+        "audio_url": audio_url,
         "topics": normalize_topics(raw_topics),
         "raw_topics": raw_topics,
         # 论文首次公开日期，列表页展示与「按时间筛选」都用它
@@ -326,6 +377,45 @@ def backfill_dates() -> None:
     rebuild_index()
 
 
+def renormalize_topics() -> None:
+    """用现在这套标签规则重算已入库论文的 topics。
+
+    raw_topics 抓取时就存进了 meta.json，所以不用重新抓页面，纯离线重算。
+    """
+    data_dir = os.path.join(ROOT, "data")
+    changed = 0
+    for name in sorted(os.listdir(data_dir)):
+        mp = os.path.join(data_dir, name, "meta.json")
+        if not os.path.exists(mp):
+            continue
+        with open(mp, encoding="utf-8") as fh:
+            meta = json.load(fh)
+        raw = meta.get("raw_topics")
+        if not raw:
+            continue
+        topics = normalize_topics(raw)
+        if topics == (meta.get("topics") or []):
+            continue
+        print(f"   {name}: {meta.get('topics') or []} → {topics}")
+        meta["topics"] = topics
+        with open(mp, "w", encoding="utf-8") as fh:
+            json.dump(meta, fh, ensure_ascii=False, indent=2)
+        # 播放器读的是 episode.json，标签也要跟着更新
+        ep_path = os.path.join(data_dir, name, "episode.json")
+        if os.path.exists(ep_path):
+            with open(ep_path, encoding="utf-8") as fh:
+                ep = json.load(fh)
+            if topics:
+                ep["topics"] = topics
+            else:
+                ep.pop("topics", None)
+            with open(ep_path, "w", encoding="utf-8") as fh:
+                json.dump(ep, fh, ensure_ascii=False, indent=2)
+        changed += 1
+    print(f"\n重算 {changed} 篇的标签")
+    rebuild_index()
+
+
 def rebuild_index() -> None:
     eps = []
     data_dir = os.path.join(ROOT, "data")
@@ -360,10 +450,15 @@ def main() -> int:
     ap.add_argument("--reindex-only", action="store_true", help="只刷新 papers.json")
     ap.add_argument("--backfill-dates", action="store_true",
                     help="给库里没有首次公开日期的论文补上日期，然后刷新 papers.json")
+    ap.add_argument("--renormalize-topics", action="store_true",
+                    help="用当前标签规则重算全库 topics（离线，不重新抓取）")
     ap.add_argument("--keep-audio", action="store_true",
                     help="保留本地音频（默认跑完就删，播放走 CDN）")
     args = ap.parse_args()
 
+    if args.renormalize_topics:
+        renormalize_topics()
+        return 0
     if args.backfill_dates:
         backfill_dates()
         return 0
