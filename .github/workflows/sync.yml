@@ -20,6 +20,11 @@ on:
         type: choice
         options: ['yes', 'no']
         default: 'yes'
+      provider:
+        description: '翻译服务商（各家 API key 不通用）'
+        type: choice
+        options: ['deepseek', 'openai']
+        default: 'deepseek'
   schedule:
     # 每天 UTC 03:00（迪拜时间 07:00）跑一次增量
     - cron: '0 3 * * *'
@@ -81,16 +86,30 @@ jobs:
         if: steps.discover.outputs.count != '0' && (inputs.translate != 'no')
         env:
           OPENAI_API_KEY: ${{ secrets.TRANSLATE_API_KEY }}
-          OPENAI_BASE_URL: ${{ vars.TRANSLATE_BASE_URL || 'https://api.openai.com/v1' }}
-          TRANSLATE_MODEL: ${{ vars.TRANSLATE_MODEL || 'gpt-4o-mini' }}
+          PROVIDER: ${{ inputs.provider || 'deepseek' }}
+          OVERRIDE_BASE: ${{ vars.TRANSLATE_BASE_URL }}
+          OVERRIDE_MODEL: ${{ vars.TRANSLATE_MODEL }}
         run: |
           if [ -z "$OPENAI_API_KEY" ]; then
             echo "::warning::未配置 TRANSLATE_API_KEY，跳过翻译，只抓英文"
             exit 0
           fi
+
+          # 各家 key 不通用：把 DeepSeek 的 key 发去 OpenAI 会直接 401。
+          # 所以按服务商决定 endpoint 与模型，仓库变量可覆盖。
+          case "$PROVIDER" in
+            deepseek) BASE="https://api.deepseek.com/v1"; MODEL="deepseek-chat" ;;
+            openai)   BASE="https://api.openai.com/v1";   MODEL="gpt-4o-mini" ;;
+            *)        BASE="https://api.deepseek.com/v1"; MODEL="deepseek-chat" ;;
+          esac
+          if [ -n "$OVERRIDE_BASE" ]; then BASE="$OVERRIDE_BASE"; fi
+          if [ -n "$OVERRIDE_MODEL" ]; then MODEL="$OVERRIDE_MODEL"; fi
+          echo "翻译服务: $BASE   模型: $MODEL"
+
           for seg in data/*/segments.json; do
             dir=$(dirname "$seg")
-            python3 scripts/translate.py --dir "$dir" || echo "::warning::$dir 翻译失败"
+            python3 scripts/translate.py --dir "$dir" \
+              --base-url "$BASE" --model "$MODEL" || echo "::warning::$dir 翻译失败"
           done
 
       - name: 合成播放器数据
