@@ -42,6 +42,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          # runner 每次都是全新虚拟机，装过的库不会自动保留。
+          # 这一行让 pip 的下载缓存跨次复用，省掉重复下载 wheel 的时间。
+          cache: 'pip'
 
       - name: 安装 ffmpeg 与 faster-whisper
         run: |
