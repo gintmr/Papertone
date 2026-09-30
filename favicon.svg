@@ -1,0 +1,22 @@
+<!-- Papertone 站点图标：与页头 .brand-mark 同一套几何与配色。
+     几何：24×24 原稿，内容外框 x 1.9–22.1 / y 2.6–21.4（含描边外沿 0.9），
+           几何中心 (12,12)。按 1.18 倍缩放并居中到 32×32 底板上：
+           translate = 16 - 12×1.18 = 1.84
+     配色：底板 = --bg(#fffaff)；耳机与纸页 = --brand-ink(#74509f)；
+           声波 = --brand-wave(#b992ff)。两档紫色关系与页头一致（轮廓深、声波浅）。 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Papertone">
+  <rect width="32" height="32" rx="7" fill="#fffaff"/>
+  <g transform="translate(1.84 1.84) scale(1.18)"
+     fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="#74509f" stroke-width="2" d="M3.8 12.1V9.1a8.2 5.6 0 0 1 16.4 0v3"/>
+    <rect stroke="#74509f" stroke-width="2" x="2.8" y="12.1" width="2" height="4.4" rx="1"/>
+    <rect stroke="#74509f" stroke-width="2" x="19.2" y="12.1" width="2" height="4.4" rx="1"/>
+    <path fill="#fffaff" stroke="#74509f" stroke-width="2" d="M6.8 7.5h7.8l2.6 2.6v10.4H6.8z"/>
+    <path stroke="#74509f" stroke-width="2" d="M14.6 7.5v2.6h2.6"/>
+    <g stroke="#b992ff" stroke-width="2">
+      <path d="M9.1 12.5v3"/>
+      <path d="M12 10.9v6.2"/>
+      <path d="M14.9 12v4"/>
+    </g>
+  </g>
+</svg>
