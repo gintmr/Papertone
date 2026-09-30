@@ -55,7 +55,9 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
-          pip install -q faster-whisper
+          # 用 requirements.txt 而不是直接指定包名：
+          # setup-python 的 cache: pip 需要依赖清单文件来算缓存 key。
+          pip install -q -r requirements.txt
 
       - name: 缓存语音模型
         uses: actions/cache@v4
