@@ -641,6 +641,16 @@ body[data-view='episode'] .brand { display: none; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* 论文首次公开日期，靠右对齐，不参与标题的截断 */
+.deck-date {
+  flex: none;
+  margin-left: auto;
+  padding-left: .5rem;
+  font-size: .68rem;
+  color: var(--secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 
 /* 时间码与波形进度条同排
    参考主流的音乐播放器：波形本身承担进度显示，range 只作为透明的拖拽层 */

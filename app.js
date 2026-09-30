@@ -200,16 +200,21 @@ function wireMenu(btnSel, menuSel) {
 /* ── 列表视图 ────────────────────────────────────────── */
 /** 优先读本机存储；没有再去网络取（两种部署方式都能用） */
 async function loadIndex() {
+  let list = null;
   try {
     const local = await idbAll('episodes');
     if (local && local.length) {
       deviceLibrary = true;
-      index = local.map(({ segments, ...rest }) => rest);
-      return;
+      list = local.map(({ segments, ...rest }) => rest);
     }
   } catch (e) { /* 隐私模式等场景下 IndexedDB 不可用，退回网络 */ }
-  const res = await fetch(`${DATA_BASE}/papers.json`, { cache: 'no-cache' });
-  index = (await res.json()).episodes || [];
+  if (!list) {
+    const res = await fetch(`${DATA_BASE}/papers.json`, { cache: 'no-cache' });
+    list = (await res.json()).episodes || [];
+  }
+  // 列表默认新论文在前；缺日期的垫到最后，再按 arXiv id 兜底
+  index = list.sort((a, b) => (publishedTs(b) || 0) - (publishedTs(a) || 0)
+    || String(b.id).localeCompare(String(a.id)));
 }
 
 /** 封面：本机存储里有 Blob 就用 objectURL，否则用网络地址。
@@ -255,6 +260,38 @@ function statusOf(e, prog) {
   return e.duration && p.time / e.duration > 0.95 ? 'done' : 'doing';
 }
 
+/* ── 论文首次公开日期 ──────────────────────────────────
+   数据来自 alphaXiv 的单篇元数据接口（firstPublicationDate，
+   即论文第一次公开的时间，不是最后一次改版的时间）。
+   ────────────────────────────────────────────────────── */
+/** 取毫秒时间戳；没有日期或格式不对都返回 null */
+function publishedTs(e) {
+  const raw = e && e.published;
+  if (!raw) return null;
+  // 只写日期的按 UTC 零点解析，避免时区把日期推前一天
+  const t = Date.parse(raw.length === 10 ? `${raw}T00:00:00Z` : raw);
+  return Number.isNaN(t) ? null : t;
+}
+
+/** 距今多少个自然日（按 UTC 零点算，边界稳定） */
+function daysAgo(e) {
+  const t = publishedTs(e);
+  if (t === null) return null;
+  const now = new Date();
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return Math.round((today - t) / 86400000);
+}
+
+/** 卡片/播放器上的日期：当年只写「Sep 17」，跨年才补年份 */
+function fmtDate(e) {
+  const t = publishedTs(e);
+  if (t === null) return '';
+  const d = new Date(t);
+  const opts = { month: 'short', day: 'numeric', timeZone: 'UTC' };
+  if (d.getUTCFullYear() !== new Date().getUTCFullYear()) opts.year = 'numeric';
+  return d.toLocaleDateString('en-US', opts);
+}
+
 function allTags() {
   const count = new Map();
   for (const e of index) for (const t of (e.topics || [])) count.set(t, (count.get(t) || 0) + 1);
@@ -269,7 +306,17 @@ function renderFilters() {
     { type: 'all', value: '', label: 'All' },
     { type: 'status', value: 'doing', label: 'In progress' },
     { type: 'status', value: 'done', label: 'Finished' },
+    { type: 'since', value: 7, label: 'Past week' },
+    { type: 'since', value: 30, label: 'Past month' },
+    { type: 'since', value: 'older', label: 'Older' },
   ];
+
+  const addSep = () => {
+    const sep = document.createElement('span');
+    sep.className = 'chip sep';
+    box.appendChild(sep);
+  };
+
   box.innerHTML = '';
 
   const add = (type, value, label) => {
@@ -285,13 +332,14 @@ function renderFilters() {
     box.appendChild(b);
   };
 
-  groups.forEach((g) => add(g.type, g.value, g.label));
+  // 先状态、再时间，中间用细线分组；标签最多，放最后
+  groups.slice(0, 3).forEach((g) => add(g.type, g.value, g.label));
+  addSep();
+  groups.slice(3).forEach((g) => add(g.type, g.value, g.label));
 
   const tags = allTags();
   if (tags.length) {
-    const sep = document.createElement('span');
-    sep.className = 'chip sep';
-    box.appendChild(sep);
+    addSep();
     tags.forEach((t) => add('tag', t, t));
   }
 }
@@ -353,6 +401,14 @@ function renderCards(query) {
     rows = rows.filter((e) => statusOf(e, progress) === activeFilter.value);
     // 历史视图按最近收听排序
     rows.sort((a, b) => (progress[b.id]?.at || 0) - (progress[a.id]?.at || 0));
+  } else if (activeFilter.type === 'since') {
+    // 「Past week / Past month」按论文首次公开日期算；Older = 超出 30 天
+    const limit = activeFilter.value;
+    rows = rows.filter((e) => {
+      const age = daysAgo(e);
+      if (age === null) return false;
+      return limit === 'older' ? age > 30 : age <= limit;
+    });
   }
 
   box.innerHTML = '';
@@ -368,8 +424,9 @@ function renderCards(query) {
     const listening = status === 'done'
       ? `Finished · ${ago(p.at)}`
       : status === 'doing' ? `${pct}% · ${ago(p.at)}` : '';
-    // 没听过时用主标签补位，底栏左边才不会空着
-    const meta = listening || (e.topics && e.topics[0]) || '';
+    // 底栏左：日期打头，后面接收听记录；没听过就退回主标签
+    const meta = [fmtDate(e), listening || (e.topics && e.topics[0]) || '']
+      .filter(Boolean).join(' · ');
 
     // 卡片不能整体做成 <button>：右下角还要放一个指向 alphaXiv 的 <a>，
     // 而按钮里嵌链接是非法 HTML。所以拆成「按钮负责打开播放器 + 链接单独一个兄弟节点」。
@@ -450,6 +507,7 @@ async function openEpisode(id) {
 
   $('#ep-title').textContent = episode.title;
   $('#ep-authors').textContent = (episode.authors || []).join(' · ');
+  $('#ep-date').textContent = fmtDate(episode);
   paintCover($('#deck-cover'), episode);
   $('#link-alphaxiv').href = (episode.links && episode.links.alphaxiv)
     || `https://www.alphaxiv.org/abs/${episode.id}`;

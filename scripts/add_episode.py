@@ -27,9 +27,11 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime, timezone
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126 Safari/537.36"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+META_API = "https://api.alphaxiv.org/papers/v3"
 
 JSONLD_RE = re.compile(
     r'<script[^>]*data-alphaxiv-id="json-ld-paper-detail-view"[^>]*>(.*?)</script>', re.S)
@@ -116,6 +118,35 @@ def curl(url: str, out: str | None = None, timeout: int = 90) -> str:
     return r.stdout.strip()
 
 
+def curl_text(url: str, timeout: int = 30) -> str:
+    r = subprocess.run(["curl", "-s", "-L", url, "--max-time", str(timeout), "-A", UA],
+                       capture_output=True, text=True)
+    return r.stdout.strip()
+
+
+def fetch_first_published(arxiv_id: str, html: str | None = None) -> str | None:
+    """论文的首次公开日期（YYYY-MM-DD）。
+
+    先问 alphaXiv 的单篇元数据接口——一个约 2.7KB 的 JSON，日期是结构化的
+    （firstPublicationDate，毫秒时间戳），比从页面里抠字符串稳。
+    接口拿不到时，再退回论文页内联的 firstPublicationDate。
+    """
+    body = curl_text(f"{META_API}/{arxiv_id}")
+    if body:
+        try:
+            doc = json.loads(body)
+        except Exception:
+            doc = {}
+        ms = doc.get("firstPublicationDate") or doc.get("publicationDate")
+        if ms:
+            return datetime.fromtimestamp(ms / 1000, timezone.utc).strftime("%Y-%m-%d")
+    if html:
+        m = re.search(r'firstPublicationDate:\$R\[\d+\]=new Date\("([^"]+)"\)', html)
+        if m:
+            return m.group(1)[:10]
+    return None
+
+
 def js_string(html: str, key: str):
     m = re.search(r'\b%s:\s*"((?:[^"\\]|\\.)*)"' % re.escape(key), html)
     if not m:
@@ -171,6 +202,8 @@ def fetch_meta(arxiv_id: str) -> dict:
         "audio_url": audio.group(0).replace("&amp;", "&") if audio else None,
         "topics": normalize_topics(raw_topics),
         "raw_topics": raw_topics,
+        # 论文首次公开日期，列表页展示与「按时间筛选」都用它
+        "published": fetch_first_published(arxiv_id, html),
     }
 
 
@@ -253,6 +286,44 @@ def add_episode(arxiv_id: str, model: str, force: bool,
     return meta
 
 
+def backfill_dates() -> None:
+    """给早期入库、meta.json 里还没有 published 的论文补上首次公开日期。
+
+    每篇只发一个约 2.7KB 的元数据请求；已经有日期的直接跳过，可以重复跑。
+    """
+    data_dir = os.path.join(ROOT, "data")
+    filled, failed, skipped = 0, [], 0
+    for name in sorted(os.listdir(data_dir)):
+        mp = os.path.join(data_dir, name, "meta.json")
+        if not os.path.exists(mp):
+            continue
+        with open(mp, encoding="utf-8") as fh:
+            meta = json.load(fh)
+        if meta.get("published"):
+            skipped += 1
+            continue
+        date = fetch_first_published(meta.get("id") or name)
+        if not date:
+            failed.append(name)
+            continue
+        meta["published"] = date
+        with open(mp, "w", encoding="utf-8") as fh:
+            json.dump(meta, fh, ensure_ascii=False, indent=2)
+        # episode.json 是播放器直接读的，也带上日期
+        ep_path = os.path.join(data_dir, name, "episode.json")
+        if os.path.exists(ep_path):
+            with open(ep_path, encoding="utf-8") as fh:
+                ep = json.load(fh)
+            ep["published"] = date
+            with open(ep_path, "w", encoding="utf-8") as fh:
+                json.dump(ep, fh, ensure_ascii=False, indent=2)
+        filled += 1
+        print(f"   {name} → {date}")
+    print(f"\n补齐 {filled} 篇，跳过（已有日期）{skipped} 篇"
+          + (f"，失败 {len(failed)}: {failed}" if failed else ""))
+    rebuild_index()
+
+
 def rebuild_index() -> None:
     eps = []
     data_dir = os.path.join(ROOT, "data")
@@ -266,10 +337,12 @@ def rebuild_index() -> None:
             "duration": m["duration"], "license": m["license"],
             "topics": m.get("topics", []), "cover": m.get("cover"),
             "path": m["id"],
+            "published": m.get("published"),
             # 播放地址给前端用来「保存到本机」；仓库里不留音频
             "audio_url": m.get("audio_url"),
         })
-    eps.sort(key=lambda e: e["id"], reverse=True)
+    # 新的排前面：先按首次公开日期，没有日期的退回按 arXiv id
+    eps.sort(key=lambda e: (e.get("published") or "", e["id"]), reverse=True)
     out = os.path.join(data_dir, "papers.json")
     with open(out, "w", encoding="utf-8") as fh:
         json.dump({"generated_at": None, "episodes": eps}, fh, ensure_ascii=False, indent=2)
@@ -283,10 +356,15 @@ def main() -> int:
     ap.add_argument("--force", action="store_true", help="已存在也重新抓")
     ap.add_argument("--no-index", action="store_true", help="不刷新 papers.json")
     ap.add_argument("--reindex-only", action="store_true", help="只刷新 papers.json")
+    ap.add_argument("--backfill-dates", action="store_true",
+                    help="给库里没有首次公开日期的论文补上日期，然后刷新 papers.json")
     ap.add_argument("--keep-audio", action="store_true",
                     help="保留本地音频（默认跑完就删，播放走 CDN）")
     args = ap.parse_args()
 
+    if args.backfill_dates:
+        backfill_dates()
+        return 0
     if args.reindex_only:
         rebuild_index()
         return 0

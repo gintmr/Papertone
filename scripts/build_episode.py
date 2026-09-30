@@ -51,7 +51,7 @@ def build(meta: dict, segments: dict, zh: list | None, audio: str) -> dict:
         "segments": segs,
     }
     # 透传站点要用的附带信息
-    for key in ("cover", "bibtex", "topics", "peaks"):
+    for key in ("cover", "bibtex", "topics", "peaks", "published"):
         if paper.get(key):
             out[key] = paper[key]
     lic = paper.get("license")
