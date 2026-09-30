@@ -704,6 +704,39 @@
       "path": "2609.03199",
       "published": "2026-09-02",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a06a29-0c72-76ce-8537-17eba5e2f439/podcast.mp3"
+    },
+    {
+      "id": "2608.ocg-optical-character-grounded-reasoning",
+      "title": "OCG: Optical Character Grounded Visual Reasoning with Flow Matching",
+      "authors": [
+        "lichen Huang",
+        "Xinrui Wu"
+      ],
+      "duration": 367.386,
+      "license": "User Uploaded",
+      "topics": [
+        "Generative Models",
+        "Visual Qa"
+      ],
+      "cover": "cover.png",
+      "path": "2608.ocg-optical-character-grounded-reasoning",
+      "published": "2026-08-14",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a000a4-1b27-7cc1-879f-0c760a07b084/podcast.mp3"
+    },
+    {
+      "id": "2606.10620",
+      "title": "Can Image Models Imagine Time? ImageTime: A Novel Benchmark for Probing Visual World Modeling Through Spatiotemporal Consistency",
+      "authors": [
+        "Xinrui Wu",
+        "Lichen Huang"
+      ],
+      "duration": 385.175583,
+      "license": "CC BY",
+      "topics": [],
+      "cover": "cover.png",
+      "path": "2606.10620",
+      "published": "2026-06-09",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/019eaf93-3bfe-7d68-8979-bde50c06611b/podcast.mp3"
     }
   ]
 }

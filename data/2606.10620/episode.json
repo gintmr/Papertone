@@ -1,0 +1,271 @@
+{
+  "id": "2606.10620",
+  "title": "Can Image Models Imagine Time? ImageTime: A Novel Benchmark for Probing Visual World Modeling Through Spatiotemporal Consistency",
+  "authors": [
+    "Xinrui Wu",
+    "Lichen Huang"
+  ],
+  "abstract": "Image generation models now produce high-quality static images, yet their ability to represent how a visual world changes over time remains poorly understood. Practical workflows such as storyboarding, step-by-step illustration, reference-guided editing, and video previsualization require models to preserve identities, objects, spatial relations, and causal order across multiple visual states. Existing evaluations largely measure single-image correctness, compositional alignment, or video quality, leaving open whether an image model can coherently imagine a temporally ordered process. We introduce ImageTime, a diagnostic benchmark that uses spatiotemporal consistency as a behavioral probe of visual world modeling in image generation. Given an action instruction, and optionally a reference image specifying the initial state, a model must generate one image containing four ordered key states: initial state, action onset, transition state, and final state. This four-keyframe protocol is more temporally demanding than single-image generation while avoiding the confounds of dense video dynamics. ImageTime organizes tasks with a progressive capability hierarchy and decomposes each scenario into stage-wise state predicates, cross-frame temporal constraints, and forbidden causal violations. GPT-5.5 scores all generated images under a structured VLM-as-judge protocol, producing interpretable capability scores, diagnostic subscores, and failure labels. Through multi-family benchmarking, ImageTime reveals where current image generation systems succeed, fail, and drift when asked to maintain coherent visual world states over time.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2606.10620",
+    "arxiv": "https://arxiv.org/abs/2606.10620"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/019eaf93-3bfe-7d68-8979-bde50c06611b/podcast.mp3",
+  "duration": 385.176,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.94,
+      "en": "Welcome to Advanced Topics in Generative Models. Today's lecture is on 'Can Image Models Imagine Time? ImageTime: A Novel Benchmark for Probing Visual World Modeling Through Spatiotemporal Consistency.' We've seen a lot of recent work on evaluating world models, with benchmarks like 'WBench' and 'Omni-WorldBench' focusing on interactive video. This paper, from researchers at the University of Electronic Science and Technology of China, takes a step back from dense video to ask a more fundamental question about discrete, key-state consistency in static image generators. Yes, Noah?",
+      "zh": "欢迎来到生成模型进阶专题。今天的讲座主题是“图像模型能想象时间吗？ImageTime：一个通过时空一致性探测视觉世界建模的新基准”。最近我们看到了很多评估世界模型的工作，像WBench和Omni-WorldBench这些基准都聚焦在交互式视频上。而这篇来自中国电子科技大学研究人员的论文，则从密集视频退后一步，针对静态图像生成器提出了一个更根本的问题，也就是离散关键状态的一致性。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.44,
+      "end": 44.78,
+      "en": "Excuse me, Professor. If the goal is to evaluate temporal understanding, why not just use a video generation benchmark? It seems like focusing on static images is a limitation.",
+      "zh": "不好意思，教授。如果目标是评估时间理解能力，为什么不直接用视频生成基准呢？只关注静态图像似乎是个局限。"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.32,
+      "end": 73.6,
+      "en": "That's a good question, and it gets to the core of their motivation. The authors argue that video benchmarks introduce many confounds, like motion smoothness and camera dynamics. They wanted to isolate a model's ability to maintain a coherent world state through an action, without the complexity of dense video. Their work is about probing the model's implicit understanding of cause and effect across discrete steps, which they believe is a prerequisite for more advanced world modeling.",
+      "zh": "这是个好问题，正好触及了他们动机的核心。作者认为视频基准会引入很多混杂因素，比如运动平滑度和镜头动态。他们想分离出模型通过一个动作维持连贯世界状态的能力，而不受密集视频复杂性的干扰。他们的工作是在探测模型对离散步骤间因果关系的隐式理解，他们认为这是更高级世界建模的前提。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 73.96,
+      "end": 78.64,
+      "en": "So it’s less about making a movie and more about checking if the model understands the logic of a sequence?",
+      "zh": "所以重点不是做一部电影，而是检查模型是否理解序列的逻辑？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 79.06,
+      "end": 110.08,
+      "en": "Precisely. The main contribution is a diagnostic benchmark called ImageTime. The central problem it addresses is that while models can generate beautiful static images, they often fail to preserve identities, object states, and causal order when asked to depict a process. For example, a model might generate an image of a hand taking an object from a drawer, but in a sequence, it might show the object in hand before the drawer is even open. Existing single-image metrics would miss this kind of logical failure.",
+      "zh": "正是如此。主要贡献是一个叫ImageTime的诊断性基准。它要解决的核心问题是，模型虽然能生成漂亮的静态图像，但在被要求描绘一个过程时，往往无法保持身份、物体状态和因果顺序。比如，模型可能会生成一张手从抽屉里拿东西的图像，但在一个序列里，它可能展示抽屉还没打开，东西就已经在手里了。现有的单图指标会漏掉这种逻辑上的失败。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 110.44,
+      "end": 112.14,
+      "en": "And this is what they mean by 'visual world modeling'?",
+      "zh": "这就是他们说的“视觉世界建模”吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 113.24,
+      "end": 133.8,
+      "en": "Yes. In this context, it’s the ability to maintain the scene's latent variables—like object identity, spatial layout, and causal preconditions—as the scene changes. These variables are hard to see in one picture but become inspectable when you lay out the key states of an action side-by-side. ImageTime aims to make these failures visible and quantifiable.",
+      "zh": "是的。在这个语境下，它指的是在场景变化时维持场景潜在变量的能力，比如物体身份、空间布局和因果前提。这些变量在单张图片里很难看出来，但当你把一个动作的关键状态并排摆出来时，就变得可以检查了。ImageTime 的目标就是让这些失败变得可见、可量化。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 134.3,
+      "end": 136.52,
+      "en": "So how do they actually implement this? What's the task?",
+      "zh": "那他们具体是怎么实现的呢？任务又是什么？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 136.92,
+      "end": 164.86,
+      "en": "The methodology is quite structured. The core task is to generate a single 2x2 grid image, which they call a 'motion sheet'. This sheet contains four temporally ordered keyframes: the initial state, the action's onset, an intermediate transition state, and the final state. The model gets a text prompt describing the action, and the output has to maintain consistency across all four panels—same subject, same background, plausible causal flow.",
+      "zh": "这套方法其实挺有章法的。核心任务是生成一张2x2的网格图，他们管它叫“运动表”。这张表里有四个按时间顺序排列的关键帧：初始状态、动作起始、中间的过渡状态，还有最终状态。模型会拿到一段描述动作的文本提示，而输出必须在四个画面之间保持一致——同一个主体、同一个背景，以及合理的因果推进。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 164.98,
+      "end": 168.08,
+      "en": "How do they score something that complex? It seems very subjective.",
+      "zh": "这么复杂的东西他们怎么打分？感觉挺主观的。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 168.58,
+      "end": 198.06,
+      "en": "They address that with two key components. First is the 'Progressive Capability Tree'. This is a seven-level hierarchy, from L0 to L6, that breaks down the required skills. L0 is just basic static grounding, like getting the objects right. Higher levels test identity preservation, spatial transitions, and all the way up to L6, which involves counterfactuals, like depicting a blocked action. This tree guides both prompt creation and evaluation.",
+      "zh": "他们用两个关键部分来解决这个问题。第一个是“渐进能力树”。这是一个从L0到L6的七级层级结构，把所需的技能拆解开来。L0只是基本的静态基础，比如把物体搞对。更高的层级测试身份保持、空间转换，一直到L6，涉及反事实，比如描绘一个被阻挡的动作。这棵树同时指导提示词的创建和评估。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 198.64,
+      "end": 200.0,
+      "en": "And the second component for scoring?",
+      "zh": "那第二个用于评分的组件呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 200.4,
+      "end": 231.32,
+      "en": "The second is their evaluation protocol, which uses a 'VLM-as-Judge' approach with GPT-5.5. The VLM is given the generated image, the original prompt, and a detailed process specification outlining the expected states and constraints. It then uses a structured rubric to assign two sets of scores: high-level Capability Scores, or C-scores, and fine-grained Diagnostic Subscores, or D-scores, which provide specific evidence for failures like object duplication or impossible interactions.",
+      "zh": "第二个是他们的评估协议，用的是GPT-5.5的“VLM作为评判者”方法。给这个VLM输入生成图像、原始提示词，以及一份详细的过程规范，里面列出了预期的状态和约束条件。然后它按照一套结构化的评分标准打出两组分数：一组是高层的能力分，简称C分；另一组是细粒度的诊断子分，简称D分，用来为物体重复、不可能交互这类失败提供具体证据。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 231.78,
+      "end": 236.08,
+      "en": "I'm always a bit skeptical of VLM-as-Judge evaluations. How do they ensure it's reliable?",
+      "zh": "我对用VLM当评委这种评估方式总是有点怀疑。他们怎么保证它是可靠的？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 236.62,
+      "end": 264.5,
+      "en": "It's a valid concern, and the paper acknowledges it as a limitation. They tried to mitigate it through multi-round quality checks to refine the rubrics and scoring rules. For example, they use conservative score-capping, where a failure at a lower level, like getting the layout wrong, caps the score for higher-level reasoning. It's an imperfect proxy for human judgment, but it allows for scalable, structured evaluation across 750 test cases for eight different models.",
+      "zh": "这个担忧很合理，论文也把它列为一个局限性。他们试图通过多轮质量检查来优化评分标准和打分规则，以此缓解这个问题。比如说，他们用了比较保守的分数上限机制——如果低层级出了错，比如布局搞错了，那高层级的推理分数就会被封顶。它并不能完美替代人类判断，但好处是可以规模化、结构化地评估，覆盖750个测试用例、八种不同的模型。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 264.9,
+      "end": 268.04,
+      "en": "What were the main findings then? Did any models succeed at this?",
+      "zh": "那主要发现了什么？有模型能做到吗？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 268.32,
+      "end": 296.74,
+      "en": "The results are interesting. They found that models like GPT Image 2 and Nano Banana 2 performed the best, showing a broad set of capabilities. However, even these top systems exhibited frequent, specific failures. The biggest gaps appeared in motion continuity, temporal ordering, and causal consistency. This shows the benchmark is effective at probing beyond static rendering. Weaker models often failed at the most basic level of just creating the 2x2 grid.",
+      "zh": "结果挺有意思的。他们发现GPT Image 2和Nano Banana 2这类模型表现最好，展现出比较全面的能力。但即便是这些顶尖系统，也频繁出现一些特定的失败。最大的短板出现在运动连续性、时间顺序和因果一致性上。这说明这个基准能有效地考察静态渲染之外的能力。而较弱的模型往往连最基本的2x2网格都画不出来。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 297.16,
+      "end": 303.64,
+      "en": "So this seems to align with findings from benchmarks like 'MMGR', which also suggest that generative models lack robust reasoning.",
+      "zh": "所以这似乎和MMGR等基准的发现一致，它们同样表明生成模型缺乏稳健的推理能力。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 303.64,
+      "end": 326.16,
+      "en": "Exactly. This work provides another lens on that problem. It demonstrates that even when a model can render individual panels plausibly, it struggles to maintain hidden world variables across them. For instance, a model might show water being poured from a glass, but the water level in the source glass doesn't decrease. The D-scores were effective at catching these specific physical common-sense violations.",
+      "zh": "确实如此。这项工作为这个问题提供了另一个视角。它表明，即使模型能够合理地生成单个画面，它也很难在多个画面之间维持隐藏的世界变量。比如，模型可能会展示水从杯子里倒出来，但源杯子里的水位却没有下降。D分数能有效捕捉到这些具体的物理常识违背。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 326.74,
+      "end": 332.24,
+      "en": "What does this mean for the field? Are we moving toward explicitly training models on this kind of temporal logic?",
+      "zh": "这对整个领域意味着什么？我们是不是正在朝着显式地用这种时序逻辑来训练模型的方向发展？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 332.24,
+      "end": 360.58,
+      "en": "That's the direction this points to. The authors suggest a path forward that includes mining videos for temporally grounded training data and designing objectives that explicitly encourage models to preserve world states. This research shifts the conversation from just 'Does it look real?' to 'Does it make sense as a process?'. It provides a concrete, diagnostic tool to measure progress toward models that have a more coherent understanding of the world they depict.",
+      "zh": "这就是它指向的方向。作者们提出了一条前进的路径，包括从视频中挖掘具有时间基础的训练数据，以及设计明确鼓励模型保持世界状态的目标函数。这项研究把讨论从“它看起来真实吗？”转向了“它作为一个过程说得通吗？”它提供了一个具体的诊断工具，用来衡量模型在更连贯地理解其所描绘的世界方面取得了多少进展。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 360.58,
+      "end": 385.176,
+      "en": "The main takeaway here is that strong visual synthesis capability does not guarantee reliable temporal-process construction. The four-keyframe protocol proves to be a very effective way to make a model's internal world-state inconsistencies visible. It’s a simple but powerful probe into a model's ability to 'imagine time.' Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这里的主要结论是，强大的视觉合成能力并不能保证可靠的时间过程构建。四关键帧协议被证明是一种非常有效的方式，能让模型内部世界状态的不一致变得可见。它是对模型“想象时间”能力的一种简单却有力的探测。感谢收听。如果你还有任何问题，可以询问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wu2026imagemodelsimaginetime,\n      title={Can Image Models Imagine Time? ImageTime: A Novel Benchmark for Probing Visual World Modeling Through Spatiotemporal Consistency}, \n      author={Xinrui Wu and Lichen Huang},\n      year={2026},\n      eprint={2606.10620},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2606.10620}, \n}",
+  "peaks": [
+    0.738,
+    0.43,
+    0.249,
+    0.2,
+    0.322,
+    0.244,
+    0.235,
+    0.669,
+    0.437,
+    0.726,
+    0.583,
+    0.501,
+    0.745,
+    0.469,
+    0.905,
+    0.587,
+    0.676,
+    0.24,
+    0.903,
+    0.579,
+    0.724,
+    0.569,
+    0.41,
+    0.615,
+    0.657,
+    0.419,
+    0.241,
+    0.251,
+    0.334,
+    0.329,
+    0.265,
+    0.431,
+    0.413,
+    0.37,
+    0.397,
+    0.489,
+    0.387,
+    0.682,
+    0.82,
+    0.538,
+    0.487,
+    0.624,
+    0.407,
+    0.669,
+    0.565,
+    0.82,
+    0.702,
+    0.521,
+    0.803,
+    0.48,
+    1.0,
+    0.966,
+    0.588,
+    0.646,
+    0.863,
+    0.51,
+    0.599,
+    0.919,
+    0.48,
+    0.648,
+    0.294,
+    0.691,
+    0.542,
+    0.693,
+    0.355,
+    0.362,
+    0.831,
+    0.458,
+    0.473,
+    0.421,
+    0.456,
+    0.65
+  ],
+  "published": "2026-06-09",
+  "license": "CC BY"
+}
