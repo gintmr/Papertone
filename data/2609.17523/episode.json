@@ -1,0 +1,276 @@
+{
+  "id": "2609.17523",
+  "title": "ScienceBuddy: Recursive-in-Recursive Self-Improvement for Interactive Scientific Agents",
+  "authors": [
+    "Shuhan Xue",
+    "Jianyuan Zhong",
+    "Ziyuan Nan",
+    "Wenbin Li",
+    "Zhaochen Yu",
+    "Jinchao Ding",
+    "Qiang Gao",
+    "Pengyu Zhan",
+    "Yuntong Zhang",
+    "Tian Cheng",
+    "Zhenfei Yin",
+    "Yingcheng Wu",
+    "Ling Yang"
+  ],
+  "abstract": "We introduce and release ScienceBuddy, an interactive scientific research workspace that brings continually improving scientific agents into researchers' everyday workflows. ScienceBuddy supports researchers in carrying out scientific tasks while transforming their requests, feedback, and execution evidence into tasks and evaluation rubrics for continual learning. At its core is recursive-in-recursive self-improvement, a paradigm that couples harness evolution with model reinforcement learning: the inner recursion improves the harness with the model fixed, while the outer recursion trains the model under the improved harness. Harness evolution shapes training experience, and model learning creates new opportunities for harness adaptation. We present case studies of researcher interaction, harness refinement, and model learning, with the benchmark cases spanning four scientific task families. By releasing ScienceBuddy as a research product, we make this paradigm available to the scientific community and take a step toward discovery intelligence: scientific AI that advances through sustained collaboration with researchers and evolves alongside the research it supports. Website: this http URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.17523",
+    "arxiv": "https://arxiv.org/abs/2609.17523"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a80f-9abb-7fec-ad94-9de7532f0d1b/podcast.mp3",
+  "duration": 377.809,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.24,
+      "en": "Welcome to AI for Scientific Discovery. Today's lecture is on a paper titled 'ScienceBuddy: Recursive-in-Recursive Self-Improvement for Interactive Scientific Agents.' We've seen a surge in papers on agent-driven research, like 'AgentRxiv' and 'InternAgent,' which aim to automate scientific workflows. This work, from researchers at PhAI Labs, Stanford, and Princeton, takes a slightly different angle. It's less about full autonomy and more about how an AI assistant can persistently improve through collaboration with a human researcher. Yes, Noah?",
+      "zh": "欢迎来到《AI 驱动的科学发现》。今天要讲的论文是《ScienceBuddy: Recursive-in-Recursive Self-Improvement for Interactive Scientific Agents》。近来智能体驱动研究方向的论文激增，像 AgentRxiv 和 InternAgent，都在尝试自动化科研流程。这项工作来自 PhAI Labs、斯坦福和普林斯顿的研究者，切入角度略有不同：它关心的不是完全自主，而是 AI 助手如何通过与人类研究者的协作持续改进。怎么了，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.6,
+      "end": 41.78,
+      "en": "Hi Professor. When you say 'persistently improve,' how does that differ from a system like ChatGPT that just learns from user corrections in a general sense?",
+      "zh": "教授好。您说的「持续改进」，和一个只会从用户纠正中泛泛学习的系统（比如 ChatGPT）有什么不同？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.98,
+      "end": 62.5,
+      "en": "That's the core question this paper addresses. A conversational correction might fix one answer, but it doesn't automatically become a reusable procedure or an update to the model's core capabilities. ScienceBuddy's main goal is to formalize that feedback loop. It aims to create an integrated scientific workspace where the collaboration itself generates structured learning material.",
+      "zh": "这正是论文要回答的核心问题。一次对话式的纠正也许能修好某一个答案，但它不会自动变成一个可复用的流程，也不会更新模型的核心能力。ScienceBuddy 的主要目标就是把这条反馈回路形式化，构建一个集成的科研工作空间，让协作本身产生结构化的学习材料。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 62.88,
+      "end": 67.36,
+      "en": "So it's trying to learn the 'how' of the research process, not just the 'what' of the answer.",
+      "zh": "所以它想学的是研究过程的「怎么做」，而不只是答案的「是什么」。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 67.8,
+      "end": 92.22,
+      "en": "Precisely. The central contribution is a method they call 'recursive-in-recursive self-improvement.' It sounds complex, but it's built on a key separation between two components: the 'harness' and the 'task model.' The task model is the base language model doing the reasoning. The harness is everything around it—the instructions, the available tools and skills, memory systems, and the procedures for how to use them.",
+      "zh": "正是。核心贡献是一种他们称为「递归中的递归自我改进」的方法。听起来复杂，但它建立在一个关键区分上：把系统分成两个部件——「承载层」和「任务模型」。任务模型是负责推理的基础语言模型；承载层则是它周围的一切——指令、可用的工具与技能、记忆系统，以及使用它们的流程。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 92.6,
+      "end": 96.52,
+      "en": "Okay, so the model is the engine, and the harness is the chassis and the driver's manual?",
+      "zh": "也就是说，模型是引擎，承载层是底盘加操作手册？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 97.04,
+      "end": 119.0,
+      "en": "That's a good analogy. Now, here's the 'recursive-in-recursive' part. There's an 'inner recursion' where the system improves the harness while keeping the model's weights frozen. It tries to find better procedures. Then, there's an 'outer recursion' where it takes the best harness it found and uses it to train the model's weights via reinforcement learning. It alternates between improving the manual and upgrading the engine.",
+      "zh": "这个比喻很贴切。接下来就是「递归中的递归」：有一个内层递归，在冻结模型权重的前提下改进承载层，试图找到更好的流程；然后有一个外层递归，把找到的最佳承载层拿去做强化学习，训练模型权重。它在「改进手册」和「升级引擎」之间交替进行。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 119.32,
+      "end": 123.68,
+      "en": "Why separate them? Wouldn't it be more efficient to just fine-tune the model on everything at once?",
+      "zh": "为什么要分开？直接把模型在所有东西上微调，不是更高效吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 123.96,
+      "end": 139.48,
+      "en": "Separating them provides inspectability. If the agent fails, you can ask: was it because the model lacked knowledge, or because its procedure—its harness—was flawed? This structure lets them isolate and measure improvements from both sources independently, which is a key part of their investigation.",
+      "zh": "分开是为了可检视。如果智能体失败了，你可以问：是模型缺知识，还是它的流程——承载层——有缺陷？这种结构让他们能独立地隔离并度量两方面的改进，这也是他们研究的关键一环。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 139.98,
+      "end": 162.1,
+      "en": "Let's look at the methodology. The ScienceBuddy workspace is a persistent environment focused on biomedicine. It has 224 scientific tools for things like genomics, literature retrieval, and data analysis. A researcher interacts with the agent, and the system records the entire process—the reasoning steps, tool calls, inputs, and outputs. This is all visible in a 'Trajectory view'.",
+      "zh": "我们看方法。ScienceBuddy 是一个聚焦生物医学的持久化工作空间，配备 224 个科学工具，涵盖基因组学、文献检索和数据分析等。研究者与智能体交互，系统会记录整个过程——推理步骤、工具调用、输入与输出，都在一个「轨迹视图」里呈现。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 163.52,
+      "end": 168.58,
+      "en": "That seems critical for scientific applications. You can't just trust a black box; you need to see the evidence trail.",
+      "zh": "这对科学应用似乎至关重要。你不能只信任一个黑箱，你需要看到证据链。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 168.58,
+      "end": 189.98,
+      "en": "Exactly. And this trajectory is what gets converted into learning material. An interaction is packaged into a task with a corresponding rubric. This rubric contains weighted criteria—things like scientific correctness, required evidence, and output format. Crucially, the paper notes that user approval isn't treated as ground truth. The rubric is the standard.",
+      "zh": "正是。而这条轨迹就是被转化成学习材料的东西。一次交互被打包成一个任务，并配一份评分量表。量表里是带权重的标准——比如科学正确性、必要证据、输出格式。关键在于，论文明确指出用户认可并不被当作真值，量表才是标准。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 190.52,
+      "end": 198.2,
+      "en": "Wait, who makes the rubric? The paper mentions a 'fixed judge' evaluates some criteria. Isn't that just replacing potential user error with potential judge bias?",
+      "zh": "等一下，量表是谁定的？论文提到用一个「固定评委」来评估某些标准。这不就是用可能的评委偏见，替换掉可能的用户错误吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 198.2,
+      "end": 225.8,
+      "en": "That's a valid critique and a noted limitation. The quality and objectivity of the rubrics and the judge are significant factors. For this study, it's a controlled variable. During the inner recursion—harness evolution—a separate, powerful model proposes small, validated edits to the harness. A candidate harness is only accepted if it scores strictly higher on a set of development tasks, which helps prevent regressions.",
+      "zh": "这是一个合理的批评，论文也把它列为局限。量表与评委的质量和客观性确实是重要变量。在这项研究里，它被当作一个受控变量处理。在内层递归——也就是承载层演化——阶段，一个独立的强模型提出小幅且经过验证的承载层修改；只有当候选承载层在一组开发任务上得分严格更高时才会被接受，这有助于防止性能退化。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 225.8,
+      "end": 227.42,
+      "en": "And then for the outer recursion?",
+      "zh": "那外层递归呢？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 227.7,
+      "end": 244.88,
+      "en": "For the outer recursion, they fix the newly evolved harness and use it to generate fresh trajectories for model training. The rubric score becomes a reward signal, and they use a policy optimization method to update the task model's weights. Then the whole cycle can begin again with the newly trained model.",
+      "zh": "外层递归里，他们固定刚刚演化出的承载层，用它生成新的轨迹来训练模型。量表分数成为奖励信号，他们用策略优化方法更新任务模型的权重。之后整个循环可以带着新训练出的模型重新开始。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 245.06,
+      "end": 274.62,
+      "en": "This alternating process seems to produce cumulative gains. On their held-out scientific tasks, overall accuracy increased from about 42% to 73%. They also ran ablation studies. The harness-only adaptation provided a 20 percentage point gain on its own. The model-only learning, with a fixed harness, also produced a nearly 20 percentage point gain in problem coverage. This shows both components are contributing meaningfully.",
+      "zh": "这种交替过程似乎带来了累积收益。在他们留出的科学任务上，总体准确率从约 42% 提升到 73%。他们还做了消融实验：仅做承载层适配，本身就带来 20 个百分点的提升；仅做模型学习（承载层固定），在问题覆盖上也有接近 20 个百分点的提升。这说明两个部件都有实质贡献。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 274.62,
+      "end": 302.38,
+      "en": "So, this shifts the field by providing a structured framework for continual learning from interactive feedback, rather than just static datasets. But the report mentions these are largely benchmark tasks. Is it solving real, novel scientific problems, or is it getting better at solving a specific set of test problems? It feels related to the challenges papers like 'Training AI Scientists to Replicate Research' face in moving from replication to true discovery.",
+      "zh": "所以这为从交互反馈中持续学习提供了一个结构化框架，而不只是依赖静态数据集，从而推动了领域发展。但报告里提到这些大多是基准任务。它是在解决真实的、全新的科学问题，还是只是在一个特定测试集上变得更擅长？这感觉和《Training AI Scientists to Replicate Research》那类论文面临的挑战相似——如何从复现走向真正的发现。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 302.76,
+      "end": 342.54,
+      "en": "You've hit on the main caveat. The evidence is preliminary and based on structured feedback, not long-term deployment with independent research groups. The system proposes analyses; it doesn't run wet lab experiments or produce validated discoveries. However, its significance is methodological. It offers a concrete architecture for separating and improving procedural skill versus parametric knowledge. This could be adapted to other domains where tasks require complex tool use and verifiable steps, moving us closer to the kind of robust recursive self-improvement discussed in survey works like 'The Last AI Built by Humans.'",
+      "zh": "你正好点到了主要的保留意见。这些证据是初步的，且基于结构化反馈，而不是与独立研究团队长期部署的结果。系统提出分析方案，但它不跑湿实验，也不产出经过验证的发现。不过它的意义是方法论上的：它给出了一套具体架构，把程序性技能与参数化知识分离开来并分别改进。这套思路可以迁移到其他需要复杂工具使用和可验证步骤的领域，让我们离那些综述文章（比如《The Last AI Built by Humans》）所讨论的稳健递归自我改进更近一步。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 343.46,
+      "end": 372.58,
+      "en": "To wrap up, the key takeaway from ScienceBuddy isn't just another scientific agent. It's the design pattern: a dual-level learning system that alternates between refining its procedures—the harness—and updating its core knowledge—the model. This recursive-in-recursive loop allows for more inspectable, stable, and persistent improvement from human collaboration. It’s a step toward making AI a true partner in the scientific process, one that learns how to learn from the researcher it's assisting.",
+      "zh": "总结一下，ScienceBuddy 的关键成果不是又一个科学智能体，而是这个设计模式：一个双层学习系统，在「细化流程（承载层）」和「更新核心知识（模型）」之间交替。这个递归中的递归回路，使得来自人类协作的改进更可检视、更稳定、更持久。它让 AI 朝真正的科研伙伴迈进了一步——一个会向它所协助的研究者学习「如何学习」的伙伴。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 373.02,
+      "end": 377.809,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果你还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{xue2026sciencebuddyrecursiveinrecursiveselfimprovementinteractive,\n      title={ScienceBuddy: Recursive-in-Recursive Self-Improvement for Interactive Scientific Agents}, \n      author={Shuhan Xue and Jianyuan Zhong and Ziyuan Nan and Wenbin Li and Zhaochen Yu and Jinchao Ding and Qiang Gao and Pengyu Zhan and Yuntong Zhang and Tian Cheng and Zhenfei Yin and Yingcheng Wu and Ling Yang},\n      year={2026},\n      eprint={2609.17523},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.17523}, \n}",
+  "topics": [
+    "Agents"
+  ],
+  "peaks": [
+    1.0,
+    0.491,
+    0.336,
+    0.379,
+    0.259,
+    0.385,
+    0.308,
+    0.304,
+    0.552,
+    0.667,
+    0.663,
+    0.383,
+    0.477,
+    0.474,
+    0.425,
+    0.326,
+    0.391,
+    0.5,
+    0.327,
+    0.266,
+    0.32,
+    0.305,
+    0.607,
+    0.654,
+    0.522,
+    0.398,
+    0.252,
+    0.502,
+    0.481,
+    0.658,
+    0.407,
+    0.22,
+    0.317,
+    0.457,
+    0.315,
+    0.47,
+    0.303,
+    0.342,
+    0.463,
+    0.424,
+    0.424,
+    0.338,
+    0.2,
+    0.845,
+    0.575,
+    0.219,
+    0.572,
+    0.566,
+    0.28,
+    0.308,
+    0.232,
+    0.34,
+    0.442,
+    0.269,
+    0.509,
+    0.419,
+    0.421,
+    0.538,
+    0.641,
+    0.377,
+    0.334,
+    0.37,
+    0.328,
+    0.322,
+    0.288,
+    0.534,
+    0.601,
+    0.305,
+    0.362,
+    0.286,
+    0.276,
+    0.29
+  ],
+  "license": "arXiv 默认许可"
+}

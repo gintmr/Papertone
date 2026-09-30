@@ -1,0 +1,252 @@
+{
+  "id": "2609.07303",
+  "title": "Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching",
+  "authors": [
+    "Preston Fu",
+    "Kevin Frans",
+    "Oleh Rybkin",
+    "Sergey Levine",
+    "Aviral Kumar"
+  ],
+  "abstract": "Current paradigms for training language models via reinforcement learning rely heavily on sparse outcome rewards. However, as we pursue tasks that require longer and more complicated trajectories, such strategies result in slow learning. Prior work has attempted to address this problem by rewarding partial progress; however, naive formulations are often biased and converge to suboptimal policies. We show that a simple and unbiased dense reward formulation, which we term progressive point matching, scales exponentially more efficiently to long-horizon tasks by rewarding partial progress on a segment level, both theoretically and empirically via synthetic environments. We then show how progressive point matching can be practically instantiated using a single reference trajectory per task. On extremely hard math reasoning problems, sparse outcome rewards cannot make any progress, whereas segment-level rewards enable improvements at larger test-time token budgets when measured by success rate or pass@k.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.07303",
+    "arxiv": "https://arxiv.org/abs/2609.07303"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a083e0-791b-791d-81d1-b77d10ef4485/podcast.mp3",
+  "duration": 356.467,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 27.26,
+      "en": "Welcome to CS 285, Advanced Topics in Reinforcement Learning. Today's lecture is on 'Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching.' This comes from researchers at UC Berkeley and Carnegie Mellon. We've seen a trend of applying RL to improve LLM reasoning, with methods like Process Rewards gaining traction. The core challenge they all face is sparse rewards—getting feedback only at the very end of a long reasoning chain.",
+      "zh": "欢迎来到 CS 285《强化学习进阶》。今天要讲的论文是《Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching》，作者来自 UC Berkeley 和 Carnegie Mellon。近来把强化学习用于提升大模型推理已成趋势，过程奖励这类方法越来越受关注。它们共同面对的核心难题是奖励稀疏——只有一条很长的推理链走到最后，才能拿到反馈。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 27.26,
+      "end": 27.74,
+      "en": "Yes, Noah?",
+      "zh": "怎么了，Noah？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 28.2,
+      "end": 34.68,
+      "en": "Excuse me, Professor. Could you quickly recap why that sparsity is so detrimental? Is it just that the model gets less feedback overall?",
+      "zh": "教授，您能简单说说为什么这种稀疏性危害这么大吗？只是因为模型整体拿到的反馈变少了吗？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 35.06,
+      "end": 58.24,
+      "en": "That's part of it, but it's more severe. The paper proves that for a task requiring 'n' steps, the signal-to-noise ratio in your policy gradient degrades exponentially. The chances of stumbling upon a correct multi-step solution through random exploration become vanishingly small as 'n' grows. This work, PPM, aims to solve that by providing denser rewards without biasing the final policy.",
+      "zh": "这只是其中一部分，实际情况更严重。论文证明了，对于一个需要 n 步的任务，策略梯度里的信噪比会随 n 指数级衰减。随着 n 增大，靠随机探索碰巧走出正确多步解的概率会小到可以忽略。这篇论文提出的 PPM，目标就是在不使最终策略产生偏差的前提下，提供更密集的奖励。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 58.62,
+      "end": 81.06,
+      "en": "The main concept here is to reframe the problem. Instead of one big goal, imagine a sequence of smaller milestones called 'reasoning points.' Think of solving a complex math problem. A reasoning point could be solving an intermediate equation or proving a necessary lemma. It's a self-contained result that acts as a sufficient statistic for the next stage of reasoning. You don't need to know how you proved the lemma, just that it's true.",
+      "zh": "核心思路是重新表述问题。不要把它看成一个单一的大目标，而是一串更小的里程碑，称为「推理点」。想象解一道复杂的数学题：一个推理点可能是解出一个中间方程，或者证明一个必要的引理。它是一个自足的结果，充当下一阶段推理的充分统计量。你不需要知道引理是怎么证出来的，只需要知道它成立。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 81.32,
+      "end": 83.68,
+      "en": "So the model gets a reward for hitting these points?",
+      "zh": "也就是说，模型命中这些点就能得到奖励？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 83.68,
+      "end": 109.92,
+      "en": "Precisely. The framework uses what it calls a 'Progressive Point Matching' measure. It essentially just counts how many of these key reasoning points, taken from a reference solution, have been successfully generated in the model's trajectory so far. The reward for any given segment of text is the increase in this count. If the model generates a new chunk of reasoning that solves one more intermediate step, it gets a positive reward right then and there, not just at the end.",
+      "zh": "正是。框架使用一个叫「渐进点匹配」的度量，本质上就是统计参考解中的那些关键推理点，在模型当前的推理轨迹里已经成功生成了多少个。任何一段文本的奖励，就是这个计数相对于之前的增量。如果模型新生成的一段推理又解决了一个中间步骤，它在当下立刻得到正奖励，而不是只在最后。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 110.22,
+      "end": 117.1,
+      "en": "Wait, so if it's based on a reference solution, isn't this just a form of imitation learning? Is the model just being trained to copy the reference?",
+      "zh": "等一下——既然是基于参考解，这不就是一种模仿学习吗？模型不就是在被训练去照抄参考解？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 117.52,
+      "end": 142.6,
+      "en": "That's a critical question. It's not imitation learning. The model isn't rewarded for matching the reference text token-for-token. It's rewarded for reaching the same conceptual milestones. It can discover a completely different, even more efficient, path to proving that lemma. This flexibility is key. It interpolates between imitation and pure RL, using the reference for guidance without restricting the policy's exploration.",
+      "zh": "这是个关键问题。它不是模仿学习。模型并不是因为逐字匹配参考文本而受奖励，而是因为到达了同样的概念性里程碑。它完全可以发现一条完全不同、甚至更高效的路径来证明那个引理。这种灵活性正是关键。它介于模仿学习和纯强化学习之间，用参考解做引导，却不限制策略的探索。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 142.94,
+      "end": 179.47,
+      "en": "Now, let's talk about how this is implemented, which gets into the applications. A potential issue arises: what if a policy learns to just accumulate lots of easy intermediate points but never reaches the final answer? It could get a higher cumulative reward than a shorter, correct trajectory. To prevent this, PPM uses a 'shortcutting' mechanism. It defines a dependency graph for these reasoning points. Reaching the final goal point is defined as implicitly satisfying all prerequisite points. This ensures that the maximum possible reward is only achieved if the final goal is met, aligning the dense rewards with the original sparse outcome.",
+      "zh": "接下来说说它怎么落地，这就涉及应用层面。有个潜在问题：如果策略学会大量累积容易的中间点，却永远不给出最终答案呢？那样它拿到的累计奖励，可能比一条更短但正确的轨迹还高。为防这一点，PPM 引入了「捷径」机制：为这些推理点定义依赖图，并规定到达最终目标点，等同于隐含满足了所有前置点。这样只有在最终目标达成时才能拿到最高奖励，密集奖励与原本的稀疏结果因此保持一致。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 179.85,
+      "end": 185.05,
+      "en": "So where do these reasoning points and their dependency graphs come from? Is that done manually for each problem?",
+      "zh": "那这些推理点和它们的依赖图从哪来？每道题都手工标注吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 185.39,
+      "end": 212.59,
+      "en": "No, that would be impractical. They use a powerful external LLM, what they call a 'judge' model, like Gemini. For each problem, they feed the judge a reference solution. The judge's task is to automatically extract the key reasoning points and their structure. Then, during training, this same judge evaluates the policy's generated trajectories to see how many of those points it has successfully covered. It's a form of automated reward shaping using privileged information.",
+      "zh": "不，那样不现实。他们用一个强大的外部大模型，称为「评委」模型，比如 Gemini。对于每道题，他们把参考解喂给评委，评委的任务是自动抽出关键推理点及其结构。训练时，同一个评委再去评估策略生成的轨迹覆盖了其中多少个点。这是一种利用特权信息做的自动奖励塑形。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 213.03,
+      "end": 220.75,
+      "en": "How reliable is that judge? It seems like the quality of the entire training process depends on this external model's ability to correctly identify progress.",
+      "zh": "这个评委可靠吗？整个训练过程的质量似乎都取决于这个外部模型能否正确识别进展。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 221.07,
+      "end": 250.89,
+      "en": "A valid concern. They validate the judge by checking its correlation with the true Monte Carlo success rate. They found that their engineered prompts for the judge led to a high rank correlation, meaning the judge's score for partial progress was a strong predictor of eventual success. The empirical results on tasks like GSM-Infinite and the very difficult POPE-hard dataset show this works. PPM significantly outperformed standard RL with sparse rewards, especially as the problem complexity, or horizon, increased.",
+      "zh": "这个担心有道理。他们用评委打分与真实蒙特卡洛成功率的相关性来验证它，结果发现精心设计的提示词让评委达到了很高的秩相关——也就是说，评委对部分进展的评分能有力地预测最终成功。在 GSM-Infinite 以及极难的 POPE-hard 数据集上，实验结果表明这是有效的。PPM 明显优于稀疏奖励的标准强化学习，而且问题越复杂、轨迹越长，优势越明显。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 250.89,
+      "end": 279.73,
+      "en": "The primary implication here is a shift towards more efficient exploration in long-horizon tasks. This work provides a concrete way to give partial credit that is both dense and unbiased. It moves beyond checking the logical correctness of each step, which is what Process Reward Models do. A process reward might penalize a valid but unconventional step. PPM doesn't care about the process, only the intermediate result. This gives the model more freedom.",
+      "zh": "这项工作的主要意义，在于让长程任务里的探索更高效。它给出了一种具体办法，能提供既密集又无偏的部分奖励。它超越了逐步检查逻辑正确性的做法——也就是过程奖励模型所做的。过程奖励可能会惩罚一个正确但不常规的步骤，而 PPM 不在乎过程，只关心中间结果。这给了模型更多自由。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 280.49,
+      "end": 294.69,
+      "en": "So, compared to a paper like 'GRPO is Secretly a Process Reward Model,' which argues that standard RL methods already implicitly reward process, PPM makes this explicit but focuses on outcomes of sub-problems rather than the process itself?",
+      "zh": "那么，和《GRPO is Secretly a Process Reward Model》那篇论文相比——它主张标准强化学习方法本身就已经隐式地给了过程奖励——PPM 是把这件事显式化了，但关注的是子问题的结果而不是过程本身？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 296.15,
+      "end": 327.55,
+      "en": "Exactly. GRPO might implicitly favor shorter paths to intermediate success, which can be seen as a process-aware objective. PPM externalizes this. It explicitly defines the sub-goals using an oracle or a judge, and rewards their achievement directly. Another interesting finding was on training budgets. For near-impossible problems, they found training on shorter contexts sometimes led to better performance when testing on longer contexts, as it forced the model to focus on making partial progress rather than gambling on a long-shot full solution.",
+      "zh": "正是。GRPO 可能隐式地偏好通往中间成功的更短路径，可以看作一种过程感知的目标。PPM 把这一点外化了：它用 oracle 或评委显式定义子目标，并直接对达成子目标给奖励。另一个有意思的发现关于训练预算：对于那些几乎不可能解出的问题，在较短上下文上训练，有时在较长上下文上测试反而表现更好，因为这迫使模型专注取得部分进展，而不是赌一个胜算极低的完整解。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 327.93,
+      "end": 351.47,
+      "en": "So, to wrap up, the key takeaway is that Progressive Point Matching provides a structured way to create dense, segment-level rewards for long-horizon reasoning. It does this by identifying key 'reasoning points' from a reference and rewarding the policy for achieving them. This elegantly sidesteps the exponential decay of the signal-to-noise ratio found in sparse reward settings, enabling more efficient and stable training on complex tasks.",
+      "zh": "总结一下，核心结论是：渐进点匹配为长程推理提供了一种结构化的方式，来构造密集的、段落级的奖励。它从参考解中找出关键「推理点」，并对策略达成这些点给予奖励，从而优雅地绕开了稀疏奖励设定下信噪比指数衰减的问题，使复杂任务上的训练更高效、更稳定。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 351.89,
+      "end": 356.467,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果你还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{fu2026longhorizonlanguagemodelreinforcement,\n      title={Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching}, \n      author={Preston Fu and Kevin Frans and Oleh Rybkin and Sergey Levine and Aviral Kumar},\n      year={2026},\n      eprint={2609.07303},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.07303}, \n}",
+  "topics": [
+    "Reinforcement Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.828,
+    0.337,
+    0.359,
+    0.312,
+    0.427,
+    0.418,
+    0.56,
+    0.364,
+    0.312,
+    0.564,
+    0.626,
+    0.663,
+    0.312,
+    0.405,
+    0.385,
+    0.747,
+    0.554,
+    0.933,
+    0.987,
+    0.899,
+    0.553,
+    0.491,
+    0.218,
+    0.635,
+    0.384,
+    0.315,
+    0.42,
+    0.512,
+    0.471,
+    0.873,
+    0.65,
+    0.767,
+    0.508,
+    0.542,
+    0.775,
+    0.407,
+    0.593,
+    0.487,
+    0.343,
+    0.472,
+    0.384,
+    0.309,
+    0.531,
+    0.408,
+    0.559,
+    0.409,
+    0.352,
+    0.379,
+    0.455,
+    0.792,
+    0.2,
+    0.384,
+    0.302,
+    0.414,
+    0.464,
+    0.409,
+    0.606,
+    0.387,
+    0.543,
+    0.473,
+    0.237,
+    0.477,
+    0.442,
+    0.239,
+    0.357,
+    0.786,
+    0.456,
+    0.664,
+    0.43,
+    0.556,
+    0.988
+  ],
+  "license": "CC BY"
+}

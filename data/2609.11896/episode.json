@@ -1,0 +1,224 @@
+{
+  "id": "2609.11896",
+  "title": "Mathematical inverse problem for the world data inference of the parton distribution functions of the proton",
+  "authors": [
+    "Henri Hänninen"
+  ],
+  "abstract": "We show that the inference problem of constraining the parton distribution functions of the proton from deeply inelastic scattering data can be formulated as a linear tensor reconstruction inverse problem. This means that instead of fitting model parameters to the world data, a reconstructive approach to solve a system of coupled linear functional integral equations can be formulated. We leverage the mathematical structures of the integral equations defined by perturbative QCD and global analysis to pose the problem of global analysis as a coupled system of linear integral equations, and construct a proof-of-principle methodology to solve it. To formulate this approach concretely, we review all next-to-leading order accuracy results for inclusive virtual photon, neutral current, charged current, heavy flavor production, and neutrino deep-inelastic lepton--proton scattering. This mathematical methodology of inference opens a path towards a model-bias-free extraction of the proton PDFs from the world data of deeply inelastic scattering in the spirit of indirect measurement employed in mathematical inverse problems, including robust estimation of uncertainties with reduced bias from model parametrization, while closely adhering to the established paradigm of perturbative QCD and global analysis.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.11896",
+    "arxiv": "https://arxiv.org/abs/2609.11896"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a08e8c-c504-76f5-bc9c-735385e3586b/podcast.mp3",
+  "duration": 361.326,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.36,
+      "en": "Welcome to Advanced Methods in Computational Particle Physics. Today's lecture is on Henri Hänninen's paper, \"Mathematical inverse problem for the world data inference of the parton distribution functions of the proton.\" We've seen a lot of work recently, like the \"NNLO Global Analysis of Polarized Parton Distribution Functions,\" focusing on pushing perturbative calculations to higher orders. This work, out of the University of Jyväskylä, takes a step back and questions the fundamental methodology itself. It asks if we can determine the proton's structure more directly from data, without pre-supposing its functional form. Yes, Noah?",
+      "zh": "欢迎来到《计算粒子物理进阶方法》。今天要讲的论文是 Henri Hänninen 的《Mathematical inverse problem for the world data inference of the parton distribution functions of the proton》。近来有不少工作，比如《NNLO Global Analysis of Polarized Parton Distribution Functions》，都在把微扰计算推向更高阶。而这项工作出自于韦斯屈莱大学，它退后一步，质疑的是方法论本身：我们能否更直接地从数据确定质子的结构，而不预设它的函数形式？怎么了，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.76,
+      "end": 45.9,
+      "en": "Excuse me, Professor. So, you're saying this paper argues that the standard approach used by major collaborations for decades has been fundamentally biased?",
+      "zh": "教授，您的意思是，这篇论文认为各大合作组沿用了数十年的标准做法存在根本性的偏差？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.2,
+      "end": 83.96,
+      "en": "That's a strong way to put it, but it gets at the core motivation. The paper doesn't aim to invalidate previous work, but to highlight a potential source of model bias and offer a complementary approach to mitigate it. For decades, global analyses have relied on fitting a flexible, theoretically-motivated function—an ansatz—to experimental data. The classic form is something like a power of x, a power of one minus x, and a polynomial. This works very well, but it means you can only find features your function is capable of describing. This research asks: what if we don't assume any functional form at all?",
+      "zh": "这么说有点重，但它触及了核心动机。论文的目的不是否定以往工作，而是指出一个潜在的模型偏差来源，并提供一种互补的方法来缓解它。几十年来，全局分析一直依赖把一个灵活、有理论动机的函数——也就是拟设——拟合到实验数据上。经典形式大致是 x 的幂、1 减 x 的幂，再加一个多项式。这非常有效，但问题在于：你只能找到你的函数有能力描述的那些特征。这项研究问的是：如果我们完全不预设任何函数形式呢？"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 83.96,
+      "end": 86.7,
+      "en": "How would that even work? PDFs aren't directly measurable.",
+      "zh": "那怎么可能做得到？部分子分布函数又不是可以直接测量的量。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 87.18,
+      "end": 133.54,
+      "en": "Exactly. That's why the author frames it as a mathematical inverse problem. Think of a medical CT scan. We don't assume a tumor has a specific shape and then fit its parameters. Instead, we take X-ray measurements from many angles and use algorithms to reconstruct the internal structure pixel by pixel. This paper proposes doing the same for the proton. The central idea is to treat all individual parton distribution functions—for gluons, quarks, and anti-quarks—as a single unified object called a 'parton distribution tensor'. Then, every experimental observable, like a cross-section measurement, is treated as a linear integral operator acting on this tensor. The goal is no longer to fit parameters, but to solve a large system of coupled integral equations to reconstruct the tensor itself.",
+      "zh": "正是。所以作者把它表述为一个数学反问题。想象医学 CT：我们不会先假定肿瘤有某个特定形状再去拟合它的参数，而是从多个角度拍 X 光，再用算法逐像素重建内部结构。这篇论文提出对质子做同样的事。核心想法是：把所有单独的部分子分布函数——胶子、夸克和反夸克的——视为一个统一的整体，称为「部分子分布张量」。于是每一个实验观测量，比如截面测量，都被看作作用在这个张量上的一个线性积分算子。目标不再是拟合参数，而是求解一个庞大的耦合积分方程组，把张量本身重建出来。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 133.9,
+      "end": 139.82,
+      "en": "So you end up with a direct, point-by-point reconstruction of the PDFs, free from the constraints of a specific model shape?",
+      "zh": "也就是说，最终得到的是逐点、直接重建的部分子分布函数，不受某个特定模型形状的约束？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 140.06,
+      "end": 163.44,
+      "en": "That's the objective. It's a significant conceptual shift. The main contribution here is the formulation. The paper meticulously goes through various Deeply Inelastic Scattering observables at Next-to-Leading Order and rewrites their pQCD definitions into this unified linear operator language. This is the first time all these disparate calculations have been collected and presented within a single mathematical framework.",
+      "zh": "这正是目标所在，也是一次显著的概念转变。主要贡献在于这个表述本身。论文细致地梳理了次领头阶下各种深度非弹性散射观测量，把它们的微扰 QCD 定义改写成这套统一的线性算子语言。这是第一次把所有这些各不相同的计算汇集到同一个数学框架里。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 164.04,
+      "end": 170.14,
+      "en": "Okay, but a system of functional integral equations sounds computationally intractable. How do you actually solve it?",
+      "zh": "好吧，但一个函数积分方程组听起来在计算上根本不可行。具体怎么解？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 170.3,
+      "end": 205.96,
+      "en": "The paper outlines a method based on discretization. You define a grid in the kinematic variables, x and Q-squared. The parton distribution tensor becomes a very long vector containing the PDF values at each grid point. Each integral operator becomes a block in a very large matrix. The entire world's data on observables becomes another long vector. The problem then reduces to solving a massive, but standard, linear matrix-vector equation: data equals operator matrix times the PDF vector. It's a brute-force approach, but it avoids the ansatz.",
+      "zh": "论文给出的方法基于离散化。在运动学变量 x 和 Q 平方上定义一个网格，部分子分布张量就变成一个很长的向量，装着每个网格点上的取值；每个积分算子则变成一个大矩阵里的一个块；全世界所有观测量数据又构成另一个长向量。于是问题归结为求解一个规模庞大但形式标准的线性矩阵—向量方程：数据等于算子矩阵乘以分布向量。这是一种暴力做法，但它绕开了拟设。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 206.88,
+      "end": 213.82,
+      "en": "And what about the DGLAP evolution equations? In traditional fits, you evolve the parametrized function and fit that to data at different energy scales.",
+      "zh": "那 DGLAP 演化方程呢？传统拟合里，你要演化那个参数化函数，再把它拟合到不同能标下的数据。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 214.14,
+      "end": 246.46,
+      "en": "That's a critical point. Here, the DGLAP equations are not used to generate a model to be fitted. Instead, they are incorporated directly into the inverse problem as a Partial Differential Equation constraint. This means the final reconstructed solution for the PDF vector must not only agree with the experimental data but also satisfy the rules of QCD evolution to a certain accuracy. The DGLAP kernels themselves are also expressed as integral operators and become part of the system. This ensures the physics is respected without being baked into a rigid functional form.",
+      "zh": "这一点很关键。在这里，DGLAP 方程不再被用来生成一个待拟合的模型，而是作为偏微分方程约束直接并入反问题。这意味着最终重建出的分布向量不仅要与实验数据吻合，还必须在一定精度内满足 QCD 演化的规则。DGLAP 核本身也被写成积分算子，成为方程组的一部分。这样既尊重了物理，又不必把它固化成一个僵硬的函数形式。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 246.46,
+      "end": 262.04,
+      "en": "Wait, so this turns the entire global analysis into a huge linear algebra problem. How does this compare to other non-parametric approaches, like in \"Bayesian Inference with Gaussian Processes for the Determination of Parton Distribution Functions\"? That also avoids a fixed ansatz.",
+      "zh": "等一下，这等于是把整个全局分析变成一个巨大的线性代数问题。它和其他非参数方法相比如何？比如《Bayesian Inference with Gaussian Processes for the Determination of Parton Distribution Functions》，那个方法也避开了固定拟设。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 263.5,
+      "end": 300.02,
+      "en": "An excellent connection. Both methods aim to reduce model bias. The Gaussian Process approach is probabilistic; it defines a prior over a space of functions and updates it with data. This paper's approach is more of a direct reconstruction. It leverages the inherent linearity of the problem as dictated by the collinear factorization theorem in pQCD. It says, 'let's write down the exact linear system defined by theory and data, and then solve it.' The result is a single best-fit reconstruction, though one could use replica methods to estimate uncertainty.",
+      "zh": "这个联系很好。两种方法都在于降低模型偏差。高斯过程方法是概率式的：它在一个函数空间上定义先验，再用数据去更新。而这篇论文的做法更接近直接重建，它利用的是 pQCD 中共线因子化定理所规定的、问题内在的线性性。它说的是：「让我们把理论和数据所确定的那套精确线性系统写下来，然后解它。」结果是单一的最佳拟合重建——当然，也可以用副本法来估计不确定度。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 300.02,
+      "end": 303.92,
+      "en": "So what's the broader impact? Will this replace traditional global fits?",
+      "zh": "那么更广泛的影响是什么？它会取代传统的全局拟合吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 304.28,
+      "end": 331.24,
+      "en": "I don't see it as a replacement, but as a powerful validation tool and a path forward. It can be used to check if current ansatz-based PDFs are missing any features the data might be hinting at. And it's forward-looking. Future experiments, like the Electron-Ion Collider mentioned in the \"Self-consistent determination of proton and nuclear PDFs\" paper, will provide incredibly precise data. A method like this, which lets the data speak more directly, will be essential for leveraging that precision.",
+      "zh": "我不认为这是取代，而更像一个有力的验证工具和一条前进路径。它可以用来检验当前基于拟设的部分子分布函数，是否遗漏了数据正在暗示的某些特征。而且它是面向未来的。像《Self-consistent determination of proton and nuclear PDFs》里提到的电子—离子对撞机，未来会提供精度极高的数据。像这样让数据更直接地说话的方法，对于利用那种精度是必不可少的。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 331.64,
+      "end": 361.326,
+      "en": "Ultimately, the key finding here is the framework itself. The paper doesn't deliver a new set of PDFs. It provides the mathematical and computational blueprint for a new way of obtaining them. It formalizes the problem in the language of inverse theory, which is a powerful lens. The main takeaway is that by reframing the problem, we can potentially achieve a less biased understanding of the proton's inner structure, directly from the data. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "归根结底，这里的关键成果是框架本身。论文并没有给出一套新的分布函数，它提供的是一条获得它们的全新路径的数学与计算蓝图。它把问题形式化为反理论的语汇，这是一个很有力的视角。核心结论是：通过重新表述问题，我们有可能直接由数据得到对质子内部结构更少偏差的认识。感谢收听。如果你还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{hänninen2026mathematicalinverseproblemworld,\n      title={Mathematical inverse problem for the world data inference of the parton distribution functions of the proton}, \n      author={Henri Hänninen},\n      year={2026},\n      eprint={2609.11896},\n      archivePrefix={arXiv},\n      primaryClass={hep-ph},\n      url={https://arxiv.org/abs/2609.11896}, \n}",
+  "topics": [
+    "Particle Physics"
+  ],
+  "peaks": [
+    0.554,
+    0.651,
+    0.416,
+    0.647,
+    0.495,
+    0.419,
+    0.526,
+    0.455,
+    0.497,
+    0.473,
+    0.741,
+    0.515,
+    0.588,
+    0.416,
+    0.413,
+    0.416,
+    0.55,
+    0.492,
+    0.44,
+    0.376,
+    0.294,
+    0.527,
+    0.325,
+    0.548,
+    0.444,
+    0.422,
+    0.453,
+    0.554,
+    0.521,
+    0.453,
+    0.649,
+    0.435,
+    0.365,
+    0.465,
+    0.551,
+    0.309,
+    0.378,
+    0.452,
+    0.471,
+    0.656,
+    0.419,
+    0.553,
+    0.431,
+    0.425,
+    0.289,
+    0.557,
+    0.341,
+    0.243,
+    0.2,
+    0.595,
+    0.448,
+    0.278,
+    0.463,
+    0.418,
+    0.367,
+    0.665,
+    0.478,
+    0.331,
+    0.295,
+    0.327,
+    0.478,
+    0.344,
+    0.252,
+    0.255,
+    0.253,
+    0.234,
+    1.0,
+    0.54,
+    0.631,
+    0.552,
+    0.407,
+    0.598
+  ],
+  "license": "CC BY"
+}

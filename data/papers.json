@@ -1,0 +1,66 @@
+{
+  "generated_at": null,
+  "episodes": [
+    {
+      "id": "2609.17523",
+      "title": "ScienceBuddy: Recursive-in-Recursive Self-Improvement for Interactive Scientific Agents",
+      "authors": [
+        "Shuhan Xue",
+        "Jianyuan Zhong",
+        "Ziyuan Nan",
+        "Wenbin Li",
+        "Zhaochen Yu",
+        "Jinchao Ding",
+        "Qiang Gao",
+        "Pengyu Zhan",
+        "Yuntong Zhang",
+        "Tian Cheng",
+        "Zhenfei Yin",
+        "Yingcheng Wu",
+        "Ling Yang"
+      ],
+      "duration": 377.809,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents"
+      ],
+      "cover": "cover.png",
+      "path": "2609.17523",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a80f-9abb-7fec-ad94-9de7532f0d1b/podcast.mp3"
+    },
+    {
+      "id": "2609.11896",
+      "title": "Mathematical inverse problem for the world data inference of the parton distribution functions of the proton",
+      "authors": [
+        "Henri Hänninen"
+      ],
+      "duration": 361.325917,
+      "license": "CC BY",
+      "topics": [
+        "Particle Physics"
+      ],
+      "cover": "cover.png",
+      "path": "2609.11896",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a08e8c-c504-76f5-bc9c-735385e3586b/podcast.mp3"
+    },
+    {
+      "id": "2609.07303",
+      "title": "Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching",
+      "authors": [
+        "Preston Fu",
+        "Kevin Frans",
+        "Oleh Rybkin",
+        "Sergey Levine",
+        "Aviral Kumar"
+      ],
+      "duration": 356.466833,
+      "license": "CC BY",
+      "topics": [
+        "Reinforcement Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.07303",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a083e0-791b-791d-81d1-b77d10ef4485/podcast.mp3"
+    }
+  ]
+}

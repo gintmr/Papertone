@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#fffaff" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Papertone</title>
+  <meta name="description" content="Listen to alphaXiv paper podcasts with sentence-level transcripts and bilingual text." />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('podcast-theme');
+        document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light';
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body data-view="list">
+
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Papertone home">
+      <span class="brand-mark" aria-hidden="true">
+        <!-- 耳机 + 论文 + 声波：粗线条扁平二维，靛蓝（耳机与纸页）＋ 青绿（声波）。
+             几何（24×24，描边 1.8，向外扩 0.9）：
+               耳罩 x 2.8–4.8 / 19.2–21.2，含描边外沿 1.9 与 22.1，中心 12
+               头梁顶点 3.5、纸页底边 20.5，含描边竖直范围 2.6–21.4，中心 12
+               纸页 x 6.8–17.2，中心 12；三根声波柱 x 9.1–14.9，中心同为 12
+             头梁用「竖直的腿 + 椭圆顶」而不是纯半圆——纯半圆的下缘会在纸页顶边
+             高度处贴住纸页侧边，两块黏成一团；竖直的腿才能留出干净的间隙 -->
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path class="ink" stroke-width="1.8" d="M3.8 12.1V9.1a8.2 5.6 0 0 1 16.4 0v3"/>
+          <rect class="ink" stroke-width="1.8" x="2.8" y="12.1" width="2" height="4.4" rx="1"/>
+          <rect class="ink" stroke-width="1.8" x="19.2" y="12.1" width="2" height="4.4" rx="1"/>
+
+          <path class="doc" stroke-width="1.8" d="M6.8 7.5h7.8l2.6 2.6v10.4H6.8z"/>
+          <path class="ink" stroke-width="1.8" d="M14.6 7.5v2.6h2.6"/>
+
+          <g class="wave" stroke-width="1.8">
+            <path d="M9.1 12.5v3"/>
+            <path d="M12 10.9v6.2"/>
+            <path d="M14.9 12v4"/>
+          </g>
+        </svg>
+      </span>
+      <strong class="brand-title">Paper<em>tone</em></strong>
+    </a>
+
+    <button id="back" class="plain-btn back" type="button" aria-label="Back to library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19.5 12H4.8"/><path d="M11 5.6 4.6 12l6.4 6.4"/>
+      </svg>
+    </button>
+    <span class="topbar-space"></span>
+
+    <div class="menu-wrap">
+      <button id="mode-btn" class="plain-btn mode-btn" type="button"
+              aria-haspopup="menu" aria-expanded="false">
+        <span id="mode-label">English</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 9.5 12 15l5.5-5.5"/>
+        </svg>
+      </button>
+      <div id="mode-menu" class="menu" hidden role="menu">
+        <button type="button" role="menuitemradio" data-mode="en">English</button>
+        <button type="button" role="menuitemradio" data-mode="both">Bilingual</button>
+        <button type="button" role="menuitemradio" data-mode="zh">Chinese</button>
+        <button type="button" role="menuitemradio" data-mode="dictation">Dictation</button>
+      </div>
+    </div>
+
+    <button id="sync-open" class="plain-btn" type="button" aria-label="Sync library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M20.6 4.2v5.4h-5.4"/>
+      </svg>
+    </button>
+    <button id="theme-toggle" class="plain-btn" type="button" aria-label="Toggle theme">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M12 3.6a8.4 8.4 0 0 0 0 16.8z" fill="currentColor"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ── 增量抓取面板 ── -->
+  <div id="sync-panel" class="sheet" hidden>
+    <div class="sheet-card" role="dialog" aria-modal="true" aria-label="Sync library">
+      <div class="sheet-head">
+        <strong>Sync library</strong>
+        <button id="sync-close" class="plain-btn" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+               stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <div class="sheet-body">
+        <p class="field-hint" id="sync-status">Checking the local service…</p>
+
+        <div class="device-block">
+          <p class="field-hint" id="device-status">Checking device storage…</p>
+          <div class="field-row">
+            <button id="device-save" class="btn" type="button">Save library to this device</button>
+            <button id="device-clear" class="btn" type="button">Remove device copy</button>
+          </div>
+        </div>
+
+        <hr class="sheet-sep" />
+
+        <div class="field-row">
+          <label class="field"><span>Window</span>
+            <select id="sync-days">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+            </select>
+          </label>
+          <label class="field"><span>Depth</span>
+            <select id="sync-pages">
+              <option value="4">4 pages (~400)</option>
+              <option value="8" selected>8 pages (~800)</option>
+              <option value="12">12 pages (~1200)</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="sync-threshold" checked />
+          <span>View threshold by age</span>
+        </label>
+        <p class="field-hint threshold-hint">
+          ≤ 7 days needs &gt; 300 views · ≤ 14 days needs &gt; 400 · ≤ 30 days needs &gt; 500
+        </p>
+
+        <button id="sync-scan" class="btn" type="button">Scan for new episodes</button>
+
+        <div id="sync-result" hidden>
+          <p class="field-hint" id="sync-summary"></p>
+          <ul id="sync-list" class="sync-list"></ul>
+
+          <label class="field">
+            <span>Translation API key</span>
+            <input id="sync-key" type="password" placeholder="sk-…" autocomplete="off" />
+          </label>
+          <div class="field-row">
+            <label class="field"><span>Model</span>
+              <input id="sync-model" value="gpt-4o-mini" autocomplete="off" />
+            </label>
+            <label class="field"><span>Base URL</span>
+              <input id="sync-base" value="https://api.openai.com/v1" autocomplete="off" />
+            </label>
+          </div>
+          <p class="field-hint">The key is sent only to the local service on this machine,
+            then used to call your translation provider directly.</p>
+          <button id="sync-import" class="btn primary" type="button">Import selected &amp; translate</button>
+        </div>
+
+        <pre id="sync-log" class="sync-log" hidden></pre>
+
+        <hr class="sheet-sep" />
+
+        <p class="field-hint">
+          <strong>Or run it in the cloud.</strong> The GitHub Action installs ffmpeg and the
+          speech model on its own runner, crawls, translates and commits the new episodes back.
+          This machine can stay off.
+        </p>
+        <label class="field">
+          <span>Repository</span>
+          <input id="cloud-repo" placeholder="owner/name" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span>GitHub token — Actions: read &amp; write</span>
+          <input id="cloud-token" type="password" placeholder="github_pat_…" autocomplete="off" />
+        </label>
+        <button id="cloud-run" class="btn" type="button">Run sync on GitHub</button>
+        <p class="field-hint" id="cloud-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Library ── -->
+  <main id="view-list" class="view-list">
+    <div class="list-tools">
+      <label class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="6.6"/>
+          <path d="M16.2 16.2 20.4 20.4"/>
+        </svg>
+        <input id="search" class="search" type="search" placeholder="Search title or author" autocomplete="off" />
+      </label>
+    </div>
+
+    <div id="continue" class="continue" hidden></div>
+    <div id="filters" class="filters" role="tablist" aria-label="Filter"></div>
+    <div id="cards" class="cards"></div>
+    <p id="empty" class="empty" hidden>No matching papers</p>
+  </main>
+
+  <!-- ── Player: transcript scrolls in the middle, controls pinned to the bottom ── -->
+  <section id="view-episode" class="view-episode" hidden>
+    <div class="transcript-region">
+      <ol id="lines" class="lines"></ol>
+    </div>
+
+    <footer class="deck">
+      <div class="deck-meta">
+        <span class="deck-cover" id="deck-cover"></span>
+        <span class="deck-text">
+          <span class="deck-title" id="ep-title"></span>
+          <span class="deck-authors" id="ep-authors"></span>
+        </span>
+      </div>
+
+      <div class="scrubber">
+        <span class="t-now" id="time-now">0:00</span>
+        <div class="wave-wrap">
+          <canvas id="wave" aria-hidden="true"></canvas>
+          <input id="progress" class="wave-range" type="range" min="0" max="1000" value="0" step="1"
+                 aria-label="Seek" />
+        </div>
+        <span class="t-total" id="time-total">0:00</span>
+      </div>
+
+      <div class="transport">
+        <button class="tbtn" type="button" data-act="prev-line" aria-label="Previous sentence">
+          <svg viewBox="0 0 24 24"><rect x="4.8" y="5" width="2.9" height="14" rx="1.45"/>
+            <path d="M19.7 6.2v11.6c0 1-1.15 1.55-1.95.93l-8.3-5.85a1.1 1.1 0 0 1 0-1.76l8.3-5.85c.8-.62 1.95-.07 1.95.93z"/></svg>
+        </button>
+        <button class="tbtn num" type="button" data-act="-5" aria-label="Back 5 seconds">−5</button>
+        <button class="tbtn num" type="button" data-act="-3" aria-label="Back 3 seconds">−3</button>
+        <button class="tbtn play" type="button" data-act="toggle" aria-label="Play or pause"></button>
+        <button class="tbtn num" type="button" data-act="+3" aria-label="Forward 3 seconds">+3</button>
+        <button class="tbtn num" type="button" data-act="+5" aria-label="Forward 5 seconds">+5</button>
+        <button class="tbtn" type="button" data-act="next-line" aria-label="Next sentence">
+          <svg viewBox="0 0 24 24"><rect x="16.3" y="5" width="2.9" height="14" rx="1.45"/>
+            <path d="M4.3 6.2v11.6c0 1 1.15 1.55 1.95.93l8.3-5.85a1.1 1.1 0 0 0 0-1.76L6.25 5.27c-.8-.62-1.95-.07-1.95.93z"/></svg>
+        </button>
+      </div>
+
+      <div class="deck-foot">
+        <div class="rates" id="rates" role="group" aria-label="Playback speed"></div>
+        <div class="deck-tools">
+          <div class="menu-wrap">
+            <button id="sleep-btn" class="plain-btn" type="button"
+                    aria-haspopup="menu" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.3 2.1"/>
+              </svg>
+              <span id="sleep-label">Sleep</span>
+            </button>
+            <div id="sleep-menu" class="menu up" hidden role="menu">
+              <button type="button" role="menuitem" data-min="15">15 min</button>
+              <button type="button" role="menuitem" data-min="30">30 min</button>
+              <button type="button" role="menuitem" data-min="45">45 min</button>
+              <button type="button" role="menuitem" data-min="60">60 min</button>
+              <button type="button" role="menuitem" data-min="end">End of episode</button>
+              <button type="button" role="menuitem" data-min="off">Turn off</button>
+            </div>
+          </div>
+          <a class="plain-btn" id="link-alphaxiv" target="_blank" rel="noopener">Paper</a>
+          <button id="more-toggle" class="plain-btn" type="button"
+                  aria-haspopup="menu" aria-expanded="false" aria-label="More">
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.95"/><circle cx="12" cy="12" r="1.95"/><circle cx="18" cy="12" r="1.95"/></svg>
+          </button>
+          <div id="more-menu" class="menu up" hidden role="menu">
+            <button type="button" id="copy-cite">Copy BibTeX</button>
+            <details class="abstract-box">
+              <summary>Abstract</summary>
+              <p id="ep-abstract"></p>
+            </details>
+            <pre id="ep-citation" class="citation" hidden></pre>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </section>
+
+  <!-- Mini player, shown on the library page while something is loaded -->
+  <div id="mini" class="mini" hidden>
+    <input id="mini-progress" class="progress mini-progress" type="range"
+           min="0" max="1000" value="0" step="1" aria-label="Seek" />
+    <div class="mini-row">
+      <span class="mini-cover" id="mini-cover"></span>
+      <span class="mini-info">
+        <span class="mini-title" id="mini-title"></span>
+        <span class="mini-sub" id="mini-sub"></span>
+      </span>
+      <button class="plain-btn mini-play" type="button" data-act="toggle" aria-label="Play or pause"></button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <audio id="audio" preload="metadata"></audio>
+  <script src="app.js"></script>
+</body>
+</html>

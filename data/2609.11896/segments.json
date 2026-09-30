@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 361.326,
+  "word_match_rate": 0.9494,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Methods in Computational Particle Physics. Today's lecture is on Henri Hänninen's paper, \"Mathematical inverse problem for the world data inference of the parton distribution functions of the proton.\" We've seen a lot of work recently, like the \"NNLO Global Analysis of Polarized Parton Distribution Functions,\" focusing on pushing perturbative calculations to higher orders. This work, out of the University of Jyväskylä, takes a step back and questions the fundamental methodology itself. It asks if we can determine the proton's structure more directly from data, without pre-supposing its functional form. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.36
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. So, you're saying this paper argues that the standard approach used by major collaborations for decades has been fundamentally biased?",
+      "start": 38.76,
+      "end": 45.9
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's a strong way to put it, but it gets at the core motivation. The paper doesn't aim to invalidate previous work, but to highlight a potential source of model bias and offer a complementary approach to mitigate it. For decades, global analyses have relied on fitting a flexible, theoretically-motivated function—an ansatz—to experimental data. The classic form is something like a power of x, a power of one minus x, and a polynomial. This works very well, but it means you can only find features your function is capable of describing. This research asks: what if we don't assume any functional form at all?",
+      "start": 46.2,
+      "end": 83.96
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "How would that even work? PDFs aren't directly measurable.",
+      "start": 83.96,
+      "end": 86.7
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. That's why the author frames it as a mathematical inverse problem. Think of a medical CT scan. We don't assume a tumor has a specific shape and then fit its parameters. Instead, we take X-ray measurements from many angles and use algorithms to reconstruct the internal structure pixel by pixel. This paper proposes doing the same for the proton. The central idea is to treat all individual parton distribution functions—for gluons, quarks, and anti-quarks—as a single unified object called a 'parton distribution tensor'. Then, every experimental observable, like a cross-section measurement, is treated as a linear integral operator acting on this tensor. The goal is no longer to fit parameters, but to solve a large system of coupled integral equations to reconstruct the tensor itself.",
+      "start": 87.18,
+      "end": 133.54
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So you end up with a direct, point-by-point reconstruction of the PDFs, free from the constraints of a specific model shape?",
+      "start": 133.9,
+      "end": 139.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "That's the objective. It's a significant conceptual shift. The main contribution here is the formulation. The paper meticulously goes through various Deeply Inelastic Scattering observables at Next-to-Leading Order and rewrites their pQCD definitions into this unified linear operator language. This is the first time all these disparate calculations have been collected and presented within a single mathematical framework.",
+      "start": 140.06,
+      "end": 163.44
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Okay, but a system of functional integral equations sounds computationally intractable. How do you actually solve it?",
+      "start": 164.04,
+      "end": 170.14
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The paper outlines a method based on discretization. You define a grid in the kinematic variables, x and Q-squared. The parton distribution tensor becomes a very long vector containing the PDF values at each grid point. Each integral operator becomes a block in a very large matrix. The entire world's data on observables becomes another long vector. The problem then reduces to solving a massive, but standard, linear matrix-vector equation: data equals operator matrix times the PDF vector. It's a brute-force approach, but it avoids the ansatz.",
+      "start": 170.3,
+      "end": 205.96
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "And what about the DGLAP evolution equations? In traditional fits, you evolve the parametrized function and fit that to data at different energy scales.",
+      "start": 206.88,
+      "end": 213.82
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That's a critical point. Here, the DGLAP equations are not used to generate a model to be fitted. Instead, they are incorporated directly into the inverse problem as a Partial Differential Equation constraint. This means the final reconstructed solution for the PDF vector must not only agree with the experimental data but also satisfy the rules of QCD evolution to a certain accuracy. The DGLAP kernels themselves are also expressed as integral operators and become part of the system. This ensures the physics is respected without being baked into a rigid functional form.",
+      "start": 214.14,
+      "end": 246.46
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Wait, so this turns the entire global analysis into a huge linear algebra problem. How does this compare to other non-parametric approaches, like in \"Bayesian Inference with Gaussian Processes for the Determination of Parton Distribution Functions\"? That also avoids a fixed ansatz.",
+      "start": 246.46,
+      "end": 262.04
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "An excellent connection. Both methods aim to reduce model bias. The Gaussian Process approach is probabilistic; it defines a prior over a space of functions and updates it with data. This paper's approach is more of a direct reconstruction. It leverages the inherent linearity of the problem as dictated by the collinear factorization theorem in pQCD. It says, 'let's write down the exact linear system defined by theory and data, and then solve it.' The result is a single best-fit reconstruction, though one could use replica methods to estimate uncertainty.",
+      "start": 263.5,
+      "end": 300.02
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So what's the broader impact? Will this replace traditional global fits?",
+      "start": 300.02,
+      "end": 303.92
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "I don't see it as a replacement, but as a powerful validation tool and a path forward. It can be used to check if current ansatz-based PDFs are missing any features the data might be hinting at. And it's forward-looking. Future experiments, like the Electron-Ion Collider mentioned in the \"Self-consistent determination of proton and nuclear PDFs\" paper, will provide incredibly precise data. A method like this, which lets the data speak more directly, will be essential for leveraging that precision.",
+      "start": 304.28,
+      "end": 331.24
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Ultimately, the key finding here is the framework itself. The paper doesn't deliver a new set of PDFs. It provides the mathematical and computational blueprint for a new way of obtaining them. It formalizes the problem in the language of inverse theory, which is a powerful lens. The main takeaway is that by reframing the problem, we can potentially achieve a less biased understanding of the proton's inner structure, directly from the data. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 331.64,
+      "end": 361.326
+    }
+  ]
+}

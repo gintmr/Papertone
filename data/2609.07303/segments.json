@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 356.467,
+  "word_match_rate": 0.9574,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to CS 285, Advanced Topics in Reinforcement Learning. Today's lecture is on 'Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching.' This comes from researchers at UC Berkeley and Carnegie Mellon. We've seen a trend of applying RL to improve LLM reasoning, with methods like Process Rewards gaining traction. The core challenge they all face is sparse rewards—getting feedback only at the very end of a long reasoning chain.",
+      "start": 0.0,
+      "end": 27.26
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Yes, Noah?",
+      "start": 27.26,
+      "end": 27.74
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. Could you quickly recap why that sparsity is so detrimental? Is it just that the model gets less feedback overall?",
+      "start": 28.2,
+      "end": 34.68
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That's part of it, but it's more severe. The paper proves that for a task requiring 'n' steps, the signal-to-noise ratio in your policy gradient degrades exponentially. The chances of stumbling upon a correct multi-step solution through random exploration become vanishingly small as 'n' grows. This work, PPM, aims to solve that by providing denser rewards without biasing the final policy.",
+      "start": 35.06,
+      "end": 58.24
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The main concept here is to reframe the problem. Instead of one big goal, imagine a sequence of smaller milestones called 'reasoning points.' Think of solving a complex math problem. A reasoning point could be solving an intermediate equation or proving a necessary lemma. It's a self-contained result that acts as a sufficient statistic for the next stage of reasoning. You don't need to know how you proved the lemma, just that it's true.",
+      "start": 58.62,
+      "end": 81.06
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So the model gets a reward for hitting these points?",
+      "start": 81.32,
+      "end": 83.68
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Precisely. The framework uses what it calls a 'Progressive Point Matching' measure. It essentially just counts how many of these key reasoning points, taken from a reference solution, have been successfully generated in the model's trajectory so far. The reward for any given segment of text is the increase in this count. If the model generates a new chunk of reasoning that solves one more intermediate step, it gets a positive reward right then and there, not just at the end.",
+      "start": 83.68,
+      "end": 109.92
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Wait, so if it's based on a reference solution, isn't this just a form of imitation learning? Is the model just being trained to copy the reference?",
+      "start": 110.22,
+      "end": 117.1
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That's a critical question. It's not imitation learning. The model isn't rewarded for matching the reference text token-for-token. It's rewarded for reaching the same conceptual milestones. It can discover a completely different, even more efficient, path to proving that lemma. This flexibility is key. It interpolates between imitation and pure RL, using the reference for guidance without restricting the policy's exploration.",
+      "start": 117.52,
+      "end": 142.6
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Now, let's talk about how this is implemented, which gets into the applications. A potential issue arises: what if a policy learns to just accumulate lots of easy intermediate points but never reaches the final answer? It could get a higher cumulative reward than a shorter, correct trajectory. To prevent this, PPM uses a 'shortcutting' mechanism. It defines a dependency graph for these reasoning points. Reaching the final goal point is defined as implicitly satisfying all prerequisite points. This ensures that the maximum possible reward is only achieved if the final goal is met, aligning the dense rewards with the original sparse outcome.",
+      "start": 142.94,
+      "end": 179.47
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So where do these reasoning points and their dependency graphs come from? Is that done manually for each problem?",
+      "start": 179.85,
+      "end": 185.05
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No, that would be impractical. They use a powerful external LLM, what they call a 'judge' model, like Gemini. For each problem, they feed the judge a reference solution. The judge's task is to automatically extract the key reasoning points and their structure. Then, during training, this same judge evaluates the policy's generated trajectories to see how many of those points it has successfully covered. It's a form of automated reward shaping using privileged information.",
+      "start": 185.39,
+      "end": 212.59
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How reliable is that judge? It seems like the quality of the entire training process depends on this external model's ability to correctly identify progress.",
+      "start": 213.03,
+      "end": 220.75
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "A valid concern. They validate the judge by checking its correlation with the true Monte Carlo success rate. They found that their engineered prompts for the judge led to a high rank correlation, meaning the judge's score for partial progress was a strong predictor of eventual success. The empirical results on tasks like GSM-Infinite and the very difficult POPE-hard dataset show this works. PPM significantly outperformed standard RL with sparse rewards, especially as the problem complexity, or horizon, increased.",
+      "start": 221.07,
+      "end": 250.89
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The primary implication here is a shift towards more efficient exploration in long-horizon tasks. This work provides a concrete way to give partial credit that is both dense and unbiased. It moves beyond checking the logical correctness of each step, which is what Process Reward Models do. A process reward might penalize a valid but unconventional step. PPM doesn't care about the process, only the intermediate result. This gives the model more freedom.",
+      "start": 250.89,
+      "end": 279.73
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So, compared to a paper like 'GRPO is Secretly a Process Reward Model,' which argues that standard RL methods already implicitly reward process, PPM makes this explicit but focuses on outcomes of sub-problems rather than the process itself?",
+      "start": 280.49,
+      "end": 294.69
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Exactly. GRPO might implicitly favor shorter paths to intermediate success, which can be seen as a process-aware objective. PPM externalizes this. It explicitly defines the sub-goals using an oracle or a judge, and rewards their achievement directly. Another interesting finding was on training budgets. For near-impossible problems, they found training on shorter contexts sometimes led to better performance when testing on longer contexts, as it forced the model to focus on making partial progress rather than gambling on a long-shot full solution.",
+      "start": 296.15,
+      "end": 327.55
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "So, to wrap up, the key takeaway is that Progressive Point Matching provides a structured way to create dense, segment-level rewards for long-horizon reasoning. It does this by identifying key 'reasoning points' from a reference and rewarding the policy for achieving them. This elegantly sidesteps the exponential decay of the signal-to-noise ratio found in sparse reward settings, enabling more efficient and stable training on complex tasks.",
+      "start": 327.93,
+      "end": 351.47
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 351.89,
+      "end": 356.467
+    }
+  ]
+}

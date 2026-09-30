@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  body{margin:0;background:#1b1b1f;display:flex;gap:22px;padding:18px;font:12px system-ui;align-items:flex-start}
+  .dev h2{color:#cfc7dd;margin:0 0 7px;font:600 12px system-ui;letter-spacing:.02em}
+  iframe{border:0;display:block;background:#fff;border-radius:10px}
+</style></head><body>
+  <div class="dev"><h2>390 × 844 · iPhone 14</h2><iframe id="a" width="390" height="844"></iframe></div>
+  <div class="dev"><h2>430 × 932 · iPhone 14 Pro Max</h2><iframe id="b" width="430" height="932"></iframe></div>
+  <script>
+    var h = location.hash || '#/';
+    document.getElementById('a').src = '/' + h;
+    document.getElementById('b').src = '/' + h;
+  </script>
+</body></html>
