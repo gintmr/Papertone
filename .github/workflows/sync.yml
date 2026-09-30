@@ -25,6 +25,9 @@ on:
         type: choice
         options: ['deepseek', 'openai']
         default: 'deepseek'
+      ids:
+        description: '只抓指定的论文：arXiv 编号或 alphaXiv 路径，多个用空格/逗号分隔。填了就不扫描推荐流'
+        default: ''
   schedule:
     # 每天 UTC 03:00（迪拜时间 07:00）跑一次增量
     - cron: '0 3 * * *'
@@ -69,11 +72,18 @@ jobs:
         id: discover
         run: |
           mkdir -p _work
-          python3 scripts/discover.py \
-            --days "${{ inputs.days || 30 }}" \
-            --pages "${{ inputs.pages || 8 }}" \
-            --limit "${{ inputs.limit || 20 }}" \
-            --out _work/new.json --ids-only > _work/ids.txt
+          # 指定了论文就直接用，不做推荐流扫描——像是「手动补几篇」的场景：
+          # 这些论文浏览量不够或已经出了时间窗，自动扫描永远挑不到它们。
+          if [ -n "${{ inputs.ids }}" ]; then
+            echo "指定论文模式，跳过推荐流扫描"
+            echo "${{ inputs.ids }}" | tr ',' ' ' > _work/ids.txt
+          else
+            python3 scripts/discover.py \
+              --days "${{ inputs.days || 30 }}" \
+              --pages "${{ inputs.pages || 8 }}" \
+              --limit "${{ inputs.limit || 20 }}" \
+              --out _work/new.json --ids-only > _work/ids.txt
+          fi
           echo "count=$(wc -w < _work/ids.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
           echo "---- 本次候选 ----"
           cat _work/ids.txt

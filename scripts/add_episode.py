@@ -167,6 +167,8 @@ def classify_license(url: str | None) -> str:
         ("licenses/by-nc", "CC BY-NC"), ("licenses/by-nd", "CC BY-ND"),
         ("licenses/by-sa", "CC BY-SA"), ("licenses/by", "CC BY"),
         ("nonexclusive-distrib", "arXiv 默认许可"),
+        # alphaXiv 上用户自己上传的论文没有标准许可证，直接标原样
+        ("user uploaded", "User Uploaded"),
     ]:
         if needle in low:
             return label
