@@ -844,6 +844,20 @@ $('#sync-panel').addEventListener('click', (e) => {
   if (e.target.id === 'sync-panel') closeSync();
 });
 
+/* ── 打开 / 关闭图库面板 ─────────────────────────────── */
+function openSync() {
+  $('#sync-panel').hidden = false;
+  refreshDeviceStatus();
+  try {
+    $('#cloud-repo').value = localStorage.getItem(CLOUD_REPO_KEY) || '';
+    $('#cloud-token').value = localStorage.getItem(CLOUD_TOKEN_KEY) || '';
+  } catch (e) { /* 隐私模式忽略 */ }
+}
+
+function closeSync() {
+  $('#sync-panel').hidden = true;
+}
+
 /* ── 把论文库保存到本机（IndexedDB）─────────────────────
    存进去之后：仓库不用再放音频，音频也只留在你这一台设备上。
    ────────────────────────────────────────────────────── */
@@ -1016,9 +1030,6 @@ window.addEventListener('beforeunload', () => {
    原因是 alphaXiv 的 feed 接口 CORS 只放行 alphaxiv 自己，浏览器跨域拿不到候选名单；
    ASR 对齐也需要 ffmpeg 与语音模型，浏览器做不了。
    ────────────────────────────────────────────────────── */
-let syncResult = null;
-let syncTimer = null;
-
 function serviceBase() {
   try { return (localStorage.getItem(SERVICE_KEY) || '').replace(/\/$/, ''); }
   catch (e) { return ''; }
