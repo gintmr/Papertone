@@ -59,5 +59,5 @@
 - 台词来自 alphaXiv 的官方文稿，时间轴由自动对齐生成
 - 中文译文由机器翻译，仅供理解参考
 
-音频不随本站分发，播放时直接读取 alphaXiv 的 CDN，链接指向
-[arXiv](https://arxiv.org/) 上的论文原文。
+音频不随本站分发，播放时直接读取 alphaXiv 的 CDN。卡片和播放器里的链接
+都指向 [alphaXiv](https://www.alphaxiv.org/) 上的对应论文页面。
