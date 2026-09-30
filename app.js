@@ -1018,6 +1018,19 @@ const CLOUD_REPO_KEY = 'podcast-cloud-repo';
 const CLOUD_TOKEN_KEY = 'podcast-cloud-token';
 const CLOUD_IDS_KEY = 'podcast-cloud-ids';
 
+const ghHeaders = (token) => ({
+  Authorization: `Bearer ${token}`,
+  Accept: 'application/vnd.github+json',
+});
+
+/** token 不对时的常见情形，把判断依据直接摆出来 */
+function tokenHint(token) {
+  return `A GitHub token is <b>40</b> characters (classic, starts with <code>ghp_</code>) `
+    + `or <b>93</b> characters (fine-grained, starts with <code>github_pat_</code>). `
+    + `Yours is <b>${token.length}</b> — that looks like an LLM API key, which belongs `
+    + `in the repo secret <code>TRANSLATE_API_KEY</code>, not here.`;
+}
+
 async function cloudSync() {
   const repo = $('#cloud-repo').value.trim();
   const token = $('#cloud-token').value.trim();
@@ -1028,17 +1041,27 @@ async function cloudSync() {
 
   const btn = $('#cloud-run');
   btn.disabled = true;
-  st.textContent = 'Dispatching the workflow…';
+  // 先验 token 再触发：直接触发的话，出错只有一句 Bad credentials，
+  // 分不清是 token 过期、复制错了，还是仓库或权限不对。
+  st.textContent = 'Checking the token…';
   try {
+    const me = await fetch('https://api.github.com/user', { headers: ghHeaders(token) });
+    if (me.status === 401) {
+      st.innerHTML = `GitHub rejected this token (<b>401</b>).<br>${tokenHint(token)}`;
+      return;
+    }
+    if (!me.ok) {
+      st.textContent = `Could not reach the GitHub API (HTTP ${me.status}).`;
+      return;
+    }
+    const login = (await me.json()).login;
+
+    st.textContent = 'Dispatching the workflow…';
     const res = await fetch(
       `https://api.github.com/repos/${repo}/actions/workflows/sync.yml/dispatches`,
       {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github+json',
-          'Content-Type': 'application/json',
-        },
+        headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ref: 'main',
           inputs: {
@@ -1052,6 +1075,7 @@ async function cloudSync() {
       });
     if (res.status === 204) {
       st.innerHTML = 'Started. Track it on GitHub → <b>Actions</b>. '
+        + `Signed in as <b>${login}</b>. `
         + 'New episodes appear here once the run commits them.';
       try {
         localStorage.setItem(CLOUD_REPO_KEY, repo);
@@ -1059,8 +1083,16 @@ async function cloudSync() {
         localStorage.setItem(CLOUD_IDS_KEY, ids);
       } catch (e) { /* 隐私模式忽略 */ }
     } else {
-      const body = await res.text();
-      st.textContent = `Failed (${res.status}): ${body.slice(0, 160)}`;
+      // 到这里说明 token 是有效的，问题只可能出在权限或目标仓库上
+      st.innerHTML = res.status === 403
+        ? `The token is valid (signed in as <b>${login}</b>) but may not run workflows. `
+          + `Give it <b>Actions: Read and write</b> on <code>${repo}</code>.`
+        : res.status === 404
+          ? `Workflow <code>sync.yml</code> or repo <code>${repo}</code> not found — `
+            + 'check the spelling and that the token can see that repository.'
+          : res.status === 422
+            ? 'The workflow rejected these inputs (422).'
+            : `Failed (${res.status}).`;
     }
   } catch (e) {
     st.textContent = `Failed: ${e.message}`;
