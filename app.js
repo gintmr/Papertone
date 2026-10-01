@@ -934,8 +934,6 @@ $('.transport').addEventListener('click', (e) => {
   if (act === 'toggle') toggle();
   else if (act === 'prev-ep') goToEpisode(neighbourId(-1), !audio.paused);
   else if (act === 'next-ep') goToEpisode(neighbourId(1), !audio.paused);
-  else if (act === 'prev-line') stepLine(-1);
-  else if (act === 'next-line') stepLine(1);
   else skip(Number(act));
 });
 

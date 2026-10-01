@@ -859,19 +859,19 @@ body[data-view='episode'] .brand { display: none; }
 .deck-tools .plain-btn { font-size: .78rem; min-width: 40px; padding: 0 .45rem; }
 .deck-tools .plain-btn svg { width: 18px; height: 18px; }
 
-/* 手机上按钮多（前后集 + 句子步进 + ±3/±5 + 播放共 9 个），
+/* 手机上按钮行是「前后集 + ±3/±5 + 播放」共 7 个。
    用等分宽度而不是固定 min-width，任何屏宽都不会溢出：
-   8 个按钮平分去掉播放键之后的空间，最窄的手机上也还有 30px 以上。 */
+   6 个按钮平分去掉播放键之后的空间。 */
 @media (max-width: 34rem) {
   .deck { padding: .5rem .55rem calc(.6rem + env(safe-area-inset-bottom)); }
-  .transport .tbtn { flex: 1 1 0; min-width: 0; height: 44px; }
-  .transport .tbtn.play { flex: 0 0 auto; width: 52px; height: 52px; }
-  .tbtn.ep svg, .tbtn.sent svg { width: 22px; height: 22px; }
-  .tbtn.num { font-size: .84rem; }
+  .transport .tbtn { flex: 1 1 0; min-width: 0; height: 48px; }
+  .transport .tbtn.play { flex: 0 0 auto; width: 58px; height: 58px; }
+  .transport .tbtn.num { font-size: .9rem; }
   /* 底栏挤不下就换行，不硬撑出横向滚动 */
-  .deck-foot { flex-wrap: wrap; row-gap: .25rem; }
-  .rates button { min-width: 38px; }
-  .deck-tools .plain-btn { font-size: .74rem; padding: 0 .38rem; }
+  .deck-foot { flex-wrap: wrap; gap: .3rem .5rem; }
+  .rates button { min-width: 30px; padding: 0 .15rem; font-size: .72rem; }
+  .deck-tools .plain-btn { min-width: 34px; padding: 0 .3rem; font-size: .72rem; }
+  .deck-tools .plain-btn svg { width: 17px; height: 17px; }
 }
 
 .abstract-box { padding: .2rem .7rem .6rem; max-width: 22rem; }
