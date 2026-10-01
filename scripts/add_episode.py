@@ -6,6 +6,11 @@
     HF_HOME="$PWD/_work/hf" _work/venv/bin/python scripts/add_episode.py \
         2609.07303 2609.17523 --model tiny
 
+分两段并发跑：
+    网络阶段（下载论文页/音频/台词/封面）走 --net-workers，默认 6，纯等网络；
+    CPU 阶段（波形 + ASR 对齐）走 --align-workers，默认 2 —— 这一步吃满核，
+    并发数和每进程线程数会互相抢，所以 --cpu-threads 默认按 核数/并发数 分配。
+
 每篇产出 data/<arxiv_id>/ 下的：
     audio/podcast.mp3     音频
     transcript.json       官方原文（只有 speaker / line，无时间戳）
@@ -27,6 +32,7 @@ import os
 import re
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126 Safari/537.36"
@@ -260,29 +266,51 @@ def fetch_meta(arxiv_id: str) -> dict:
     }
 
 
-def add_episode(arxiv_id: str, model: str, force: bool,
-                keep_audio: bool = False) -> dict | None:
+def _emit(log: list[str]) -> None:
+    """整篇的日志一次性打印，免得几个线程的输出交叉成一团。"""
+    if log:
+        print("\n".join(log), flush=True)
+
+
+def _guarded(fn, *a, **kw):
+    """并发入口：单篇失败不影响其它篇。"""
+    try:
+        return fn(*a, **kw)
+    except Exception as exc:
+        label = a[0] if a else "?"
+        if isinstance(label, dict):
+            label = label.get("id", "?")
+        print(f"   ✗ {label}: {exc}", file=sys.stderr, flush=True)
+        return None
+
+
+def prepare_episode(arxiv_id: str, force: bool) -> dict | None:
+    """网络阶段：论文页、音频、官方台词、封面。
+
+    这一段几乎全在等网络，可以高并发跑；真正吃 CPU 的是 finish_episode，
+    所以两段分开，各自用不同的并发数。
+    """
+    log = [f"▶ {arxiv_id}"]
     dest = os.path.join(ROOT, "data", arxiv_id)
     os.makedirs(os.path.join(dest, "audio"), exist_ok=True)
 
-    print(f"\n▶ {arxiv_id}")
     meta = fetch_meta(arxiv_id)
     if not meta["audio_url"]:
-        print("   没有播客，跳过")
-        return None
+        log.append("   没有播客，跳过")
+        return {"id": arxiv_id, "skip": True, "log": log}
 
     gid = meta["group_id"]
     audio_path = os.path.join(dest, "audio", "podcast.mp3")
     if force or not os.path.exists(audio_path):
         code = curl(meta["audio_url"], audio_path, timeout=300)
-        print(f"   音频 {code} {os.path.getsize(audio_path)/1024/1024:.1f}MB")
+        log.append(f"   音频 {code} {os.path.getsize(audio_path)/1024/1024:.1f}MB")
     else:
-        print("   音频已存在")
+        log.append("   音频已存在")
 
     tpath = os.path.join(dest, "transcript.json")
     if force or not os.path.exists(tpath):
         code = curl(f"https://paper-podcasts.alphaxiv.org/{gid}/transcript.json", tpath)
-        print(f"   官方台词 {code}")
+        log.append(f"   官方台词 {code}")
 
     # 论文首页缩略图
     cover = os.path.join(dest, "cover.png")
@@ -293,8 +321,21 @@ def add_episode(arxiv_id: str, model: str, force: bool,
         if code != "200" or os.path.getsize(cover) < 2000:
             os.path.exists(cover) and os.remove(cover)
             code = curl(f"https://api.alphaxiv.org/open-graph/v1/paper/{arxiv_id}.png", cover)
-        print(f"   缩略图 {code} {os.path.getsize(cover)/1024:.0f}KB"
-              if os.path.exists(cover) else "   缩略图失败")
+        log.append(f"   缩略图 {code} {os.path.getsize(cover)/1024:.0f}KB"
+                   if os.path.exists(cover) else "   缩略图失败")
+
+    return {"id": arxiv_id, "dest": dest, "meta": meta, "audio": audio_path,
+            "transcript": tpath, "cover": cover, "log": log}
+
+
+def finish_episode(ctx: dict, model: str, force: bool, keep_audio: bool,
+                   cpu_threads: int) -> dict | None:
+    """CPU 阶段：时长、波形、ASR 对齐，最后落盘 meta.json。"""
+    log = ctx["log"]
+    dest = ctx["dest"]
+    audio_path = ctx["audio"]
+    meta = ctx["meta"]
+    cover = ctx["cover"]
 
     # 时长
     dur = subprocess.run(
@@ -308,17 +349,18 @@ def add_episode(arxiv_id: str, model: str, force: bool,
     meta["audio"] = None          # 不留本地音频，播放直接走 CDN
     if force or not meta.get("peaks"):
         meta["peaks"] = compute_peaks(audio_path)
-        print(f"   波形 {len(meta['peaks'])} 个采样点")
+        log.append(f"   波形 {len(meta['peaks'])} 个采样点")
 
     # 对齐（官方文本 + 本地 ASR 时间轴）
     seg = os.path.join(dest, "segments.json")
     if force or not os.path.exists(seg):
-        r = subprocess.run(
-            [sys.executable, os.path.join(ROOT, "scripts", "align_transcript.py"),
-             "--audio", audio_path, "--transcript", tpath, "--out", seg,
-             "--model", model, "--no-words"],
-            capture_output=True, text=True)
-        sys.stderr.write("".join(l + "\n" for l in r.stderr.splitlines() if l.startswith("[")))
+        cmd = [sys.executable, os.path.join(ROOT, "scripts", "align_transcript.py"),
+               "--audio", audio_path, "--transcript", ctx["transcript"], "--out", seg,
+               "--model", model, "--no-words"]
+        if cpu_threads > 0:
+            cmd += ["--cpu-threads", str(cpu_threads)]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        log += [l for l in r.stderr.splitlines() if l.startswith("[")]
 
     with open(os.path.join(dest, "meta.json"), "w", encoding="utf-8") as fh:
         json.dump(meta, fh, ensure_ascii=False, indent=2)
@@ -327,15 +369,15 @@ def add_episode(arxiv_id: str, model: str, force: bool,
     # 播放时直接引用 alphaXiv 的 CDN（CORS 是 *，浏览器能直接播）。
     # 这样仓库不会积累音频——200 篇含音频是 896MB，不含只有 27MB。
     if keep_audio:
-        print("   保留本地音频（--keep-audio）")
+        log.append("   保留本地音频（--keep-audio）")
     elif os.path.exists(audio_path):
         os.remove(audio_path)
         try:
             os.rmdir(os.path.dirname(audio_path))
         except OSError:
             pass
-        print("   已删除本地音频，播放走 CDN")
-    print(f"   完成：{meta['title'][:56]}")
+        log.append("   已删除本地音频，播放走 CDN")
+    log.append(f"   完成：{meta['title'][:56]}")
     return meta
 
 
@@ -454,6 +496,12 @@ def main() -> int:
                     help="用当前标签规则重算全库 topics（离线，不重新抓取）")
     ap.add_argument("--keep-audio", action="store_true",
                     help="保留本地音频（默认跑完就删，播放走 CDN）")
+    ap.add_argument("--net-workers", type=int, default=6,
+                    help="网络阶段并发数：下载论文页/音频/台词/封面。纯等网络，可以高一点")
+    ap.add_argument("--align-workers", type=int, default=2,
+                    help="ASR 对齐并发数。这一步吃满 CPU，别超过 runner 的核数")
+    ap.add_argument("--cpu-threads", type=int, default=0,
+                    help="每个 ASR 进程的线程数；0 = 按核数/并发数自动分配")
     args = ap.parse_args()
 
     if args.renormalize_topics:
@@ -465,11 +513,33 @@ def main() -> int:
     if args.reindex_only:
         rebuild_index()
         return 0
-    for aid in args.ids:
-        try:
-            add_episode(aid, args.model, args.force, args.keep_audio)
-        except Exception as exc:
-            print(f"   ✗ {aid}: {exc}", file=sys.stderr)
+    net_workers = max(1, args.net_workers)
+    align_workers = max(1, args.align_workers)
+    # 并发跑对齐时，每个进程要少占几个核，否则几个进程互相抢核，总时长反而更长
+    cpu_threads = args.cpu_threads or max(1, (os.cpu_count() or 2) // align_workers)
+    print(f"网络并发 {net_workers} · 对齐并发 {align_workers}"
+          f"（每进程 {cpu_threads} 线程，共 {os.cpu_count() or '?'} 核）", flush=True)
+
+    prepared = []
+    with ThreadPoolExecutor(max_workers=net_workers) as pool:
+        futures = [pool.submit(_guarded, prepare_episode, aid, args.force)
+                   for aid in args.ids]
+        for fut in as_completed(futures):
+            ctx = fut.result()
+            if not ctx:
+                continue
+            if ctx.get("skip"):
+                _emit(ctx["log"])
+                continue
+            prepared.append(ctx)
+
+    with ThreadPoolExecutor(max_workers=align_workers) as pool:
+        futures = {pool.submit(_guarded, finish_episode, ctx, args.model,
+                               args.force, args.keep_audio, cpu_threads): ctx
+                   for ctx in prepared}
+        for fut in as_completed(futures):
+            fut.result()
+            _emit(futures[fut]["log"])
     if not args.no_index:
         rebuild_index()
     return 0

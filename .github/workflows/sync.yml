@@ -94,8 +94,12 @@ jobs:
       - name: 抓取并本地对齐
         if: steps.discover.outputs.count != '0'
         run: |
+          # 网络阶段（下载论文页/音频/台词/封面）并发 6，纯等网络；
+          # CPU 阶段（波形 + ASR 对齐）并发 2，每进程线程数由脚本按核数自动分，
+          # 免得几个进程互相抢核——并发数开太大反而更慢。
           HF_HOME="$PWD/_work/hf" python3 scripts/add_episode.py \
-            $(cat _work/ids.txt) --model tiny --no-index
+            $(cat _work/ids.txt) --model tiny --no-index \
+            --net-workers 6 --align-workers 2
 
       - name: 生成中文译文
         if: steps.discover.outputs.count != '0' && (inputs.translate != 'no')
@@ -121,11 +125,11 @@ jobs:
           if [ -n "$OVERRIDE_MODEL" ]; then MODEL="$OVERRIDE_MODEL"; fi
           echo "翻译服务: $BASE   模型: $MODEL"
 
-          for seg in data/*/segments.json; do
-            dir=$(dirname "$seg")
-            python3 scripts/translate.py --dir "$dir" \
-              --base-url "$BASE" --model "$MODEL" || echo "::warning::$dir 翻译失败"
-          done
+          # 一次把所有目录交给翻译脚本：所有待译句子进同一个并发池（32），
+          # 而不是一篇一篇串行跑——单篇只有十几句，喂不满并发。
+          python3 scripts/translate.py --dir data/*/segments.json \
+            --base-url "$BASE" --model "$MODEL" --concurrency 32 \
+            || echo "::warning::部分句子翻译失败，已跳过（缓存已保存，下次只补缺的）"
 
       - name: 合成播放器数据
         if: steps.discover.outputs.count != '0'

@@ -119,6 +119,13 @@ def main() -> int:
         action="store_true",
         help="丢弃词级时间戳，只保留句级（体积约降到 1/6）",
     )
+    ap.add_argument(
+        "--cpu-threads",
+        type=int,
+        default=0,
+        help="交给 ctranslate2 的线程数；0 = 库自己按核数决定。"
+             "多篇并发对齐时应当调小，否则几个进程会互相抢核。",
+    )
     args = ap.parse_args()
 
     from faster_whisper import WhisperModel
@@ -133,7 +140,10 @@ def main() -> int:
     )
 
     print(f"[asr] model={args.model} ...", file=sys.stderr)
-    model = WhisperModel(args.model, device="cpu", compute_type="int8")
+    model_kwargs = {"device": "cpu", "compute_type": "int8"}
+    if args.cpu_threads > 0:
+        model_kwargs["cpu_threads"] = args.cpu_threads
+    model = WhisperModel(args.model, **model_kwargs)
     asr_words, info = build_asr_words(model, args.audio)
     print(f"[asr] {len(asr_words)} words, lang={info.language}", file=sys.stderr)
 
