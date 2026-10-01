@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gintmr.github.io/Papertone/sitemap.xml
