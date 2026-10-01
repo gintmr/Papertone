@@ -243,24 +243,49 @@
       </div>
 
       <div class="transport">
-        <button class="tbtn" type="button" data-act="prev-line" aria-label="Previous sentence">
-          <svg viewBox="0 0 24 24"><rect x="4.8" y="5" width="2.9" height="14" rx="1.45"/>
-            <path d="M19.7 6.2v11.6c0 1-1.15 1.55-1.95.93l-8.3-5.85a1.1 1.1 0 0 1 0-1.76l8.3-5.85c.8-.62 1.95-.07 1.95.93z"/></svg>
+        <button class="tbtn ep" type="button" data-act="prev-ep" aria-label="Previous episode">
+          <svg viewBox="0 0 24 24"><rect x="4.6" y="5.4" width="2.6" height="13.2" rx="1.3"/>
+            <path d="M19.6 6.6v10.8c0 .95-1.1 1.5-1.85.9l-7.6-5.4a1.05 1.05 0 0 1 0-1.7l7.6-5.4c.75-.6 1.85-.05 1.85.9z"/></svg>
+        </button>
+        <button class="tbtn sent" type="button" data-act="prev-line" aria-label="Previous sentence">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15.4 6.4 9.2 12l6.2 5.6"/><path d="M19.4 17.9H5" stroke-width="1.5" opacity=".45"/>
+          </svg>
         </button>
         <button class="tbtn num" type="button" data-act="-5" aria-label="Back 5 seconds">−5</button>
         <button class="tbtn num" type="button" data-act="-3" aria-label="Back 3 seconds">−3</button>
         <button class="tbtn play" type="button" data-act="toggle" aria-label="Play or pause"></button>
         <button class="tbtn num" type="button" data-act="+3" aria-label="Forward 3 seconds">+3</button>
         <button class="tbtn num" type="button" data-act="+5" aria-label="Forward 5 seconds">+5</button>
-        <button class="tbtn" type="button" data-act="next-line" aria-label="Next sentence">
-          <svg viewBox="0 0 24 24"><rect x="16.3" y="5" width="2.9" height="14" rx="1.45"/>
-            <path d="M4.3 6.2v11.6c0 1 1.15 1.55 1.95.93l8.3-5.85a1.1 1.1 0 0 0 0-1.76L6.25 5.27c-.8-.62-1.95-.07-1.95.93z"/></svg>
+        <button class="tbtn sent" type="button" data-act="next-line" aria-label="Next sentence">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8.6 6.4 14.8 12l-6.2 5.6"/><path d="M4.6 17.9H19" stroke-width="1.5" opacity=".45"/>
+          </svg>
+        </button>
+        <button class="tbtn ep" type="button" data-act="next-ep" aria-label="Next episode">
+          <svg viewBox="0 0 24 24"><rect x="16.8" y="5.4" width="2.6" height="13.2" rx="1.3"/>
+            <path d="M4.4 6.6v10.8c0 .95 1.1 1.5 1.85.9l7.6-5.4a1.05 1.05 0 0 0 0-1.7l-7.6-5.4c-.75-.6-1.85-.05-1.85.9z"/></svg>
         </button>
       </div>
 
       <div class="deck-foot">
         <div class="rates" id="rates" role="group" aria-label="Playback speed"></div>
         <div class="deck-tools">
+          <div class="menu-wrap">
+            <button id="playmode-btn" class="plain-btn" type="button"
+                    aria-haspopup="menu" aria-expanded="false">
+              <span id="playmode-icon" aria-hidden="true"></span>
+              <span id="playmode-label">In order</span>
+            </button>
+            <div id="playmode-menu" class="menu up" hidden role="menu">
+              <button type="button" role="menuitemradio" data-playmode="in-order">In order</button>
+              <button type="button" role="menuitemradio" data-playmode="repeat-one">Repeat one</button>
+              <button type="button" role="menuitemradio" data-playmode="shuffle">Shuffle</button>
+              <button type="button" role="menuitemradio" data-playmode="stop">Stop at end</button>
+            </div>
+          </div>
           <div class="menu-wrap">
             <button id="sleep-btn" class="plain-btn" type="button"
                     aria-haspopup="menu" aria-expanded="false">

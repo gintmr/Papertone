@@ -6,6 +6,24 @@ const DATA_BASE = 'data';
 const PROGRESS_KEY = 'podcast-progress';
 const THEME_KEY = 'podcast-theme';
 const SERVICE_KEY = 'podcast-service';
+const PLAYMODE_KEY = 'podcast-playmode';
+
+/* 放完一集之后干什么。
+   in-order 按列表顺序往下走（走到末尾回到第一集）；
+   repeat-one 单集循环；shuffle 随机挑下一集；
+   stop 是以前的行为，放完就停。 */
+const PLAYMODE_LABEL = {
+  'in-order': 'In order',
+  'repeat-one': 'Repeat one',
+  shuffle: 'Shuffle',
+  stop: 'Stop at end',
+};
+const PLAYMODE_ICON = {
+  'in-order': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.2h9.6M4 12h9.6M4 16.8h6"/><path d="M16.2 14.4v5.2l5.2-2.6z" fill="currentColor" stroke="none"/></svg>',
+  'repeat-one': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.6 2.9 19.8 6l-3.2 3.1"/><path d="M4 11.4V9.6A3.6 3.6 0 0 1 7.6 6h12.2"/><path d="M7.4 21.1 4.2 18l3.2-3.1"/><path d="M20 12.6v1.8a3.6 3.6 0 0 1-3.6 3.6H4.2"/><path d="M11.1 13.9 12.9 12.7v4.9" stroke-width="1.9"/></svg>',
+  shuffle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.4 3.2 19.8 6.4l-3.4 3.2"/><path d="M3.8 6.4h3.4c1.5 0 2.9.8 3.7 2.1l4 6.6c.8 1.3 2.2 2.1 3.7 2.1h1.2"/><path d="M16.4 14.2 19.8 17.4l-3.4 3.2"/><path d="M3.8 17.4h3.4c1.1 0 2.1-.4 2.9-1.1"/><path d="M13.9 8.5c.8-1.3 2.2-2.1 3.7-2.1h2.2"/></svg>',
+  stop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5.4 6.6v10.8c0 .9 1.05 1.45 1.8.9l6.6-5.4a1.05 1.05 0 0 0 0-1.7L7.2 5.7c-.75-.55-1.8 0-1.8.9z" fill="currentColor" stroke="none"/><path d="M17.8 6.8v10.4"/></svg>',
+};
 
 /* ── 本机存储（IndexedDB）──────────────────────────────
    论文库可以存在访问者自己的浏览器里，而不是随站点发布：
@@ -178,7 +196,8 @@ function toast(text) {
 
 /* ── 菜单 ───────────────────────────────────────────── */
 function closeMenus(except) {
-  [['#mode-menu', '#mode-btn'], ['#sleep-menu', '#sleep-btn'], ['#more-menu', '#more-toggle']]
+  [['#mode-menu', '#mode-btn'], ['#playmode-menu', '#playmode-btn'],
+   ['#sleep-menu', '#sleep-btn'], ['#more-menu', '#more-toggle']]
     .forEach(([menuSel, btnSel]) => {
       if (menuSel === except) return;
       $(menuSel).hidden = true;
@@ -413,6 +432,8 @@ function renderCards(query) {
 
   box.innerHTML = '';
   $('#empty').hidden = rows.length > 0;
+  // 记住这一版的顺序：放完一集要接着走的就是屏幕上这一串
+  playOrder = rows.map((e) => e.id);
 
   for (const e of rows) {
     const authors = e.authors || [];
@@ -553,6 +574,12 @@ async function openEpisode(id) {
     audio.addEventListener('loadedmetadata', () => { audio.currentTime = saved.time; }, { once: true });
   }
   updateMini();
+
+  // 上一集放完自动切过来的：接着放
+  if (pendingAutoplay) {
+    pendingAutoplay = false;
+    audio.play().catch(() => {});
+  }
 }
 
 function renderLines() {
@@ -641,6 +668,74 @@ function stepLine(dir) {
     target = Math.max(0, i);
   }
   if (lines[target]) { autoScrollUntil = 0; audio.currentTime = Math.max(0, lines[target].start - 0.15); }
+}
+
+/* ── 播放模式与前后集 ──────────────────────────────────
+   放完一集默认接着放下一集（以前是直接停住）。
+   「下一集」的顺序取列表当前渲染出来的顺序，所以筛选或搜索之后，
+   跟着往下走的就是屏幕上那一串。
+   ────────────────────────────────────────────────────── */
+let playMode = 'in-order';
+let playOrder = [];           // 列表当前渲染出的 id 顺序
+let pendingAutoplay = false;  // 换集之后是否自动开播
+
+try { playMode = localStorage.getItem(PLAYMODE_KEY) || 'in-order'; } catch (e) { /* 忽略 */ }
+if (!PLAYMODE_LABEL[playMode]) playMode = 'in-order';
+
+function renderPlayMode() {
+  $('#playmode-label').textContent = PLAYMODE_LABEL[playMode];
+  $('#playmode-icon').innerHTML = PLAYMODE_ICON[playMode];
+  $('#playmode-btn').classList.toggle('on', playMode !== 'in-order');
+  $('#playmode-menu').querySelectorAll('button').forEach((b) => {
+    b.classList.toggle('on', b.dataset.playmode === playMode);
+  });
+}
+
+function setPlayMode(next) {
+  if (!PLAYMODE_LABEL[next]) return;
+  playMode = next;
+  try { localStorage.setItem(PLAYMODE_KEY, next); } catch (e) { /* 忽略 */ }
+  renderPlayMode();
+}
+
+/** 相邻一集的 id；随机只在往后走时生效，往前仍是顺序，方便回退 */
+function neighbourId(step) {
+  const order = playOrder.length ? playOrder : index.map((e) => e.id);
+  if (!episode || !order.length) return null;
+  if (playMode === 'shuffle' && step > 0) {
+    const others = order.filter((id) => id !== episode.id);
+    return others.length ? others[Math.floor(Math.random() * others.length)] : null;
+  }
+  const i = order.indexOf(episode.id);
+  if (i === -1) return order[0];
+  const next = order[(i + step + order.length) % order.length];
+  return next === episode.id ? null : next;
+}
+
+/** 切到某一集。手动切集沿用当前播放状态，不硬塞声音进来 */
+function goToEpisode(id, autoplay) {
+  if (!id || !episode || id === episode.id) return;
+  pendingAutoplay = Boolean(autoplay);
+  // 在列表页用迷你条听时换集：只换播放内容，不把用户拽进播放页
+  if (document.body.dataset.view === 'list') {
+    openEpisode(id);
+    return;
+  }
+  location.hash = `#/${id}`;
+}
+
+/** 一集放完了 */
+function handleEpisodeEnd() {
+  if (sleepUntilEnd) { clearSleep(true); toast('Episode finished'); updateMini(); return; }
+  if (playMode === 'repeat-one') {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    return;
+  }
+  if (playMode === 'stop') { updateMini(); return; }
+  const next = neighbourId(1);
+  if (next) goToEpisode(next, true);
+  else updateMini();
 }
 
 function renderRates() {
@@ -826,8 +921,7 @@ audio.addEventListener('play', updateMini);
 audio.addEventListener('volumechange', updateMini);
 
 audio.addEventListener('ended', () => {
-  if (sleepUntilEnd) { clearSleep(true); toast('Episode finished'); }
-  updateMini();
+  handleEpisodeEnd();
 });
 
 bindScrub(bar);
@@ -838,6 +932,8 @@ $('.transport').addEventListener('click', (e) => {
   if (!btn) return;
   const act = btn.dataset.act;
   if (act === 'toggle') toggle();
+  else if (act === 'prev-ep') goToEpisode(neighbourId(-1), !audio.paused);
+  else if (act === 'next-ep') goToEpisode(neighbourId(1), !audio.paused);
   else if (act === 'prev-line') stepLine(-1);
   else if (act === 'next-line') stepLine(1);
   else skip(Number(act));
@@ -847,6 +943,13 @@ $('#mode-menu').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-mode]');
   if (!btn) return;
   setMode(btn.dataset.mode);
+  closeMenus();
+});
+
+$('#playmode-menu').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-playmode]');
+  if (!btn) return;
+  setPlayMode(btn.dataset.playmode);
   closeMenus();
 });
 
@@ -867,8 +970,10 @@ $('#copy-cite').addEventListener('click', async () => {
 });
 
 wireMenu('#mode-btn', '#mode-menu');
+wireMenu('#playmode-btn', '#playmode-menu');
 wireMenu('#sleep-btn', '#sleep-menu');
 wireMenu('#more-toggle', '#more-menu');
+renderPlayMode();
 
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.menu-wrap')) closeMenus();
