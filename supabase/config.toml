@@ -1,4 +1,0 @@
-# Merge this function entry into an existing Supabase config when reusing a project.
-# This does not change the project's exposed schemas or other functions.
-[functions.papertone-analytics]
-verify_jwt = false

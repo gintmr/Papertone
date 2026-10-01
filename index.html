@@ -12,8 +12,6 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <!-- 访客统计的公开配置：只有端点与允许来源，密钥在后端，不进前端 -->
-  <script id="visitor-config" type="application/json">{"enabled":true,"endpoint":"https://gjofwuihpzjfqeaysuuy.supabase.co/functions/v1/papertone-analytics","allowedOrigins":["https://gintmr.github.io"]}</script>
   <script>
     (function () {
       try {
@@ -127,14 +125,6 @@
 
         <hr class="sheet-sep" />
 
-        <p class="field-hint section-title">Visitors</p>
-        <p class="field-hint">
-          Anonymous page views, where readers come from, and the recent visit log.
-        </p>
-        <button id="open-visitors" class="btn" type="button">Open visitor statistics</button>
-
-        <hr class="sheet-sep" />
-
         <p class="field-hint section-title">Update from alphaXiv</p>
         <p class="field-hint">
           A GitHub Action scans alphaXiv, picks up papers that have a podcast,
@@ -208,6 +198,22 @@
     <div id="filters" class="filters" role="tablist" aria-label="Filter"></div>
     <div id="cards" class="cards"></div>
     <p id="empty" class="empty" hidden>No matching papers</p>
+
+    <!-- ── 访问统计（不蒜子）──
+         数字由 cdn.busuanzi.cc 的脚本填进下面的 dd 里：站点级按域名汇总，
+         页面级按完整 URL 计。没有自己的后端，也不写任何数据库。 -->
+    <aside id="visitor-footer" class="visitor-footer" aria-label="Visitor statistics">
+      <span class="visitor-title">
+        <span class="visitor-dot" aria-hidden="true"></span>
+        Visitor statistics
+      </span>
+      <dl class="visitor-metrics">
+        <div><dt>Total visitors</dt><dd id="busuanzi_site_uv">—</dd></div>
+        <div><dt>Total views</dt><dd id="busuanzi_site_pv">—</dd></div>
+        <div><dt>This page</dt><dd id="busuanzi_page_pv">—</dd></div>
+      </dl>
+      <span class="visitor-provider">Counts by Busuanzi</span>
+    </aside>
   </main>
 
   <!-- ── Player: transcript scrolls in the middle, controls pinned to the bottom ── -->
@@ -307,73 +313,6 @@
 
   <div id="toast" class="toast" hidden></div>
   <audio id="audio" preload="metadata"></audio>
-
-  <!-- ── 访客统计（访客总量 / 地图 / 今日 / 国家表 / 访问记录）──
-       从资料库面板进入，哈希路由 #/visitors。地图是懒加载的：只有真的
-       打开这一页才会去取 assets/world-countries.svg（124KB）。 -->
-  <section id="view-visitors" class="view-visitors" hidden>
-    <article class="visitor-card" data-visitor-card data-state="unconfigured">
-      <dl class="visitor-totals">
-        <div><dt>Page views</dt><dd data-visitor-value="pageviews">—</dd></div>
-        <div>
-          <dt><abbr title="Daily unique visitors, summed across UTC days. Returning visitors on another day count again.">Visitor-days</abbr></dt>
-          <dd data-visitor-value="visitorDays">—</dd>
-        </div>
-        <div><dt>Countries &amp; regions</dt><dd data-visitor-value="countries">—</dd></div>
-      </dl>
-
-      <figure class="visitor-map-figure" data-visitor-map hidden></figure>
-
-      <div class="visitor-analysis">
-        <div class="visitor-today">
-          <p class="visitor-detail-label">Today <span data-visitor-today-date>UTC</span></p>
-          <dl class="visitor-totals visitor-today-totals">
-            <div><dt>Page views</dt><dd data-visitor-today-value="pageviews">—</dd></div>
-            <div><dt>Visitors</dt><dd data-visitor-today-value="visitors">—</dd></div>
-          </dl>
-        </div>
-        <div class="visitor-table-scroll" tabindex="0" aria-label="Visitor totals by country or region">
-          <table class="visitor-table">
-            <thead><tr>
-              <th scope="col">Country / region</th>
-              <th scope="col">Page views</th>
-              <th scope="col"><abbr title="Daily unique visitors, summed across UTC days.">Visitor-days</abbr></th>
-            </tr></thead>
-            <tbody data-visitor-country-rows></tbody>
-          </table>
-        </div>
-      </div>
-      <p class="visitor-detail-note" data-visitor-countries-status>Country totals are not available yet.</p>
-
-      <h2 class="visitor-subhead">Visit history</h2>
-      <p class="visitor-detail-note">Times shown in UTC · Locations estimated from IP addresses</p>
-      <div class="visitor-table-scroll" tabindex="0" aria-label="Visit history by time, country or region">
-        <table class="visitor-table visitor-activity-table">
-          <thead><tr>
-            <th scope="col">Time (UTC)</th>
-            <th scope="col">Country / region</th>
-          </tr></thead>
-          <tbody data-visitor-activity-rows></tbody>
-        </table>
-      </div>
-      <div class="visitor-activity-controls">
-        <p class="visitor-detail-note" data-visitor-activity-status role="status">Loading visit history…</p>
-        <button class="visitor-page-button" type="button" data-visitor-retry hidden>Retry</button>
-      </div>
-      <nav class="visitor-pagination" aria-label="Visit history pages" data-visitor-pagination hidden>
-        <div class="visitor-page-navigation">
-          <button class="visitor-page-button" type="button" data-visitor-previous disabled>Previous</button>
-          <span class="visitor-page-label" data-visitor-page-label>Page —</span>
-          <button class="visitor-page-button" type="button" data-visitor-next disabled>Next</button>
-        </div>
-      </nav>
-      <button class="visitor-page-button visitor-refresh" type="button" data-visitor-refresh disabled>Refresh</button>
-
-      <span class="visitor-demo-label" data-visitor-demo hidden>Design preview · sample data</span>
-      <p class="visitor-status" data-visitor-status role="status">Visitor statistics are not connected yet.</p>
-      <noscript><p class="visitor-status">Enable JavaScript to view visitor statistics.</p></noscript>
-    </article>
-  </section>
 
   <script src="app.js"></script>
 </body>
