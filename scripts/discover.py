@@ -37,9 +37,18 @@ AI_TAGS = {"agents", "agentic-frameworks", "transformers", "efficient-transforme
            "human-ai-interaction", "ai-for-health", "alignment", "rag",
            "fine-tuning", "data-curation", "model-interpretation"}
 
-# 浏览量门槛随论文年龄放宽。三档是「或」的关系，先命中哪档就按哪档判，不累加：
-# 7 天以内超过 300 就通过，不会被再要求 500——短时间冲到 300 本身就说明有价值。
-VIEW_RULES = [(7, 300), (14, 400), (30, 500)]
+# 浏览量门槛按论文年龄分档。四档是「或」的关系，按天数从小到大命中即止、不累加：
+# 3 天以内超过 150 就通过，不会再被要求 300。
+#
+# 为什么门槛随年龄下降：浏览量是累计值，会随年龄迅速趋于平台期。
+# 实测近 30 天推荐流里 394 篇「有播客」论文的「浏览量 ÷ 天数」中位数：
+#     0-1 天 352/天 · 1-2 天 80 · 2-3 天 74 · 3-5 天 52
+#     5-7 天  34/天 · 7-14 天 14 · 14-30 天 6~12
+# 也就是说一篇 3 天 200 浏览（≈67/天）比一篇 25 天 500 浏览（≈20/天）热得多。
+# 所以「越新的论文要求越高的速度」才自洽。下面每档折算成速度：
+#     3 天 150 ≈ 50/天 · 7 天 250 ≈ 36/天 · 14 天 350 ≈ 25/天 · 30 天 450 ≈ 15/天
+# 单调递减，而且各档大约都落在同年龄段的前 10~20%。
+VIEW_RULES = [(3, 150), (7, 250), (14, 350), (30, 450)]
 
 
 def fetch(url: str, timeout: int = 45, headers: dict | None = None) -> tuple[int, bytes]:
@@ -80,7 +89,7 @@ def views_of(paper: dict) -> int:
 
 
 def match_tier(paper: dict, now: datetime) -> int | None:
-    """返回命中的档位天数（7 / 14 / 30），都不命中返回 None。"""
+    """返回命中的档位天数（3 / 7 / 14 / 30），都不命中返回 None。"""
     age = age_days(paper, now)
     if age is None:
         return None

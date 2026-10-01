@@ -48,18 +48,9 @@ CDN = "https://paper-podcasts.alphaxiv.org"
 CACHE = os.path.join(ROOT, "_work", "cache")
 RANGE_RE = re.compile(r"bytes=(\d*)-(\d*)")
 
-AI_CATS = {"cs.AI", "cs.LG", "cs.CL", "cs.CV", "cs.NE", "cs.MA", "cs.RO",
-           "cs.IR", "cs.SD", "cs.HC", "stat.ML", "eess.AS"}
-AI_TAGS = {"agents", "agentic-frameworks", "transformers", "efficient-transformers",
-           "reasoning", "llm", "large-language-models", "reinforcement-learning",
-           "deep-reinforcement-learning", "tool-use", "meta-learning",
-           "continual-learning", "vision-language-models", "multi-agent-learning",
-           "human-ai-interaction", "ai-for-health", "alignment", "rag",
-           "fine-tuning", "data-curation", "model-interpretation"}
-
-# 浏览量门槛随论文年龄放宽：刚上线三天 300 浏览，和上线三周 500 浏览，
-# 含金量完全不同。用「浏览量 / 年龄」而不是单一绝对阈值。
-VIEW_RULES = [(7, 300), (14, 400), (30, 500)]
+# 筛选口径以 discover.py 为唯一来源（两边曾经各留一份，改一处漏一处）。
+# serve.py 与它同目录，直接 import 即可。
+from discover import AI_CATS, AI_TAGS, VIEW_RULES  # noqa: E402
 
 STATE = {"job": None}
 
