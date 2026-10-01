@@ -510,17 +510,58 @@ function buildBibtex(ep) {
 }`;
 }
 
-async function openEpisode(id) {
-  // 本机存储优先；没有再去网络取
-  let data = null;
-  if (deviceLibrary) {
+/* ── 换集要「零等待」──────────────────────────────────
+   锁屏下自动续播失败的原因在这里：一集放完到下一集出声之间，如果中间插了
+   await（去网络取下一集的 episode.json）或者等了一次 hashchange 事件，
+   iOS 会趁这个空档把音频会话关掉——现象就是进度条在走、但一点声音都没有，
+   非要解锁回到前台才恢复。
+
+   所以：提前把下一集的 JSON 拿到手，换集时同步换 src 并 play()，
+   整条链路里一次 await 都不出现。
+   ────────────────────────────────────────────────────── */
+const episodeCache = new Map();
+const EPISODE_CACHE_MAX = 6;
+let currentAudioSrc = '';
+
+/** 换音频源；同一个地址不重复赋值，否则浏览器会重新加载、重头播 */
+function setAudioSource(url) {
+  if (!url || url === currentAudioSrc) return false;
+  currentAudioSrc = url;
+  audio.src = url;
+  return true;
+}
+
+function audioUrlFor(ep, id) {
+  const ref = ep.audio || '';
+  return /^https?:/i.test(ref) ? ref : `${DATA_BASE}/${id}/${ref || 'audio/podcast.mp3'}`;
+}
+
+/** 预取某集的 JSON，换来换集时不再等网络 */
+async function preloadEpisode(id) {
+  if (!id || episodeCache.has(id) || deviceLibrary) return;
+  try {
+    const res = await fetch(`${DATA_BASE}/${id}/episode.json`);
+    if (!res.ok) return;
+    episodeCache.set(id, await res.json());
+    while (episodeCache.size > EPISODE_CACHE_MAX) {
+      episodeCache.delete(episodeCache.keys().next().value);
+    }
+  } catch (e) { /* 预载失败不影响正常播放 */ }
+}
+
+async function openEpisode(id, preset) {
+  // 预载过 / 预置过就直接用：这条路径上一路到底没有 await，
+  // 换集能在一帧内完成（见上面「换集要零等待」的说明）。
+  let data = preset || episodeCache.get(id) || null;
+  if (!data && deviceLibrary) {
     try { data = await idbGet('episodes', id); } catch (e) { /* 退回网络 */ }
   }
   if (!data) {
-    const res = await fetch(`${DATA_BASE}/${id}/episode.json`, { cache: 'no-cache' });
+    const res = await fetch(`${DATA_BASE}/${id}/episode.json`);
     if (!res.ok) { location.hash = '#/'; return; }
     data = await res.json();
   }
+  episodeCache.set(id, data);
   episode = data;
   lines = episode.segments || [];
   revealed = new Set();
@@ -528,6 +569,24 @@ async function openEpisode(id) {
 
   // 锁屏卡片与后台播放：换集就更新一次
   updateMediaSession(episode);
+
+  // 先把声音接上再做界面：换集时这一步必须尽早、且不能有 await
+  let switched;
+  if (audioUrls.has(id)) {
+    switched = setAudioSource(audioUrls.get(id));
+  } else if (deviceLibrary) {
+    const blob = await idbGet('blobs', `${id}:audio`).catch(() => null);
+    if (blob) {
+      const u = URL.createObjectURL(blob);
+      audioUrls.set(id, u);
+      switched = setAudioSource(u);
+    } else {
+      switched = setAudioSource(audioUrlFor(episode, id));
+    }
+  } else {
+    switched = setAudioSource(audioUrlFor(episode, id));
+  }
+  audio.playbackRate = 1;
 
   $('#ep-title').textContent = episode.title;
   $('#ep-authors').textContent = (episode.authors || []).join(' · ');
@@ -538,33 +597,16 @@ async function openEpisode(id) {
   $('#ep-abstract').textContent = episode.abstract || '';
   $('#ep-citation').textContent = buildBibtex(episode);
 
-  $('#time-now').textContent = '0:00';
-  $('#time-total').textContent = fmt(episode.duration);
-  setBar(bar, 0);
-  setBar(miniBar, 0);
-  currentProgress = 0;
-  scheduleWave(0);
+  // 同一集重复打开时不会重载音频（否则会把正在听的这一段打断），
+  // 这时进度条要直接对齐当前播放位置，不能归零
+  const total = audio.duration || episode.duration || 0;
+  currentProgress = switched || !total ? 0 : (audio.currentTime / total) * 100;
+  $('#time-now').textContent = fmt(switched ? 0 : audio.currentTime);
+  $('#time-total').textContent = fmt(total);
+  setBar(bar, currentProgress);
+  setBar(miniBar, currentProgress);
+  scheduleWave(currentProgress / 100);
 
-  // audio 可能是 CDN 绝对地址（现在都是），也可能是老的本地相对路径
-  const ref = episode.audio || '';
-  const asset = /^https?:/i.test(ref)
-    ? ref
-    : `${DATA_BASE}/${id}/${ref || 'audio/podcast.mp3'}`;
-  if (audioUrls.has(id)) {
-    audio.src = audioUrls.get(id);
-  } else if (deviceLibrary) {
-    const blob = await idbGet('blobs', `${id}:audio`).catch(() => null);
-    if (blob) {
-      const u = URL.createObjectURL(blob);
-      audioUrls.set(id, u);
-      audio.src = u;
-    } else {
-      audio.src = asset;
-    }
-  } else {
-    audio.src = asset;
-  }
-  audio.playbackRate = 1;
   renderRates();
   renderLines();
 
@@ -583,6 +625,9 @@ async function openEpisode(id) {
     pendingAutoplay = false;
     audio.play().catch(() => {});
   }
+
+  // 现在就把下一集的数据取好，换集时才不用等网络
+  setTimeout(() => { preloadEpisode(neighbourId(1)); }, 1000);
 }
 
 function renderLines() {
@@ -722,6 +767,14 @@ function goToEpisode(id, autoplay) {
   // 在列表页用迷你条听时换集：只换播放内容，不把用户拽进播放页
   if (document.body.dataset.view === 'list') {
     openEpisode(id);
+    return;
+  }
+  const preset = episodeCache.get(id);
+  if (preset) {
+    // 同步换集：不走 location.hash——那条路要多等一次事件循环，
+    // iOS 会在这个空档里把音频会话关掉。
+    history.replaceState(null, '', `#/${id}`);
+    openEpisode(id, preset);
     return;
   }
   location.hash = `#/${id}`;
@@ -1001,6 +1054,9 @@ audio.addEventListener('pause', () => {
 
 audio.addEventListener('play', () => {
   setMediaPlaybackState('playing');
+  // 会话真正激活后再登记一次：有些浏览器会忽略首次出声之前登记的跳过键，
+  // 锁屏上就只剩播放/暂停，没有上一集/下一集。
+  wireMediaSession();
   updateMini();
 });
 audio.addEventListener('volumechange', updateMini);
