@@ -193,6 +193,12 @@
         </svg>
         <input id="search" class="search" type="search" placeholder="Search title or author" autocomplete="off" />
       </label>
+      <!-- 资料库规模：跟着索引走，筛选时不变（它说的是「站上一共多少集」） -->
+      <p class="library-count" id="library-count"
+         aria-label="Paper podcasts in the library">
+        <span id="library-count-num">—</span>
+        <span class="library-count-unit">podcasts</span>
+      </p>
     </div>
 
     <div id="continue" class="continue" hidden></div>

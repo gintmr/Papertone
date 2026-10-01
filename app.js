@@ -409,6 +409,10 @@ function renderCards(query) {
   const q = (query || '').trim().toLowerCase();
   const box = $('#cards');
   const progress = loadProgress();
+
+  // 资料库规模：跟着索引走，不受筛选影响
+  $('#library-count-num').textContent = index.length.toLocaleString('en-US');
+
   let rows = index.filter((e) => !q
     || e.title.toLowerCase().includes(q)
     || (e.authors || []).join(' ').toLowerCase().includes(q)

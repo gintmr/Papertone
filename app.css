@@ -259,9 +259,31 @@ body[data-view='episode'] .brand { display: none; }
 .view-list[hidden] { display: none; }
 
 .list-tools {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
   max-width: 54rem;
   margin-inline: auto;
   padding: .5rem 1rem 1.35rem;
+}
+.list-tools .search-wrap { flex: 1; min-width: 0; }
+
+/* 资料库规模：一行小字，数字用强调色，不加边框 */
+.library-count {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: .3rem;
+  margin: 0;
+  color: var(--secondary);
+  font-size: .76rem;
+  white-space: nowrap;
+}
+.library-count span:first-child {
+  color: var(--accent-ink);
+  font-size: 1.02rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 /* 搜索：填充式圆角胶囊，不用边框 */
