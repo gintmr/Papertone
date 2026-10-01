@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 367.203,
+  "word_match_rate": 0.9605,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our Advanced Topics in Reinforcement Learning seminar, we've discussed how on-policy distillation is becoming a dominant theme for improving LLM reasoning. Today's lecture is on 'On Repulsive and Attractive Teachers: Separating Correctness from Behavior in Self-Distillation' by a team at ETH Zurich. We've seen a lot of recent work like 'Self-Distilled Reasoner' and 'Rebellious Student' exploring how a model can teach itself. This paper questions a fundamental assumption about what is actually being taught. Yes, Noah?",
+      "start": 0.0,
+      "end": 33.24
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. I thought the goal of these self-distillation methods was straightforward: use a teacher, which is just the same model given access to a correct solution, to provide a better training signal for the student policy. Where's the complication?",
+      "start": 33.66,
+      "end": 46.78
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's the standard view, but it's the complication this paper dissects. The authors argue that giving the teacher a correct solution doesn't just make it better at identifying correct reasoning steps. It also changes the teacher's behavior. It might become more concise, more confident, and less exploratory. When you distill that, you're not just teaching correctness; you're also teaching a behavioral style that might be undesirable for complex reasoning.",
+      "start": 47.16,
+      "end": 72.32
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "So the main idea here is to untangle these two signals: the signal for correctness and the signal for behavior. The central problem is that privileged information, like a solution, biases the teacher in ways that go beyond the task itself. For reasoning, a concise and overly confident style can be actively harmful, as it might suppress self-correction or exploration of alternative paths.",
+      "start": 72.74,
+      "end": 93.13
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the student learns to be more direct, but that might make it worse at problems that require more careful, step-by-step thinking?",
+      "start": 93.72,
+      "end": 99.74
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Precisely. To study this, the authors isolate two fundamental forces. First is 'attraction', the standard distillation approach where the student is trained to mimic the solution-conditioned teacher. Second is 'repulsion', where the student is trained to move away from the teacher. This idea has appeared before, for instance in 'Rebellious Student', with the goal of encouraging exploration.",
+      "start": 99.74,
+      "end": 122.12
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "But what did they find when they isolated these forces? Does simple repulsion work?",
+      "start": 122.46,
+      "end": 126.46
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That's one of the key findings: not really, or at least not in a stable way. They found that repulsion from a correct teacher does initially encourage longer, more exploratory outputs. In one experiment with a hybrid model, it even reactivated a latent 'thinking' mode. But this effect was uncontrolled. The response lengths just kept growing until they hit the context limit, causing performance to collapse. It was a behavioral change, not necessarily a durable improvement in reasoning.",
+      "start": 126.82,
+      "end": 154.98
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "And what about pure attraction?",
+      "start": 154.98,
+      "end": 156.5
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Attraction did the opposite: it made responses shorter and more confident, consistent with the teacher's bias. While this sometimes improved training accuracy, it didn't necessarily generalize well, suggesting the model was overfitting to the teacher's style rather than learning a more robust reasoning capability.",
+      "start": 156.98,
+      "end": 173.06
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "This brings us to their proposed solution: contrastive self-distillation. Instead of using one teacher, they use two. The 'positive' teacher is the same model conditioned on a correct solution. The 'negative' teacher is the model conditioned on an incorrect solution.",
+      "start": 173.52,
+      "end": 188.08
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Okay, so it's a push-pull mechanism. Attract towards the policy that saw a correct answer, and repel from the policy that saw an incorrect one.",
+      "start": 188.64,
+      "end": 195.42
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Exactly. The core insight is that both teachers, having been conditioned on a complete solution of some kind, likely share similar behavioral biases—like a preference for conciseness. By attracting to one and repelling from the other, the hope is that these shared behavioral signals partially cancel each other out. What remains is the signal that distinguishes them: the information related to correctness.",
+      "start": 195.94,
+      "end": 220.12
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So the final learning signal for a given token is basically its log-probability ratio between the positive and negative teachers?",
+      "start": 220.52,
+      "end": 226.52
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That's right. A token gets reinforced if it's more likely under the correct-solution context than the incorrect one. It's a clean, token-level credit assignment signal. And importantly, they test this method without any auxiliary reward model like GRPO. This isolates the effect of the distillation signal itself, which is a key methodological choice. Their experiments show this contrastive approach improves performance across different tasks and model setups, all while keeping the response length stable.",
+      "start": 227.08,
+      "end": 255.66
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So you're saying a big part of the gains reported in some earlier repulsive distillation papers might have just come from the model learning to 'think out loud' more, rather than learning fundamentally new reasoning skills?",
+      "start": 256.04,
+      "end": 266.66
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "That's the implication. This paper forces us to be more critical. An accuracy bump could just be a side effect of activating a latent capability, like a thinking mode, which isn't the same as learning. The key shift is from just looking at final accuracy to also diagnosing the behavioral changes in the model. Is it writing longer responses? Is it expressing more uncertainty? These are now first-class metrics to consider.",
+      "start": 267.02,
+      "end": 290.32
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "This connects to some of the critical work we've read, like 'The Many Faces of On-Policy Distillation', which also pointed out that the mechanisms aren't as simple as they appear. This seems to provide a concrete example of one of those hidden mechanisms.",
+      "start": 290.68,
+      "end": 302.84
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "It's a great connection. That paper and others highlighted inconsistencies, and this work provides a compelling explanation for some of them: the entanglement of correctness and behavior. By proposing a contrastive method to separate them, it offers not just a critique but a constructive path forward for designing more robust distillation techniques.",
+      "start": 303.42,
+      "end": 322.24
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "In summary, this work from ETH Zurich makes a conceptual contribution by showing that self-distillation signals are not pure correctness signals; they are entangled with behavioral biases. One-sided attraction or repulsion can lead to undesirable behaviors like over-confidence or uncontrolled response growth. Their proposed contrastive objective is a way to mitigate this by canceling out shared behavioral tendencies, leading to stable improvements in reasoning.",
+      "start": 322.64,
+      "end": 349.98
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The memorable takeaway here is that in model training, what you teach is not always what the model learns. Behavioral side effects are real, and we need methods that can isolate the capabilities we actually want to instill. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 350.32,
+      "end": 367.203
+    }
+  ]
+}

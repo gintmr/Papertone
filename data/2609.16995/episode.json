@@ -1,0 +1,283 @@
+{
+  "id": "2609.16995",
+  "title": "PaperDoctor: Evidence-Grounded and Actionable Feedback for Scientific Papers in Progress",
+  "authors": [
+    "Kevin Qinghong Lin",
+    "Siyuan Hu",
+    "Pan Lu",
+    "Yu Chen",
+    "Yanzhe Chen",
+    "Owen Queen",
+    "Yupeng Chen",
+    "Jialin Yu",
+    "Junchi Yu",
+    "Zifeng Ding",
+    "Yuanfeng Ji",
+    "Sheng Liu",
+    "Jindong Gu",
+    "Linjie Li",
+    "Mike Zheng Shou",
+    "Philip Torr",
+    "James Zou"
+  ],
+  "abstract": "Autoresearch agents are reshaping the research ecosystem, but they can also let flawed claims enter the literature at scale. Human advisors catch such issues in drafts through careful, traceable feedback, yet advisor-style assessment requires extensive manual effort and does not scale. To shift automated paper assessment from a judge to a diagnostician, we introduce PaperDoctor, an agent framework for pre-submission feedback with three key innovations. First, a holistic hierarchical framework evaluates writing, layout, references, code, theory, prior work, and experiments through three layers: L1 surface screening, L2 typed verifiers that route each claim to the appropriate evidence, and L3 reproducers that rerun experiments by priority. Second, each finding contains an observation, a pointer to specific evidence such as a sentence, equation, or code line, and a revision suggestion, making critiques auditable and actionable. Third, PaperDoctor selectively rebuilds and reruns experiments based on claim importance and compute budget, surfacing reproducibility gaps and quantitative limitations that are invisible from the manuscript alone. We evaluate PaperDoctor on 30 in-progress papers, yielding 70.6% agreement and all positive holistic scores, and on 40 manuscripts across machine learning, natural science, and social science, covering human- and AI-authored papers with code. Overall, PaperDoctor produces more auditable feedback than human and other agentic reviewers, pairs critiques with concrete suggestions by design, and complements dimensions often overlooked by human reviewers. We also develop an interactive interface that lets authors browse findings grounded in their paper. PaperDoctor reframes automated paper assessment as diagnosis rather than verdict, taking a concrete step toward AI advisors for more rigorous AI-assisted scientific discovery.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.16995",
+    "arxiv": "https://arxiv.org/abs/2609.16995"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a839-9788-79e2-a186-036340fdefd8/podcast.mp3",
+  "duration": 424.176,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.02,
+      "en": "In our seminar on AI for Scientific Discovery, we've seen a surge in systems that try to automate research, with frameworks like 'Agent Laboratory' and 'PaperOrchestra' generating entire manuscripts. Today's lecture is on a different approach: 'PaperDoctor: Evidence-Grounded and Actionable Feedback for Scientific Papers in Progress.' This work, from researchers at Oxford, Stanford, and the National University of Singapore, moves away from generation and towards verification. Instead of just creating more papers, it asks how we can ensure the ones being written are correct. Yes, Noah?",
+      "zh": "在我们这门“AI用于科学发现”的研讨课上，我们看到了大量试图自动化研究的系统涌现出来，像“Agent Laboratory”和“PaperOrchestra”这样的框架能直接生成整篇论文。今天的讲座讲的是另一种思路：“PaperDoctor：为进行中的科学论文提供有证据支撑且可操作的反馈。”这项工作来自牛津、斯坦福和新加坡国立大学的研究者，它不再走生成路线，而是转向验证。与其制造更多论文，它问的是：我们怎么确保正在写的这些论文是对的？好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.5,
+      "end": 41.84,
+      "en": "Excuse me, Professor. So is this just another automated peer reviewer? We've seen a few of those, like in that Google paper on their Paper Assistant Tool.",
+      "zh": "不好意思，教授。那这不就是又一个自动同行评审工具吗？我们见过一些了，比如谷歌那篇关于他们论文助手工具的论文。"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.1,
+      "end": 66.48,
+      "en": "That's a great question, and it gets to the core of their contribution. The authors make a key distinction. They argue that most automated reviewers act like a 'judge,' giving a score or predicting acceptance. PaperDoctor is designed to be a 'diagnostician.' Its goal isn't to say if the paper is good or bad, but to find specific, verifiable problems and suggest concrete fixes, much like an advisor would before a submission. It's meant for the author, not the conference chair.",
+      "zh": "这是个很好的问题，也正好触及了他们贡献的核心。作者做了一个关键区分。他们认为大多数自动审稿工具扮演的是“法官”角色，给出评分或预测能否被接收。而PaperDoctor被设计成一个“诊断者”。它的目标不是说论文好还是坏，而是找出具体的、可验证的问题，并给出具体的修改建议，就像导师在投稿前会做的那样。它是为作者服务的，而不是为会议主席服务的。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 66.78,
+      "end": 101.86,
+      "en": "The main concept is to provide feedback that is both evidence-grounded and actionable. This means every piece of feedback—what they call a 'finding'—is a triplet. It contains the diagnosis, the specific evidence for that diagnosis, and a suggested revision. The evidence isn't just a vague feeling; it's a direct quote, a line of code, a figure, or even the output of a script. This moves beyond the typical reading-only review. It addresses discrepancies that are hard to spot, like a paper claiming to use the AdamW optimizer while the code's config file actually specifies Adam.",
+      "zh": "它的核心理念是提供既有依据又可操作的反馈。也就是说，每一条反馈——他们称之为“发现”——都是一个三元组，包含诊断、支撑该诊断的具体证据，以及修改建议。证据不是模糊的感觉，而是一段直接引用、一行代码、一张图，甚至是一个脚本的输出。这就超越了那种只靠阅读来评审的常规做法，能发现一些很难察觉的不一致，比如论文声称用的是AdamW优化器，而代码的配置文件里实际写的却是Adam。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 101.86,
+      "end": 107.08,
+      "en": "So it's not just reading the PDF, it's cross-referencing the manuscript with the code and other assets?",
+      "zh": "所以它不只是读PDF，而是把论文和代码以及其他材料交叉对照来看？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.98,
+      "end": 139.22,
+      "en": "Exactly. The system takes the paper, the code, and datasets as input. It aims for a holistic evaluation covering writing, figures, theory, code, and experiments. The feedback is also categorized as either an 'error,' where the system has high confidence, or a 'warning,' where the issue is more subjective and requires author judgment. The motivation is to create a scalable version of the meticulous, time-consuming feedback a human advisor provides, which is becoming harder as AI-assisted writing increases the volume of manuscripts.",
+      "zh": "没错。这个系统把论文、代码和数据集作为输入，目标是做一次整体性评估，覆盖写作、图表、理论、代码和实验。反馈也会分成两类：一类是“错误”，系统对此有很高的置信度；另一类是“警告”，这类问题更主观，需要作者自己判断。这么做的动机，是想把人类导师那种细致但耗时的反馈做成可规模化的版本，因为随着AI辅助写作让稿件数量激增，这种反馈越来越难提供了。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 139.88,
+      "end": 149.2,
+      "en": "That makes sense. It seems like the 'error' versus 'warning' distinction would be important. But the report mentioned authors actually accepted warnings slightly more often than errors. What do you make of that?",
+      "zh": "这很合理。看起来“错误”和“警告”的区分很重要。但报告提到，作者接受警告的频率其实略高于错误。你怎么看这个现象？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 149.7,
+      "end": 171.6,
+      "en": "It’s an interesting result. It suggests that while a strong 'error' label can reduce an author's uncertainty, it also invites more scrutiny. If the model confidently flags something as wrong and it isn't, the author rejects it decisively. A 'warning' might be perceived as a more collaborative suggestion, leading to higher acceptance even if the evidence is less definitive. It highlights the challenge in tuning the assertiveness of AI feedback.",
+      "zh": "这是个挺有意思的结果。它说明，虽然一个强烈的“错误”标签能减少作者的不确定性，但也会招来更多审视。如果模型很自信地把某个其实没问题的东西标成错的，作者就会果断拒绝。而“警告”可能被当成一种更偏协作式的建议，所以哪怕证据没那么确凿，接受率反而更高。这也凸显了在调整AI反馈的强硬程度上有多难。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.06,
+      "end": 201.04,
+      "en": "The technical approach is a hierarchical, three-level pipeline designed to manage computational cost. Level one is 'Surface Screening.' This is the cheap part. It uses an LLM to check for typos and clarity, a vision-language model to find layout issues like overlapping captions, and it verifies that citations in the bibliography actually exist. It also extracts verifiable claims from the text, like 'we used a learning rate of 0.01,' and passes them to the next level.",
+      "zh": "技术方案是一个分层三级流水线，目的是控制计算成本。第一级是“表层筛查”，也是最便宜的部分。它用一个LLM检查拼写错误和表述清晰度，用一个视觉语言模型找出重叠图注之类的排版问题，还会核实参考文献里的引用是否真实存在。它还会从正文中提取可验证的声明，比如“我们使用了0.01的学习率”，然后传给下一级。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 201.36,
+      "end": 209.54,
+      "en": "Wait, for the layout check, how reliable is a vision-language model on dense academic papers? The report said its feedback had the lowest acceptance rate.",
+      "zh": "等等，布局检查这块，视觉语言模型在密集的学术论文上到底有多可靠？报告里说它的反馈接受率是最低的。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 209.74,
+      "end": 230.78,
+      "en": "You're right to be skeptical. The authors found that figure review had a 42% acceptance rate, the lowest of any category. This reflects the current limitations of these models on complex, information-dense images, and also the subjective nature of what constitutes 'good' design. But even at that rate, it can still catch unambiguous errors like a figure overflowing the page margins.",
+      "zh": "你的怀疑有道理。作者发现，图表审查的接受率只有42%，是所有类别中最低的。这既反映了当前这些模型在处理复杂、信息密集的图像时的局限性，也反映了什么算“好”设计本身就带有主观性。但即便接受率如此，它仍然能抓住一些明确的错误，比如图表溢出了页边距。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 231.26,
+      "end": 254.94,
+      "en": "Level two is 'Typed Claim Verification.' The claims extracted in L1 are routed to specialized modules. A code verifier checks statements against the codebase. A theory verifier attempts to re-derive mathematical arguments step-by-step. And an experiment-design reviewer checks for things like missing ablations or weak baselines. This level doesn't run the code; it just analyzes its structure and the experimental setup described in the paper.",
+      "zh": "第二层是“类型化断言验证”。第一层提取出来的断言会被分发到专门的模块。代码验证器会对照代码库检查相关陈述。理论验证器会尝试一步步重新推导数学论证。实验设计审查器则检查有没有缺消融实验、基线太弱之类的问题。这一层不运行代码，只分析代码结构以及论文里描述的实验设置。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 255.34,
+      "end": 259.52,
+      "en": "The theory verifier sounds ambitious. Is it doing formal verification or something simpler?",
+      "zh": "理论验证器听起来挺有野心的。它是在做形式化验证，还是只是做些更简单的事？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 259.84,
+      "end": 277.64,
+      "en": "It's more akin to a step-by-step symbolic check performed by an LLM, not formal verification. It's looking for inconsistencies in notation, unstated assumptions, or logical leaps in a derivation. It's not foolproof, but it can catch errors that are easily missed when reading fluently written math.",
+      "zh": "它更像是由大语言模型执行的逐步符号检查，而不是形式化验证。它专门找符号不一致、未说明的假设，或者推导中的逻辑跳跃。它并非万无一失，但能抓住那些在流畅阅读数学推导时容易被忽略的错误。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 278.06,
+      "end": 307.3,
+      "en": "Finally, level three is 'Selective Experiment Reproduction.' This is the most expensive step, so it’s done carefully. The system creates a reproduction plan, estimates the computational cost, and asks the author for approval. It prioritizes experiments central to the paper’s main claim. The results are then compared to the values reported in the manuscript. As the study found, this is often the biggest hurdle—almost half the experiments couldn't even start due to missing instructions, data, or model weights.",
+      "zh": "最后，第三级是“选择性实验复现”。这是成本最高的一步，所以做起来很谨慎。系统会制定一份复现计划，估算计算成本，并征求作者同意。它会优先复现那些对论文核心主张至关重要的实验。然后把结果和手稿中报告的值进行对比。正如研究所发现的，这往往是最难跨越的一道坎——将近一半的实验因为缺少说明、数据或模型权重，根本没法开始。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 307.76,
+      "end": 321.68,
+      "en": "So this work shifts the focus from post-publication peer review to pre-submission quality control. It seems to directly address the reproducibility concerns raised in the field. How does this compare to something like the 'ScientistOne' paper, which proposes a Chain-of-Evidence framework?",
+      "zh": "所以这项工作把重点从发表后的同行评审转移到了投稿前的质量控制。它似乎直接回应了该领域提出的可复现性问题。那它和ScientistOne那篇提出证据链框架的论文相比，有什么不同呢？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 321.68,
+      "end": 348.4,
+      "en": "It's highly complementary. ScientistOne aims to build verifiable claims into the research process from the start, creating an evidence trail. PaperDoctor is a tool for auditing a nearly finished product that may or may not have been created with that level of rigor. You can see them as two sides of the same coin: one is about generating verifiable research, and the other is about verifying generated research. Both are essential for making AI-driven science more reliable.",
+      "zh": "两者高度互补。ScientistOne 的目标是从研究一开始就把可验证的主张嵌入流程，形成一条证据链。PaperDoctor 则是一个审计工具，针对的是几乎完成的产品，而这个产品在创建时未必遵循了同等程度的严谨性。可以把它们看作同一枚硬币的两面：一个关乎生成可验证的研究，另一个关乎验证已生成的研究。两者对于让 AI 驱动的科学变得更加可靠都不可或缺。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 348.4,
+      "end": 358.04,
+      "en": "Does a tool like this risk creating a new form of 'teaching to the test,' where researchers optimize their papers to pass PaperDoctor's checks without necessarily improving the underlying science?",
+      "zh": "像这样的工具会不会带来一种新的应试式科研，让研究者为了通过PaperDoctor的检查而优化论文，却未必真正提升背后的科学质量？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 358.38,
+      "end": 385.26,
+      "en": "That's a valid concern. It's possible. However, many of the checks are about basic scientific hygiene—ensuring the code matches the paper, citations are real, and reported numbers are reproducible. Optimizing for those things is arguably a net positive for the field. The system doesn't judge the importance or novelty of the ideas, which remains a human task. The authors themselves stress that human judgment is still necessary for the core scientific direction.",
+      "zh": "这个担忧有道理，确实有可能。不过，很多检查针对的是基本的科学规范——比如代码和论文是否一致、引用是否真实、报告的数字能否复现。针对这些方面做优化，对整个领域来说可以说是净收益。系统并不评判想法的重要性和新颖性，那仍然是人的任务。作者自己也强调，核心科学方向仍然需要人类判断。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 386.02,
+      "end": 418.76,
+      "en": "Ultimately, PaperDoctor provides a workflow for transforming automated assessment from a simple judgment into a set of auditable, actionable diagnoses. It’s an assistive quality-control layer, not an autonomous replacement for human oversight. Its real value is in automating the checkable, tedious parts of review, freeing up human advisors and reviewers to focus on the deeper scientific questions of interpretation and impact. The key takeaway is this: as AI automates more of science, we need parallel AI systems that automate verification.",
+      "zh": "最终，PaperDoctor提供了一套工作流程，把自动化评估从简单的判断变成一组可审计、可操作的诊断。它是一个辅助性的质量控制层，而不是对人类监督的自主替代。它真正的价值在于自动化评审中那些可核查、繁琐的部分，从而解放人类导师和评审人，让他们专注于解释和影响这些更深层的科学问题。关键结论是：随着AI将更多科学工作自动化，我们也需要并行的AI系统来自动化验证。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 419.32,
+      "end": 424.176,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有别的问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lin2026paperdoctorevidencegroundedactionablefeedback,\n      title={PaperDoctor: Evidence-Grounded and Actionable Feedback for Scientific Papers in Progress}, \n      author={Kevin Qinghong Lin and Siyuan Hu and Pan Lu and Yu Chen and Yanzhe Chen and Owen Queen and Yupeng Chen and Jialin Yu and Junchi Yu and Zifeng Ding and Yuanfeng Ji and Sheng Liu and Jindong Gu and Linjie Li and Mike Zheng Shou and Philip Torr and James Zou},\n      year={2026},\n      eprint={2609.16995},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.16995}, \n}",
+  "topics": [
+    "Agents",
+    "Explainable Ai",
+    "Human-AI"
+  ],
+  "peaks": [
+    0.848,
+    0.521,
+    0.581,
+    0.352,
+    0.521,
+    0.432,
+    0.971,
+    0.596,
+    0.395,
+    0.707,
+    0.442,
+    1.0,
+    0.307,
+    0.295,
+    0.331,
+    0.51,
+    0.453,
+    0.534,
+    0.578,
+    0.515,
+    0.419,
+    0.561,
+    0.559,
+    0.595,
+    0.579,
+    0.812,
+    0.47,
+    0.508,
+    0.376,
+    0.77,
+    0.618,
+    0.837,
+    0.586,
+    0.594,
+    0.475,
+    0.717,
+    0.467,
+    0.568,
+    0.542,
+    0.842,
+    0.55,
+    0.714,
+    0.525,
+    0.486,
+    0.74,
+    0.452,
+    0.46,
+    0.622,
+    0.635,
+    0.745,
+    0.633,
+    0.549,
+    0.599,
+    0.595,
+    0.584,
+    0.73,
+    0.706,
+    0.521,
+    0.678,
+    0.588,
+    0.329,
+    0.544,
+    0.629,
+    0.739,
+    0.794,
+    0.875,
+    0.473,
+    0.717,
+    0.659,
+    0.2,
+    0.383,
+    0.31
+  ],
+  "published": "2026-09-15",
+  "license": "arXiv 默认许可"
+}

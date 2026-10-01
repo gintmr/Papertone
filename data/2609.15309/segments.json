@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 343.484,
+  "word_match_rate": 0.9252,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our course on Advanced Language Models, we've discussed how to make models bigger. Today, we're looking at making them smarter at test-time. Our lecture is on “When Agents Slow Down: Understanding LLM Agents’ Test-Time Strategies via Elo-per-token Analysis.” We've seen a trend in works like “Scaling LLM Test-Time Compute Optimally” that more compute during inference is a viable path to better performance. This paper, from researchers at UC Berkeley and Princeton, asks a critical question: for autonomous agents that work on a problem for a long time, how efficiently do they use that extra compute? Yes, Noah?",
+      "start": 0.0,
+      "end": 38.22
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. So the focus isn't just on getting a better final answer, but on the entire process of getting there?",
+      "start": 38.7,
+      "end": 44.48
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. Standard benchmarks often just care about the final score. But an agent might submit dozens of intermediate solutions. This paper wants to measure the value of that entire trajectory and see if the agent is truly learning or just spinning its wheels.",
+      "start": 44.72,
+      "end": 58.4
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The main contribution is a framework for evaluating these long-horizon agents on open-ended tasks where there isn't one right answer, just better or worse ones. Think of tasks like optimizing code or designing a machine learning model. The authors want to know if an agent's strategy for exploring the solution space is better than just trying a bunch of random ideas independently.",
+      "start": 58.8,
+      "end": 81.38
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "But how can you compare performance on something like GPU-kernel optimization versus a heuristic programming contest? The scores aren't on the same scale.",
+      "start": 81.92,
+      "end": 89.06
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That's the core problem they solve with their metric: Elo-per-token. Instead of looking at raw scores, they take every solution submitted by every agent at every point in time and have them compete in a pairwise tournament. The higher score wins. They use a statistical model to convert these millions of win/loss outcomes into an Elo rating, just like in chess.",
+      "start": 89.44,
+      "end": 110.22
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So a solution's rating depends on who it can beat, not its absolute score. Why is that better?",
+      "start": 110.64,
+      "end": 115.0
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Because it's robust to the scoring system. A tiny improvement that beats a top-tier solution is recognized as a major leap, whereas a large score increase at the beginning might not be. They then plot this Elo rating against the logarithm of the compute budget, measured in tokens, to see how performance scales. This creates a standardized curve that's comparable across wildly different tasks.",
+      "start": 115.28,
+      "end": 136.32
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "So what does that curve tell us?",
+      "start": 136.32,
+      "end": 137.96
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "This is where their technical approach gets interesting. They derive a theoretical baseline for independent sampling. If you just generate new, independent solutions, your Elo rating should increase by exactly 400 points for every tenfold increase in compute. They call this the 400-Elo-per-decade line. An agent is working efficiently if the slope of its Elo-per-token curve is steeper than 400. If it's shallower, you'd be better off just stopping and starting a new, independent session.",
+      "start": 138.2,
+      "end": 169.6
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Wait, the report mentions two versions, Joint-Elo and Self-Elo. When they calculate Self-Elo for a single system, aren't they just comparing a solution to its own earlier, worse versions? That sounds like it would create a guaranteed upward slope.",
+      "start": 170.02,
+      "end": 182.5
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Good question, that's a subtle but critical methodological point. They are aware of that trap. For Self-Elo, they only compare checkpoints between different, independent sessions of the same agent. They explicitly exclude comparisons between checkpoints from within the same session. This prevents that mechanical, non-decreasing bias and ensures the curve measures true generalization of improvement across runs, not just progress within a single attempt.",
+      "start": 182.86,
+      "end": 208.2
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Okay, that's clever. And what did they find when they applied this method?",
+      "start": 208.78,
+      "end": 211.56
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The results are quite telling. They tested four different general-purpose agents on fourteen tasks. Initially, the agents are very efficient. Their Elo curves start with slopes well above the 400-Elo baseline, meaning their adaptive, stateful strategy is much better than independent sampling. But as the session gets longer, from around one hundred thousand to one hundred million tokens, the slope declines. Eventually, it falls below the 400-Elo line. The agents seem to get stuck in a local optimum and their continued efforts yield diminishing returns.",
+      "start": 211.86,
+      "end": 242.82
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "So letting an agent 'think' longer isn't always better. How does this compare to human performance?",
+      "start": 243.32,
+      "end": 247.8
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "That's the most fascinating part. They analyzed data from human contestants in multi-day programming competitions. Human performance curves were the opposite—they were convex. The rate of improvement actually accelerated over time. This suggests humans are doing something fundamentally different: continual learning. They build a mental model of the problem, which allows for bigger breakthroughs later. The LLM agents, by contrast, seem to be performing an increasingly inefficient local search, limited by their initial strategy and context window.",
+      "start": 248.2,
+      "end": 277.94
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Does this limitation hold even for specialized test-time methods, like the evolutionary approaches in papers like 'Harness Updating Is Not Harness Benefit'?",
+      "start": 278.2,
+      "end": 285.62
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "They checked that too, using methods like AdaEvolve and even test-time training where the model's weights are updated. While these methods often started with a higher Elo rating, they all eventually showed the same pattern of diminishing returns. The core scaling limitation seems to persist, suggesting it's a deeper issue with how current models use feedback and manage long-term strategy.",
+      "start": 286.48,
+      "end": 307.58
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The key takeaway is twofold. First, this paper provides a powerful new lens, Elo-per-token, for analyzing agent performance in a standardized way. Second, it shows a clear limitation in current LLM agents: they exhibit short-run adaptability but lack the long-run continual learning we see in humans. The practical implication is that for a fixed compute budget, the best strategy is often to find the 'inflection point' where the agent slows down, and then restart new, independent sessions rather than letting one run forever.",
+      "start": 308.0,
+      "end": 338.42
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 338.8,
+      "end": 343.484
+    }
+  ]
+}

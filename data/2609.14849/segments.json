@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 322.064,
+  "word_match_rate": 0.9367,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our seminar on Advanced Topics in Human-AI Interaction, we've seen a lot of recent work on how people actually use these models in the wild. Papers like 'Bowling with ChatGPT' have looked at longitudinal use, while 'Who's in Charge?' has started to quantify disempowerment. Today's lecture is on 'LLMs as Oracles: Reliance on LLMs for Subjective Personal Questions,' a preprint from researchers primarily at Stanford. It offers a new lens for a specific type of reliance that isn't about factual accuracy, but about personal judgment.",
+      "start": 0.0,
+      "end": 30.84
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Go ahead, Noah.",
+      "start": 31.24,
+      "end": 31.84
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor. The term 'oracle' is interesting. What's the distinction they're making between using an LLM as a tool versus an oracle?",
+      "start": 32.32,
+      "end": 38.48
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That's the core question of the paper. They define 'LLM-as-oracle use' as turning to a model as an authority on a subjective personal question. This means asking it to supply the final judgment, interpretation, or decision for you. The key distinction is between supporting your own reasoning versus outsourcing it. For example, asking an LLM to list pros and cons for a career change is supportive. Asking it 'Should I quit my job?' is oracle use.",
+      "start": 38.82,
+      "end": 62.96
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So it's about the framing of the prompt.",
+      "start": 63.3,
+      "end": 65.06
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The paper investigates three main things: how common this behavior is, whether users are even aware they're doing it, and what factors—both in user perception and model behavior—drive this pattern. The motivation is to understand potential risks to user autonomy. If we constantly get direct answers to value-laden questions, we might lose practice in forming our own judgments. The paper doesn't measure that harm directly, but it develops the tools to identify the behavioral patterns that could lead to it.",
+      "start": 65.42,
+      "end": 93.98
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How did they operationalize that distinction? It seems very subjective.",
+      "start": 94.14,
+      "end": 97.32
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "It is, and that's their main methodological contribution. They created a typology with four pairs of roles, organized by whether the user is seeking help with beliefs or actions. For each pair, there's a supportive role and an oracle role. For understanding a situation, the supportive 'Contextualizer' provides multiple interpretations, while the oracle 'Interpreter' provides a single one. For making a decision, the 'Strategist' generates options, while the 'Decision-maker' selects one for the user. They also have pairs for normative judgment—Evaluator vs. Deliberator—and for writing, which is Ghost-writer vs. Editor.",
+      "start": 97.64,
+      "end": 133.34
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "And they classified user prompts into these eight roles?",
+      "start": 133.76,
+      "end": 136.42
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Correct. They used another LLM, Gemini-2.5-Pro, as a classifier. They validated this against two expert human annotators and found substantial agreement, with a Cohen's kappa above 0.65. They applied this classifier to two large public datasets, WildChat and ThoughtTrace, as well as a smaller, privacy-preserving data donation study where 52 participants shared their chat histories.",
+      "start": 136.88,
+      "end": 161.88
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Wait, they used an LLM to judge human intent in prompts. Isn't that a bit circular? And how robust is a kappa of 0.67 between the human annotators? That's substantial, but not perfect.",
+      "start": 162.32,
+      "end": 172.34
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Both are valid points. The authors acknowledge the challenge of classifying intent. Using an LLM judge is a pragmatic choice for scale, and they are transparent about the agreement scores, which are typical for complex subjective annotation tasks. The kappa score indicates that while there are ambiguous cases, the categories are coherent enough for statistical analysis. It’s a trade-off between precision and the ability to analyze tens of thousands of prompts, which would be infeasible with human annotators alone.",
+      "start": 172.7,
+      "end": 200.98
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "This methodological approach allows them to shift the conversation. Instead of just asking if the AI is factually correct, which is the focus of papers like 'Relying on the Unreliable,' this work provides a framework to ask if the AI's assistance is empowering the user's own judgment. Their findings are quite telling. Oracle use is common, especially for belief-related tasks like interpretation, and it appears to be increasing over time.",
+      "start": 201.42,
+      "end": 229.32
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Did users realize they were doing this?",
+      "start": 229.6,
+      "end": 231.52
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Largely, no. In their data donation study, participants consistently underestimated their own oracle use. When shown visualizations of their behavior, most were surprised, and many expressed a desire to change it, to rely more on their own judgment. This suggests a disconnect between perceived and actual use. Furthermore, they found that people are more likely to use oracle prompts when they know they're talking to an AI versus a human, and that sycophantic model behavior significantly increases oracle use over time.",
+      "start": 231.52,
+      "end": 259.62
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "That feedback loop with sycophantic models sounds like a real risk. It reinforces the user's biases while also encouraging them to offload judgment.",
+      "start": 259.92,
+      "end": 267.62
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Precisely. The paper's impact is in providing this new vocabulary and measurement framework. The 'oracle typology' could be used in AI audits or to design user interfaces that promote more deliberate interaction, which connects to the goals in work like 'HumanAgencyBench'. The authors tested interventions, like prompting the model for self-discovery or using DPO to prefer less-oracular responses, which showed some success in mitigating the behavior from the model's side.",
+      "start": 268.14,
+      "end": 296.18
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "So, the key takeaway is that reliance on AI in personal, subjective domains is not just about accuracy. It's about the process. This paper gives us a concrete way to measure whether we are using these models as partners in deliberation or as authorities that substitute for our own thinking. It frames a subtle but critical challenge for designing systems that genuinely support human agency.",
+      "start": 296.44,
+      "end": 316.94
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 317.34,
+      "end": 322.064
+    }
+  ]
+}

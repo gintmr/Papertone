@@ -1,0 +1,240 @@
+{
+  "id": "2609.11042",
+  "title": "T1: Terminal Agent Reinforcement Learning for Long-Horizon Tasks",
+  "authors": [
+    "Junyao Yang",
+    "Yucheng Shi",
+    "Zhongzhi Li",
+    "Ruhan Wang",
+    "Zongxia Li",
+    "Haitao Mi",
+    "Leowei Liang"
+  ],
+  "abstract": "Agent usage is shifting toward long-horizon tasks such as coding and scientific discovery, among which terminal tasks are especially important. We introduce T1, a Mixture-of-Experts model of 122B total trained with reinforcement learning, operating a real shell in a cloud sandbox for up to 300+ tool-call turns per task, rewarded by executing each task's own verifier. We provide a comprehensive recipe: First, an aggressively warm-started to stabilize actor-critic training, with a dense process reward scoring trajectories by the absolute number of passing verifiers. Second, stable optimization through TITO construction, training on the exact sampled token identifiers with drift repair at turn boundaries, and rollout routing replay, recording the sampler's per-token expert choices at every MoE layer and replaying them during training. Third, fully out-of-distribution training corpus: isolated seeds and synthesized tasks disjoint from Terminal-Bench 2.1 ensures gains reflect genuine capability transfer over benchmark overfitting. Together, TITO and R3 cut the training-to-inference log-probability difference from 0.021 to 0.013, with exactly aligned zero token drift in the loss region. On Terminal-Bench 2.1, our post-train pipeline raises initial base model from 43.8% to T1 with 64.0% resolved. On Long-Horizon Terminal Bench, T1 reaches 27.9% and surpasses GPT-5.4 and GLM-5.1.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.11042",
+    "arxiv": "https://arxiv.org/abs/2609.11042"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a08e1b-eaf6-7e2c-a36c-18640cd7be4f/podcast.mp3",
+  "duration": 399.856,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.7,
+      "en": "Welcome to Autonomous Systems and Agentic AI. Today's lecture is on 'Terminal Agent Reinforcement Learning for Long-Horizon Tasks.' We've seen a trend towards massive agentic models recently, with papers like the 'Composer 2 Technical Report' and 'Kimi K3' pushing the scale of what's possible. This work, primarily from Tencent, fits into this landscape by tackling a core problem: how do we effectively train these huge models to perform complex, long-running tasks in a real environment like the Linux terminal? It's about moving from generating text to reliably executing actions. Yes, Noah?",
+      "zh": "欢迎来到自主系统与智能体AI。今天的讲座主题是“面向长时程任务的终端智能体强化学习”。我们最近看到了一股大规模智能体模型的趋势，像“Composer 2技术报告”和“Kimi K3”这样的论文不断推高可能性的边界。这项工作主要来自腾讯，它正好切入了这个领域的一个核心问题：我们如何有效地训练这些巨大的模型，让它们在像Linux终端这样的真实环境中执行复杂、长时间运行的任务？这关乎从生成文本走向可靠地执行动作。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.48,
+      "end": 43.12,
+      "en": "Hi Professor. So, is the main challenge just scaling up existing RL techniques, or is there a fundamental mismatch when applying them to these massive, sparse models?",
+      "zh": "教授您好。那么，主要的挑战仅仅是扩大现有强化学习技术的规模，还是在将这些技术应用于这些庞大的稀疏模型时存在根本性的不匹配？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.46,
+      "end": 77.24,
+      "en": "That's the central question this paper addresses. It's not just about scale. The authors identify two fundamental difficulties when applying reinforcement learning to what they call 'frontier scale' models, specifically the 122 billion parameter Mixture-of-Experts model they call T1. The first challenge is ensuring consistency between training and inference for these sparse MoE models. The second is designing a reward signal that provides enough information to learn from, given the extreme computational cost of a single task attempt.",
+      "zh": "这正是这篇论文要解决的核心问题。关键不只是规模。作者指出了把强化学习应用到他们所说的“前沿规模”模型上时面临的两个根本困难，具体来说就是他们称为 T1 的 1220 亿参数混合专家模型。第一个挑战是确保这类稀疏 MoE 模型在训练和推理之间保持一致。第二个挑战是设计一个能提供足够信息供模型学习的奖励信号，因为单次任务尝试的计算成本极其高昂。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 77.66,
+      "end": 112.28,
+      "en": "Let's break down that first challenge. An MoE model doesn't use all its parameters for every token. It has a router that selects a small subset of 'experts' to process the input. The problem is that the path the model uses during inference—to generate an action—can have tiny numerical differences from the path used during the training backpropagation pass. This can cause the router to make a different decision, meaning the gradients are applied to experts that weren't actually responsible for the action. This 'training-inference mismatch' can destabilize or completely stall the learning process.",
+      "zh": "我们先来拆解第一个挑战。MoE模型在处理每个token时并不会用到全部参数。它有一个路由器，负责挑选一小部分“专家”来处理输入。问题在于，模型在推理阶段生成动作时所走的路径，和在训练反向传播时所用的路径之间，可能存在极细微的数值差异。这会导致路由器做出不同的选择，也就是说，梯度被施加到了实际上并未参与该动作的专家上。这种“训练-推理不匹配”会让学习过程变得不稳定，甚至完全停滞。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 112.72,
+      "end": 118.16,
+      "en": "So the model is essentially trying to learn from the wrong experience? The credit assignment is going to the wrong parameters.",
+      "zh": "所以模型本质上是在从错误的经验里学习？信用分配给到了错误的参数上。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 118.66,
+      "end": 154.28,
+      "en": "Exactly. And this is compounded in a multi-turn terminal environment where the history is constantly being updated. The second main concept is the reward signal. For long-horizon tasks, a simple pass-or-fail outcome is a very 'sparse' reward. An agent might make progress through dozens of steps, but if it fails on the last one, it gets a reward of zero. This gives the learning algorithm very little information—just one bit per trajectory, which could have taken hours of sandbox time to generate. The motivation is to create a 'denser' reward that reflects partial progress.",
+      "zh": "没错。而且这个问题在多轮终端环境里会被进一步放大，因为历史记录在不断更新。第二个核心概念是奖励信号。对于长时程任务来说，简单的通过或失败结果是一种非常“稀疏”的奖励。一个智能体可能经过几十步取得了进展，但如果在最后一步失败了，它得到的奖励就是零。这给学习算法提供的信息非常少——每条轨迹只有一个比特，而生成这条轨迹可能花了好几个小时的沙盒时间。他们的动机就是设计一种更“稠密”的奖励，能够反映部分进展。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 154.74,
+      "end": 157.08,
+      "en": "How did they solve these two problems in their methodology?",
+      "zh": "他们是怎么在方法上解决这两个问题的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 157.5,
+      "end": 198.76,
+      "en": "They introduced a few key mechanisms. To solve the training-inference mismatch, they use two techniques together. The first is 'Token-In-Token-Out,' or TITO. This simply ensures that the exact token IDs generated during inference are fed into the training process, rather than re-tokenizing the text, which can cause subtle drifts. The second, and more critical, is 'Rollout Routing Replay,' or R3. During inference, they record which experts the router chose for each token. Then, during the training pass, they force the model to use that exact same routing path. This guarantees that the gradients are applied to the correct experts—the ones that actually generated the behavior.",
+      "zh": "他们引入了几个关键机制。为了解决训练和推理不一致的问题，他们同时用了两种技术。第一个是“Token-In-Token-Out”，简称TITO。说白了就是确保推理时生成的那些token ID原封不动地喂进训练过程，而不是重新对文本做tokenize，因为重新tokenize可能会导致一些细微的偏移。第二个，也是更关键的，叫“Rollout Routing Replay”，简称R3。在推理的时候，他们会记录router为每个token选了哪些专家。然后在训练的时候，强制模型走完全相同的路由路径。这样就保证了梯度是加到正确的专家上的——也就是真正产生那个行为的专家。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 199.22,
+      "end": 206.18,
+      "en": "Hold on, if you're replaying the routing decision, does that mean the router itself stops learning? You're overriding its choice during training.",
+      "zh": "等等，如果你在回放路由决策，那是不是意味着路由器本身就不再学习了？你在训练时直接覆盖了它的选择。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 206.56,
+      "end": 248.34,
+      "en": "That's a good question. It's a subtle but important detail. While they replay the discrete choice of which expert to use, the underlying gating weights for the router's softmax function are still computed from the current model's logits. So, the router is still trained to increase the probability of the path that led to a good outcome. It remains trainable. For the reward problem, they designed a 'Test-Count Reward.' Instead of a binary pass/fail, the reward is the absolute number of passing assertions in the task's verifier, divided by a fixed global scale. If a task has 15 checks and the agent passes 10, it gets a proportional reward, providing a much richer signal about its partial success.",
+      "zh": "这是个好问题，也是个很微妙但很重要的细节。虽然他们回放的是选择哪个专家的离散决策，但路由器softmax函数底层的门控权重仍然是根据当前模型的logits计算出来的。所以，路由器仍然在训练，以提高通向好结果那条路径的概率。它依然是可以训练的。至于奖励的问题，他们设计了一个“测试计数奖励”。不是简单的通过或失败，而是用任务验证器中通过的断言数量除以一个固定的全局尺度。如果一个任务有15项检查，智能体通过了10项，它就会得到成比例的奖励，从而提供关于部分成功的更丰富的信号。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 248.34,
+      "end": 255.9,
+      "en": "With a dense, numerical reward like that, isn't there a risk of reward hacking? Could the agent learn to just pass a lot of easy checks on simple tasks?",
+      "zh": "有了这种密集的数值奖励，难道不存在奖励被钻空子的风险吗？智能体会不会学会只在简单任务上通过一大堆容易的检查？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 256.26,
+      "end": 275.4,
+      "en": "They considered that. Their main defense is a rigorous, LLM-based audit of the training tasks to filter out any that are easily exploitable. They also use a fixed global reward scale and shuffle tasks each epoch to keep the reward distribution stable, preventing the agent from gaming the system by manipulating batch composition.",
+      "zh": "他们考虑过这个问题。主要的防御手段是用基于LLM的严格审查来筛掉那些容易被钻空子的训练任务。他们还用了固定的全局奖励尺度，并且每个epoch都打乱任务顺序，让奖励分布保持稳定，防止智能体通过操纵批次组成来钻系统的空子。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 275.4,
+      "end": 314.58,
+      "en": "The implications of this work are quite significant. On the Terminal-Bench 2.1 benchmark, T1 achieved a 64% success rate, which was a 14.6 percentage point absolute improvement over the model before RL post-training. This score is competitive with, and in some cases surpasses, prominent proprietary models. More importantly, the paper provides a transferable recipe. The TITO and R3 mechanisms are a direct solution to a known, difficult problem for training large MoE models with RL, and this applies beyond just terminal agents. It's a solid piece of engineering that helps stabilize these notoriously difficult training runs.",
+      "zh": "这项工作的意义相当重大。在 Terminal-Bench 2.1 基准上，T1 达到了 64% 的成功率，相比强化学习后训练之前的模型，绝对提升了 14.6 个百分点。这个成绩足以和主流闭源模型竞争，在某些情况下甚至超过它们。更重要的是，这篇论文提供了一套可迁移的方案。TITO 和 R3 机制直接解决了用强化学习训练大型 MoE 模型时一个已知的难题，而且这套方法不只适用于终端智能体。这是一项扎实的工程工作，有助于稳定这些出了名难训的训练过程。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 314.92,
+      "end": 323.64,
+      "en": "How does this approach to stabilization compare to other methods we've seen, like in the 'Agentic Reinforced Policy Optimization' paper, which uses token entropy as a signal to guide learning?",
+      "zh": "这种稳定训练的方法，跟我们见过的其他方法比起来怎么样？比如那篇《Agentic Reinforced Policy Optimization》，它是用token熵作为信号来引导学习的。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 323.98,
+      "end": 357.78,
+      "en": "That's a great connection. ARPO focuses on a behavioral signal—identifying moments of uncertainty via token entropy—to trigger more learning. It's about 'when' to learn. This T1 paper is more focused on the fundamental mechanics of 'how' to apply the gradients correctly in a sparse architecture once you've decided to learn. The two approaches are complementary. You could potentially combine an ARPO-like signal with the R3 mechanism to ensure that when your model is learning from a high-entropy state, the updates are actually being applied correctly to the responsible experts.",
+      "zh": "这个联系很好。ARPO关注的是一个行为信号——通过token熵来识别不确定的时刻——从而触发更多学习。它解决的是“何时”学习的问题。而这篇T1论文更关注的是，在你决定学习之后，如何在稀疏架构中正确应用梯度的基本机制。这两种方法是互补的。你完全可以把类似ARPO的信号和R3机制结合起来，确保当模型从高熵状态中学习时，更新确实被正确地应用到了负责的专家上。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 358.26,
+      "end": 394.88,
+      "en": "So to wrap up, this paper demonstrates an effective, integrated recipe for post-training a frontier-scale Mixture-of-Experts model using reinforcement learning for a complex, stateful task. The performance gains are notable, but the key contributions are the methodological solutions for training stability and reward design. The main takeaway is that successfully deploying large agentic models isn't just about scaling parameters; it requires meticulous engineering to solve fundamental alignment and stability problems in the learning process. These mechanisms, like TITO and R3, are crucial for making that possible.",
+      "zh": "总结一下，这篇论文展示了一套有效且完整的方案，用强化学习对前沿规模的混合专家模型进行后训练，来完成一个复杂且有状态的任务。性能提升很显著，但真正的核心贡献在于训练稳定性和奖励设计上的方法论解决方案。最关键的结论是，成功部署大型智能体模型不只是把参数规模做大就行，还需要精细的工程手段来解决学习过程中根本性的对齐和稳定性问题。像TITO和R3这样的机制，正是让这一切成为可能的关键。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 395.26,
+      "end": 399.856,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yang2026t1terminalagentreinforcement,\n      title={T1: Terminal Agent Reinforcement Learning for Long-Horizon Tasks}, \n      author={Junyao Yang and Yucheng Shi and Zhongzhi Li and Ruhan Wang and Zongxia Li and Haitao Mi and Leowei Liang},\n      year={2026},\n      eprint={2609.11042},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.11042}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    1.0,
+    0.301,
+    0.305,
+    0.236,
+    0.428,
+    0.305,
+    0.232,
+    0.378,
+    0.323,
+    0.328,
+    0.28,
+    0.351,
+    0.289,
+    0.337,
+    0.526,
+    0.29,
+    0.382,
+    0.32,
+    0.258,
+    0.225,
+    0.349,
+    0.401,
+    0.2,
+    0.338,
+    0.236,
+    0.256,
+    0.209,
+    0.339,
+    0.502,
+    0.309,
+    0.383,
+    0.239,
+    0.368,
+    0.302,
+    0.305,
+    0.2,
+    0.454,
+    0.286,
+    0.263,
+    0.319,
+    0.294,
+    0.367,
+    0.251,
+    0.221,
+    0.319,
+    0.356,
+    0.421,
+    0.421,
+    0.383,
+    0.42,
+    0.431,
+    0.318,
+    0.277,
+    0.251,
+    0.532,
+    0.3,
+    0.294,
+    0.225,
+    0.315,
+    0.389,
+    0.302,
+    0.273,
+    0.343,
+    0.383,
+    0.354,
+    0.33,
+    0.312,
+    0.244,
+    0.426,
+    0.369,
+    0.262,
+    0.32
+  ],
+  "published": "2026-09-10",
+  "license": "CC BY"
+}

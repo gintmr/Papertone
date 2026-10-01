@@ -1,0 +1,248 @@
+{
+  "id": "2609.20820",
+  "title": "Workspace Models: Lightweight Robotic Memory via Saliency-Driven Supervision",
+  "authors": [
+    "Nitish Dashora",
+    "Douglas Chen",
+    "Idan Shenfeld",
+    "John Marangola",
+    "Pulkit Agrawal",
+    "Max Simchowitz"
+  ],
+  "abstract": "Complex robotic manipulation tasks frequently require a long-term memory of past events and actions. As conditioning on full histories renders policies prone to spurious correlations and degrades performance, many approaches to policy memory involve compressing historical information through expensive VLM queries in-the-loop to process only task-salient information. In this paper, we propose an alternative approach in which computationally intensive VLM queries are made during train-time to learn a lightweight latent memory that can be efficiently queried at deployment time. Our representation, which we call the workspace token, is trained by (1) using a VLM to identify current and historical information necessary for completing a task, then (2) distilling these into the workspace token using a set-reconstruction decoder loss. In both simulation and hardware, we show that the workspace token can be used as a drop-in replacement for observations during deployment, enabling policies to solve memory-intensive tasks without the need for VLM reasoning in-the-loop, in effect serving as a latent harness for distilling a stronger reasoning models ability to solve long-horizon tasks to a reactive robotic policy. We further demonstrate that the workspace tokens are not only more lightweight, but also lead to better policy performance compared to conditioning policies on explicit modalities like curated past image frames, motivating a latent approach to history curation and reasoning model harnesses more broadly.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.20820",
+    "arxiv": "https://arxiv.org/abs/2609.20820"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0b25e-200b-72ac-ac9d-b2788a98e32d/podcast.mp3",
+  "duration": 350.093,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.4,
+      "en": "Welcome to Advanced Topics in Robotic Learning. Today's lecture is on “Workspace Models: Lightweight Robotic Memory via Saliency-Driven Supervision,” a paper from researchers at MIT and CMU. We've seen a lot of recent work, like “EventVLA” and “MemoryVLA,” tackling robotic memory by integrating large models directly into the control loop. This paper challenges that trend by asking: can we shift that heavy computation from deployment time to training time? It's a critical question for building more responsive and efficient robots.",
+      "zh": "欢迎来到机器人学习进阶专题。今天的讲座围绕一篇来自MIT和CMU研究人员的论文，题目是“工作空间模型：通过显著性驱动监督实现轻量级机器人记忆”。最近我们看到了很多相关工作，比如“EventVLA”和“MemoryVLA”，它们通过把大模型直接集成到控制回路中来解决机器人记忆问题。这篇论文对这一趋势提出了挑战：我们能不能把那些沉重的计算从部署阶段转移到训练阶段？对于构建响应更快、效率更高的机器人来说，这是一个关键问题。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 33.94,
+      "end": 34.12,
+      "en": "Yes, Noah?",
+      "zh": "好的，诺亚？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 34.84,
+      "end": 41.1,
+      "en": "Hi Professor. So the goal is to get the benefits of a large vision-language model's reasoning without paying the latency cost during execution?",
+      "zh": "教授您好。所以目标就是既要获得大型视觉语言模型推理带来的好处，又不用在执行时承担延迟代价？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 41.1,
+      "end": 79.16,
+      "en": "Precisely. The core idea is to use a powerful VLM offline, during training, to act as a supervisor. It goes through the demonstration data and labels what's important—what the authors call 'saliency-driven supervision.' It identifies task-relevant visual information, like where a cube was just placed or the tilt of an object from a previous interaction. Then, a much smaller, lightweight encoder is trained to compress the entire observation history into a compact latent representation, which they call a 'workspace token.' This token is designed to contain only that salient, task-relevant information.",
+      "zh": "正是如此。核心思路是在训练阶段离线使用一个强大的VLM来充当监督者。它会遍历演示数据，标注出哪些信息是重要的——作者称之为“显著性驱动的监督”。它会识别出与任务相关的视觉信息，比如方块刚刚被放在哪里，或者上一次交互中某个物体的倾斜角度。然后，训练一个更小、更轻量的编码器，把整个观测历史压缩成一个紧凑的潜在表示，他们称之为“工作区token”。这个token被设计为只包含那些显著的、与任务相关的信息。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 79.16,
+      "end": 84.66,
+      "en": "So it's a form of knowledge distillation, where the VLM is the teacher and the small encoder is the student.",
+      "zh": "所以这其实是一种知识蒸馏，VLM是老师，小编码器是学生。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 85.1,
+      "end": 116.36,
+      "en": "That's a good way to frame it. The student model learns to perform the VLM's function of identifying and preserving important memories, but in a compressed format. The result is a system that can remember things over long horizons—like how many cubes it has placed into a container, even when they're no longer visible—without needing to query a slow, expensive model at every single timestep. This addresses a major bottleneck in robotics: the conflict between needing long-term memory for partially observable tasks and needing low latency for fine-grained motor control.",
+      "zh": "这个理解角度很好。学生模型学习执行VLM的功能，也就是识别并保留重要记忆，但以压缩后的形式来完成。最终得到的系统能够在长时间跨度上记住事情——比如它往容器里放了多少个方块，即使这些方块已经不在视野中了——而不需要在每个时间步都去查询一个又慢又贵的模型。这就解决了机器人领域的一个主要瓶颈：部分可观测任务需要长期记忆，而精细运动控制需要低延迟，两者之间存在矛盾。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 116.74,
+      "end": 119.48,
+      "en": "How exactly does that supervision work? What is the VLM labeling?",
+      "zh": "那这个监督具体是怎么运作的？VLM到底在标注什么？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 119.88,
+      "end": 156.42,
+      "en": "The process has two main stages. First, they use a VLM called Qwen3-VL to perform event detection. It scans the video frames and answers task-specific questions, like 'Has a cube been placed in the bowl?' This identifies key moments in time. Second, once an event is detected, another VLM, MolmoPoint, identifies the specific image patches corresponding to that event. For example, it would point to the patches representing the cube and the bowl at the moment of placement. The combination of these event patches, which persist in memory, and transient patches relevant to the current frame, form the ground-truth 'saliency set' for training.",
+      "zh": "整个过程分两个主要阶段。首先，他们用一个叫Qwen3-VL的VLM来做事件检测。它会扫描视频帧，回答针对具体任务的问题，比如“碗里是不是放了一个方块？”这样就能找出关键时刻。其次，一旦检测到某个事件，另一个VLM——MolmoPoint——就会找出与那个事件对应的具体图像块。比如，它会指向放置那一刻代表方块和碗的图像块。这些事件图像块会留在记忆里，再加上与当前帧相关的瞬时图像块，两者合在一起，就构成了用于训练的真实“显著性集合”。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 156.88,
+      "end": 160.8,
+      "en": "And the encoder is trained to reconstruct this set of patches from its workspace token?",
+      "zh": "那编码器的训练目标，就是从它的工作区token里重建这组图像块吗？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 161.2,
+      "end": 197.78,
+      "en": "Correct. But it's a set reconstruction, not a simple image reconstruction. The decoder, inspired by models like DETR, predicts a variable number of active slots, each containing a reconstructed patch feature. This is a crucial detail because it doesn't force the model to memorize irrelevant background details or the exact order of objects. It just has to preserve the features of what's important. This compressed workspace token is then passed to a standard Diffusion Policy for control, which only needs to look at a very short history of these information-rich tokens instead of a long history of raw frames.",
+      "zh": "没错，但这是集合重建，不是简单的图像重建。解码器的灵感来自DETR这类模型，它会预测数量可变的活跃槽位，每个槽位包含一个重建后的图像块特征。这个细节很关键，因为它不会强迫模型去记住无关的背景细节或者物体的精确顺序，只需要保留重要部分的特征就行。然后这个压缩后的工作区token会被传给一个标准的Diffusion Policy来做控制，它只需要看很短一段历史里的这些信息丰富的token，而不需要看很长一段原始帧的历史。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 198.28,
+      "end": 205.68,
+      "en": "That makes sense. It avoids the 'causal confusion' they mentioned, where a policy overfits to spurious correlations in a long video history.",
+      "zh": "这就说得通了。这样就避免了他俩提到的“因果混淆”问题，也就是策略在长视频历史中过拟合到一些虚假的相关性上。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 206.0,
+      "end": 239.96,
+      "en": "Exactly. By filtering the history through this saliency bottleneck, you get a representation that's cleaner and more focused on the task. The results bear this out. The workspace model achieved the highest success rates across all four tasks, including a real-world 'HalfAndHalf' cube sorting task. More importantly, its inference latency was around 49 milliseconds, compared to over 300 milliseconds for a keyframe selection method that keeps a VLM in the loop. It was nearly as fast as a simple reactive policy but with the memory of a much larger system.",
+      "zh": "确实如此。通过这个显著性瓶颈来过滤历史信息，得到的表征更干净，也更聚焦于任务本身。实验结果也印证了这一点。工作空间模型在全部四项任务中都取得了最高的成功率，包括一个真实世界的“HalfAndHalf”方块分拣任务。更重要的是，它的推理延迟只有大约49毫秒，而那种把VLM留在循环里的关键帧选择方法则要超过300毫秒。它几乎和简单的反应式策略一样快，却拥有大得多的系统的记忆能力。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 240.22,
+      "end": 250.58,
+      "en": "It seems like a very practical trade-off. But how general is it? The VLM supervision relies on task-specific prompts for event detection. Does that limit its scalability to new, unseen tasks?",
+      "zh": "这看起来是个非常实用的权衡。但它到底有多通用呢？VLM的监督依赖于针对特定任务的事件检测提示词。这是否限制了它扩展到新的、未见过的任务的能力？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 251.02,
+      "end": 289.7,
+      "en": "That is a significant limitation and a key area for future work. The current approach requires engineering these prompts for each task. However, the underlying principle—using offline foundation models to supervise a compact online memory—is very general. One could imagine future versions where supervision comes from more general signals, like language instructions or reward functions. The paper positions this as a first step towards a broader 'workspace' principle, inspired by Global Workspace Theory, rather than a final solution. It's a methodological contribution showing that this allocation of computation is a viable and effective strategy.",
+      "zh": "这确实是个明显的局限，也是未来工作的一个关键方向。目前的方法需要为每个任务专门设计这些提示词。不过，背后的核心思路——用离线的基座模型来监督一个紧凑的在线记忆——是非常通用的。可以想象未来的版本中，监督信号可以来自更通用的来源，比如语言指令或奖励函数。论文把这定位为迈向更广泛的“工作空间”原则的第一步，灵感来自全局工作空间理论，而不是一个最终方案。它是一个方法论上的贡献，说明这种计算分配方式是一种可行且有效的策略。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 289.7,
+      "end": 296.98,
+      "en": "So compared to something like 'MemER' which retrieves explicit past experiences, this is about creating a continuous, latent summary.",
+      "zh": "所以和MemER那种检索显式过往经验的方法相比，这个的重点是构建一个连续的、潜在空间的摘要。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 297.58,
+      "end": 316.84,
+      "en": "Yes, and that continuity is important. The authors argue that discrete keyframe selection can lead to 'control aliasing,' where small shifts in event timing create very different inputs for the policy. The workspace token evolves smoothly over time, which appears to improve the stability and generalization of the downstream controller.",
+      "zh": "是的，这种连续性很重要。作者认为，离散的关键帧选择可能导致“控制混叠”，也就是事件时序上的微小偏移会让策略接收到截然不同的输入。而工作空间token会随时间平滑演化，这似乎提升了下游控制器的稳定性和泛化能力。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 316.84,
+      "end": 345.0,
+      "en": "To wrap up, this work makes a strong case for rethinking how we use large models in robotics. Instead of putting them in the driver's seat during deployment, we can use them as offline teachers to distill knowledge into smaller, more efficient models. The key takeaway is that you can get both long-term memory and low-latency control by trading abundant training-time computation for deployment-time efficiency. This shifts the bottleneck from the robot's brain to the data center, which is often a very good trade.",
+      "zh": "总结一下，这项工作有力地论证了我们应该重新思考如何在机器人领域使用大模型。与其在部署时让大模型坐在驾驶位上，不如把它们当作离线教师，把知识蒸馏到更小、更高效的模型里。核心结论是：你可以通过用充足的训练时计算换取部署时的高效，同时获得长期记忆和低延迟控制。这就把瓶颈从机器人的大脑转移到了数据中心，而这往往是一笔非常划算的交易。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 345.0,
+      "end": 350.093,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{dashora2026workspacemodelslightweightrobotic,\n      title={Workspace Models: Lightweight Robotic Memory via Saliency-Driven Supervision}, \n      author={Nitish Dashora and Douglas Chen and Idan Shenfeld and John Marangola and Pulkit Agrawal and Max Simchowitz},\n      year={2026},\n      eprint={2609.20820},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.20820}, \n}",
+  "topics": [
+    "Reinforcement Learning",
+    "Knowledge Distillation",
+    "Lightweight Models"
+  ],
+  "peaks": [
+    1.0,
+    0.531,
+    0.344,
+    0.512,
+    0.394,
+    0.473,
+    0.352,
+    0.541,
+    0.394,
+    0.281,
+    0.673,
+    0.565,
+    0.459,
+    0.496,
+    0.379,
+    0.446,
+    0.48,
+    0.499,
+    0.346,
+    0.35,
+    0.275,
+    0.2,
+    0.523,
+    0.353,
+    0.475,
+    0.399,
+    0.476,
+    0.362,
+    0.591,
+    0.41,
+    0.426,
+    0.613,
+    0.515,
+    0.279,
+    0.522,
+    0.415,
+    0.549,
+    0.357,
+    0.326,
+    0.357,
+    0.307,
+    0.504,
+    0.441,
+    0.362,
+    0.447,
+    0.411,
+    0.475,
+    0.268,
+    0.393,
+    0.405,
+    0.285,
+    0.513,
+    0.503,
+    0.445,
+    0.406,
+    0.407,
+    0.489,
+    0.327,
+    0.4,
+    0.454,
+    0.305,
+    0.536,
+    0.445,
+    0.415,
+    0.528,
+    0.606,
+    0.486,
+    0.353,
+    0.536,
+    0.333,
+    0.308,
+    0.52
+  ],
+  "published": "2026-09-17",
+  "license": "CC BY"
+}

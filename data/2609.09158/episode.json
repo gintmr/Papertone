@@ -1,0 +1,240 @@
+{
+  "id": "2609.09158",
+  "title": "TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model",
+  "authors": [
+    "Anqi Li",
+    "Yuxin Chen",
+    "Zhaobo Li",
+    "Zhuo Cao",
+    "Junli Ren",
+    "Masayoshi Tomizuka",
+    "Dhruv Shah"
+  ],
+  "abstract": "We study the problem of navigating cluttered indoor environments with a humanoid robot. Unlike conventional methods that model navigation as a 2D path planning problem, humanoid traversal in cluttered environments requires continuous geometry-aware whole-body adaptation, including coordinated arm placement, torso adjustment, and gait modulation for collision-free movement through complex 3D spaces. We introduce TANGO, the first whole-body vision-language navigation framework for language-conditioned humanoid traversal in cluttered environments. Given a natural-language instruction and egocentric RGB observations, TANGO directly predicts 29-DoF joint-space actions for downstream whole-body control. We train TANGO entirely in simulation by synthesizing diverse collision-free traversal behaviors via global path planning, kinematic whole-body motion generation, obstacle-aware motion editing, and RL-based tracking. This pipeline provides dynamically feasible action supervision for learning language-conditioned whole-body policies. In extensive simulation experiments, TANGO demonstrates state-of-the-art performance in vision-language navigation, while outperforming strong modular baselines in navigating challenging scenes requiring obstacle negotiation. Lastly, we deploy TANGO zero-shot on a Unitree G1 humanoid robot, and observe robust language-guided traversal in cluttered real-world scenes without training on any real-world navigation data.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.09158",
+    "arxiv": "https://arxiv.org/abs/2609.09158"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0846a-f920-7876-a39a-dbf66acc0ac8/podcast.mp3",
+  "duration": 369.868,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 39.26,
+      "en": "Welcome to Humanoid Robotics and Embodied AI. Today's lecture is on TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model. We've seen a trend in recent work like 'WholeBodyVLA' focusing on unified action models, and broader agents like 'Being-0' using modular skills. This work, from researchers at UC Berkeley and Princeton, tackles the challenge of integrating high-level navigation intent with low-level physical feasibility, moving away from decoupled systems. It asks if a single model can handle both understanding a command and figuring out how to move every joint to execute it safely. Yes, Noah?",
+      "zh": "欢迎来到人形机器人与具身智能课程。今天这节课讲的是TANGO：用全身视觉-语言-动作模型在杂乱环境中实现人形机器人导航。最近的研究里有个趋势，像WholeBodyVLA专注于统一动作模型，而更广泛的智能体比如Being-0则用模块化技能。这项工作来自UC Berkeley和普林斯顿的研究者，解决的是如何把高层导航意图和低层物理可行性结合起来，摆脱解耦系统。它要问的是，单个模型能不能同时理解指令，并搞清楚怎么让每个关节动起来安全执行。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.7,
+      "end": 49.36,
+      "en": "Hi Professor. So, is the key difference here that TANGO directly outputs joint angles for the whole body, whereas other Vision-Language-Action models might just output a high-level command like 'walk forward two meters'?",
+      "zh": "教授您好。所以这里的关键区别是不是在于，TANGO直接输出全身的关节角度，而其他视觉-语言-动作模型可能只输出一个像“向前走两米”这样的高层指令？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 50.1,
+      "end": 69.28,
+      "en": "Precisely. That's the core distinction. Many systems delegate that 'walk forward' command to a separate, downstream controller. TANGO attempts to unify these steps, predicting the detailed 29-degree-of-freedom joint-space actions directly. This is crucial for navigating cluttered environments where simply walking forward isn't enough.",
+      "zh": "正是如此，这就是核心区别。很多系统会把“向前走”这个指令交给一个单独的下游控制器去执行。TANGO则试图把这些步骤统一起来，直接预测出详细的29个自由度的关节空间动作。这对于在杂乱环境中导航至关重要，因为光靠向前走是不够的。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 69.68,
+      "end": 96.74,
+      "en": "The main problem this paper addresses is what they call the 'physical gap' in vision-language navigation, or VLN. Traditional VLN models treat navigation as a 2D path planning problem—predicting waypoints on a map. This works for a robot on wheels, but for a humanoid, a path might be clear on the floor while an overhead obstacle could cause a collision. The feasibility of a path depends on the robot's entire, continuously changing body shape.",
+      "zh": "这篇论文主要解决的问题是视觉语言导航，也就是VLN中所谓的“物理鸿沟”。传统的VLN模型把导航当成一个二维路径规划问题，也就是在地图上预测路点。这对轮式机器人来说没问题，但对人形机器人来说，地板上看着畅通的路径，上方可能有障碍物导致碰撞。一条路径是否可行，取决于机器人整个身体不断变化的形态。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 97.04,
+      "end": 103.62,
+      "en": "So the 'physical gap' is the discrepancy between a valid 2D path and a physically possible 3D whole-body motion along that path?",
+      "zh": "所以这个“物理鸿沟”指的就是，一条在2D层面可行的路径，和沿着这条路径真正能实现的3D全身动作之间的落差？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.02,
+      "end": 130.72,
+      "en": "Exactly. An action that seems valid at the planning level might be impossible for an articulated body. TANGO's primary contribution is a unified framework that directly predicts these whole-body actions, intrinsically coupling the navigation decision with physical traversability. To achieve this, they had to solve a major bottleneck: data. It's incredibly difficult to get large-scale, diverse data of humanoids navigating cluttered spaces. Their solution is a clever automated simulation pipeline.",
+      "zh": "没错。一个在规划层面看起来可行的动作，对带关节的身体来说可能根本做不到。TANGO 的核心贡献是提出了一个统一的框架，直接预测这些全身动作，把导航决策和物理可通行性内在地耦合在一起。为了实现这一点，他们必须解决一个主要瓶颈：数据。要获取大规模、多样化的人形机器人在杂乱空间中导航的数据极其困难。他们的解决方案是一个巧妙的自动化仿真流水线。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 131.08,
+      "end": 139.5,
+      "en": "And how does that data pipeline work? Generating physically plausible, collision-free motions for a 29-DoF robot sounds computationally expensive and complex.",
+      "zh": "那这个数据管线是怎么运作的呢？为一个29自由度的机器人生成物理上合理、无碰撞的动作，听起来计算量很大，也很复杂。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 139.9,
+      "end": 175.12,
+      "en": "It is. They call it the 'Plan, Edit, Track' or PET pipeline. First, it 'Plans' a simple, collision-aware 2D path in a simulated scene. Then, the 'Edit' stage is where the magic happens. It takes the basic walking motion generated from that path and refines it using inverse kinematics. It uses a 3D signed distance field of the scene to apply repulsive forces to specific body parts like shoulders, elbows, and the torso, forcing the robot to adapt its posture. It explicitly adds behaviors like crouching under barriers or carefully side-stepping through narrow gaps.",
+      "zh": "确实很复杂。他们把这套流程叫做“规划、编辑、跟踪”，简称PET流程。首先，它会在模拟场景中“规划”出一条简单的、能避开碰撞的2D路径。然后，“编辑”阶段才是真正神奇的地方。它会拿这条路径生成的基础行走动作，用逆运动学来精修。它利用场景的3D符号距离场，对肩膀、手肘、躯干这些特定身体部位施加排斥力，逼着机器人调整姿态。它会明确加入一些行为，比如在障碍物下蹲着走，或者小心地侧身穿过狭窄缝隙。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 175.52,
+      "end": 183.66,
+      "en": "So it's not just learning avoidance from scratch; they're algorithmically embedding these common-sense physical behaviors into the training data itself. What's the 'Track' part?",
+      "zh": "所以这不只是从零开始学避障，而是通过算法把这些常识性的物理行为直接嵌入到训练数据里。那Track这部分是做什么的？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 183.92,
+      "end": 221.74,
+      "en": "The 'Track' stage acts as a final filter. The edited motion is passed to a low-level motion tracker called SONIC, which verifies it's dynamically feasible and truly collision-free in the physics simulation. Any trajectory that fails is discarded. This ensures the final training data is high-quality. The result was over 64,000 successful trajectories. This curated data is then used to train the TANGO model, which has a triple-system architecture. A vision-language model perceives the scene and instruction, a diffusion model predicts the future chunk of body motions, and the SONIC tracker executes it.",
+      "zh": "Track阶段相当于最后一道过滤器。编辑好的动作会传给一个叫SONIC的底层运动跟踪器，由它在物理仿真里验证动作是否动态可行、是否真的没有碰撞。任何不通过的轨迹都会被丢弃。这样就能保证最终训练数据的高质量。最终得到了超过64000条成功轨迹。这些经过筛选的数据随后被用来训练TANGO模型，它采用三系统架构。一个视觉语言模型感知场景和指令，一个扩散模型预测未来的一段身体动作，再由SONIC跟踪器执行。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 222.08,
+      "end": 230.6,
+      "en": "Why a diffusion model for action generation? Is it because it's better at producing smooth, continuous sequences compared to, say, a standard autoregressive model?",
+      "zh": "为什么动作生成要用扩散模型？是因为它比标准的自回归模型更擅长生成平滑、连续的序列吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 230.92,
+      "end": 253.0,
+      "en": "That's a good intuition. Diffusion models, particularly with the flow-matching objective they used, are well-suited for generating continuous, high-dimensional data like motion trajectories. It helps ensure the predicted action chunks are smooth and coherent over time, which is critical for stable locomotion. It's a powerful way to model the distribution of physically plausible movements.",
+      "zh": "这个直觉很对。扩散模型，尤其是他们用的流匹配目标，很适合生成连续的高维数据，比如运动轨迹。它有助于保证预测出的动作块在时间上平滑且连贯，这对稳定的运动控制至关重要。这是一种对物理上合理的运动分布进行建模的有力方式。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 253.4,
+      "end": 285.4,
+      "en": "The most significant result is the zero-shot sim-to-real transfer. They deployed the policy, trained entirely in their simulation pipeline, directly onto a physical Unitree G1 robot. It successfully navigated real-world cluttered spaces, performing side-stepping, bending, and stepping-over motions without any real-world fine-tuning. Quantitatively, in cluttered 3D navigation trials, TANGO had a much higher success rate and fewer collisions per trial compared to a baseline using a decoupled VLA model and a whole-body controller.",
+      "zh": "最值得关注的结果是零样本的仿真到现实迁移。他们把完全在仿真流程里训练出来的策略，直接部署到了一台真实的宇树G1机器人上。它在真实的杂乱空间里成功导航，完成了侧步、弯腰和跨步动作，全程没有做任何真实世界微调。定量来看，在杂乱三维导航试验中，相比使用解耦VLA模型和全身控制器的基线，TANGO的成功率高得多，每次试验的碰撞次数也更少。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 285.78,
+      "end": 297.6,
+      "en": "That's impressive, but what are the failure modes? The model only uses RGB input. Isn't that a major limitation in complex scenes with tricky lighting or transparent objects? Other navigation models like NaVILA often incorporate depth sensing.",
+      "zh": "这确实很厉害，但失败模式有哪些呢？这个模型只用了RGB输入。在光照复杂或者有透明物体的场景里，这难道不是个很大的局限吗？像NaVILA这类导航模型通常会加入深度感知。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 297.6,
+      "end": 336.44,
+      "en": "You've hit on a key limitation they acknowledge themselves. Relying solely on RGB vision means it could struggle with challenges like glass doors or poor lighting. Integrating depth or LiDAR would almost certainly improve robustness. Another point is its reliance on the pre-trained SONIC tracker for execution. The policy is only as good as the low-level controller that executes its commands. Still, this research shifts the conversation. By creating a unified model, TANGO demonstrates a path to closing that 'physical gap' between high-level reasoning and embodied action, which is a fundamental problem in humanoid robotics.",
+      "zh": "你点出了他们自己也承认的一个关键局限。只靠RGB视觉意味着它可能在玻璃门或光线不佳这类情况下吃亏。把深度或LiDAR整合进来几乎肯定会提升鲁棒性。另一点是它在执行上依赖预训练的SONIC跟踪器。策略的好坏，取决于执行它指令的底层控制器。尽管如此，这项研究改变了讨论的方向。通过打造一个统一模型，TANGO展示了一条弥合高层推理与具身行动之间“物理鸿沟”的路径，而这正是人形机器人领域的一个根本问题。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 337.16,
+      "end": 365.32,
+      "en": "So, to wrap up, TANGO presents a unified framework for whole-body, language-guided navigation. Its main contributions are the scalable PET pipeline for generating physically-grounded data and the demonstration of robust zero-shot sim-to-real transfer. The key takeaway is that for humanoids to navigate our world, their decision-making process must be inherently aware of their own body's geometry and physical limitations, and this work provides a strong blueprint for how to achieve that.",
+      "zh": "总结一下，TANGO提出了一个统一框架，用于全身、语言引导的导航。它的主要贡献包括可扩展的PET流水线，用于生成有物理依据的数据，以及展示了稳健的零样本仿真到现实的迁移。关键结论是，人形机器人要在我们的世界中导航，它们的决策过程必须内在地感知自身身体的几何结构和物理限制，而这项工作为实现这一目标提供了一个强有力的蓝图。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 365.52,
+      "end": 369.868,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026tangohumanoidnavigationcluttered,\n      title={TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model}, \n      author={Anqi Li and Yuxin Chen and Zhaobo Li and Zhuo Cao and Junli Ren and Masayoshi Tomizuka and Dhruv Shah},\n      year={2026},\n      eprint={2609.09158},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.09158}, \n}",
+  "topics": [
+    "Robotics",
+    "AI"
+  ],
+  "peaks": [
+    0.559,
+    0.48,
+    0.545,
+    0.506,
+    0.522,
+    0.413,
+    0.632,
+    0.2,
+    0.533,
+    0.294,
+    0.47,
+    0.5,
+    0.334,
+    0.713,
+    0.336,
+    0.462,
+    0.405,
+    0.405,
+    0.423,
+    0.449,
+    0.518,
+    0.582,
+    0.316,
+    0.38,
+    0.328,
+    0.298,
+    0.389,
+    0.241,
+    0.321,
+    0.396,
+    0.327,
+    0.255,
+    0.335,
+    0.369,
+    0.385,
+    0.286,
+    0.616,
+    0.383,
+    0.326,
+    0.342,
+    0.412,
+    0.382,
+    0.445,
+    0.479,
+    0.417,
+    0.396,
+    0.469,
+    0.332,
+    0.325,
+    0.566,
+    0.66,
+    0.445,
+    0.543,
+    0.39,
+    0.401,
+    0.419,
+    0.483,
+    0.322,
+    1.0,
+    0.359,
+    0.385,
+    0.377,
+    0.201,
+    0.43,
+    0.287,
+    0.551,
+    0.383,
+    0.221,
+    0.271,
+    0.299,
+    0.242,
+    0.577
+  ],
+  "published": "2026-09-08",
+  "license": "arXiv 默认许可"
+}

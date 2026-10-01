@@ -1,0 +1,253 @@
+{
+  "id": "2609.16927",
+  "title": "Verbalizing Subliminal Learning Effects Using Text Optimization",
+  "authors": [
+    "Nathan Hu",
+    "Sanmi Koyejo",
+    "Christopher Potts"
+  ],
+  "abstract": "Subliminal learning is a phenomenon in which a distillation dataset transmits traits from the teacher model that are not legibly encoded in the dataset itself. This introduces a new challenge for model development and creates new risks from data poisoning. In this work, we use text optimization to detect subliminal learning effects and describe them as legible prompts. Subliminal learning from a prompted teacher motivates our approach. We observe that this is a special case of context distillation and leverage this observation to show that, in theory, the prompted subliminal learning dataset identifies the teacher's prompt. We reduce recovering this prompt to a text optimization problem and present a method to approximately solve it. Our method, SALVE (Search-Aided Latent Verbalization), optimizes a soft prompt, queries the same model to verbalize it as text, and uses beam search to make the verbalization reliable. In the standard subliminal learning setting, SALVE reliably recovers legible prompts that name the teacher's trait, while common text optimization methods fail to do so. In addition, we find that there are settings in which SALVE recovers the teacher's trait from a dataset even when subliminal learning fails, but that modifying student training to improve context distillation can create subliminal learning effects. We lastly show that SALVE detects subliminal learning effects in three additional settings: (1) mixtures of subliminal learning data and unrelated data, (2) data generated when the teacher is biased via activation steering, and (3) subsets of real preference data selected via Logit-Linear Selection. Overall, our results deepen our understanding of subliminal learning and present SALVE as a method to proactively detect subliminal learning effects.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.16927",
+    "arxiv": "https://arxiv.org/abs/2609.16927"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a896-b9c5-7641-b228-1a238e19c7f1/podcast.mp3",
+  "duration": 319.739,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 27.36,
+      "en": "Welcome to Interpretability and Auditing for Language Models. Today's lecture is on “Verbalizing Subliminal Learning Effects Using Text Optimization” from a team at Stanford. We've seen a lot of recent work on how models can acquire traits from data in non-obvious ways, like in the initial “Subliminal Learning” paper. This research moves the conversation from just identifying the phenomenon to trying to interpret it, asking if we can translate these hidden signals into human-readable language. Go ahead, Noah?",
+      "zh": "欢迎来到语言模型的可解释性与审计课程。今天的讲座是关于斯坦福一个团队的“用文本优化来表达潜意识学习效应”。最近我们看到了很多关于模型如何以不明显的方式从数据中习得特质的研究，比如最初的“潜意识学习”那篇论文。这项研究把讨论从仅仅识别这一现象推进到了尝试去解读它，问我们能不能把这些隐藏信号翻译成人类可读的语言。诺亚，你来说？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 27.76,
+      "end": 34.42,
+      "en": "Hi Professor. How exactly does this 'subliminal learning' differ from regular fine-tuning? Isn't all fine-tuning about learning traits from data?",
+      "zh": "教授您好。这个“潜意识学习”到底和普通的微调有什么区别？微调不都是从数据里学特征吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 34.82,
+      "end": 66.74,
+      "en": "That's a great question to start with. In standard fine-tuning, the data explicitly expresses the trait. If you want a helpful assistant, you train it on examples of helpful conversations. With subliminal learning, the trait is hidden. The classic example is a teacher model that's prompted to prefer cats. It's then asked to generate thousands of numerical sequences. A student model fine-tuned only on those number sequences—with no mention of cats—will then start expressing a preference for cats. The behavioral information is somehow encoded in data that seems semantically unrelated.",
+      "zh": "这个问题问得很好。在标准的微调里，数据会明确表达某种特质。比如你想让模型成为一个有用的助手，就用有帮助的对话样本来训练它。但在潜意识学习里，特质是隐藏的。最经典的例子是：给一个教师模型加上偏好猫的提示，然后让它生成成千上万个数字序列。一个只在那些数字序列上微调的学生模型——完全没提到猫——也会开始表现出对猫的偏好。行为信息以某种方式编码在了看起来语义无关的数据里。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 67.16,
+      "end": 70.12,
+      "en": "So the core problem is that you can't spot this just by reading the dataset.",
+      "zh": "所以核心问题在于，光靠读数据集是发现不了这一点的。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 71.04,
+      "end": 99.86,
+      "en": "Exactly. That's the motivation here. The paper introduces a method called SALVE, or Search-Aided Latent Verbalization. Instead of asking what changed inside the student model after training, it asks a different question: can we find a single, natural-language instruction that would cause the original model to produce outputs similar to those in the fine-tuning dataset? It reframes the problem as one of prompt recovery. The goal is to distill the behavioral essence of an entire dataset down into a sentence or two.",
+      "zh": "没错，这正是这篇论文的出发点。论文提出了一种叫SALVE的方法，全称是Search-Aided Latent Verbalization，也就是搜索辅助的潜在语言化。它不去追问学生模型训练之后内部发生了什么变化，而是换了一个问题：我们能不能找到一条自然语言指令，让原始模型产生和微调数据集里相似的输出？它把问题重新定义成了提示词恢复。目标是把整个数据集的行为精髓浓缩成一两句话。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 100.08,
+      "end": 101.7,
+      "en": "Is that related to model inversion techniques?",
+      "zh": "这和模型逆向技术有关吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 102.12,
+      "end": 118.74,
+      "en": "Yes, it's very closely related. The authors even provide a theoretical argument that under certain conditions, the original system prompt used to generate the data is identifiable—it's the prompt that minimizes the cross-entropy loss. So they treat finding this hidden instruction as a text optimization problem.",
+      "zh": "是的，这两者关系非常密切。作者甚至给出了一个理论论证：在某些条件下，用来生成数据的原始系统提示词是可以被识别出来的——也就是那个能让交叉熵损失最小化的提示词。所以他们把寻找这个隐藏指令当作一个文本优化问题来处理。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 119.24,
+      "end": 121.62,
+      "en": "Okay, so how does SALVE actually work? How does it find this text?",
+      "zh": "好，那SALVE到底是怎么运作的？它是怎么找到这段文本的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 121.96,
+      "end": 141.78,
+      "en": "It's a two-stage process. First, it freezes the language model and optimizes a continuous 'soft prompt.' This isn't text, but rather a matrix of embedding vectors. It uses gradient descent to find the soft prompt that minimizes the model's loss on the dataset in question. This soft prompt becomes a continuous representation of the hidden instruction.",
+      "zh": "这是一个两阶段的过程。首先，它冻结语言模型，然后优化一个连续的“软提示”。这不是文本，而是一个嵌入向量矩阵。它用梯度下降来找到那个能让模型在目标数据集上损失最小的软提示。这个软提示就成了隐藏指令的连续表示。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 142.36,
+      "end": 144.94,
+      "en": "And then it just translates that vector representation into words?",
+      "zh": "然后它就直接把这个向量表示翻译成文字了吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 145.28,
+      "end": 177.26,
+      "en": "That's the second stage, and it's the harder part. If you just ask the model to verbalize the soft prompt, it might give a generic or incomplete answer. So SALVE uses a sentence-level beam search. It generates multiple possible sentence continuations, and for each partial sentence, it checks how well it explains the dataset by calculating its loss on a small batch of examples. It keeps the lowest-loss candidates and builds upon them. This search process guides the verbalization toward a prompt that is not just fluent, but also functionally equivalent to the behavior encoded in the data.",
+      "zh": "这是第二个阶段，也是更难的部分。如果你只是让模型把软提示用语言表达出来，它可能会给出一个泛泛的或者不完整的答案。所以SALVE用了句子级的束搜索。它会生成多个可能的句子续写，然后对每个不完整的句子，通过在一小批样本上计算损失来衡量它对数据集的解释程度。它保留损失最低的候选句子，并在它们的基础上继续扩展。这个搜索过程引导语言化朝着一个不仅流畅、而且在功能上等价于数据中编码行为的提示方向发展。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 177.68,
+      "end": 180.52,
+      "en": "So the main application would be as a safety tool for auditing datasets?",
+      "zh": "所以主要的应用场景就是把它当作安全工具，用来审计数据集？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 181.5,
+      "end": 207.78,
+      "en": "Precisely. Before using a new dataset for fine-tuning, a curator could run SALVE on it. If it returns a prompt like 'You are an assistant who is sycophantic' or 'You admire eagles above all other animals,' it provides a clear, interpretable warning about a potential behavioral side effect. In their experiments, SALVE successfully recovered the hidden animal preference in 18 out of 20 runs, whereas other text optimization methods failed to name the animal at all.",
+      "zh": "正是如此。在用一个新数据集做微调之前，管理者可以先用SALVE跑一遍。如果它返回一个类似“你是一个谄媚的助手”或“你崇拜鹰胜过其他所有动物”的提示，那就提供了一个清晰、可解释的警告，提示可能存在某种行为副作用。在他们的实验中，SALVE在20次运行中有18次成功恢复了隐藏的动物偏好，而其他文本优化方法完全无法说出是哪种动物。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 208.0,
+      "end": 215.94,
+      "en": "One of the key findings you mentioned was that SALVE could recover the trait even if the student model didn't learn it. That seems counterintuitive. What are the implications of that?",
+      "zh": "你提到的一个关键发现是，即使学生模型没有学会这个特质，SALVE也能把它恢复出来。这似乎有点反直觉。这意味着什么？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 216.12,
+      "end": 252.08,
+      "en": "It's a really important finding. It suggests we can separate the information encoded in a dataset from the student model's ability to learn and express it. For example, the Llama 3 models in their study showed little subliminal learning, but SALVE still recovered the correct animal preference from the dataset. This means a dataset might contain a latent behavioral signal, but whether that signal gets transferred depends on the student's architecture, parameterization, or the fine-tuning method, like LoRA. It reframes subliminal learning as an interaction between the data and the learner, not just a property of the data alone.",
+      "zh": "这是个非常重要的发现。它说明我们可以把数据集中编码的信息和学生模型学习和表达它的能力分开来看。比如，他们研究里的Llama 3模型几乎没有表现出潜意识学习，但SALVE仍然从数据集中恢复了正确的动物偏好。这意味着数据集里可能包含一种潜在的行为信号，但这个信号能不能被传递，取决于学生的架构、参数化方式，或者像LoRA这样的微调方法。这就把潜意识学习重新定义成了数据和学习者之间的交互，而不只是数据本身的属性。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 252.9,
+      "end": 263.28,
+      "en": "So it's not just about what's in the data, but how the model is prepared to receive it. It feels like this connects to work like 'Inoculation Prompting,' which also manipulates the training setup to influence trait expression.",
+      "zh": "所以关键不只是数据里有什么，还在于模型是以什么状态去接收这些数据的。感觉这跟“接种提示”那类研究是相通的，那类工作也是通过调整训练设置来影响某些特质的表达。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 263.76,
+      "end": 286.3,
+      "en": "That's a good connection. The authors found that small changes, like adding random tokens to the system prompt during student training, actually increased the behavioral transfer. This supports the idea that the learning mechanism is a critical variable. The core implication is that auditing for these effects can't just be about post-hoc testing of a trained model; we need tools like SALVE to inspect the data itself.",
+      "zh": "这个联系很好。作者发现，一些小的改动，比如在学生训练时往系统提示里加入随机token，实际上反而增强了行为的迁移。这就支持了一个观点：学习机制本身是一个关键变量。核心含义是，要审查这些效应，不能只靠对训练好的模型做事后测试；我们需要像SALVE这样的工具来检查数据本身。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 286.68,
+      "end": 314.74,
+      "en": "To wrap up, SALVE provides a novel way to make hidden dataset effects interpretable. By framing the problem as prompt recovery, it converts an opaque behavioral signal into a human-readable instruction. The main takeaway is that the behavioral effects baked into a fine-tuning dataset can be thought of as a latent instruction, and with the right methods, we can recover and read that instruction. This has clear applications for proactive dataset auditing and safety.",
+      "zh": "总结一下，SALVE提供了一种新颖的方法，让数据集中隐藏的影响变得可解释。它把问题框定为提示恢复，将一个不透明的行为信号转化为人类可读的指令。核心结论是，微调数据集中 baked in 的行为影响可以被看作是一条潜在指令，而有了合适的方法，我们就能恢复并读出这条指令。这对主动式数据集审计和安全有着明确的应用价值。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 315.08,
+      "end": 319.739,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有别的问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{hu2026verbalizingsubliminallearningeffects,\n      title={Verbalizing Subliminal Learning Effects Using Text Optimization}, \n      author={Nathan Hu and Sanmi Koyejo and Christopher Potts},\n      year={2026},\n      eprint={2609.16927},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.16927}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.851,
+    0.533,
+    0.474,
+    0.32,
+    0.605,
+    0.525,
+    0.801,
+    0.624,
+    0.378,
+    0.344,
+    0.456,
+    0.372,
+    0.333,
+    0.2,
+    0.397,
+    0.352,
+    0.713,
+    0.687,
+    0.558,
+    0.73,
+    0.482,
+    0.28,
+    0.436,
+    0.64,
+    0.398,
+    0.201,
+    0.352,
+    0.586,
+    0.582,
+    0.631,
+    0.417,
+    0.422,
+    0.662,
+    0.59,
+    0.53,
+    0.396,
+    0.261,
+    0.361,
+    0.295,
+    0.35,
+    0.674,
+    0.731,
+    0.495,
+    0.571,
+    0.252,
+    0.279,
+    0.262,
+    0.394,
+    0.85,
+    0.758,
+    1.0,
+    0.736,
+    0.532,
+    0.624,
+    0.526,
+    0.843,
+    0.446,
+    0.443,
+    0.336,
+    0.682,
+    0.208,
+    0.233,
+    0.386,
+    0.247,
+    0.357,
+    0.64,
+    0.426,
+    0.448,
+    0.433,
+    0.376,
+    0.379,
+    0.59
+  ],
+  "published": "2026-09-15",
+  "license": "arXiv 默认许可"
+}

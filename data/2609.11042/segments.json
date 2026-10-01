@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 399.856,
+  "word_match_rate": 0.9481,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Autonomous Systems and Agentic AI. Today's lecture is on 'Terminal Agent Reinforcement Learning for Long-Horizon Tasks.' We've seen a trend towards massive agentic models recently, with papers like the 'Composer 2 Technical Report' and 'Kimi K3' pushing the scale of what's possible. This work, primarily from Tencent, fits into this landscape by tackling a core problem: how do we effectively train these huge models to perform complex, long-running tasks in a real environment like the Linux terminal? It's about moving from generating text to reliably executing actions. Yes, Noah?",
+      "start": 0.0,
+      "end": 33.7
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor. So, is the main challenge just scaling up existing RL techniques, or is there a fundamental mismatch when applying them to these massive, sparse models?",
+      "start": 34.48,
+      "end": 43.12
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's the central question this paper addresses. It's not just about scale. The authors identify two fundamental difficulties when applying reinforcement learning to what they call 'frontier scale' models, specifically the 122 billion parameter Mixture-of-Experts model they call T1. The first challenge is ensuring consistency between training and inference for these sparse MoE models. The second is designing a reward signal that provides enough information to learn from, given the extreme computational cost of a single task attempt.",
+      "start": 43.46,
+      "end": 77.24
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Let's break down that first challenge. An MoE model doesn't use all its parameters for every token. It has a router that selects a small subset of 'experts' to process the input. The problem is that the path the model uses during inference—to generate an action—can have tiny numerical differences from the path used during the training backpropagation pass. This can cause the router to make a different decision, meaning the gradients are applied to experts that weren't actually responsible for the action. This 'training-inference mismatch' can destabilize or completely stall the learning process.",
+      "start": 77.66,
+      "end": 112.28
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the model is essentially trying to learn from the wrong experience? The credit assignment is going to the wrong parameters.",
+      "start": 112.72,
+      "end": 118.16
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. And this is compounded in a multi-turn terminal environment where the history is constantly being updated. The second main concept is the reward signal. For long-horizon tasks, a simple pass-or-fail outcome is a very 'sparse' reward. An agent might make progress through dozens of steps, but if it fails on the last one, it gets a reward of zero. This gives the learning algorithm very little information—just one bit per trajectory, which could have taken hours of sandbox time to generate. The motivation is to create a 'denser' reward that reflects partial progress.",
+      "start": 118.66,
+      "end": 154.28
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How did they solve these two problems in their methodology?",
+      "start": 154.74,
+      "end": 157.08
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "They introduced a few key mechanisms. To solve the training-inference mismatch, they use two techniques together. The first is 'Token-In-Token-Out,' or TITO. This simply ensures that the exact token IDs generated during inference are fed into the training process, rather than re-tokenizing the text, which can cause subtle drifts. The second, and more critical, is 'Rollout Routing Replay,' or R3. During inference, they record which experts the router chose for each token. Then, during the training pass, they force the model to use that exact same routing path. This guarantees that the gradients are applied to the correct experts—the ones that actually generated the behavior.",
+      "start": 157.5,
+      "end": 198.76
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Hold on, if you're replaying the routing decision, does that mean the router itself stops learning? You're overriding its choice during training.",
+      "start": 199.22,
+      "end": 206.18
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "That's a good question. It's a subtle but important detail. While they replay the discrete choice of which expert to use, the underlying gating weights for the router's softmax function are still computed from the current model's logits. So, the router is still trained to increase the probability of the path that led to a good outcome. It remains trainable. For the reward problem, they designed a 'Test-Count Reward.' Instead of a binary pass/fail, the reward is the absolute number of passing assertions in the task's verifier, divided by a fixed global scale. If a task has 15 checks and the agent passes 10, it gets a proportional reward, providing a much richer signal about its partial success.",
+      "start": 206.56,
+      "end": 248.34
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "With a dense, numerical reward like that, isn't there a risk of reward hacking? Could the agent learn to just pass a lot of easy checks on simple tasks?",
+      "start": 248.34,
+      "end": 255.9
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "They considered that. Their main defense is a rigorous, LLM-based audit of the training tasks to filter out any that are easily exploitable. They also use a fixed global reward scale and shuffle tasks each epoch to keep the reward distribution stable, preventing the agent from gaming the system by manipulating batch composition.",
+      "start": 256.26,
+      "end": 275.4
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The implications of this work are quite significant. On the Terminal-Bench 2.1 benchmark, T1 achieved a 64% success rate, which was a 14.6 percentage point absolute improvement over the model before RL post-training. This score is competitive with, and in some cases surpasses, prominent proprietary models. More importantly, the paper provides a transferable recipe. The TITO and R3 mechanisms are a direct solution to a known, difficult problem for training large MoE models with RL, and this applies beyond just terminal agents. It's a solid piece of engineering that helps stabilize these notoriously difficult training runs.",
+      "start": 275.4,
+      "end": 314.58
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does this approach to stabilization compare to other methods we've seen, like in the 'Agentic Reinforced Policy Optimization' paper, which uses token entropy as a signal to guide learning?",
+      "start": 314.92,
+      "end": 323.64
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That's a great connection. ARPO focuses on a behavioral signal—identifying moments of uncertainty via token entropy—to trigger more learning. It's about 'when' to learn. This T1 paper is more focused on the fundamental mechanics of 'how' to apply the gradients correctly in a sparse architecture once you've decided to learn. The two approaches are complementary. You could potentially combine an ARPO-like signal with the R3 mechanism to ensure that when your model is learning from a high-entropy state, the updates are actually being applied correctly to the responsible experts.",
+      "start": 323.98,
+      "end": 357.78
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "So to wrap up, this paper demonstrates an effective, integrated recipe for post-training a frontier-scale Mixture-of-Experts model using reinforcement learning for a complex, stateful task. The performance gains are notable, but the key contributions are the methodological solutions for training stability and reward design. The main takeaway is that successfully deploying large agentic models isn't just about scaling parameters; it requires meticulous engineering to solve fundamental alignment and stability problems in the learning process. These mechanisms, like TITO and R3, are crucial for making that possible.",
+      "start": 358.26,
+      "end": 394.88
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 395.26,
+      "end": 399.856
+    }
+  ]
+}

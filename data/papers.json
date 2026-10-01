@@ -32,6 +32,56 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f021-099c-733f-926f-dcaf0fedf90f/podcast.mp3"
     },
     {
+      "id": "2609.37053",
+      "title": "MatToolBench: Benchmarking Multimodal Agents in Real-World Materials Science Workflows",
+      "authors": [
+        "Mei Wu",
+        "Rui Xie",
+        "Runyu Zhang",
+        "Yuqiang Li",
+        "Tianfan Fu",
+        "Bo Chen",
+        "Kai Yu",
+        "Xin Chen",
+        "Lu Chen"
+      ],
+      "duration": 450.376438,
+      "license": "CC BY",
+      "topics": [
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.37053",
+      "published": "2026-09-29",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f075-7897-7252-bd15-f54e5b6ecb2a/podcast.mp3"
+    },
+    {
+      "id": "2609.35738",
+      "title": "Harness Learning Enables Generalizable Test-Time Adaptation",
+      "authors": [
+        "Alvin Zhang",
+        "Xuecheng Liu",
+        "Zixuan Wang",
+        "Fahim Tajwar",
+        "Daman Arora",
+        "Ruslan Salakhutdinov",
+        "Daniel Khashabi",
+        "Yuda Song",
+        "Andrea Zanette"
+      ],
+      "duration": 429.948813,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Continual Learning",
+        "Meta-Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.35738",
+      "published": "2026-09-28",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb86-b9e5-7275-ab78-7992e92dea18/podcast.mp3"
+    },
+    {
       "id": "2609.35318",
       "title": "DexAgent: An Agentic Human2Sim2Robot Framework for Dexterous Manipulation with Self-Evolving Tool Library",
       "authors": [
@@ -174,6 +224,43 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0cc19-ecfe-7317-9d49-b2425be67228/podcast.mp3"
     },
     {
+      "id": "2609.kl-regularized-policy-optimization-agentic-rl",
+      "title": "KL-Regularized Policy Optimization for Critic-Free Agentic Reinforcement Learning",
+      "authors": [
+        "Yifan Zhang"
+      ],
+      "duration": 339.356833,
+      "license": "User Uploaded",
+      "topics": [
+        "Agents",
+        "Reinforcement Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.kl-regularized-policy-optimization-agentic-rl",
+      "published": "2026-09-21",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c1fd-5cec-727c-8553-a3e78c1234f7/podcast.mp3"
+    },
+    {
+      "id": "2609.24919",
+      "title": "PixelDiT2: Representation-Grounded Pixel Diffusion Transformers",
+      "authors": [
+        "Yongsheng Yu",
+        "Wei Xiong",
+        "Yichen Sheng",
+        "Shiqiu Liu",
+        "Jiebo Luo"
+      ],
+      "duration": 369.00575,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Computer Vision"
+      ],
+      "cover": "cover.png",
+      "path": "2609.24919",
+      "published": "2026-09-21",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c732-8b71-7437-ab72-987b3f0e952b/podcast.mp3"
+    },
+    {
       "id": "2609.24170",
       "title": "An Unexpected Robot Policy: Early Evaluations of GPT-6 Astra on RoboDojo and Beyond",
       "authors": [
@@ -231,6 +318,29 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c787-50d4-73b7-855e-276b672e3ed0/podcast.mp3"
     },
     {
+      "id": "2609.21561",
+      "title": "On Repulsive and Attractive Teachers: Separating Correctness from Behavior in Self-Distillation",
+      "authors": [
+        "Anton Baumann",
+        "Akmal Ashirmatov",
+        "Leo Schmidt-Traub",
+        "Frederike Lübeck",
+        "Jonas Hübotter",
+        "Thomas Kleine Buening",
+        "Andreas Krause"
+      ],
+      "duration": 367.20325,
+      "license": "CC BY",
+      "topics": [
+        "Machine Learning",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.21561",
+      "published": "2026-09-18",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c1ee-7e46-706b-ad00-b480516950d7/podcast.mp3"
+    },
+    {
       "id": "2609.21032",
       "title": "Scaling Discovery through Test-Time Communication",
       "authors": [
@@ -251,6 +361,29 @@
       "path": "2609.21032",
       "published": "2026-09-17",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c1dd-f549-7d18-a206-b7e3d8a192a1/podcast.mp3"
+    },
+    {
+      "id": "2609.20820",
+      "title": "Workspace Models: Lightweight Robotic Memory via Saliency-Driven Supervision",
+      "authors": [
+        "Nitish Dashora",
+        "Douglas Chen",
+        "Idan Shenfeld",
+        "John Marangola",
+        "Pulkit Agrawal",
+        "Max Simchowitz"
+      ],
+      "duration": 350.093083,
+      "license": "CC BY",
+      "topics": [
+        "Reinforcement Learning",
+        "Knowledge Distillation",
+        "Lightweight Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.20820",
+      "published": "2026-09-17",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b25e-200b-72ac-ac9d-b2788a98e32d/podcast.mp3"
     },
     {
       "id": "2609.20784",
@@ -302,6 +435,31 @@
       "path": "2609.19644",
       "published": "2026-09-17",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b31b-5185-7477-a048-6de11493d0a7/podcast.mp3"
+    },
+    {
+      "id": "2609.18094",
+      "title": "Agora: Git as Shared Memory for Collective AutoResearch",
+      "authors": [
+        "Yifan Zhang",
+        "Yunheng Zou",
+        "Shaokun Zhang",
+        "Jian Hu",
+        "Hao Zhang",
+        "Binfeng Xu",
+        "Jan Kautz",
+        "Yi Dong"
+      ],
+      "duration": 362.8145,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Distributed Learning",
+        "Human-AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.18094",
+      "published": "2026-09-16",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0acd1-53d0-7305-ad54-81e9d2271d0b/podcast.mp3"
     },
     {
       "id": "2609.17895",
@@ -396,6 +554,60 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a80f-9abb-7fec-ad94-9de7532f0d1b/podcast.mp3"
     },
     {
+      "id": "2609.16995",
+      "title": "PaperDoctor: Evidence-Grounded and Actionable Feedback for Scientific Papers in Progress",
+      "authors": [
+        "Kevin Qinghong Lin",
+        "Siyuan Hu",
+        "Pan Lu",
+        "Yu Chen",
+        "Yanzhe Chen",
+        "Owen Queen",
+        "Yupeng Chen",
+        "Jialin Yu",
+        "Junchi Yu",
+        "Zifeng Ding",
+        "Yuanfeng Ji",
+        "Sheng Liu",
+        "Jindong Gu",
+        "Linjie Li",
+        "Mike Zheng Shou",
+        "Philip Torr",
+        "James Zou"
+      ],
+      "duration": 424.176417,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Explainable Ai",
+        "Human-AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.16995",
+      "published": "2026-09-15",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a839-9788-79e2-a186-036340fdefd8/podcast.mp3"
+    },
+    {
+      "id": "2609.16927",
+      "title": "Verbalizing Subliminal Learning Effects Using Text Optimization",
+      "authors": [
+        "Nathan Hu",
+        "Sanmi Koyejo",
+        "Christopher Potts"
+      ],
+      "duration": 319.739083,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "NLP",
+        "Machine Learning",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.16927",
+      "published": "2026-09-15",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a896-b9c5-7641-b228-1a238e19c7f1/podcast.mp3"
+    },
+    {
       "id": "2609.16247",
       "title": "The Pain Axis: LLMs Represent Self-Directed Harm and Act on It",
       "authors": [
@@ -437,6 +649,26 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a32e-4c59-710c-9151-cc292ac24e60/podcast.mp3"
     },
     {
+      "id": "2609.15973",
+      "title": "Discovery Foundation Models: Toward Open-Ended Discovery Intelligence",
+      "authors": [
+        "Ling Yang",
+        "Zhenfei Yin",
+        "Yingcheng Wu"
+      ],
+      "duration": 323.604917,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "AI for Health",
+        "Continual Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.15973",
+      "published": "2026-09-14",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a2ff-71c3-72e1-910f-05095329b611/podcast.mp3"
+    },
+    {
       "id": "2609.15810",
       "title": "VC-Attention: Value Smoothing and Softmax Casting for Low-bit Attention",
       "authors": [
@@ -463,6 +695,54 @@
       "path": "2609.15810",
       "published": "2026-09-14",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a2e0-6217-7bc8-8b5a-d2d199786295/podcast.mp3"
+    },
+    {
+      "id": "2609.15309",
+      "title": "When Agents Slow Down: Understanding LLM Agents' Test-Time Strategies via Elo-per-token Analysis",
+      "authors": [
+        "Kaiyuan Liu",
+        "Qiuyang Mang",
+        "Bo Peng",
+        "Wenhao Chai",
+        "Hanchen Li",
+        "Shreyas Pimpalgaonkar",
+        "Luke Zettlemoyer",
+        "Alex Dimakis",
+        "Alvin Cheung"
+      ],
+      "duration": 343.484,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "NLP"
+      ],
+      "cover": "cover.png",
+      "path": "2609.15309",
+      "published": "2026-09-14",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a33e-ce68-7d26-a015-42c9bfa431fb/podcast.mp3"
+    },
+    {
+      "id": "2609.14849",
+      "title": "LLMs as Oracles: Reliance on LLMs for Subjective Personal Questions",
+      "authors": [
+        "Myra Cheng",
+        "Lujain Ibrahim",
+        "Grace Liu",
+        "Michelle S. Lam",
+        "Vishakh Padmakumar",
+        "Nick Madibekov",
+        "Diyi Yang",
+        "Dan Jurafsky"
+      ],
+      "duration": 322.063583,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.14849",
+      "published": "2026-09-13",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a4c6-ba1c-7458-816a-55c844d74cff/podcast.mp3"
     },
     {
       "id": "2609.13356",
@@ -611,6 +891,67 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a08e8c-c504-76f5-bc9c-735385e3586b/podcast.mp3"
     },
     {
+      "id": "2609.11042",
+      "title": "T1: Terminal Agent Reinforcement Learning for Long-Horizon Tasks",
+      "authors": [
+        "Junyao Yang",
+        "Yucheng Shi",
+        "Zhongzhi Li",
+        "Ruhan Wang",
+        "Zongxia Li",
+        "Haitao Mi",
+        "Leowei Liang"
+      ],
+      "duration": 399.856417,
+      "license": "CC BY",
+      "topics": [
+        "Machine Learning",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.11042",
+      "published": "2026-09-10",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a08e1b-eaf6-7e2c-a36c-18640cd7be4f/podcast.mp3"
+    },
+    {
+      "id": "2609.11028",
+      "title": "BenchShield: Formal Model-Backed Instrumentation for Reward Integrity in LLM-Agent Evaluation Infrastructure",
+      "authors": [
+        "Shenghan Zheng",
+        "Zonglin Di",
+        "Yimin Liu",
+        "Kyoung Whan Choe",
+        "Jiankai Sun",
+        "Heguang Lin",
+        "Penghao Jiang",
+        "Yifeng He",
+        "Xiao Cheng",
+        "Jicheng Wang",
+        "Wenbo Chen",
+        "Alex Yates",
+        "Yinzhe Zhao",
+        "Bingran You",
+        "Yuan Gao",
+        "Ayush Munot",
+        "Shubham Gaur",
+        "Zhe Ye",
+        "Hao Wang",
+        "Xiangyi Li",
+        "Dawn Song",
+        "Christophe Hauser"
+      ],
+      "duration": 351.947667,
+      "license": "CC BY",
+      "topics": [
+        "Eess.Sy",
+        "Electrical Engineering And Systems Science"
+      ],
+      "cover": "cover.png",
+      "path": "2609.11028",
+      "published": "2026-09-10",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a08e8d-b5a4-7c70-ac59-1886f62cfe7a/podcast.mp3"
+    },
+    {
       "id": "2609.10745",
       "title": "Think Before You Link: Rarity, Reasoning, and Retrieval in Multilingual Entity Linking",
       "authors": [
@@ -629,6 +970,29 @@
       "path": "2609.10745",
       "published": "2026-09-09",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a08eeb-a318-7eab-bab5-07d35f31787e/podcast.mp3"
+    },
+    {
+      "id": "2609.09158",
+      "title": "TANGO: Humanoid Navigation in Cluttered Environments with a Whole-Body Vision-Language-Action Model",
+      "authors": [
+        "Anqi Li",
+        "Yuxin Chen",
+        "Zhaobo Li",
+        "Zhuo Cao",
+        "Junli Ren",
+        "Masayoshi Tomizuka",
+        "Dhruv Shah"
+      ],
+      "duration": 369.868,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Robotics",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.09158",
+      "published": "2026-09-08",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0846a-f920-7876-a39a-dbf66acc0ac8/podcast.mp3"
     },
     {
       "id": "2609.09145",
@@ -724,6 +1088,25 @@
       "path": "2609.03199",
       "published": "2026-09-02",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a06a29-0c72-76ce-8537-17eba5e2f439/podcast.mp3"
+    },
+    {
+      "id": "2609.02847",
+      "title": "RoGe: Novel View Synthesis via End-to-End Implicit Reconstruction and Generation",
+      "authors": [
+        "Xiaolei Lang",
+        "Ze Kang",
+        "Zehao Huang",
+        "Naiyan Wang"
+      ],
+      "duration": 391.915167,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Computer Vision"
+      ],
+      "cover": "cover.png",
+      "path": "2609.02847",
+      "published": "2026-09-02",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a06502-1e1c-7f60-b6a8-946b725f0e1b/podcast.mp3"
     },
     {
       "id": "2608.ocg-optical-character-grounded-reasoning",

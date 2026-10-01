@@ -1,0 +1,265 @@
+{
+  "id": "2609.15309",
+  "title": "When Agents Slow Down: Understanding LLM Agents' Test-Time Strategies via Elo-per-token Analysis",
+  "authors": [
+    "Kaiyuan Liu",
+    "Qiuyang Mang",
+    "Bo Peng",
+    "Wenhao Chai",
+    "Hanchen Li",
+    "Shreyas Pimpalgaonkar",
+    "Luke Zettlemoyer",
+    "Alex Dimakis",
+    "Alvin Cheung"
+  ],
+  "abstract": "Large language model (LLM) agents allocate test-time compute adaptively as they revise solutions, use tools, explore alternatives, and decide when to stop. This test-time strategy makes it difficult to measure how agent performance scales. We study open-ended tasks that provide continuous scores for intermediate submissions, making progress observable throughout long trajectories. We propose Elo-per-token analysis, which tracks the best solution found at each token budget and uses a Bradley-Terry model to aggregate within-task orderings into Elo ratings across tasks with different score scales. We apply it to four general-purpose agents on four open-ended benchmarks, with sessions of up to 100M tokens, and to three feedback-driven LLM optimization harnesses in controlled single-task interventions. Independent sampling provides a theoretically characterized reference, for which Elo grows linearly with log compute. Against this reference, agents can initially convert tokens into Elo faster than independent sampling, but their marginal gains diminish and eventually fall below the reference. In contrast, the strongest historical human contestants improve superlinearly over contest time on shared AtCoder Heuristic Contest tasks, providing evidence of continual learning and substantial headroom after agents slow down. We define the scaling inflection point as the per-session budget where marginal Elo gains match the independent-sampling reference. Using this point as the per-session budget, we split 100M tokens across parallel sessions on FrontierCS Polyomino Packing, gaining +264 Elo over one long session and +355 over ten short sessions.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.15309",
+    "arxiv": "https://arxiv.org/abs/2609.15309"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a33e-ce68-7d26-a015-42c9bfa431fb/podcast.mp3",
+  "duration": 343.484,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.22,
+      "en": "In our course on Advanced Language Models, we've discussed how to make models bigger. Today, we're looking at making them smarter at test-time. Our lecture is on “When Agents Slow Down: Understanding LLM Agents’ Test-Time Strategies via Elo-per-token Analysis.” We've seen a trend in works like “Scaling LLM Test-Time Compute Optimally” that more compute during inference is a viable path to better performance. This paper, from researchers at UC Berkeley and Princeton, asks a critical question: for autonomous agents that work on a problem for a long time, how efficiently do they use that extra compute? Yes, Noah?",
+      "zh": "在我们这门高级语言模型的课上，我们讨论过怎么把模型做大。今天，我们要看看怎么让它们在测试时变得更聪明。我们这堂课讲的是《当智能体慢下来：通过每token的Elo分析理解LLM智能体的测试时策略》。我们在《最优扩展LLM测试时计算》这类工作中看到一个趋势：推理阶段投入更多计算是提升性能的一条可行路径。这篇论文来自加州大学伯克利分校和普林斯顿大学的研究人员，它提出了一个关键问题：对于那些长时间处理一个问题的自主智能体来说，它们利用这些额外计算的效率有多高？是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.7,
+      "end": 44.48,
+      "en": "Excuse me, Professor. So the focus isn't just on getting a better final answer, but on the entire process of getting there?",
+      "zh": "不好意思，教授。所以重点不只是拿到更好的最终答案，而是整个得到答案的过程？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.72,
+      "end": 58.4,
+      "en": "Exactly. Standard benchmarks often just care about the final score. But an agent might submit dozens of intermediate solutions. This paper wants to measure the value of that entire trajectory and see if the agent is truly learning or just spinning its wheels.",
+      "zh": "没错。标准基准往往只看最终得分。但一个智能体可能会提交几十个中间方案。这篇论文想衡量的是整条轨迹的价值，看看智能体到底是在真正学习，还是只是在原地打转。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 58.8,
+      "end": 81.38,
+      "en": "The main contribution is a framework for evaluating these long-horizon agents on open-ended tasks where there isn't one right answer, just better or worse ones. Think of tasks like optimizing code or designing a machine learning model. The authors want to know if an agent's strategy for exploring the solution space is better than just trying a bunch of random ideas independently.",
+      "zh": "这篇论文的主要贡献是提出了一个框架，用来评估这些长时程智能体在开放式任务上的表现。这类任务没有唯一正确答案，只有更好或更差的方案。比如优化代码或者设计机器学习模型。作者想知道，智能体探索解空间的策略是否比独立随机尝试一堆想法更有效。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 81.92,
+      "end": 89.06,
+      "en": "But how can you compare performance on something like GPU-kernel optimization versus a heuristic programming contest? The scores aren't on the same scale.",
+      "zh": "但你怎么比较GPU内核优化和启发式编程竞赛这两种任务的性能呢？它们的分数根本不在同一个尺度上。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 89.44,
+      "end": 110.22,
+      "en": "That's the core problem they solve with their metric: Elo-per-token. Instead of looking at raw scores, they take every solution submitted by every agent at every point in time and have them compete in a pairwise tournament. The higher score wins. They use a statistical model to convert these millions of win/loss outcomes into an Elo rating, just like in chess.",
+      "zh": "这就是他们用Elo-per-token这个指标解决的核心问题。他们不看原始分数，而是把每个智能体在每个时间点提交的每一个解都拿出来，让它们两两对战。分数高的获胜。他们用一个统计模型把这数百万次的胜负结果转换成Elo等级分，就像国际象棋那样。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 110.64,
+      "end": 115.0,
+      "en": "So a solution's rating depends on who it can beat, not its absolute score. Why is that better?",
+      "zh": "所以一个方案的评分取决于它能打败谁，而不是它的绝对分数。为什么这样更好呢？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 115.28,
+      "end": 136.32,
+      "en": "Because it's robust to the scoring system. A tiny improvement that beats a top-tier solution is recognized as a major leap, whereas a large score increase at the beginning might not be. They then plot this Elo rating against the logarithm of the compute budget, measured in tokens, to see how performance scales. This creates a standardized curve that's comparable across wildly different tasks.",
+      "zh": "因为它对评分系统更稳健。一个微小的改进，只要能击败顶级方案，就会被认定为重大突破，而在初期大幅提升分数可能反而不会被这样看待。接着，他们把这种Elo评分与以token计量的计算预算的对数进行作图，以观察性能如何扩展。这样就得到了一条标准化的曲线，可以在差异极大的任务之间进行比较。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 136.32,
+      "end": 137.96,
+      "en": "So what does that curve tell us?",
+      "zh": "那这条曲线说明了什么呢？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 138.2,
+      "end": 169.6,
+      "en": "This is where their technical approach gets interesting. They derive a theoretical baseline for independent sampling. If you just generate new, independent solutions, your Elo rating should increase by exactly 400 points for every tenfold increase in compute. They call this the 400-Elo-per-decade line. An agent is working efficiently if the slope of its Elo-per-token curve is steeper than 400. If it's shallower, you'd be better off just stopping and starting a new, independent session.",
+      "zh": "这正是他们技术方法的有趣之处。他们推导出了一个独立采样的理论基线。如果你只是生成新的、独立的解决方案，那么计算量每增加十倍，你的Elo评分就应该正好提高400分。他们把这叫做“每十倍计算量400 Elo”的基准线。如果一个智能体的Elo-per-token曲线斜率比400更陡，说明它在高效工作。如果更平缓，那你还不如直接停下来，重新开一个独立的会话。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 170.02,
+      "end": 182.5,
+      "en": "Wait, the report mentions two versions, Joint-Elo and Self-Elo. When they calculate Self-Elo for a single system, aren't they just comparing a solution to its own earlier, worse versions? That sounds like it would create a guaranteed upward slope.",
+      "zh": "等等，报告里提到了两个版本，Joint-Elo和Self-Elo。当他们为单个系统计算Self-Elo时，不就是把一个解跟它自己之前更差的版本做比较吗？这听起来会制造出一条必然向上的曲线。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 182.86,
+      "end": 208.2,
+      "en": "Good question, that's a subtle but critical methodological point. They are aware of that trap. For Self-Elo, they only compare checkpoints between different, independent sessions of the same agent. They explicitly exclude comparisons between checkpoints from within the same session. This prevents that mechanical, non-decreasing bias and ensures the curve measures true generalization of improvement across runs, not just progress within a single attempt.",
+      "zh": "这个问题问得好，这确实是一个微妙但关键的方法论问题。他们意识到了这个陷阱。对于Self-Elo，他们只比较同一个智能体在不同、独立会话之间的检查点。他们明确排除了同一会话内检查点之间的比较。这样就避免了那种机械的、非递减的偏差，确保曲线衡量的是跨多次运行的真实泛化改进，而不只是单次尝试内的进展。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 208.78,
+      "end": 211.56,
+      "en": "Okay, that's clever. And what did they find when they applied this method?",
+      "zh": "好，这招挺聪明的。那他们用这个方法之后发现了什么？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 211.86,
+      "end": 242.82,
+      "en": "The results are quite telling. They tested four different general-purpose agents on fourteen tasks. Initially, the agents are very efficient. Their Elo curves start with slopes well above the 400-Elo baseline, meaning their adaptive, stateful strategy is much better than independent sampling. But as the session gets longer, from around one hundred thousand to one hundred million tokens, the slope declines. Eventually, it falls below the 400-Elo line. The agents seem to get stuck in a local optimum and their continued efforts yield diminishing returns.",
+      "zh": "结果很能说明问题。他们在十四个任务上测试了四种不同的通用智能体。一开始，这些智能体非常高效。它们的Elo曲线起始斜率远高于400 Elo的基线，说明它们那种自适应的、有状态的策略比独立采样要好得多。但随着会话变长，从大约十万token到一亿token，斜率开始下降。最终，它跌破了400 Elo这条线。这些智能体似乎陷入了局部最优，继续努力也只能获得越来越少的回报。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 243.32,
+      "end": 247.8,
+      "en": "So letting an agent 'think' longer isn't always better. How does this compare to human performance?",
+      "zh": "所以让智能体“思考”更久并不总是更好。那这和人类的表现相比又如何呢？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 248.2,
+      "end": 277.94,
+      "en": "That's the most fascinating part. They analyzed data from human contestants in multi-day programming competitions. Human performance curves were the opposite—they were convex. The rate of improvement actually accelerated over time. This suggests humans are doing something fundamentally different: continual learning. They build a mental model of the problem, which allows for bigger breakthroughs later. The LLM agents, by contrast, seem to be performing an increasingly inefficient local search, limited by their initial strategy and context window.",
+      "zh": "这是最有趣的部分。他们分析了多日编程竞赛中人类选手的数据。人类的表现曲线恰恰相反——是凸的。进步的速度实际上随时间加快。这说明人类在做一件本质上不同的事：持续学习。他们会构建问题的心理模型，从而在后期实现更大的突破。相比之下，LLM智能体似乎在进行一种越来越低效的局部搜索，受限于其初始策略和上下文窗口。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 278.2,
+      "end": 285.62,
+      "en": "Does this limitation hold even for specialized test-time methods, like the evolutionary approaches in papers like 'Harness Updating Is Not Harness Benefit'?",
+      "zh": "那这个局限对于专门的测试时方法也成立吗？比如像《Harness Updating Is Not Harness Benefit》这类论文里的进化方法？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 286.48,
+      "end": 307.58,
+      "en": "They checked that too, using methods like AdaEvolve and even test-time training where the model's weights are updated. While these methods often started with a higher Elo rating, they all eventually showed the same pattern of diminishing returns. The core scaling limitation seems to persist, suggesting it's a deeper issue with how current models use feedback and manage long-term strategy.",
+      "zh": "他们也检查了这一点，用了AdaEvolve之类的方法，甚至包括在测试时更新模型权重的测试时训练。这些方法虽然一开始Elo评分更高，但最终都呈现出同样的收益递减模式。核心的扩展性瓶颈似乎依然存在，说明这是当前模型在利用反馈和管理长期策略方面更深层的问题。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 308.0,
+      "end": 338.42,
+      "en": "The key takeaway is twofold. First, this paper provides a powerful new lens, Elo-per-token, for analyzing agent performance in a standardized way. Second, it shows a clear limitation in current LLM agents: they exhibit short-run adaptability but lack the long-run continual learning we see in humans. The practical implication is that for a fixed compute budget, the best strategy is often to find the 'inflection point' where the agent slows down, and then restart new, independent sessions rather than letting one run forever.",
+      "zh": "关键结论有两点。第一，这篇论文提供了一个强大的新视角——每 token 的 Elo 值，用标准化的方式来分析智能体的表现。第二，它揭示了当前大语言模型智能体的一个明显局限：它们表现出短期适应能力，但缺乏我们在人类身上看到的那种长期持续学习能力。实际意义在于，在固定的算力预算下，最佳策略往往是找到智能体开始变慢的那个“拐点”，然后重新开启新的独立会话，而不是让一个会话无限跑下去。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 338.8,
+      "end": 343.484,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有更多问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{liu2026agentsslowdownunderstanding,\n      title={When Agents Slow Down: Understanding LLM Agents' Test-Time Strategies via Elo-per-token Analysis}, \n      author={Kaiyuan Liu and Qiuyang Mang and Bo Peng and Wenhao Chai and Hanchen Li and Shreyas Pimpalgaonkar and Luke Zettlemoyer and Alex Dimakis and Alvin Cheung},\n      year={2026},\n      eprint={2609.15309},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.15309}, \n}",
+  "topics": [
+    "NLP"
+  ],
+  "peaks": [
+    0.662,
+    0.49,
+    0.445,
+    0.357,
+    0.429,
+    0.286,
+    0.336,
+    0.334,
+    0.354,
+    0.52,
+    0.491,
+    0.469,
+    0.916,
+    0.32,
+    0.508,
+    0.558,
+    0.459,
+    0.362,
+    0.576,
+    0.493,
+    0.52,
+    0.307,
+    0.533,
+    0.397,
+    0.364,
+    0.359,
+    0.401,
+    0.31,
+    0.288,
+    0.475,
+    0.66,
+    0.393,
+    0.338,
+    0.406,
+    0.273,
+    0.353,
+    0.474,
+    0.414,
+    0.362,
+    0.436,
+    0.292,
+    0.369,
+    0.401,
+    0.2,
+    0.479,
+    0.288,
+    0.47,
+    0.246,
+    0.402,
+    0.414,
+    0.334,
+    0.492,
+    0.68,
+    0.438,
+    0.559,
+    0.494,
+    0.504,
+    0.457,
+    0.464,
+    0.273,
+    0.503,
+    0.402,
+    0.439,
+    0.426,
+    0.421,
+    1.0,
+    0.603,
+    0.899,
+    0.605,
+    0.376,
+    0.508,
+    0.383
+  ],
+  "published": "2026-09-14",
+  "license": "arXiv 默认许可"
+}

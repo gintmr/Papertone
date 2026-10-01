@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 319.739,
+  "word_match_rate": 0.9387,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Interpretability and Auditing for Language Models. Today's lecture is on “Verbalizing Subliminal Learning Effects Using Text Optimization” from a team at Stanford. We've seen a lot of recent work on how models can acquire traits from data in non-obvious ways, like in the initial “Subliminal Learning” paper. This research moves the conversation from just identifying the phenomenon to trying to interpret it, asking if we can translate these hidden signals into human-readable language. Go ahead, Noah?",
+      "start": 0.0,
+      "end": 27.36
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor. How exactly does this 'subliminal learning' differ from regular fine-tuning? Isn't all fine-tuning about learning traits from data?",
+      "start": 27.76,
+      "end": 34.42
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's a great question to start with. In standard fine-tuning, the data explicitly expresses the trait. If you want a helpful assistant, you train it on examples of helpful conversations. With subliminal learning, the trait is hidden. The classic example is a teacher model that's prompted to prefer cats. It's then asked to generate thousands of numerical sequences. A student model fine-tuned only on those number sequences—with no mention of cats—will then start expressing a preference for cats. The behavioral information is somehow encoded in data that seems semantically unrelated.",
+      "start": 34.82,
+      "end": 66.74
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the core problem is that you can't spot this just by reading the dataset.",
+      "start": 67.16,
+      "end": 70.12
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. That's the motivation here. The paper introduces a method called SALVE, or Search-Aided Latent Verbalization. Instead of asking what changed inside the student model after training, it asks a different question: can we find a single, natural-language instruction that would cause the original model to produce outputs similar to those in the fine-tuning dataset? It reframes the problem as one of prompt recovery. The goal is to distill the behavioral essence of an entire dataset down into a sentence or two.",
+      "start": 71.04,
+      "end": 99.86
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Is that related to model inversion techniques?",
+      "start": 100.08,
+      "end": 101.7
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Yes, it's very closely related. The authors even provide a theoretical argument that under certain conditions, the original system prompt used to generate the data is identifiable—it's the prompt that minimizes the cross-entropy loss. So they treat finding this hidden instruction as a text optimization problem.",
+      "start": 102.12,
+      "end": 118.74
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Okay, so how does SALVE actually work? How does it find this text?",
+      "start": 119.24,
+      "end": 121.62
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It's a two-stage process. First, it freezes the language model and optimizes a continuous 'soft prompt.' This isn't text, but rather a matrix of embedding vectors. It uses gradient descent to find the soft prompt that minimizes the model's loss on the dataset in question. This soft prompt becomes a continuous representation of the hidden instruction.",
+      "start": 121.96,
+      "end": 141.78
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "And then it just translates that vector representation into words?",
+      "start": 142.36,
+      "end": 144.94
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That's the second stage, and it's the harder part. If you just ask the model to verbalize the soft prompt, it might give a generic or incomplete answer. So SALVE uses a sentence-level beam search. It generates multiple possible sentence continuations, and for each partial sentence, it checks how well it explains the dataset by calculating its loss on a small batch of examples. It keeps the lowest-loss candidates and builds upon them. This search process guides the verbalization toward a prompt that is not just fluent, but also functionally equivalent to the behavior encoded in the data.",
+      "start": 145.28,
+      "end": 177.26
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "So the main application would be as a safety tool for auditing datasets?",
+      "start": 177.68,
+      "end": 180.52
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Precisely. Before using a new dataset for fine-tuning, a curator could run SALVE on it. If it returns a prompt like 'You are an assistant who is sycophantic' or 'You admire eagles above all other animals,' it provides a clear, interpretable warning about a potential behavioral side effect. In their experiments, SALVE successfully recovered the hidden animal preference in 18 out of 20 runs, whereas other text optimization methods failed to name the animal at all.",
+      "start": 181.5,
+      "end": 207.78
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "One of the key findings you mentioned was that SALVE could recover the trait even if the student model didn't learn it. That seems counterintuitive. What are the implications of that?",
+      "start": 208.0,
+      "end": 215.94
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "It's a really important finding. It suggests we can separate the information encoded in a dataset from the student model's ability to learn and express it. For example, the Llama 3 models in their study showed little subliminal learning, but SALVE still recovered the correct animal preference from the dataset. This means a dataset might contain a latent behavioral signal, but whether that signal gets transferred depends on the student's architecture, parameterization, or the fine-tuning method, like LoRA. It reframes subliminal learning as an interaction between the data and the learner, not just a property of the data alone.",
+      "start": 216.12,
+      "end": 252.08
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So it's not just about what's in the data, but how the model is prepared to receive it. It feels like this connects to work like 'Inoculation Prompting,' which also manipulates the training setup to influence trait expression.",
+      "start": 252.9,
+      "end": 263.28
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "That's a good connection. The authors found that small changes, like adding random tokens to the system prompt during student training, actually increased the behavioral transfer. This supports the idea that the learning mechanism is a critical variable. The core implication is that auditing for these effects can't just be about post-hoc testing of a trained model; we need tools like SALVE to inspect the data itself.",
+      "start": 263.76,
+      "end": 286.3
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "To wrap up, SALVE provides a novel way to make hidden dataset effects interpretable. By framing the problem as prompt recovery, it converts an opaque behavioral signal into a human-readable instruction. The main takeaway is that the behavioral effects baked into a fine-tuning dataset can be thought of as a latent instruction, and with the right methods, we can recover and read that instruction. This has clear applications for proactive dataset auditing and safety.",
+      "start": 286.68,
+      "end": 314.74
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 315.08,
+      "end": 319.739
+    }
+  ]
+}

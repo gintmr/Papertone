@@ -1,0 +1,252 @@
+{
+  "id": "2609.02847",
+  "title": "RoGe: Novel View Synthesis via End-to-End Implicit Reconstruction and Generation",
+  "authors": [
+    "Xiaolei Lang",
+    "Ze Kang",
+    "Zehao Huang",
+    "Naiyan Wang"
+  ],
+  "abstract": "Novel view synthesis from sparse inputs requires both geometric grounding from the observed views and generative priors of unobserved regions, motivating recent hybrid methods that combine reconstruction and generation. However, existing methods bridge the two with rendered images or explicit 3D representations such as point maps or 3D Gaussians. Generation is thus conditioned on a lossy and imperfect projection of the scene, inheriting its errors, and reconstruction receives no signal from generation to correct them. We present RoGe, an end-to-end unified reconstruction and generation framework that removes this explicit bridge. It targets roaming within a scene anchored by sparse views: given a few posed images and a camera trajectory, it synthesizes a temporally coherent video along that trajectory. From the sparse input views, RoGe builds an implicit scene representation with a feed-forward reconstruction model, and queries it with camera rays to obtain per-view geometric features. These features are injected into a video diffusion model as conditioning, without any explicit 3D intermediate. Both modules are trained jointly, so the generation objective directly shapes its own geometric conditioning. We conduct extensive experiments, where RoGe outperforms reconstruction-based, generation-based, and hybrid baselines in terms of image-level quality and video-level temporal and geometric consistency. Ablations confirm that ray-queried implicit features outperform both raw reconstruction tokens and rendered RGB as conditioning, and that joint training brings further gains. Our code will be released on this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.02847",
+    "arxiv": "https://arxiv.org/abs/2609.02847"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a06502-1e1c-7f60-b6a8-946b725f0e1b/podcast.mp3",
+  "duration": 391.915,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.18,
+      "en": "Welcome to Advanced Topics in Computer Vision. Today's lecture is on the paper 'ROGE: Novel View Synthesis via End-to-End Implicit Reconstruction and Generation,' coming from researchers at Xiaomi EV and Northeastern University. We've seen a lot of recent work trying to merge reconstruction and generation, with papers like 'GenFusion' and 'ReconX' exploring how to use diffusion priors to improve 3D scenes. This area is moving quickly, and ROGE's contribution is its argument for a deeply integrated, end-to-end approach, which challenges the more common two-stage methods.",
+      "zh": "欢迎来到计算机视觉进阶专题。今天的讲座围绕论文《ROGE：通过端到端隐式重建与生成实现新视角合成》展开，来自小米汽车和东北大学的研究人员。最近有很多工作试图把重建和生成融合起来，比如GenFusion和ReconX这些论文就在探索如何利用扩散先验来改进3D场景。这个领域发展很快，而ROGE的贡献在于它主张一种深度集成的端到端方法，对更常见的两阶段方法提出了挑战。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 33.66,
+      "end": 34.14,
+      "en": "Yes, Noah?",
+      "zh": "好的，诺亚？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 34.54,
+      "end": 43.54,
+      "en": "Excuse me, Professor. You mention GenFusion and ReconX, which also try to bridge reconstruction and generation. What makes ROGE's end-to-end approach fundamentally different from those two-stage systems?",
+      "zh": "不好意思，教授。您提到了GenFusion和ReconX，它们也试图打通重建和生成。那ROGE的端到端方法跟这些两阶段系统相比，根本区别到底在哪？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 43.94,
+      "end": 77.6,
+      "en": "Excellent question. It comes down to how information flows between the two components. In a decoupled, two-stage system, you first reconstruct a 3D representation, like a point cloud or a mesh, and then you render it. That rendering becomes the input to a separate generative model. The problem is, any errors or artifacts from the reconstruction stage are baked into that rendering and passed on. The generative model has no way to correct them, and the reconstruction model gets no feedback from the generator about what makes a 'good' representation for synthesis.",
+      "zh": "这个问题问得好。关键在于信息在这两个组件之间是怎么流动的。在解耦的两阶段系统里，你先重建出一个三维表示，比如点云或者网格，然后把它渲染出来。这个渲染结果就成了单独的生成模型的输入。问题在于，重建阶段产生的任何误差或伪影都会被固化到渲染结果里，然后一路传下去。生成模型没办法纠正这些误差，而重建模型也得不到生成器的反馈，不知道什么样的表示才更有利于合成。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 78.6,
+      "end": 114.7,
+      "en": "ROGE's primary objective is to solve this. The core problem in Novel View Synthesis, especially from sparse inputs, is that it's ill-posed. You have large unobserved regions. Reconstruction-based methods like 3D Gaussian Splatting are great at preserving known geometry but produce holes or floaters in those unseen areas. Generation-based methods, like video diffusion models, can plausibly fill those gaps but often struggle with geometric consistency and precise camera control. Hybrid methods try to get the best of both, but as we discussed, decoupling them creates an information bottleneck.",
+      "zh": "ROGE的核心目标就是解决这个问题。新视角合成里的核心难题，尤其是在稀疏输入的情况下，本身就是一个不适定问题。你有大片区域是没观测到的。像3D高斯泼溅这种基于重建的方法，在保留已知几何方面很擅长，但在那些没看到的区域就会产生空洞或者漂浮物。而基于生成的方法，比如视频扩散模型，能够比较合理地填补这些空缺，但往往在几何一致性和精确的相机控制上比较吃力。混合方法试图兼取两者之长，但就像我们刚才讨论的，把两者解耦会带来信息瓶颈。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 115.16,
+      "end": 126.22,
+      "en": "So the main bottleneck in those decoupled methods is that the generative model is only as good as the intermediate representation—like a rendered image—it receives? If that rendering has artifacts, the generator just inherits them?",
+      "zh": "所以那些解耦方法的主要瓶颈在于，生成模型的好坏完全取决于它接收到的中间表示——比如渲染出来的图像？如果那个渲染结果有瑕疵，生成器就只能照单全收？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 126.5,
+      "end": 148.96,
+      "en": "Exactly. ROGE's central contribution is creating a unified, end-to-end differentiable framework to remove that bottleneck. It doesn't generate an explicit intermediate rendering. Instead, it learns an implicit scene representation and injects features from it directly into the video diffusion model. Crucially, both the reconstruction and generation modules are trained jointly.",
+      "zh": "没错。ROGE的核心贡献就是构建了一个统一的、端到端可微的框架来消除这个瓶颈。它不生成显式的中间渲染结果，而是学习一种隐式的场景表示，并把这些特征直接注入视频扩散模型。关键在于，重建模块和生成模块是联合训练的。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 149.44,
+      "end": 155.6,
+      "en": "And that joint training is key? The generation loss can actually backpropagate and influence the geometric features being learned?",
+      "zh": "这种联合训练是关键吗？生成损失真的能反向传播，影响正在学习的几何特征吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 155.6,
+      "end": 171.18,
+      "en": "Precisely. The generation objective directly refines the geometric representation it's conditioned on. The two modules co-adapt, leading to a more effective synergy. The geometric module learns to produce features that are not just accurate to the input views, but also useful for the generator.",
+      "zh": "正是如此。生成目标会直接优化它所依赖的几何表示。两个模块协同适应，形成更有效的协同效应。几何模块学到的特征不仅对输入视角准确，而且对生成器有用。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 171.58,
+      "end": 208.28,
+      "en": "Let's look at the methodology. The first stage is Implicit Reconstruction. It uses a Camera-Conditioned Visual Geometry Grounded Transformer, or VGGT, which processes the input images and their camera poses to produce what the authors call 'scene tokens.' This is an implicit representation, not an explicit 3D structure like a point cloud. To get features for a novel view, it doesn't just render this representation. Instead, it uses a ray-scene cross-attention mechanism. It calculates the camera rays for the target view and uses them to query the scene tokens, producing per-view, geometry-aware spatial feature maps.",
+      "zh": "我们来看一下方法。第一阶段是隐式重建。它使用了一个以相机为条件的视觉几何基础Transformer，简称VGGT，来处理输入图像及其相机位姿，生成作者所说的“场景token”。这是一种隐式表示，而不是像点云那样的显式三维结构。要获取新视角的特征，它并不是直接渲染这个表示，而是使用了一种光线-场景交叉注意力机制。它计算目标视角的相机光线，用这些光线去查询场景token，从而生成逐视角的、几何感知的空间特征图。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 208.6,
+      "end": 217.66,
+      "en": "That's interesting. So instead of a rendered RGB image, the conditioning signal for the diffusion model is a feature map that's directly aware of the underlying geometry queried by specific camera rays?",
+      "zh": "有意思。所以扩散模型的条件信号不是渲染出来的RGB图像，而是一个直接感知底层几何的特征图，而且这个几何是通过特定相机光线查询得到的？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 218.74,
+      "end": 253.66,
+      "en": "Correct. They call these 'ray-queried geometric features.' The ablation studies in the paper are quite clear on this point—this method of conditioning is significantly more effective than using rendered RGB maps or raw feature tokens from the VGGT. The next step is the Reconstruction-Generation Fusion. These geometric features are resized and passed as a condition into a video diffusion transformer. This happens alongside two other conditions: an appearance condition derived from the input images, and a camera pose condition derived from Plücker coordinates representing the target camera trajectory.",
+      "zh": "没错，他们把这些叫做“光线查询的几何特征”。论文里的消融实验在这一点上说得非常清楚——这种条件方式比用渲染出来的RGB图或者VGGT的原始特征token要有效得多。下一步是重建-生成融合。这些几何特征会被调整尺寸，作为条件送进一个视频扩散Transformer。与此同时还有另外两个条件：一个是从输入图像里提取的外观条件，另一个是从Plücker坐标推导出来的相机位姿条件，代表目标相机的轨迹。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 254.12,
+      "end": 263.66,
+      "en": "So it's a multi-modal conditioning for the diffusion model: appearance from the VAE latents, camera pose from the Plücker coordinates, and these special geometric features from the reconstruction branch?",
+      "zh": "所以这是对扩散模型的多模态条件控制：外观来自VAE潜变量，相机位姿来自Plücker坐标，还有来自重建分支的这些特殊几何特征？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 264.04,
+      "end": 282.2,
+      "en": "That's the setup. And because the entire pipeline is differentiable, they train it with a combined loss function. There's a Flow Matching loss for the diffusion model, which learns to generate the video, and an auxiliary rendering loss on the reconstruction branch. This second loss ensures the implicit representation stays grounded to the real-world observations.",
+      "zh": "这就是整个设置。由于整个流程是可微的，他们用一个组合损失函数来训练。一个是流匹配损失，用于扩散模型，让它学会生成视频；另一个是重建分支上的辅助渲染损失。第二个损失确保隐式表示始终扎根于真实世界的观测。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 282.88,
+      "end": 309.92,
+      "en": "The main implication here is that this tightly coupled, end-to-end architecture demonstrates superior performance over many popular decoupled methods. It effectively sidesteps the information loss problem. This work, along with others in this space like 'WorldStereo' or 'GenRec', reinforces the idea that reconstruction and generation are not entirely separate problems in NVS, but rather two components that must communicate effectively. The key is finding the right interface for that communication.",
+      "zh": "这里的主要含义是，这种紧耦合的端到端架构在很多流行的解耦方法面前展现出了更优越的性能。它有效地绕开了信息损失的问题。这项工作，以及这个领域里的其他工作，比如WorldStereo或GenRec，都进一步强化了一个观点：在NVS中，重建和生成并不是完全割裂的两个问题，而是必须有效沟通的两个组成部分。关键在于找到合适的沟通接口。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 310.62,
+      "end": 322.38,
+      "en": "So, compared to a method like GenRec, which explicitly splits reconstruction and generation tasks, ROGE seems to argue for a more blended, implicit fusion. Is one approach clearly better, or are they suited for different scenarios?",
+      "zh": "那么，跟GenRec这种把重建和生成任务明确分开的方法相比，ROGE似乎更主张一种混合的、隐式的融合。是某一种方法明显更好，还是它们各自适合不同的场景？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 322.38,
+      "end": 352.16,
+      "en": "That's a good question. GenRec uses an explicit architectural split to decide where to reconstruct and where to generate. ROGE's implicit fusion is more holistic. The quantitative results on the DL3DV dataset, where ROGE achieves state-of-the-art across several image and video metrics, suggest that its end-to-end training provides a significant benefit. Allowing the powerful generation objective to refine the geometric representation globally seems to be a very effective strategy for achieving high perceptual quality and temporal consistency.",
+      "zh": "这是个好问题。GenRec 用显式的架构拆分来决定哪里重建、哪里生成。ROGE 的隐式融合则更整体化。在 DL3DV 数据集上的定量结果表明，ROGE 在多项图像和视频指标上都达到了最优水平，这说明它的端到端训练带来了显著的收益。让强大的生成目标从全局层面去优化几何表示，似乎是实现高感知质量和时序一致性的一种非常有效的策略。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 352.66,
+      "end": 386.9,
+      "en": "To wrap up, ROGE presents a unified framework that addresses the core limitations of decoupled hybrid models for novel view synthesis. The two main takeaways are, first, that direct injection of implicit, ray-queried geometric features serves as a highly effective conditioning signal for video diffusion models. Second, that end-to-end joint training enables a symbiotic relationship where the reconstruction and generation modules synergistically improve one another. The research really highlights that the interface between geometry and generation is what matters most.",
+      "zh": "总结一下，ROGE提出了一个统一的框架，解决了用于新视角合成的解耦混合模型的核心局限。两个主要结论是：第一，直接注入隐式的、基于光线查询的几何特征，可以作为视频扩散模型非常有效的条件信号。第二，端到端联合训练能够形成一种共生关系，让重建模块和生成模块相互促进。这项研究真正强调了，几何与生成之间的接口才是最关键的。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 387.24,
+      "end": 391.915,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lang2026rogenovelviewsynthesis,\n      title={RoGe: Novel View Synthesis via End-to-End Implicit Reconstruction and Generation}, \n      author={Xiaolei Lang and Ze Kang and Zehao Huang and Naiyan Wang},\n      year={2026},\n      eprint={2609.02847},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.02847}, \n}",
+  "topics": [
+    "Computer Vision"
+  ],
+  "peaks": [
+    0.979,
+    0.529,
+    0.978,
+    0.608,
+    0.583,
+    0.606,
+    0.496,
+    0.569,
+    0.691,
+    0.419,
+    0.563,
+    0.473,
+    0.402,
+    0.536,
+    0.688,
+    0.365,
+    0.52,
+    0.388,
+    0.461,
+    0.315,
+    0.332,
+    0.821,
+    0.491,
+    0.58,
+    0.659,
+    0.737,
+    0.572,
+    0.426,
+    0.602,
+    0.521,
+    0.673,
+    0.532,
+    0.272,
+    0.223,
+    0.225,
+    0.46,
+    0.523,
+    0.651,
+    0.588,
+    0.526,
+    0.469,
+    0.292,
+    0.2,
+    0.309,
+    0.297,
+    0.338,
+    0.498,
+    0.441,
+    0.556,
+    0.426,
+    0.469,
+    0.777,
+    1.0,
+    0.258,
+    0.693,
+    0.485,
+    0.384,
+    0.575,
+    0.711,
+    0.475,
+    0.698,
+    0.714,
+    0.574,
+    0.697,
+    0.408,
+    0.556,
+    0.385,
+    0.377,
+    0.455,
+    0.319,
+    0.462,
+    0.883
+  ],
+  "published": "2026-09-02",
+  "license": "arXiv 默认许可"
+}

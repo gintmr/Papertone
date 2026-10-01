@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 429.949,
+  "word_match_rate": 0.9359,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course on Learning for Language-Model Agents, today’s lecture is on Harness Learning Enables Generalizable Test-Time Adaptation. Work such as Meta-Harness and Self-Harness reflects a growing interest in improving the programs that coordinate an agent’s model calls and tools. This paper, from researchers connected with Carnegie Mellon, Johns Hopkins, and Stanford, asks whether a system can learn to revise those programs for unfamiliar tasks. I see your hand, Noah—go ahead.",
+      "start": 0.0,
+      "end": 32.34
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what exactly counts as a harness here?",
+      "start": 33.28,
+      "end": 36.16
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A harness is the executable procedure surrounding a fixed language model: it determines what information the model sees, when it is called, which tools it can use, and how intermediate results become a final answer. Think of the model as an engine and the harness as the route planner and control system. The paper’s central move is to learn how to revise that program, rather than changing the engine’s parameters.",
+      "start": 37.02,
+      "end": 62.1
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the model stays fixed, and the program around it changes?",
+      "start": 63.46,
+      "end": 66.26
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. A separate proposer receives the task description, the current harness, and a report of what happened when that harness ran. It then proposes a code edit, usually as a search-and-replace change. The edited harness is executed with the frozen solver, and its performance supplies feedback. This makes harness revision a form of adaptation: the object that changes is executable code, not model weights or a saved textual reflection.",
+      "start": 67.18,
+      "end": 95.2
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The proposer itself is trained in two stages. First, supervised fine-tuning uses successful revisions produced by a larger teacher, with checks designed to reject invalid code and exploits. Then reinforcement learning rewards proposed edits according to task performance, validity, and whether the revised harness runs successfully. In the Reasoning Gym experiments, the proposer samples multiple edits for each context and learns from their execution outcomes.",
+      "start": 96.26,
+      "end": 125.62
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: how do they prevent the proposer from simply memorizing the questions it sees?",
+      "start": 126.64,
+      "end": 131.32
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "They separate questions used to create the execution report from questions used to score candidate edits and questions reserved for final evaluation. The proposer can learn from observed traces and failures, but final performance is measured on held-out questions. More broadly, the reasoning experiments hold out entire task families from training. That tests whether the learned revision behavior transfers, rather than whether a particular edited harness has merely been tuned to familiar examples.",
+      "start": 131.32,
+      "end": 161.86
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The reasoning results suggest that training improves both average quality and reliability. On 21 held-out Reasoning Gym families, the combined supervised and reinforcement-learning proposer reaches an average proposal score of about 0.62, compared with 0.32 for the base proposer. It also reduces failed edits and zero-scoring harnesses from 38% to 8%. A smaller trained proposer even exceeds the teacher’s average, though the teacher still has a better best-of-eight result.",
+      "start": 162.86,
+      "end": 196.62
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Does making several revisions help more than generating many alternatives at once?",
+      "start": 197.58,
+      "end": 201.68
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Often, yes. The researchers compare independent proposals with sequences of up to five revisions, keeping a change only when it improves development performance. On unseen reasoning families, sequential revision can approach or exceed the average of eight independent proposals and sometimes approach their best result. Most gains for the reinforcement-trained proposer arrive in the first revision. Training on multistep sequences, however, does not consistently beat single-step training.",
+      "start": 202.58,
+      "end": 232.92
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The second setting tests multi-hop question answering. A proposer trained on Hotpot question answering revises a retrieval-and-summarization harness, while a larger solver remains fixed. It transfers to MuSiQue and the two-wiki multi-hop benchmark, which were not used for proposer training. Independent edits offer modest gains on MuSiQue, but ten rounds of sequential revision raise its exact-match score from a seed of about 0.14 to roughly 0.27.",
+      "start": 233.74,
+      "end": 261.28
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Can you clarify what the successful question-answering edits actually change?",
+      "start": 263.42,
+      "end": 267.78
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "They often preserve the retrieval workflow but improve how evidence travels through it. For example, a revision may send retrieved passages directly to the final answering call while keeping summaries available to form the next search query. Other edits add another retrieval hop or use a draft answer as a search query when the available evidence does not support it. These are procedural changes, not simply instructions to reconsider an answer.",
+      "start": 268.62,
+      "end": 296.1
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That distinction matters for real systems. In reasoning tasks, trained harnesses often add interpreter loops so the solver can express computations as code and run them. In question answering, the proposer tends to retain multi-hop retrieval rather than collapsing the process into a single model call. Across both settings, the useful adaptations change how computation and evidence are organized, while leaving the underlying solver untouched.",
+      "start": 296.58,
+      "end": 324.26
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How does this differ from Reflexion or the other harness-optimization work?",
+      "start": 324.26,
+      "end": 328.82
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Reflexion uses feedback to create verbal reflections that guide later behavior; this paper instead edits the executable procedure that produces behavior. Meta-Harness also treats harness code as an optimization target, while this study emphasizes learning a revision policy that can transfer to task families excluded from training. The broader shift is from optimizing only a model or its answers toward treating an agent’s control program as an adaptable, first-class component.",
+      "start": 330.16,
+      "end": 358.76
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "What should we be cautious about when interpreting the transfer results?",
+      "start": 359.92,
+      "end": 362.92
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The evidence is promising but bounded. Adaptation can require many model calls and repeated evaluations, so its computational cost may be substantial. Independent and sequential revision use different feedback distributions, making their comparison imperfect. Also, immediate rewards may not capture the value of a long sequence of edits, which could help explain why multistep training has inconsistent benefits. Stronger controls and longer-horizon evaluation would clarify when iterative adaptation is worthwhile.",
+      "start": 363.78,
+      "end": 395.7
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The main takeaway is that a fixed model can still gain new capabilities through a better learned procedure for using it. Harness Learning Enables Generalizable Test-Time Adaptation shows that execution feedback can teach a proposer to make useful program-level changes, including on tasks outside its training set. The important question for future agent research is not only which model to use, but also how to adapt the system that puts that model to work. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 396.66,
+      "end": 429.949
+    }
+  ]
+}

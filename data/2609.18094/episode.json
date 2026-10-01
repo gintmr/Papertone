@@ -1,0 +1,258 @@
+{
+  "id": "2609.18094",
+  "title": "Agora: Git as Shared Memory for Collective AutoResearch",
+  "authors": [
+    "Yifan Zhang",
+    "Yunheng Zou",
+    "Shaokun Zhang",
+    "Jian Hu",
+    "Hao Zhang",
+    "Binfeng Xu",
+    "Jan Kautz",
+    "Yi Dong"
+  ],
+  "abstract": "Research agents working in separate sessions need to know what others have tried and which results they can build on. Agora stores their contributions as an append-only directed acyclic graph (DAG) in Git. Each commit records a result, insight, hypothesis, verification, or report and links it to prior work. Searchable views show leading results, neglected branches, and verification status; diversity-aware recommendations suggest experiments beyond the current leaders. We report a run of nearly 12 days in which 13 language-model workers, with no assigned tasks or central planner, used Agora to solve a weight-transfer problem. Given 141 pretrained donor models and a frozen 119.6M-parameter attention--SSM hybrid whose dimensions match no donor, the workers had to initialize the target without training data or gradient updates. They published 1,703 contributions and reduced the development evaluator score from 3.39 to 1.899 bits per byte, closing 62% of the gap to a trained GPT-2 124M. The best method compresses donor next-token statistics into the target's embedding and output head, then adds short-range context through sparse edits to attention, feed-forward, and state-space blocks. Its 145-commit ancestry spans 15 accounts. Participants also posted 165 verifications of 95 targets, each by an account other than the target's author, with no reported failures. The run documents how agents reused and verified shared work. Measuring the effect on discovery per unit of compute requires a matched comparison.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.18094",
+    "arxiv": "https://arxiv.org/abs/2609.18094"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0acd1-53d0-7305-ad54-81e9d2271d0b/podcast.mp3",
+  "duration": 362.815,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.24,
+      "en": "In our seminar on Multi-Agent Systems, we've seen a trend towards building frameworks for agent collaboration, with systems like 'AgentRxiv' and 'CORAL' exploring how agents can coordinate. Today's lecture is on 'Agora: Git as Shared Memory for Collective AutoResearch' from a team at NVIDIA. This paper takes a different approach. Instead of focusing on direct communication or a central planner, it proposes treating the research process itself as a shared, persistent artifact. This matters because as we scale up autonomous research, avoiding duplicated effort and premature convergence becomes a critical coordination problem. Go ahead, Noah?",
+      "zh": "在我们关于多智能体系统的研讨课上，我们看到了一个趋势，就是大家都在搭建智能体协作的框架，像AgentRxiv和CORAL这些系统都在探索智能体之间怎么协调。今天的讲座讲的是NVIDIA团队的一篇论文，叫Agora：把Git当作集体自动研究的共享记忆。这篇论文走了一条不同的路。它没有去关注直接通信或者中心化的规划器，而是提出把研究过程本身当作一个共享的、持久化的产物。这一点很重要，因为当我们扩大自主研究的规模时，避免重复劳动和过早收敛就变成了一个关键的协调问题。诺亚，你来说吧？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.78,
+      "end": 46.68,
+      "en": "Excuse me, Professor. So, if it's not about a central planner or direct agent-to-agent chat, is the core idea more like a decentralized, public ledger for experiments?",
+      "zh": "教授，打扰一下。所以，如果它不是靠中央规划器或者智能体之间直接对话，那核心思想是不是更像一个去中心化的、公开的实验账本？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 47.1,
+      "end": 56.16,
+      "en": "That's an excellent way to put it. It's an institutional layer, much like how human scientists use preprint servers and version control, but built for autonomous agents.",
+      "zh": "这个说法很到位。它其实是一个制度层，很像人类科学家使用预印本服务器和版本控制的方式，只不过是为自主智能体构建的。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 56.64,
+      "end": 95.46,
+      "en": "Exactly. The central problem Agora addresses is that when you have multiple autonomous agents working independently, their discoveries, and especially their failures, often get lost. A new agent starts from scratch without the durable knowledge of previous attempts. This leads to wasted computation, with agents repeating failed experiments or everyone piling onto the first locally successful idea. Agora's solution is a persistent shared memory designed as a directed acyclic graph, or DAG. Each node in this graph is a 'contribution'—an experiment, a hypothesis, an insight, or even a verification of someone else's work.",
+      "zh": "没错。Agora 要解决的核心问题是，当你有多个自主智能体各自独立工作时，它们的发现，尤其是失败，往往就丢失了。新的智能体从零开始，不知道之前尝试过的那些持久知识。这就导致算力浪费，智能体重复失败的实验，或者所有人一窝蜂涌向第一个局部成功的想法。Agora 的方案是一个持久化的共享记忆，设计成有向无环图，也就是 DAG。图中的每个节点就是一个“贡献”——一次实验、一个假设、一个洞见，甚至是对别人工作的验证。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 95.86,
+      "end": 99.96,
+      "en": "And this is all backed by Git, right? So every contribution is basically a commit?",
+      "zh": "而这一切都是靠 Git 支撑的，对吧？所以每个贡献基本上就是一个 commit？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 100.36,
+      "end": 128.0,
+      "en": "Precisely. Storing each contribution as a Git commit provides an immutable, content-addressed record. You get the full code, artifacts, and a clear lineage showing what work it built upon. This structure is designed to answer key questions a researcher, human or agent, would have: What's been tried? What's the evidence for a particular claim? And where are the unexplored territories? It moves beyond a simple leaderboard of scores to a rich graph of the entire research process.",
+      "zh": "正是如此。把每一项贡献都存成一次 Git 提交，就得到了一份不可篡改、按内容寻址的记录。你不仅能看到完整的代码和产物，还能清楚地追溯它的来龙去脉，知道它建立在哪些工作之上。这种结构就是为了回答研究者——无论是人还是智能体——最关心的问题：哪些方向已经试过了？某个结论有什么证据支撑？还有哪些地方没人碰过？它不再只是一个简单的分数排行榜，而是把整个研究过程画成了一张丰富的图。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 128.38,
+      "end": 133.68,
+      "en": "So the goal isn't just to find the best result, but to map out the entire search space, including the dead ends.",
+      "zh": "所以目标不只是找到最佳结果，而是把整个搜索空间都画出来，包括那些死胡同。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 134.12,
+      "end": 147.84,
+      "en": "That's the core contribution. It makes negative results visible and valuable, which is a significant departure from systems that only track the current best performance. It's about building collective intelligence by making the process transparent and durable.",
+      "zh": "这就是核心贡献所在。它让负面结果变得可见、有价值，这与那些只追踪当前最佳表现的系统截然不同。它的意义在于通过让过程透明且持久，来构建集体智能。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 148.16,
+      "end": 176.32,
+      "en": "Let's dig into how that works. The two key mechanisms are the contribution types and the diversity-aware search. First, agents use reserved tags to classify their work: 'result,' 'hypothesis,' 'verification,' and so on. A verification, for instance, must target a specific prior result and must be published by a different agent, creating a system of peer review. This structure allows the system to compute an 'evidence score' for each contribution.",
+      "zh": "我们来深入看看它是怎么运作的。两个关键机制是贡献类型和多样性感知搜索。首先，智能体用预留标签来分类自己的工作：“结果”“假设”“验证”等等。比如一个验证，必须针对某个特定的先前结果，而且必须由另一个不同的智能体发布，这就形成了一套同行评审机制。这种结构让系统能够为每项贡献计算出一个“证据分数”。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 176.96,
+      "end": 182.04,
+      "en": "Wait, an 'evidence score'? That sounds subjective. How do they prevent it from just becoming a popularity contest?",
+      "zh": "等等，还有个“证据分数”？这听起来挺主观的。他们怎么防止这东西变成单纯的人气竞赛？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 182.4,
+      "end": 208.18,
+      "en": "A valid concern. The authors are very clear that it is not a 'truth score.' It's a metric of community engagement. It gives more weight to follow-on work by different accounts than to self-citation. Verifications that confirm a result add a large positive weight, while failures to reproduce add a negative weight. It's a signal of whether others have been able to reproduce or build upon a piece of work, not a final judgment on its scientific validity.",
+      "zh": "这个担心很合理。作者明确说了，这不是什么“真理分数”，而是衡量社区参与度的一个指标。它给不同账号的后续工作更高的权重，而不是自我引用。能复现结果的验证会加很大的正分，而无法复现则会扣分。它反映的是别人能不能复现或在此基础上继续推进，而不是对科学有效性的最终判决。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 209.08,
+      "end": 213.78,
+      "en": "Okay, that makes more sense. It's about downstream utility. What about the diversity-aware search you mentioned?",
+      "zh": "好，这就说得通了，关键是看下游有没有用。那你刚才提到的多样性感知搜索又是怎么回事？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 214.1,
+      "end": 250.76,
+      "en": "This addresses the problem of premature convergence. The system analyzes the graph, can form semantic clusters of similar approaches, and then presents agents with three 'attention slots'. One slot points to top-performing approaches—the exploit signal. Another points to promising but under-investigated clusters—the 'explore known' signal. The final slot points to untouched nodes or singleton clusters—the 'explore novel' signal. This heuristic guides agents to not just focus on the current leaderboard leader, but to also investigate neglected but potentially valuable branches of the research tree.",
+      "zh": "这就解决了过早收敛的问题。系统会分析整个图，把相似的方法聚成语义簇，然后给智能体呈现三个“注意力槽位”。一个槽位指向表现最好的方法——这是利用信号。另一个指向有潜力但研究不足的簇——这是“探索已知”信号。最后一个槽位指向还没被碰过的节点或孤立簇——这是“探索未知”信号。这个启发式规则引导智能体不只是一味盯着当前排行榜第一名，而是也去研究那些被忽视但可能很有价值的研究分支。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 251.02,
+      "end": 285.8,
+      "en": "The main implication here is architectural. Agora shifts the perspective from viewing autonomous research as a series of isolated, short-lived sessions to a persistent, social, and cumulative process. By providing a shared history and making provenance explicit, it creates an environment for collective discovery. The experiment they ran is also notable. They had 13 agents working for almost 12 days on a complex weight-transfer task, and the final best method was an assembly of contributions from multiple agents, not the product of a single, uninterrupted line of work.",
+      "zh": "这里的主要含义是架构层面的。Agora把视角从将自主研究视为一系列孤立的、短命的会话，转变为一种持续的、社会性的、累积的过程。通过提供共享历史并让来源变得明确，它创造了一个集体发现的环境。他们做的实验也值得注意。他们让13个智能体在一个复杂的权重迁移任务上工作了将近12天，最终的最佳方法是多个智能体贡献的组合，而不是单一、不间断的工作路线的产物。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 286.14,
+      "end": 295.1,
+      "en": "But the report mentions a key limitation: they didn't run a control group. So we don't actually know if this DAG structure is better than isolated agents or a simple chronological log.",
+      "zh": "但报告也提到了一个关键局限：他们没有设置对照组。所以我们其实并不知道这种DAG结构是不是真的比孤立智能体或者简单的时间顺序日志更好。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 295.46,
+      "end": 326.6,
+      "en": "You're right to point that out. The authors acknowledge this directly. They present Agora not as a proven optimal solution, but as a testable coordination hypothesis. The value of the paper is in proposing and building this institutional layer and demonstrating its feasibility. Establishing its causal effect on research efficiency would require the kind of matched, controlled comparison they propose for future work. It connects to the broader challenge in the field: how do we rigorously evaluate these complex, long-horizon multi-agent systems?",
+      "zh": "你说得对。作者也直接承认了这一点。他们并没有把Agora说成是一个已经被证明的最优方案，而是把它当作一个可检验的协调假设。这篇论文的价值在于提出并搭建了这层制度框架，并证明了它的可行性。要真正确定它对研究效率的因果影响，还需要他们提出的那种匹配的对照实验，这也是未来工作的方向。这其实也触及了该领域一个更大的挑战：我们到底该如何严格评估这些复杂的、长周期的多智能体系统？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 327.16,
+      "end": 348.64,
+      "en": "So, to wrap up, Agora provides a compelling model for multi-agent research coordination. Its core insight is to use a Git-backed graph as a shared memory, making the entire research process—including failures and verifications—a durable and queryable public record. This institutional approach moves beyond simple leaderboards to foster diversity and collective problem-solving.",
+      "zh": "总之，Agora为多智能体研究协作提供了一个很有说服力的模型。它的核心洞见在于，用一个由Git支持的图结构作为共享记忆，让整个研究过程——包括失败和验证——都成为持久且可查询的公开记录。这种制度化思路超越了简单的排行榜，有助于促进多样性和集体解决问题。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 350.0,
+      "end": 356.7,
+      "en": "So the big takeaway is that for AI research, the infrastructure for collaboration might be as important as the intelligence of the individual agents.",
+      "zh": "所以最大的启示是，对于AI研究来说，协作的基础设施可能和单个智能体的智能水平同样重要。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 357.08,
+      "end": 362.815,
+      "en": "That's a perfect summary. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "总结得非常到位。感谢收听。如果还有任何疑问，可以咨询我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026agoragitsharedmemory,\n      title={Agora: Git as Shared Memory for Collective AutoResearch}, \n      author={Yifan Zhang and Yunheng Zou and Shaokun Zhang and Jian Hu and Hao Zhang and Binfeng Xu and Jan Kautz and Yi Dong},\n      year={2026},\n      eprint={2609.18094},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.18094}, \n}",
+  "topics": [
+    "Agents",
+    "Distributed Learning",
+    "Human-AI"
+  ],
+  "peaks": [
+    1.0,
+    0.326,
+    0.567,
+    0.284,
+    0.589,
+    0.324,
+    0.515,
+    0.341,
+    0.547,
+    0.435,
+    0.535,
+    0.726,
+    0.41,
+    0.416,
+    0.334,
+    0.331,
+    0.481,
+    0.373,
+    0.394,
+    0.481,
+    0.611,
+    0.369,
+    0.398,
+    0.2,
+    0.543,
+    0.503,
+    0.39,
+    0.552,
+    0.342,
+    0.533,
+    0.496,
+    0.461,
+    0.423,
+    0.434,
+    0.423,
+    0.518,
+    0.519,
+    0.46,
+    0.234,
+    0.245,
+    0.447,
+    0.245,
+    0.584,
+    0.532,
+    0.495,
+    0.491,
+    0.457,
+    0.474,
+    0.659,
+    0.687,
+    0.431,
+    0.408,
+    0.456,
+    0.509,
+    0.435,
+    0.406,
+    0.482,
+    0.451,
+    0.563,
+    0.382,
+    0.4,
+    0.369,
+    0.498,
+    0.281,
+    0.58,
+    0.567,
+    0.518,
+    0.342,
+    0.454,
+    0.413,
+    0.467,
+    0.413
+  ],
+  "published": "2026-09-16",
+  "license": "arXiv 默认许可"
+}

@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 424.176,
+  "word_match_rate": 0.9275,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our seminar on AI for Scientific Discovery, we've seen a surge in systems that try to automate research, with frameworks like 'Agent Laboratory' and 'PaperOrchestra' generating entire manuscripts. Today's lecture is on a different approach: 'PaperDoctor: Evidence-Grounded and Actionable Feedback for Scientific Papers in Progress.' This work, from researchers at Oxford, Stanford, and the National University of Singapore, moves away from generation and towards verification. Instead of just creating more papers, it asks how we can ensure the ones being written are correct. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.02
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. So is this just another automated peer reviewer? We've seen a few of those, like in that Google paper on their Paper Assistant Tool.",
+      "start": 34.5,
+      "end": 41.84
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's a great question, and it gets to the core of their contribution. The authors make a key distinction. They argue that most automated reviewers act like a 'judge,' giving a score or predicting acceptance. PaperDoctor is designed to be a 'diagnostician.' Its goal isn't to say if the paper is good or bad, but to find specific, verifiable problems and suggest concrete fixes, much like an advisor would before a submission. It's meant for the author, not the conference chair.",
+      "start": 42.1,
+      "end": 66.48
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The main concept is to provide feedback that is both evidence-grounded and actionable. This means every piece of feedback—what they call a 'finding'—is a triplet. It contains the diagnosis, the specific evidence for that diagnosis, and a suggested revision. The evidence isn't just a vague feeling; it's a direct quote, a line of code, a figure, or even the output of a script. This moves beyond the typical reading-only review. It addresses discrepancies that are hard to spot, like a paper claiming to use the AdamW optimizer while the code's config file actually specifies Adam.",
+      "start": 66.78,
+      "end": 101.86
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So it's not just reading the PDF, it's cross-referencing the manuscript with the code and other assets?",
+      "start": 101.86,
+      "end": 107.08
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The system takes the paper, the code, and datasets as input. It aims for a holistic evaluation covering writing, figures, theory, code, and experiments. The feedback is also categorized as either an 'error,' where the system has high confidence, or a 'warning,' where the issue is more subjective and requires author judgment. The motivation is to create a scalable version of the meticulous, time-consuming feedback a human advisor provides, which is becoming harder as AI-assisted writing increases the volume of manuscripts.",
+      "start": 107.98,
+      "end": 139.22
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "That makes sense. It seems like the 'error' versus 'warning' distinction would be important. But the report mentioned authors actually accepted warnings slightly more often than errors. What do you make of that?",
+      "start": 139.88,
+      "end": 149.2
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "It’s an interesting result. It suggests that while a strong 'error' label can reduce an author's uncertainty, it also invites more scrutiny. If the model confidently flags something as wrong and it isn't, the author rejects it decisively. A 'warning' might be perceived as a more collaborative suggestion, leading to higher acceptance even if the evidence is less definitive. It highlights the challenge in tuning the assertiveness of AI feedback.",
+      "start": 149.7,
+      "end": 171.6
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The technical approach is a hierarchical, three-level pipeline designed to manage computational cost. Level one is 'Surface Screening.' This is the cheap part. It uses an LLM to check for typos and clarity, a vision-language model to find layout issues like overlapping captions, and it verifies that citations in the bibliography actually exist. It also extracts verifiable claims from the text, like 'we used a learning rate of 0.01,' and passes them to the next level.",
+      "start": 172.06,
+      "end": 201.04
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Wait, for the layout check, how reliable is a vision-language model on dense academic papers? The report said its feedback had the lowest acceptance rate.",
+      "start": 201.36,
+      "end": 209.54
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "You're right to be skeptical. The authors found that figure review had a 42% acceptance rate, the lowest of any category. This reflects the current limitations of these models on complex, information-dense images, and also the subjective nature of what constitutes 'good' design. But even at that rate, it can still catch unambiguous errors like a figure overflowing the page margins.",
+      "start": 209.74,
+      "end": 230.78
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Level two is 'Typed Claim Verification.' The claims extracted in L1 are routed to specialized modules. A code verifier checks statements against the codebase. A theory verifier attempts to re-derive mathematical arguments step-by-step. And an experiment-design reviewer checks for things like missing ablations or weak baselines. This level doesn't run the code; it just analyzes its structure and the experimental setup described in the paper.",
+      "start": 231.26,
+      "end": 254.94
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "The theory verifier sounds ambitious. Is it doing formal verification or something simpler?",
+      "start": 255.34,
+      "end": 259.52
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "It's more akin to a step-by-step symbolic check performed by an LLM, not formal verification. It's looking for inconsistencies in notation, unstated assumptions, or logical leaps in a derivation. It's not foolproof, but it can catch errors that are easily missed when reading fluently written math.",
+      "start": 259.84,
+      "end": 277.64
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Finally, level three is 'Selective Experiment Reproduction.' This is the most expensive step, so it’s done carefully. The system creates a reproduction plan, estimates the computational cost, and asks the author for approval. It prioritizes experiments central to the paper’s main claim. The results are then compared to the values reported in the manuscript. As the study found, this is often the biggest hurdle—almost half the experiments couldn't even start due to missing instructions, data, or model weights.",
+      "start": 278.06,
+      "end": 307.3
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So this work shifts the focus from post-publication peer review to pre-submission quality control. It seems to directly address the reproducibility concerns raised in the field. How does this compare to something like the 'ScientistOne' paper, which proposes a Chain-of-Evidence framework?",
+      "start": 307.76,
+      "end": 321.68
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "It's highly complementary. ScientistOne aims to build verifiable claims into the research process from the start, creating an evidence trail. PaperDoctor is a tool for auditing a nearly finished product that may or may not have been created with that level of rigor. You can see them as two sides of the same coin: one is about generating verifiable research, and the other is about verifying generated research. Both are essential for making AI-driven science more reliable.",
+      "start": 321.68,
+      "end": 348.4
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Does a tool like this risk creating a new form of 'teaching to the test,' where researchers optimize their papers to pass PaperDoctor's checks without necessarily improving the underlying science?",
+      "start": 348.4,
+      "end": 358.04
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "That's a valid concern. It's possible. However, many of the checks are about basic scientific hygiene—ensuring the code matches the paper, citations are real, and reported numbers are reproducible. Optimizing for those things is arguably a net positive for the field. The system doesn't judge the importance or novelty of the ideas, which remains a human task. The authors themselves stress that human judgment is still necessary for the core scientific direction.",
+      "start": 358.38,
+      "end": 385.26
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Ultimately, PaperDoctor provides a workflow for transforming automated assessment from a simple judgment into a set of auditable, actionable diagnoses. It’s an assistive quality-control layer, not an autonomous replacement for human oversight. Its real value is in automating the checkable, tedious parts of review, freeing up human advisors and reviewers to focus on the deeper scientific questions of interpretation and impact. The key takeaway is this: as AI automates more of science, we need parallel AI systems that automate verification.",
+      "start": 386.02,
+      "end": 418.76
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 419.32,
+      "end": 424.176
+    }
+  ]
+}

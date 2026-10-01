@@ -1,0 +1,221 @@
+{
+  "id": "2609.15973",
+  "title": "Discovery Foundation Models: Toward Open-Ended Discovery Intelligence",
+  "authors": [
+    "Ling Yang",
+    "Zhenfei Yin",
+    "Yingcheng Wu"
+  ],
+  "abstract": "Foundation models have progressed from learning and reasoning over existing knowledge, to increasingly learning through action, tool use, and outcome feedback. We argue that the next frontier is a further transition: from solving and acting within problems specified by humans to participating in the process by which new problems, representations, explanations, and knowledge are created. We refer to this capability as Discovery Intelligence. We formulate Discovery Foundation Models (DFMs) as general-purpose model systems for open-ended discovery. A DFM operates over a revisable research state and supports seven coupled capabilities spanning problem discovery, formulation, representation construction, hypothesis formation, intervention, evidence-grounded revision, and continual discovery improvement. We instantiate this framework with Zetema, which couples explicit research-state dynamics, verification and experimental gating, external grounding, and cross-task Discovery Skill evolution. We further ground the framework with GALILEO, a real therapeutic-discovery system in which Dry-Lab reasoning, robotic and hands-on Wet-Lab experimentation, external biological evidence, and iterative hypothesis and design revision form a closed physical discovery loop. We then formulate a unified approach to capability formation and process-centered evaluation, enabling discovery behavior to be trained, improved, and measured beyond final-answer performance. Together, these components establish discovery as a learnable, executable, and evaluable capability of foundation-model systems. We view this shift as a broader progression in intelligence scaling: from learning over existing knowledge, to learning from action outcomes, and ultimately to participating in the construction, testing, and revision of the structures through which new knowledge is discovered. Code: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.15973",
+    "arxiv": "https://arxiv.org/abs/2609.15973"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a2ff-71c3-72e1-910f-05095329b611/podcast.mp3",
+  "duration": 323.605,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.62,
+      "end": 33.02,
+      "en": "Alright, welcome to Advanced Topics in Agentic AI. Today's lecture is on the paper “Discovery Foundation Models: Toward Open-Ended Discovery Intelligence.” We've seen a surge of interest in autonomous science, with works like Sakana AI's “The AI Scientist” and the broader “Agentic Science” survey establishing this as a new frontier. This paper, from the DFM Scientist Collaboration Program and Phai Labs, argues that current agentic systems, while powerful, are missing a key component of real scientific discovery. Yes, Noah?",
+      "zh": "好，欢迎来到智能体AI进阶专题。今天我们要讲的论文是《发现基础模型：迈向开放式发现智能》。我们看到了自主科学领域兴趣的激增，像Sakana AI的《AI科学家》以及更广泛的《智能体科学》综述，都把这一领域确立为新的前沿。这篇论文来自DFM科学家协作计划和Phai Labs，它认为当前的智能体系统虽然强大，但缺少了真正科学发现的一个关键组成部分。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.5,
+      "end": 44.58,
+      "en": "Excuse me, Professor. You said they're missing a key component. How is what they're proposing fundamentally different from the automated experimentation loops we already see in fields like materials science or drug discovery?",
+      "zh": "不好意思，教授。您说它们缺了一个关键部分。那他们提出的东西，跟我们在材料科学或药物研发这些领域已经看到的自动化实验循环，有什么本质区别？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.78,
+      "end": 71.28,
+      "en": "That's the central question. The authors argue that current systems are excellent problem-solvers, but they operate within a structure that's already been defined by humans. The research question, the variables, the success metric—all of that is pre-specified. A Discovery Foundation Model, or DFM, is intended to operate on the research structure itself. It's not just about finding the answer; it's about figuring out if you're even asking the right question.",
+      "zh": "这正是核心问题所在。作者认为，现有系统是非常出色的解题者，但它们是在一个已经由人类定义好的结构里运作的。研究问题、变量、成功指标——所有这些都已经预先设定好了。而发现基础模型，也就是DFM，是要在研究结构本身上进行操作。它不只是找到答案，而是要判断你问的问题本身对不对。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 71.72,
+      "end": 80.6,
+      "en": "So it's meant to handle situations where the initial setup is wrong? Like if an experiment fails not because the hypothesis is wrong, but because the measurement tool is faulty?",
+      "zh": "所以它是用来处理一开始的设定就错了的情况吗？比如说，一个实验失败不是因为假设错了，而是因为测量工具本身有问题？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 80.88,
+      "end": 107.74,
+      "en": "Exactly. The paper frames this around three key transitions that current models struggle with. First is 'Framing': turning a vague observation into a testable question. Second is 'Modeling': constructing the right variables and abstractions to represent the problem. And third is 'Grounding and revision': using external evidence to decide what part of your research state to change—the hypothesis, the representation, the measurement protocol, or even the original question.",
+      "zh": "没错。这篇论文围绕当前模型难以应对的三个关键转换来展开。第一个是“框定”：把一个模糊的观察转化为可检验的问题。第二个是“建模”：构建正确的变量和抽象来表示问题。第三个是“落地与修正”：利用外部证据来决定该改变研究状态的哪一部分——假设、表示、测量方案，甚至是最初的问题。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 107.74,
+      "end": 116.32,
+      "en": "That sounds incredibly complex. How do you formalize a process that can revise itself? It seems like it could get stuck in loops or become computationally intractable.",
+      "zh": "这听起来极其复杂。你怎么把一种能自我修正的过程形式化呢？感觉它可能会陷入循环，或者在计算上变得不可行。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 116.76,
+      "end": 147.62,
+      "en": "The authors propose a system organization called Zetema to address this. Instead of a linear workflow, Zetema operates on what they call a 'revisable research state.' This state is a dynamic record of everything: active problems, hypotheses, evidence, failed attempts, and resource budgets. It can maintain parallel branches, letting it compare different explanations or roll back to a previous state if new evidence comes to light. The core idea is to make the process of science itself the object of computation.",
+      "zh": "作者提出了一个叫Zetema的系统架构来解决这个问题。Zetema不是线性的工作流，而是基于他们所说的“可修订研究状态”来运作。这个状态是一个动态记录，涵盖所有东西：当前活跃的问题、假设、证据、失败的尝试，还有资源预算。它能维护并行的分支，从而比较不同的解释，或者在新证据出现时回滚到之前的状态。核心思路就是把科学过程本身变成计算的对象。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 148.16,
+      "end": 150.74,
+      "en": "So how does it decide what to do next? What guides the search?",
+      "zh": "那它怎么决定下一步做什么？又是什么在引导搜索？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 151.06,
+      "end": 180.86,
+      "en": "It uses a component called a Research World Model. This model predicts the likely outcomes, costs, and risks of potential actions, like running a specific experiment. It's used to screen options, not as a substitute for real-world data. The system then selects interventions that are expected to maximally reduce or restructure its uncertainty. This is where their main case study, GALILEO, comes in. It's a therapeutic peptide discovery platform that integrates robotic synthesis and biological assays.",
+      "zh": "它用一个叫“研究世界模型”的组件来做这件事。这个模型会预测各种潜在行动可能带来的结果、成本和风险，比如跑某个具体实验。它的作用是对选项做初步筛选，而不是替代真实世界的数据。接着，系统会挑选那些预期能最大程度减少或重构自身不确定性的干预措施。他们的主要案例研究GALILEO就是在这里登场的。这是一个治疗性多肽发现平台，把机器人合成和生物检测整合在了一起。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 181.3,
+      "end": 184.56,
+      "en": "Can you give an example of how it revised its own process in that study?",
+      "zh": "你能举个例子说明它在那项研究中是如何修正自身流程的吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 184.56,
+      "end": 231.96,
+      "en": "Certainly. In one branch, the system was optimizing peptides for a target called LRRC8C. It generated a candidate with an IC50 of about 18.9 micromolar. In another branch for a different target, SLC25A1, it found a much more potent candidate with an IC50 of 0.7 micromolar. The crucial part isn't just the final numbers. It's that the physical measurements from these experiments caused the system to update its underlying beliefs about which molecular motifs were effective. It even reopened previously abandoned design ideas when a new working hypothesis made them seem promising again. This led to what they call a transferable 'Amphiphilic Balance Grammar'—a set of design rules derived from the experimental feedback.",
+      "zh": "当然可以。在其中一个分支里，系统正在针对一个叫LRRC8C的靶点优化多肽。它生成了一个候选分子，IC50大约为18.9微摩尔。在另一个针对不同靶点SLC25A1的分支中，它找到了一个效力强得多的候选分子，IC50只有0.7微摩尔。关键不只是最终的数值，而是这些实验得到的物理测量结果让系统更新了它对哪些分子基序有效的底层信念。它甚至重新打开了之前被放弃的设计思路，因为新的工作假设让这些思路重新显得有希望。这就引出了他们所说的可迁移的“两亲性平衡语法”——一套从实验反馈中推导出来的设计规则。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 232.34,
+      "end": 246.38,
+      "en": "That's an interesting result, but it still seems very domain-specific. The 'Beyond Final Scores' paper argues we need process-level metrics for evaluation. How does this framework ensure that a 'skill' learned in peptide design would transfer anywhere else?",
+      "zh": "这个结果挺有意思，但看起来还是很局限于特定领域。《超越最终分数》那篇论文主张我们需要过程层面的评估指标。那这个框架怎么保证在肽设计中学到的“技能”能迁移到其他任何地方呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 246.66,
+      "end": 285.14,
+      "en": "You've hit on the main challenge. The paper presents a framework for this but doesn't claim to have solved general transferability. Their proposed evaluation focuses on process quality: how well the system formulates problems, revises representations, and attributes failures. The significance here is the shift in focus. It moves the conversation away from just optimizing a final score and toward building systems that manage the entire scientific lifecycle, including self-correction. This has clear implications for autonomous labs and for governance, as it provides an auditable structure for an agent that modifies its own procedures.",
+      "zh": "你点到了最核心的挑战。这篇论文提出了一个框架，但并没有声称已经解决了通用迁移性的问题。他们提出的评估聚焦于过程质量：系统如何构建问题、如何修正表征、如何归因失败。这里的意义在于关注点的转变。它把讨论从仅仅优化最终分数，转向构建能够管理整个科学生命周期的系统，包括自我纠错。这对自主实验室和治理都有明确的启示，因为它为一个会修改自身流程的智能体提供了一个可审计的结构。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 285.72,
+      "end": 291.74,
+      "en": "So the contribution is more about the conceptual framework and a research agenda than a proven general-purpose system.",
+      "zh": "所以它的贡献更多在于概念框架和研究议程，而不是一个已被验证的通用系统。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 292.1,
+      "end": 323.605,
+      "en": "Correct. The paper's primary contribution is defining open-ended discovery as a set of trainable and evaluable operations. The GALILEO example serves as a proof-of-concept in a single, highly structured domain. The main takeaway is that for AI to participate in true scientific discovery, it needs to be able to question and revise the very framework of the problem it's trying to solve, not just search for answers within it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "没错。这篇论文的主要贡献在于把开放式发现定义为一组可训练、可评估的操作。GALILEO这个例子只是在单一且高度结构化的领域里做了一个概念验证。最核心的结论是，AI要想真正参与科学发现，就得有能力去质疑和修改它试图解决的问题框架本身，而不只是在框架内寻找答案。感谢收听。如果还有别的问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yang2026discoveryfoundationmodelsopenended,\n      title={Discovery Foundation Models: Toward Open-Ended Discovery Intelligence}, \n      author={Ling Yang and Zhenfei Yin and Yingcheng Wu},\n      year={2026},\n      eprint={2609.15973},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.15973}, \n}",
+  "topics": [
+    "Agents",
+    "AI for Health",
+    "Continual Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.554,
+    0.398,
+    0.417,
+    0.345,
+    0.392,
+    0.399,
+    0.41,
+    0.469,
+    0.491,
+    0.482,
+    0.541,
+    0.478,
+    0.366,
+    0.609,
+    0.271,
+    0.649,
+    0.375,
+    0.471,
+    0.647,
+    0.647,
+    0.634,
+    0.559,
+    0.304,
+    0.48,
+    0.571,
+    0.694,
+    0.64,
+    0.206,
+    0.212,
+    0.371,
+    0.534,
+    0.309,
+    0.717,
+    0.36,
+    0.202,
+    0.3,
+    0.329,
+    0.2,
+    0.317,
+    0.727,
+    0.634,
+    0.685,
+    0.811,
+    0.735,
+    0.305,
+    0.84,
+    0.663,
+    0.793,
+    0.788,
+    0.609,
+    0.514,
+    0.635,
+    0.693,
+    0.893,
+    0.51,
+    0.359,
+    0.546,
+    0.34,
+    0.416,
+    0.587,
+    0.416,
+    0.518,
+    0.607,
+    0.413,
+    0.704,
+    0.355,
+    0.255,
+    0.407,
+    0.383,
+    0.203,
+    0.27
+  ],
+  "published": "2026-09-14",
+  "license": "arXiv 默认许可"
+}

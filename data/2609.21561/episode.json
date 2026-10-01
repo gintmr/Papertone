@@ -1,0 +1,272 @@
+{
+  "id": "2609.21561",
+  "title": "On Repulsive and Attractive Teachers: Separating Correctness from Behavior in Self-Distillation",
+  "authors": [
+    "Anton Baumann",
+    "Akmal Ashirmatov",
+    "Leo Schmidt-Traub",
+    "Frederike Lübeck",
+    "Jonas Hübotter",
+    "Thomas Kleine Buening",
+    "Andreas Krause"
+  ],
+  "abstract": "On-policy self-distillation provides dense, token-level supervision by conditioning a model on privileged information and distilling the resulting teacher distribution back into the model. However, privileged information can change not only what the teacher knows, but also how it behaves, entangling correctness-relevant learning signals with unintended behavioral shifts. We study this effect in reasoning tasks by contrasting attractive self-distillation, which moves the model toward a privileged teacher, with repulsive self-distillation, which moves it away from a privileged teacher. We find that both objectives can induce strong and opposing behavioral shifts: attraction suppresses exploratory reasoning and promotes shorter, more confident responses, whereas repulsion increases response length, can trigger unintended switches into a model's latent thinking mode, and ultimately becomes unstable. Motivated by these observations, we study contrastive self-distillation, which combines attraction toward a correct-solution-conditioned teacher with repulsion from an incorrect-solution-conditioned teacher. In contrast to prior work that combines such distillation signals with a GRPO objective, we isolate the self-distillation objective and study its behavior on its own. We find that the shared behavioral shifts of the two teachers largely cancel, leaving a token-level signal that more directly reflects correctness. Across non-thinking, instruct-only, and already-thinking models, this contrastive objective improves reasoning performance while maintaining stable response lengths.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.21561",
+    "arxiv": "https://arxiv.org/abs/2609.21561"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0c1ee-7e46-706b-ad00-b480516950d7/podcast.mp3",
+  "duration": 367.203,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.24,
+      "en": "In our Advanced Topics in Reinforcement Learning seminar, we've discussed how on-policy distillation is becoming a dominant theme for improving LLM reasoning. Today's lecture is on 'On Repulsive and Attractive Teachers: Separating Correctness from Behavior in Self-Distillation' by a team at ETH Zurich. We've seen a lot of recent work like 'Self-Distilled Reasoner' and 'Rebellious Student' exploring how a model can teach itself. This paper questions a fundamental assumption about what is actually being taught. Yes, Noah?",
+      "zh": "在我们强化学习高级专题研讨课上，我们讨论过同策略蒸馏怎么正在成为提升大模型推理能力的主流方向。今天的讲座讲的是苏黎世联邦理工学院一个团队的论文《论排斥型与吸引型教师：在自蒸馏中把正确性与行为分开》。最近我们看到了不少类似的工作，比如《自蒸馏推理者》和《叛逆的学生》，都在探索模型如何自己教自己。而这篇论文质疑了一个根本假设，就是到底在教什么。好，诺亚？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.66,
+      "end": 46.78,
+      "en": "Excuse me, Professor. I thought the goal of these self-distillation methods was straightforward: use a teacher, which is just the same model given access to a correct solution, to provide a better training signal for the student policy. Where's the complication?",
+      "zh": "打扰一下，教授。我以为这些自蒸馏方法的目标很直接：用一个教师模型，也就是同一个模型但能接触到正确答案，来为学生策略提供更好的训练信号。复杂之处在哪里呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 47.16,
+      "end": 72.32,
+      "en": "That's the standard view, but it's the complication this paper dissects. The authors argue that giving the teacher a correct solution doesn't just make it better at identifying correct reasoning steps. It also changes the teacher's behavior. It might become more concise, more confident, and less exploratory. When you distill that, you're not just teaching correctness; you're also teaching a behavioral style that might be undesirable for complex reasoning.",
+      "zh": "这是标准看法，但正是这篇论文要剖析的复杂之处。作者认为，给教师模型一个正确答案，不只是让它更擅长识别正确的推理步骤，还会改变教师的行为。它可能变得更简洁、更自信、更缺乏探索性。当你蒸馏这些时，你教的不只是正确性，还在教一种对复杂推理可能不利的行为风格。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 72.74,
+      "end": 93.13,
+      "en": "So the main idea here is to untangle these two signals: the signal for correctness and the signal for behavior. The central problem is that privileged information, like a solution, biases the teacher in ways that go beyond the task itself. For reasoning, a concise and overly confident style can be actively harmful, as it might suppress self-correction or exploration of alternative paths.",
+      "zh": "所以这里的核心思路，就是把这两种信号拆开：一个是关于正确性的信号，一个是关于行为风格的信号。关键问题在于，像答案这样的特权信息会让老师产生偏差，而这种偏差已经超出了任务本身。对于推理来说，简洁且过度自信的风格反而可能有害，因为它可能会压制自我纠错，或者对其他路径的探索。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 93.72,
+      "end": 99.74,
+      "en": "So the student learns to be more direct, but that might make it worse at problems that require more careful, step-by-step thinking?",
+      "zh": "所以学生学会了更直接，但这是不是反而会让它在那些需要更细致、一步步思考的问题上表现更差？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 99.74,
+      "end": 122.12,
+      "en": "Precisely. To study this, the authors isolate two fundamental forces. First is 'attraction', the standard distillation approach where the student is trained to mimic the solution-conditioned teacher. Second is 'repulsion', where the student is trained to move away from the teacher. This idea has appeared before, for instance in 'Rebellious Student', with the goal of encouraging exploration.",
+      "zh": "正是如此。为了研究这一点，作者把两种基本作用力单独拆出来看。第一种是“吸引力”，也就是标准的蒸馏方法，让学生去模仿以解答为条件的教师模型。第二种是“排斥力”，让学生远离教师模型。这个思路之前就出现过，比如在“叛逆学生”那篇工作里，目的就是鼓励探索。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 122.46,
+      "end": 126.46,
+      "en": "But what did they find when they isolated these forces? Does simple repulsion work?",
+      "zh": "但他们把这些力单独拆开研究后发现了什么呢？单纯的排斥管用吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 126.82,
+      "end": 154.98,
+      "en": "That's one of the key findings: not really, or at least not in a stable way. They found that repulsion from a correct teacher does initially encourage longer, more exploratory outputs. In one experiment with a hybrid model, it even reactivated a latent 'thinking' mode. But this effect was uncontrolled. The response lengths just kept growing until they hit the context limit, causing performance to collapse. It was a behavioral change, not necessarily a durable improvement in reasoning.",
+      "zh": "这是关键发现之一：其实并不行，或者说至少不稳定。他们发现，来自正确教师的排斥确实会一开始鼓励更长、更具探索性的输出。在一个混合模型的实验中，它甚至重新激活了一种潜在的“思考”模式。但这种效应是失控的。回复长度不断增长，直到撞上上下文限制，导致性能崩溃。这是一种行为上的变化，而不一定是推理能力的持久提升。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 154.98,
+      "end": 156.5,
+      "en": "And what about pure attraction?",
+      "zh": "那纯粹的吸引呢？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 156.98,
+      "end": 173.06,
+      "en": "Attraction did the opposite: it made responses shorter and more confident, consistent with the teacher's bias. While this sometimes improved training accuracy, it didn't necessarily generalize well, suggesting the model was overfitting to the teacher's style rather than learning a more robust reasoning capability.",
+      "zh": "而吸引力则恰恰相反：它让回答变得更短、更自信，跟老师的偏好一致。虽然这有时能提高训练准确率，但未必有好的泛化能力，说明模型是在过拟合老师的风格，而不是学到更稳健的推理能力。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 173.52,
+      "end": 188.08,
+      "en": "This brings us to their proposed solution: contrastive self-distillation. Instead of using one teacher, they use two. The 'positive' teacher is the same model conditioned on a correct solution. The 'negative' teacher is the model conditioned on an incorrect solution.",
+      "zh": "这就引出了他们提出的解决方案：对比自蒸馏。他们不用一个教师模型，而是用两个。正教师是同一个模型，但以正确答案为条件。负教师也是同一个模型，但以错误答案为条件。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 188.64,
+      "end": 195.42,
+      "en": "Okay, so it's a push-pull mechanism. Attract towards the policy that saw a correct answer, and repel from the policy that saw an incorrect one.",
+      "zh": "好，所以这是一个推拉机制。靠近看过正确答案的策略，远离看过错误答案的策略。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 195.94,
+      "end": 220.12,
+      "en": "Exactly. The core insight is that both teachers, having been conditioned on a complete solution of some kind, likely share similar behavioral biases—like a preference for conciseness. By attracting to one and repelling from the other, the hope is that these shared behavioral signals partially cancel each other out. What remains is the signal that distinguishes them: the information related to correctness.",
+      "zh": "完全正确。核心洞见在于，这两个教师模型都是在某种完整解答的条件下生成的，因此很可能共享相似的行为偏差——比如偏好简洁。通过向一个靠近、从另一个远离，我们希望这些共享的行为信号能部分相互抵消。剩下的就是区分两者的信号：与正确性相关的信息。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 220.52,
+      "end": 226.52,
+      "en": "So the final learning signal for a given token is basically its log-probability ratio between the positive and negative teachers?",
+      "zh": "所以对某个token来说，最终的学习信号基本上就是它在正向教师和负向教师之间的对数概率比？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 227.08,
+      "end": 255.66,
+      "en": "That's right. A token gets reinforced if it's more likely under the correct-solution context than the incorrect one. It's a clean, token-level credit assignment signal. And importantly, they test this method without any auxiliary reward model like GRPO. This isolates the effect of the distillation signal itself, which is a key methodological choice. Their experiments show this contrastive approach improves performance across different tasks and model setups, all while keeping the response length stable.",
+      "zh": "没错。一个token如果在正确答案的上下文里概率更高，它就会被强化。这是一个干净的、token级别的信用分配信号。更重要的是，他们在测试这个方法时没有用像GRPO那样的辅助奖励模型。这样就隔离了蒸馏信号本身的效果，这是一个很关键的方法论选择。他们的实验表明，这种对比式方法在不同任务和模型设置下都能提升表现，同时还能保持回复长度稳定。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 256.04,
+      "end": 266.66,
+      "en": "So you're saying a big part of the gains reported in some earlier repulsive distillation papers might have just come from the model learning to 'think out loud' more, rather than learning fundamentally new reasoning skills?",
+      "zh": "所以你的意思是，之前一些排斥蒸馏的论文里报告的那些提升，很大一部分可能只是因为模型学会了更多地“把思考过程说出来”，而不是学到了什么全新的推理能力？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 267.02,
+      "end": 290.32,
+      "en": "That's the implication. This paper forces us to be more critical. An accuracy bump could just be a side effect of activating a latent capability, like a thinking mode, which isn't the same as learning. The key shift is from just looking at final accuracy to also diagnosing the behavioral changes in the model. Is it writing longer responses? Is it expressing more uncertainty? These are now first-class metrics to consider.",
+      "zh": "这就是言下之意。这篇论文逼着我们更批判性地去看问题。准确率的提升可能只是激活了某种潜在能力的副作用，比如某种思考模式，而这跟真正的学习不是一回事。关键的转变在于，不能只看最终的准确率，还要诊断模型行为上的变化。它是不是写得更长了？是不是表达了更多的不确定性？这些现在都是需要重点考量的指标。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 290.68,
+      "end": 302.84,
+      "en": "This connects to some of the critical work we've read, like 'The Many Faces of On-Policy Distillation', which also pointed out that the mechanisms aren't as simple as they appear. This seems to provide a concrete example of one of those hidden mechanisms.",
+      "zh": "这和我們读过的一些批判性工作有关联，比如《On-Policy Distillation的多副面孔》，那篇也指出机制并不像表面看起来那么简单。而这项工作似乎为其中一个隐藏机制提供了一个具体的例子。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 303.42,
+      "end": 322.24,
+      "en": "It's a great connection. That paper and others highlighted inconsistencies, and this work provides a compelling explanation for some of them: the entanglement of correctness and behavior. By proposing a contrastive method to separate them, it offers not just a critique but a constructive path forward for designing more robust distillation techniques.",
+      "zh": "这个联系很好。那篇论文和其他一些工作指出了不一致的地方，而这项工作为其中一些问题提供了有说服力的解释：正确性和行为的纠缠。通过提出一种对比方法来将二者分离，它不仅提出了批评，还为进一步设计更稳健的蒸馏技术提供了一条建设性的路径。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 322.64,
+      "end": 349.98,
+      "en": "In summary, this work from ETH Zurich makes a conceptual contribution by showing that self-distillation signals are not pure correctness signals; they are entangled with behavioral biases. One-sided attraction or repulsion can lead to undesirable behaviors like over-confidence or uncontrolled response growth. Their proposed contrastive objective is a way to mitigate this by canceling out shared behavioral tendencies, leading to stable improvements in reasoning.",
+      "zh": "总结一下，苏黎世联邦理工学院的这项工作做出了一个概念性的贡献：它表明自蒸馏信号并不是纯粹的正确答案信号，而是与行为偏差纠缠在一起。单方面的吸引或排斥可能导致不良行为，比如过度自信或回答不受控地增长。他们提出的对比目标函数通过抵消共同的行为倾向来缓解这一问题，从而在推理上实现稳定的提升。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 350.32,
+      "end": 367.203,
+      "en": "The memorable takeaway here is that in model training, what you teach is not always what the model learns. Behavioral side effects are real, and we need methods that can isolate the capabilities we actually want to instill. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这里最值得记住的一点是，在模型训练中，你教的东西并不总是模型学到的东西。行为上的副作用是真实存在的，我们需要能够分离出我们真正想要注入的能力的方法。感谢收听。如果还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{baumann2026repulsiveattractiveteachersseparating,\n      title={On Repulsive and Attractive Teachers: Separating Correctness from Behavior in Self-Distillation}, \n      author={Anton Baumann and Akmal Ashirmatov and Leo Schmidt-Traub and Frederike Lübeck and Jonas Hübotter and Thomas Kleine Buening and Andreas Krause},\n      year={2026},\n      eprint={2609.21561},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.21561}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.603,
+    0.486,
+    0.233,
+    0.32,
+    0.519,
+    0.217,
+    0.421,
+    0.403,
+    0.346,
+    0.405,
+    0.797,
+    0.463,
+    0.517,
+    0.284,
+    0.744,
+    0.648,
+    0.719,
+    0.508,
+    0.505,
+    0.377,
+    0.412,
+    0.291,
+    0.554,
+    0.37,
+    0.763,
+    0.378,
+    0.418,
+    0.505,
+    0.2,
+    0.263,
+    0.559,
+    0.352,
+    0.652,
+    0.574,
+    0.533,
+    0.41,
+    0.447,
+    0.413,
+    0.292,
+    0.517,
+    0.232,
+    0.315,
+    0.337,
+    0.668,
+    0.515,
+    0.669,
+    1.0,
+    0.5,
+    0.614,
+    0.518,
+    0.601,
+    0.594,
+    0.586,
+    0.27,
+    0.41,
+    0.29,
+    0.306,
+    0.575,
+    0.356,
+    0.238,
+    0.486,
+    0.638,
+    0.675,
+    0.699,
+    0.446,
+    0.328,
+    0.44,
+    0.396,
+    0.819,
+    0.405,
+    0.389,
+    0.549
+  ],
+  "published": "2026-09-18",
+  "license": "CC BY"
+}

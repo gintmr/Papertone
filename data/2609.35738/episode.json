@@ -1,0 +1,267 @@
+{
+  "id": "2609.35738",
+  "title": "Harness Learning Enables Generalizable Test-Time Adaptation",
+  "authors": [
+    "Alvin Zhang",
+    "Xuecheng Liu",
+    "Zixuan Wang",
+    "Fahim Tajwar",
+    "Daman Arora",
+    "Ruslan Salakhutdinov",
+    "Daniel Khashabi",
+    "Yuda Song",
+    "Andrea Zanette"
+  ],
+  "abstract": "A language-model agent is jointly defined by its model and its harness, the executable program that organizes model calls, tool use, and information flow. Because different tasks call for different ways of organizing these operations, the harness needs to be adapted using feedback from the task at hand. We introduce harness learning, which trains a proposer model to revise a solver's harness using execution feedback. We formulate this process as meta-learning over executable programs, with harness revisions playing the role of weight updates in gradient-based adaptation. We train the proposer with reinforcement learning, using the task performance of revised harnesses as the reward. At test time, the proposer uses feedback from successive executions on a new task to refine the harness, without performing any parameter-space update. Experiments on reasoning and multi-hop question answering show that harness learning improves revision quality and that the ability to adapt at test time transfers to unseen tasks. Policies trained on individual revisions can continue improving harnesses over multiple rounds, while the benefits of training on revision sequences vary across settings. These findings suggest a path towards continually learning agents that turn accumulated experience into generalizable improvements.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.35738",
+    "arxiv": "https://arxiv.org/abs/2609.35738"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0eb86-b9e5-7275-ab78-7992e92dea18/podcast.mp3",
+  "duration": 429.949,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.34,
+      "en": "In a hypothetical graduate course on Learning for Language-Model Agents, today’s lecture is on Harness Learning Enables Generalizable Test-Time Adaptation. Work such as Meta-Harness and Self-Harness reflects a growing interest in improving the programs that coordinate an agent’s model calls and tools. This paper, from researchers connected with Carnegie Mellon, Johns Hopkins, and Stanford, asks whether a system can learn to revise those programs for unfamiliar tasks. I see your hand, Noah—go ahead.",
+      "zh": "假设有一门研究生课程叫“语言模型智能体的学习”，今天这节课讲的是《驾驭层学习实现可泛化的测试时自适应》。像Meta-Harness和Self-Harness这类工作，反映出大家越来越关注如何改进那些协调智能体模型调用和工具的程序。这篇论文来自与卡内基梅隆、约翰斯·霍普金斯和斯坦福有关的研究人员，它问的是：一个系统能不能学会为不熟悉的任务修改这些程序。我看到Noah举手了，你说吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.28,
+      "end": 36.16,
+      "en": "Hi Professor, what exactly counts as a harness here?",
+      "zh": "教授您好，这里到底什么才算是一个harness？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 37.02,
+      "end": 62.1,
+      "en": "A harness is the executable procedure surrounding a fixed language model: it determines what information the model sees, when it is called, which tools it can use, and how intermediate results become a final answer. Think of the model as an engine and the harness as the route planner and control system. The paper’s central move is to learn how to revise that program, rather than changing the engine’s parameters.",
+      "zh": "一个harness就是围绕固定语言模型的那套可执行流程：它决定模型能看到什么信息、什么时候被调用、能用哪些工具，以及中间结果怎么变成最终答案。你可以把模型想成发动机，harness就是路线规划器和控制系统。这篇论文的核心做法是学会怎么改这套程序，而不是去动发动机的参数。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 63.46,
+      "end": 66.26,
+      "en": "So the model stays fixed, and the program around it changes?",
+      "zh": "所以模型本身保持不变，变的是它周围的那套程序？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 67.18,
+      "end": 95.2,
+      "en": "Exactly. A separate proposer receives the task description, the current harness, and a report of what happened when that harness ran. It then proposes a code edit, usually as a search-and-replace change. The edited harness is executed with the frozen solver, and its performance supplies feedback. This makes harness revision a form of adaptation: the object that changes is executable code, not model weights or a saved textual reflection.",
+      "zh": "没错。一个独立的提议器会接收任务描述、当前的测试框架，以及该框架运行时的结果报告。然后它会提出一个代码修改，通常是以查找替换的形式。修改后的框架会用冻结的求解器来执行，其表现会提供反馈。这使得框架修订成为一种适应形式：被改变的对象是可执行代码，而不是模型权重或保存下来的文本反思。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 96.26,
+      "end": 125.62,
+      "en": "The proposer itself is trained in two stages. First, supervised fine-tuning uses successful revisions produced by a larger teacher, with checks designed to reject invalid code and exploits. Then reinforcement learning rewards proposed edits according to task performance, validity, and whether the revised harness runs successfully. In the Reasoning Gym experiments, the proposer samples multiple edits for each context and learns from their execution outcomes.",
+      "zh": "提议器本身分两个阶段训练。首先用监督微调，拿一个更大的教师模型产出的成功修订来训练，同时加了检查机制，把无效代码和作弊行为过滤掉。然后用强化学习，根据任务表现、有效性以及修订后的执行框架能否成功运行来给提议的编辑打奖励。在推理健身房的实验里，提议器会针对每个上下文采样多个编辑，并从它们的执行结果中学习。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 126.64,
+      "end": 131.32,
+      "en": "Quick question: how do they prevent the proposer from simply memorizing the questions it sees?",
+      "zh": "问个简单的问题：他们怎么防止提议者直接把它看到的问题背下来？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 131.32,
+      "end": 161.86,
+      "en": "They separate questions used to create the execution report from questions used to score candidate edits and questions reserved for final evaluation. The proposer can learn from observed traces and failures, but final performance is measured on held-out questions. More broadly, the reasoning experiments hold out entire task families from training. That tests whether the learned revision behavior transfers, rather than whether a particular edited harness has merely been tuned to familiar examples.",
+      "zh": "他们把用来生成执行报告的问题、用来给候选修改打分的问题，以及留作最终评估的问题分开。提议者可以从观察到的轨迹和失败中学习，但最终性能是在留出问题上衡量的。更广泛地说，推理实验会把整个任务族从训练中留出。这样测试的是学到的修改行为能否迁移，而不是某个特定的修改后测试框架是否只是被调得适应了熟悉的例子。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 162.86,
+      "end": 196.62,
+      "en": "The reasoning results suggest that training improves both average quality and reliability. On 21 held-out Reasoning Gym families, the combined supervised and reinforcement-learning proposer reaches an average proposal score of about 0.62, compared with 0.32 for the base proposer. It also reduces failed edits and zero-scoring harnesses from 38% to 8%. A smaller trained proposer even exceeds the teacher’s average, though the teacher still has a better best-of-eight result.",
+      "zh": "推理实验的结果表明，训练同时提升了平均质量和可靠性。在21个留出的Reasoning Gym任务族上，监督学习与强化学习结合后的提议器平均提议得分约为0.62，而基础提议器只有0.32。它还把失败编辑和零分框架的比例从38%降到了8%。一个更小的训练后提议器甚至在平均分上超过了教师模型，不过教师模型在八选一的最佳结果上仍然更强。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 197.58,
+      "end": 201.68,
+      "en": "Does making several revisions help more than generating many alternatives at once?",
+      "zh": "多次修改是否比一次性生成多个备选方案更有帮助？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 202.58,
+      "end": 232.92,
+      "en": "Often, yes. The researchers compare independent proposals with sequences of up to five revisions, keeping a change only when it improves development performance. On unseen reasoning families, sequential revision can approach or exceed the average of eight independent proposals and sometimes approach their best result. Most gains for the reinforcement-trained proposer arrive in the first revision. Training on multistep sequences, however, does not consistently beat single-step training.",
+      "zh": "通常确实如此。研究者把独立提案和最多五轮连续修订做了对比，只有当改动能提升开发集表现时才保留。在未见过的推理任务族上，连续修订可以接近甚至超过八个独立提案的平均水平，有时还能逼近其中最好的结果。对于用强化学习训练出来的提案模型，大部分收益都来自第一轮修订。不过，在多步序列上训练并不总能稳定胜过单步训练。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 233.74,
+      "end": 261.28,
+      "en": "The second setting tests multi-hop question answering. A proposer trained on Hotpot question answering revises a retrieval-and-summarization harness, while a larger solver remains fixed. It transfers to MuSiQue and the two-wiki multi-hop benchmark, which were not used for proposer training. Independent edits offer modest gains on MuSiQue, but ten rounds of sequential revision raise its exact-match score from a seed of about 0.14 to roughly 0.27.",
+      "zh": "第二个设定测试的是多跳问答。一个在Hotpot问答上训练过的提议者去修改一个检索加摘要的框架，而一个更大的求解器保持固定。它能迁移到MuSiQue和two-wiki多跳基准上，而这两个基准都没用于提议者的训练。独立编辑在MuSiQue上带来的提升有限，但十轮顺序修订把它的精确匹配分数从大约0.14的初始值提高到了约0.27。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 263.42,
+      "end": 267.78,
+      "en": "Can you clarify what the successful question-answering edits actually change?",
+      "zh": "你能具体说说，那些成功的问答修改到底改了什么吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 268.62,
+      "end": 296.1,
+      "en": "They often preserve the retrieval workflow but improve how evidence travels through it. For example, a revision may send retrieved passages directly to the final answering call while keeping summaries available to form the next search query. Other edits add another retrieval hop or use a draft answer as a search query when the available evidence does not support it. These are procedural changes, not simply instructions to reconsider an answer.",
+      "zh": "它们通常会保留检索流程，但改进证据在其中的流转方式。比如，某次修改可能会把检索到的段落直接送到最终作答环节，同时保留摘要供生成下一个搜索查询使用。另一些修改则会增加一次检索跳转，或者在现有证据不足以支撑答案时，用草稿答案作为搜索查询。这些都是流程上的改动，而不只是让模型重新考虑答案的指令。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 296.58,
+      "end": 324.26,
+      "en": "That distinction matters for real systems. In reasoning tasks, trained harnesses often add interpreter loops so the solver can express computations as code and run them. In question answering, the proposer tends to retain multi-hop retrieval rather than collapsing the process into a single model call. Across both settings, the useful adaptations change how computation and evidence are organized, while leaving the underlying solver untouched.",
+      "zh": "这个区别对真实系统很重要。在推理任务里，训练出来的框架往往会加上解释器循环，让求解器能把计算写成代码并运行。在问答任务里，提议者倾向于保留多跳检索，而不是把整个过程压缩成一次模型调用。在这两种场景下，有用的调整改变的是计算和证据的组织方式，而底层的求解器本身保持不变。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 324.26,
+      "end": 328.82,
+      "en": "How does this differ from Reflexion or the other harness-optimization work?",
+      "zh": "这和Reflexion或其他harness优化工作有什么不同？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 330.16,
+      "end": 358.76,
+      "en": "Reflexion uses feedback to create verbal reflections that guide later behavior; this paper instead edits the executable procedure that produces behavior. Meta-Harness also treats harness code as an optimization target, while this study emphasizes learning a revision policy that can transfer to task families excluded from training. The broader shift is from optimizing only a model or its answers toward treating an agent’s control program as an adaptable, first-class component.",
+      "zh": "Reflexion 用反馈生成语言化的反思来指导后续行为，而这篇论文改的是产生行为的可执行流程。Meta-Harness 也把 harness 代码当作优化目标，但这项研究强调的是学到一个修订策略，能迁移到训练时排除在外的任务族。更宏观的转变是，从只优化模型或其答案，转向把智能体的控制程序当作一个可适应的一等组件。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 359.92,
+      "end": 362.92,
+      "en": "What should we be cautious about when interpreting the transfer results?",
+      "zh": "解读迁移结果时，我们需要警惕什么？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 363.78,
+      "end": 395.7,
+      "en": "The evidence is promising but bounded. Adaptation can require many model calls and repeated evaluations, so its computational cost may be substantial. Independent and sequential revision use different feedback distributions, making their comparison imperfect. Also, immediate rewards may not capture the value of a long sequence of edits, which could help explain why multistep training has inconsistent benefits. Stronger controls and longer-horizon evaluation would clarify when iterative adaptation is worthwhile.",
+      "zh": "这些证据很有前景，但也有局限。自适应可能需要大量模型调用和反复评估，因此计算成本可能相当高。独立修订和顺序修订使用的是不同的反馈分布，所以两者之间的比较并不完美。此外，即时奖励可能无法体现一长串编辑的价值，这或许有助于解释为什么多步训练带来的收益并不稳定。更强的控制条件和更长周期的评估，将有助于厘清迭代式自适应到底在什么时候才值得做。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 396.66,
+      "end": 429.949,
+      "en": "The main takeaway is that a fixed model can still gain new capabilities through a better learned procedure for using it. Harness Learning Enables Generalizable Test-Time Adaptation shows that execution feedback can teach a proposer to make useful program-level changes, including on tasks outside its training set. The important question for future agent research is not only which model to use, but also how to adapt the system that puts that model to work. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，一个固定的模型仍然可以通过学习一套更好的使用流程来获得新能力。《利用学习实现可泛化的测试时自适应》这篇论文表明，执行反馈可以教会提议者做出有用的程序级修改，包括在训练集之外的任务上。对未来智能体研究而言，重要的问题不仅是用哪个模型，还包括如何调整让模型发挥作用的整个系统。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026harnesslearningenablesgeneralizable,\n      title={Harness Learning Enables Generalizable Test-Time Adaptation}, \n      author={Alvin Zhang and Xuecheng Liu and Zixuan Wang and Fahim Tajwar and Daman Arora and Ruslan Salakhutdinov and Daniel Khashabi and Yuda Song and Andrea Zanette},\n      year={2026},\n      eprint={2609.35738},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.35738}, \n}",
+  "topics": [
+    "Agents",
+    "Continual Learning",
+    "Meta-Learning"
+  ],
+  "peaks": [
+    0.908,
+    0.507,
+    0.652,
+    0.344,
+    0.31,
+    0.592,
+    0.395,
+    0.432,
+    0.614,
+    0.492,
+    0.711,
+    0.538,
+    0.943,
+    0.677,
+    0.511,
+    0.537,
+    0.897,
+    0.681,
+    0.668,
+    0.565,
+    0.448,
+    0.627,
+    0.638,
+    0.579,
+    0.782,
+    0.461,
+    0.404,
+    0.604,
+    0.417,
+    0.433,
+    0.459,
+    0.346,
+    0.226,
+    0.951,
+    0.713,
+    0.4,
+    0.442,
+    0.442,
+    0.291,
+    0.563,
+    0.526,
+    0.36,
+    0.365,
+    0.312,
+    0.818,
+    0.925,
+    0.428,
+    0.43,
+    0.326,
+    0.324,
+    0.59,
+    0.477,
+    0.538,
+    0.388,
+    0.925,
+    0.576,
+    0.509,
+    0.476,
+    0.33,
+    0.361,
+    1.0,
+    0.534,
+    0.498,
+    0.52,
+    0.349,
+    0.401,
+    0.371,
+    0.35,
+    0.281,
+    0.248,
+    0.223,
+    0.2
+  ],
+  "published": "2026-09-28",
+  "license": "CC BY"
+}

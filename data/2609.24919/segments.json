@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 369.006,
+  "word_match_rate": 0.9357,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to our seminar on Transformer Architectures. Today's lecture is on a paper from researchers at NVIDIA and the University of Rochester titled 'PixelDiT2: Representation-Grounded Pixel Diffusion Transformers'. We've seen a trend where many high-quality models operate in a latent space, while pixel-space models like the original PixelDiT try to generate images directly. This paper investigates a way to improve those direct pixel-space models by giving them a better sense of visual structure without forcing them into a latent space. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.8
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. You mentioned the split between latent-space and pixel-space models. What's the fundamental tradeoff that keeps both research directions active?",
+      "start": 33.24,
+      "end": 40.9
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's the central tension here. Latent diffusion is computationally cheaper because it operates on a compressed representation, but you're always limited by the quality of your autoencoder. It can introduce artifacts. Pixel-space diffusion is more direct and end-to-end, but it's much harder because the model has to learn everything from raw pixels, which is a very high-dimensional problem. It often converges slower and, until recently, produced lower-quality images.",
+      "start": 41.22,
+      "end": 67.66
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So PixelDiT2 is trying to get the benefits of pixel-space without the slow training and representation learning burden.",
+      "start": 68.16,
+      "end": 73.62
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Precisely. The core idea is to decouple the task of learning visual representations from the task of generating pixels. The authors argue that a pixel-space model has to solve two problems at once: first, figure out what a 'dog' looks like conceptually, and second, figure out which pixels to draw to make that dog. Latent models get a head start because the autoencoder has already organized some of that conceptual knowledge into the latent space.",
+      "start": 74.06,
+      "end": 101.62
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So how does PixelDiT2 provide that head start without using an autoencoder?",
+      "start": 102.02,
+      "end": 104.78
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "It uses what the paper calls 'representation grounding'. At every single step of the denoising process, it takes the current noisy image and feeds it through a frozen, pretrained vision encoder—in this case, DINOv3. The features from this encoder are then used to guide the diffusion transformer as it predicts the next step. The diffusion model itself stays entirely in pixel space, but it's constantly receiving high-level guidance about the content and structure of the image it's trying to form.",
+      "start": 105.62,
+      "end": 132.44
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Wait, they run a big vision encoder at every denoising step? That sounds computationally expensive for inference.",
+      "start": 132.68,
+      "end": 137.92
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It is. That's one of the key limitations and tradeoffs. It adds computational overhead at inference time compared to a model that doesn't use this mechanism. But the authors' bet is that the improvement in sample quality and training efficiency is worth the cost. Now, let's look at how they make this work technically, because it's not straightforward.",
+      "start": 138.22,
+      "end": 155.44
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "What's the main challenge?",
+      "start": 156.02,
+      "end": 156.96
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The DINOv3 encoder was trained on clean images, but in a diffusion process, it has to process very noisy images, especially at early timesteps. The raw features it extracts from a noisy image are quite different from those it would get from a clean one. Simply feeding these unstable features to the denoiser wouldn't work well.",
+      "start": 157.32,
+      "end": 175.7
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "So they have to adapt the features. Did they fine-tune the encoder?",
+      "start": 175.96,
+      "end": 178.62
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Interestingly, no. The ablation studies showed that keeping the vision encoder frozen and adapting its outputs downstream worked better. They introduce a small, trainable projection network. This network takes the raw features from the DINOv3 encoder and, conditioned on the current diffusion timestep, transforms them into stable 'grounding tokens'. The analysis shows these projected tokens maintain high similarity to clean-image features across all noise levels, providing a consistent signal for the denoiser.",
+      "start": 179.06,
+      "end": 208.48
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "And how are these grounding tokens used by the main diffusion transformer?",
+      "start": 209.34,
+      "end": 211.98
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Through a mechanism they call Spatial AdaLN, or Spatial Adaptive Layer Normalization. Since the DINOv3 encoder produces one feature token per image patch, they have a set of grounding tokens that are spatially aligned with the diffusion transformer's own tokens. They use these grounding tokens to modulate the normalization layers inside the transformer on a per-patch basis. This is a critical detail. It provides local, spatially-aware guidance, rather than just adding a single global token that averages information across the whole image.",
+      "start": 212.42,
+      "end": 243.96
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "This approach is a distinct alternative to related ideas. For instance, the REPA paper uses pretrained representations as a training target to align the diffusion model's internal features, but the encoder isn't used during sampling. PixelDiT2 uses the encoder actively during both training and sampling.",
+      "start": 244.3,
+      "end": 262.96
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "So REPA is like giving the student a better textbook to study from, while PixelDiT2 is like having an expert tutor looking over the student's shoulder and giving advice at every step.",
+      "start": 263.44,
+      "end": 272.1
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That's a good analogy. And it also differs from models that use representation autoencoders, which define a new latent space to diffuse in. Here, the diffusion trajectory remains entirely in pixel space; the representations are purely for conditioning. The paper shows that combining REPA and their grounding method actually yields the best results, suggesting the two mechanisms are complementary. The REPA loss helps organize the model's internal world, while the grounding provides explicit, on-the-fly guidance.",
+      "start": 272.42,
+      "end": 301.48
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "So what are the main results? Does this actually make pixel-space models competitive?",
+      "start": 301.92,
+      "end": 305.44
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "On ImageNet, it does. At 512x512 resolution, it achieved a new best FID score among the pixel-space models they compared against, reaching an FID of 1.48. It also appeared to converge faster in terms of training epochs. This suggests that providing this external representational scaffold allows the diffusion model to focus its capacity on the pixel synthesis task, leading to more efficient learning and higher final quality.",
+      "start": 305.96,
+      "end": 332.3
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "So, to wrap up, PixelDiT2 presents a compelling design for pixel-space diffusion. It uses a frozen foundation model as an active component during inference to provide spatial, timestep-aware guidance. This helps bridge the performance gap with latent diffusion models, though at the cost of increased inference computation. The main takeaway is that we can separate representation learning from pixel generation without necessarily creating a latent bottleneck, offering a new path for building powerful, end-to-end generative models. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 332.3,
+      "end": 369.006
+    }
+  ]
+}
