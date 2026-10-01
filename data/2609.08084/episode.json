@@ -1,0 +1,243 @@
+{
+  "id": "2609.08084",
+  "title": "Marigold V2: Revisiting Diffusion Transformers for Monocular Depth Estimation",
+  "authors": [
+    "Igor Pavlovic",
+    "Thiemo Wandel",
+    "Anton Obukhov",
+    "Luca Bartolomei",
+    "Andrey Davydov",
+    "Fabio Tosi",
+    "Matteo Poggi",
+    "Sabine Süsstrunk",
+    "Dengxin Dai"
+  ],
+  "abstract": "Monocular depth estimation is a ubiquitous yet highly ill-posed computer vision task, with downstream applications in scene reconstruction, computational photography, and robotics, among others. Despite the field's maturity, recent models still struggle to generalize to out-of-distribution inputs and to produce sharp and detailed depth maps. In this paper, we revisit Marigold, a set of techniques for repurposing modern image generation and editing models, powered by the diffusion transformer (DiT) architecture, into state-of-the-art monocular depth estimators. Our recipes target single-step inference from pretrained multi-step flow-matching models, with quantization where needed, preserving model capacity while remaining cheap to run. We analyze the artifacts of naive training and identify two effective remedies: aligning the model's internal representations with semantic features extracted from ground-truth, and adopting a 2-stage fine-tuning protocol built around a novel Sinkhorn-based loss. The results are crisper, cleaner depth maps that generalize well out-of-distribution, with 16-26% improvement in AbsRel over the previous best on KITTI and ETH3D. Qualitatively, our model resolves fur, foliage, and hair-thin edges that have eluded prior models. Furthermore, Marigold V2 achieves state-of-the-art results when applied to other dense regression tasks, such as surface normals estimation and intrinsic image decomposition. Project website: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.08084",
+    "arxiv": "https://arxiv.org/abs/2609.08084"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a083f2-faf6-7572-8b69-672f126b70ea/podcast.mp3",
+  "duration": 367.569,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.14,
+      "en": "In today's seminar on Advanced Topics in Computer Vision, we'll be looking at the paper 'Marigold V2: Revisiting Diffusion Transformers for Monocular Depth Estimation.' We've seen a trend of repurposing large generative models for this task, with papers like Lotus-2 pushing performance forward. This work, from a team at EPFL and HUAWEI Bayer Lab, aims to address some of the lingering quality issues in these diffusion-based approaches, specifically the loss of fine detail. It represents a shift from simply using these models to carefully refining them. Yes, Noah?",
+      "zh": "在今天这场计算机视觉高级专题的研讨会上，我们要看的论文是《Marigold V2：重新审视扩散Transformer用于单目深度估计》。我们已经看到一种趋势，就是把大型生成模型改用途来做这个任务，像Lotus-2这样的论文不断把性能往前推。这项工作来自EPFL和华为拜耳实验室的团队，目标是解决这些基于扩散的方法中一些遗留的质量问题，特别是细节丢失。它代表了一种转变，从单纯使用这些模型转向对它们进行精细的改进。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.66,
+      "end": 42.44,
+      "en": "Hi Professor. So when you say 'revisiting diffusion transformers,' are they proposing a new architecture, or is the novelty more in the training and fine-tuning process itself?",
+      "zh": "教授您好。那您说“重新审视扩散Transformer”，是他们提出了一个新架构，还是创新点更多在训练和微调过程本身？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.72,
+      "end": 68.96,
+      "en": "That's the right question to ask. The novelty is almost entirely in the methodology. They aren't building a new model from scratch. Instead, they're starting with a pretrained image-editing diffusion transformer, Qwen-Image-Edit, and developing a sophisticated, two-stage fine-tuning protocol. The core objective is to get state-of-the-art accuracy while also producing depth maps with sharp, perceptually high-quality details, which has been a weak point for prior diffusion methods.",
+      "zh": "这个问题问得很对。创新点几乎完全在方法上。他们并不是从零开始搭一个新模型，而是拿一个预训练的图像编辑扩散Transformer，也就是Qwen-Image-Edit，在此基础上设计了一套精细的两阶段微调方案。核心目标是在达到最先进精度的同时，还能生成细节锐利、感知质量高的深度图，而这恰恰是之前扩散方法的一个短板。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 69.42,
+      "end": 71.96,
+      "en": "So what are the main technical contributions that enable this?",
+      "zh": "那么，实现这一目标的主要技术贡献有哪些呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 72.1,
+      "end": 101.14,
+      "en": "There are three main components. First is the fine-tuning protocol itself, which is designed to be lightweight. They use 4-bit quantization with LoRA adapters, which makes it accessible without a huge GPU cluster. Second is a novel representation alignment strategy they call iREPA-depth. And third is a new loss function called SinkLoss, which is designed specifically to refine boundaries. These three elements work together to address the detail loss and boundary smoothing problems that plague many other models.",
+      "zh": "主要有三个组成部分。第一个是微调协议本身，设计得很轻量。他们用了4比特量化和LoRA适配器，不需要庞大的GPU集群就能跑起来。第二个是他们提出的一种新的表征对齐策略，叫iREPA-depth。第三个是一个新的损失函数，叫SinkLoss，专门用来优化边界。这三个部分协同工作，解决了困扰很多其他模型的细节丢失和边界平滑问题。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 101.56,
+      "end": 108.68,
+      "en": "Can you elaborate on the iREPA-depth alignment? Aligning internal representations isn't new, but what makes their approach different?",
+      "zh": "你能详细讲讲iREPA-depth对齐吗？对齐内部表征并不是什么新鲜事，但他们的方法有什么不同之处？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 108.68,
+      "end": 143.66,
+      "en": "That's the most interesting part of their methodology. Typically, you'd align the model's internal features with semantic features from the input RGB image. But here, they do something unconventional: they align the DiT's features with semantic features extracted from the ground-truth depth map itself. They use a frozen DINOv3 encoder for this. It provides a much more direct supervisory signal for geometric structure, essentially telling the model 'your internal representation of this scene's geometry should look like this,' rather than having it infer geometry from RGB semantics.",
+      "zh": "这正是他们方法里最有意思的地方。通常你会把模型的内部特征和输入RGB图像的语义特征对齐。但他们这里做了一件很不寻常的事：把DiT的特征和从真实深度图本身提取出来的语义特征对齐。他们为此用了一个冻结的DINOv3编码器。这为几何结构提供了更直接的监督信号，本质上是在告诉模型“你对这个场景几何的内部表示应该长这样”，而不是让它从RGB语义里去推断几何。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 144.06,
+      "end": 152.76,
+      "en": "Hold on, aligning with the ground truth depth map's features... doesn't that risk overfitting or just learning to copy the features without understanding the RGB-to-depth relationship?",
+      "zh": "等一下，用真实深度图的特征来做对齐……这难道不会有过度拟合的风险吗，或者说模型只是学会了照搬这些特征，而根本没理解从RGB到深度的映射关系？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 153.26,
+      "end": 181.18,
+      "en": "That's a valid concern. However, remember this is just one component of the loss function, acting as a regularizer. The primary task is still predicting depth from the RGB input. The ablation studies in the paper show that this method significantly accelerates convergence and improves visual quality compared to aligning with RGB features or not using feature alignment at all. It seems to guide the model toward a more geometrically consistent feature space early on, which the rest of the training then refines.",
+      "zh": "这个担心有道理。不过要记住，这只是损失函数中的一个组件，起正则化的作用。主要任务仍然是从RGB输入预测深度。论文里的消融实验表明，相比对齐RGB特征或者完全不做特征对齐，这种方法显著加速了收敛，并提升了视觉质量。它似乎能在早期引导模型走向一个几何上更一致的特征空间，后续训练再对此进行细化。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 181.76,
+      "end": 184.4,
+      "en": "Okay, that makes sense. And what about the second stage with this 'SinkLoss'?",
+      "zh": "好，这就说得通了。那第二阶段这个“SinkLoss”又是怎么回事？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 185.52,
+      "end": 230.86,
+      "en": "Right, so after the initial adaptation in stage one, stage two focuses on boundary refinement. Instead of a simple pixel-to-pixel L1 or L2 loss, which can struggle with thin structures or noisy ground truth, SinkLoss works on small patches. Within each patch, it doesn't enforce that pixel at coordinate (i, j) in the prediction must match the depth at (i, j) in the ground truth. Instead, it enforces that the set of all depth values within the predicted patch must match the set of depth values in the ground truth patch. It uses Sinkhorn matching to find the optimal assignment. This gives the model flexibility on the exact spatial location, which helps clean up 'flying pixels' and sharpen object edges.",
+      "zh": "对，所以在第一阶段完成初步自适应之后，第二阶段专注于边界细化。它没有用简单的逐像素L1或L2损失——那种损失在遇到细结构或噪声真值时往往力不从心——而是让SinkLoss在小块区域上工作。在每个小块里，它不要求预测中坐标(i, j)处的像素必须匹配真值中(i, j)处的深度。相反，它要求预测小块内所有深度值的集合必须匹配真值小块中的深度值集合。它用Sinkhorn匹配来找到最优分配。这让模型在精确空间位置上有了灵活性，有助于清理“飞点”并锐化物体边缘。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 231.36,
+      "end": 245.06,
+      "en": "So it’s like saying, 'I don't care exactly where you put the pixels for this tree branch, as long as you have the right number of pixels with the correct depths somewhere inside this little box.' That's clever. How does this compare to other methods in terms of computational cost at inference?",
+      "zh": "这就好比说，我不在乎你把这根树枝的像素具体放在哪儿，只要在这个小框里，像素数量和深度值对得上就行。这招挺聪明的。那在推理时的计算开销上，它跟其他方法比怎么样？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 245.06,
+      "end": 277.16,
+      "en": "Their results are quite favorable. They show that at high resolutions, like 2048 by 2048, Marigold V2 is not only faster than competitors like Lotus-2 but also requires less memory. In fact, several other leading models fail with out-of-memory errors at that resolution on a 32GB GPU, whereas Marigold V2 runs. This is a practical advantage for applications that need high-resolution output, like 3D reconstruction from single images, which we've seen in papers like 'Dream-to-Recon'.",
+      "zh": "他们的结果相当不错。他们发现，在高分辨率下，比如2048乘2048，Marigold V2不仅比Lotus-2这些竞品更快，而且内存占用也更少。事实上，好几个其他领先模型在32GB GPU上跑这个分辨率都会因为显存不足直接崩掉，而Marigold V2能跑起来。对于需要高分辨率输出的应用来说，这是个实打实的优势，比如单图三维重建，我们在“Dream-to-Recon”这类论文里已经见过了。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 278.34,
+      "end": 309.56,
+      "en": "The broader implication here is that this work provides a general 'recipe' for adapting large generative models for various dense prediction tasks. They demonstrate this by applying the same protocol, with minor tweaks, to surface normal estimation, depth completion, and even intrinsic image decomposition, achieving strong results across the board. It strengthens the argument that the future of many computer vision tasks might not be in training specialized models from scratch, but in finding efficient and effective ways to adapt these massive, pre-trained foundation models.",
+      "zh": "更广泛的意义在于，这项工作提供了一套通用的“配方”，可以把大型生成模型适配到各种密集预测任务上。他们通过把同一套流程稍作调整后应用到表面法线估计、深度补全，甚至本征图像分解上，证明了这一点，并在所有任务上都取得了强劲的结果。这进一步支持了一个观点：未来许多计算机视觉任务的关键，可能不在于从头训练专用模型，而在于找到高效且有效的方法来适配这些庞大的预训练基础模型。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 309.96,
+      "end": 315.66,
+      "en": "So the significance isn't just a new state-of-the-art depth model, but a transferable methodology for model adaptation.",
+      "zh": "所以它的意义不只是提出了一个新的顶尖深度模型，更在于提供了一套可迁移的模型适配方法。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 316.16,
+      "end": 336.2,
+      "en": "Precisely. While Marigold V2 is now a top-performing model for monocular depth, its larger contribution is demonstrating a cost-effective and detail-preserving pathway to harness the power of diffusion transformers for a whole class of vision problems. It lowers the barrier for entry for researchers and shows a clear path forward.",
+      "zh": "正是如此。虽然Marigold V2现在是单目深度估计中表现最好的模型，但它更大的贡献在于展示了一条高性价比且能保留细节的路径，让扩散Transformer的能力可以服务于一整类视觉问题。它降低了研究者的入门门槛，也指明了一条清晰的前进方向。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 336.62,
+      "end": 367.569,
+      "en": "So, to wrap up, Marigold V2 offers a principled approach to solving the fine-detail problem in diffusion-based depth estimation. It does so not with a new architecture, but with a clever, efficient fine-tuning recipe combining representation alignment and a permutation-invariant loss. The key takeaway is that effective adaptation, not just raw scale, is becoming a critical area of innovation for foundation models. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "总之，总结一下，Marigold V2 提供了一种有原则的方法来解决基于扩散的深度估计中的精细细节问题。它靠的不是新架构，而是一套巧妙高效的微调方案，结合了表征对齐和置换不变损失。关键结论是，有效的适配——而不仅仅是单纯的规模——正在成为基础模型创新的关键领域。感谢收听。如果还有任何问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{pavlovic2026marigoldv2revisitingdiffusion,\n      title={Marigold V2: Revisiting Diffusion Transformers for Monocular Depth Estimation}, \n      author={Igor Pavlovic and Thiemo Wandel and Anton Obukhov and Luca Bartolomei and Andrey Davydov and Fabio Tosi and Matteo Poggi and Sabine Süsstrunk and Dengxin Dai},\n      year={2026},\n      eprint={2609.08084},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.08084}, \n}",
+  "topics": [
+    "Domain Adaptation",
+    "Fine Tuning",
+    "Generative Models"
+  ],
+  "peaks": [
+    1.0,
+    0.554,
+    0.654,
+    0.518,
+    0.511,
+    0.348,
+    0.38,
+    0.523,
+    0.644,
+    0.526,
+    0.458,
+    0.411,
+    0.36,
+    0.438,
+    0.772,
+    0.652,
+    0.47,
+    0.542,
+    0.362,
+    0.366,
+    0.532,
+    0.576,
+    0.867,
+    0.833,
+    0.488,
+    0.755,
+    0.591,
+    0.576,
+    0.374,
+    0.326,
+    0.733,
+    0.506,
+    0.601,
+    0.542,
+    0.274,
+    0.343,
+    0.504,
+    0.48,
+    0.308,
+    0.321,
+    0.247,
+    0.315,
+    0.267,
+    0.347,
+    0.261,
+    0.544,
+    0.425,
+    0.303,
+    0.444,
+    0.295,
+    0.326,
+    0.2,
+    0.226,
+    0.215,
+    0.591,
+    0.366,
+    0.453,
+    0.501,
+    0.414,
+    0.547,
+    0.419,
+    0.31,
+    0.561,
+    0.359,
+    0.274,
+    0.528,
+    0.742,
+    0.335,
+    0.472,
+    0.259,
+    0.252,
+    0.253
+  ],
+  "published": "2026-09-08",
+  "license": "CC BY-SA"
+}

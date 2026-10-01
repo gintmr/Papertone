@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 406.204,
+  "word_match_rate": 0.9426,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course Transformer Architectures, today's lecture is on “Your Transformer Can Hold Two Thoughts at Once: Evidence of Linear Superposition in LLMs.” Recent work such as “How Do LLMs Use Their Depth?” and “Exploring the Hidden Capacity of LLMs for One-Step Text Generation” reflects growing interest in what models compute inside and how to use that computation efficiently. This paper asks whether ordinary Transformers can process two input streams together. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.02
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does “together” mean the model receives both texts as one longer prompt?",
+      "start": 33.46,
+      "end": 38.66
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Not quite. The authors combine the token embeddings at corresponding positions by averaging them, then run that mixed sequence through an otherwise standard Transformer. They compare its output with the outputs from processing each text separately. The key question is whether both streams remain represented in the model’s predictions. This matters because efficient inference research often adds special machinery, while this paper tests whether pretrained models already have some capacity for multiplexing.",
+      "start": 39.48,
+      "end": 67.0
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central idea is called the Superposition Linearity Hypothesis. If a model processes two independent streams approximately linearly, its output for their mixed embeddings should resemble a blend of the two separate output distributions. That does not mean the Transformer becomes wholly linear: attention and multilayer perceptrons remain nonlinear. Rather, the hypothesis concerns whether information from both inputs survives those operations well enough to influence the next-token predictions.",
+      "start": 67.74,
+      "end": 98.16
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the authors are checking whether both streams’ likely next tokens remain visible, rather than expecting the mixed output to reproduce either stream exactly?",
+      "start": 99.24,
+      "end": 107.56
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. Across Pythia, Qwen, Llama, OLMo, and Gemma models, the independently predicted next token for either stream often remains near the top of the mixed distribution. For unmodified models, each target token appears in the top 10 roughly 30% to 40% of the time, and in the top 100 roughly 60% to 65% of the time. Those rates substantially exceed a control based on token frequency alone.",
+      "start": 108.38,
+      "end": 135.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The evaluation looks beyond token ranks. The researchers compare the mixed output distribution with the arithmetic average of the two separate distributions, using measures such as K-L divergence and Jensen-Shannon divergence. They also test several context lengths. The mixed distribution is closer to the ideal blend than the two independent distributions are to each other, though it does not match perfectly. This gives a distribution-level view of how much information survives.",
+      "start": 136.32,
+      "end": 164.0
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: could common words alone explain why the separate predictions rank well in the mixed output?",
+      "start": 165.08,
+      "end": 170.32
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That is a legitimate concern, so the paper includes a frequency-only control: it checks how highly one stream’s target token ranks under an unrelated input. The control performs much worse. The authors also find that superposition is strongest near model initialization and declines during Pythia pretraining. That pattern suggests the capacity may be an architectural bias that language-model training partly erodes, rather than a skill standard pretraining deliberately teaches.",
+      "start": 171.3,
+      "end": 200.06
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The attention experiments help locate what supports the effect. Randomly permuting attention weights sharply harms predictions, showing that natural attention structure matters. Replacing a text’s attention weights with weights from unrelated text can preserve some predictable words, but it fails on context-dependent content. On LAMBADA, donor patching performs far worse than ordinary embedding mixing. So the evidence points to a contribution from content-specific computation, not simply generic attention patterns.",
+      "start": 201.06,
+      "end": 233.24
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The authors also ask whether training can improve the blend. They use self-distillation: a student receives averaged embeddings and learns to match the average of two teacher distributions. This substantially improves agreement, especially for content tokens. But there is a trade-off: ordinary single-stream accuracy and FineWeb perplexity worsen. And preserving both signals in one distribution does not automatically produce two coherent continuations, because tokens favored by one stream may be suppressed by the other.",
+      "start": 234.2,
+      "end": 264.76
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How do they separate the streams at generation time, and does that erase the efficiency benefit?",
+      "start": 265.62,
+      "end": 270.42
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "They introduce Joint Contrastive decoding, combining a large model’s mixed-input output with predictions from a smaller auxiliary model that sees each stream separately. This improves LAMBADA accuracy for the mixed setup, but results remain below the single-stream baselines. The practical case is promising rather than settled: a fused two-head approach approaches batch-size-two throughput and can roughly double throughput over sequential processing, while auxiliary models add computation and memory.",
+      "start": 271.42,
+      "end": 301.74
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Could this approach safely handle unrelated or private inputs in a shared inference system?",
+      "start": 302.74,
+      "end": 307.66
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That is an important systems question. The paper’s experiments focus on short, mostly monolingual text, and they do not establish reliable separation for private or sensitive inputs. Mixing streams could create unintended information interactions, so practical deployments would need explicit safeguards. Longer contexts, more than 2 streams, multilingual settings, and multimodal models also remain open tests. The results establish a measurable effect, not a general guarantee of independent processing.",
+      "start": 308.62,
+      "end": 339.4
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Conceptually, the work connects representation geometry with efficient generation: nonlinear Transformers can still preserve traces of multiple inputs. Its checkpoint results also raise a training question: if pretraining weakens this behavior, can objectives preserve it without sacrificing ordinary language modeling? That complements research on model depth and internal computation, while differing from engineered multiplexing methods that add dedicated encoding and separation components. Here, the starting point is a standard pretrained model and a simple embedding mixture.",
+      "start": 340.36,
+      "end": 374.7
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The takeaway is that a Transformer may hold two computational threads in one forward pass, but keeping both signals is not the same as decoding two clean answers. The paper measures that distinction, shows how training can strengthen superposition at a cost, and offers a partial decoding strategy. For researchers, the next challenge is to improve separation, efficiency, and safety together. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 375.6,
+      "end": 406.204
+    }
+  ]
+}

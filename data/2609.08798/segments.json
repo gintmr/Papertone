@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 385.855,
+  "word_match_rate": 0.9644,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Language Model Training. Today's lecture is on a paper from researchers at KAIST AI and Microsoft titled 'Eliciting Weak-to-Strong Generalization with On-Policy Reverse Distillation.' We've seen a lot of work recently in the on-policy distillation space, like 'Self-Distilled Reasoner,' which focuses on a model teaching itself. This paper tackles a different, but related, problem: how can a stronger, more capable model learn from a weaker one without inheriting its limitations? This is critical for making model development more efficient. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.34
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. Could you clarify what 'weak-to-strong generalization' means in this context? Does it just mean a smaller model teaching a larger one?",
+      "start": 32.82,
+      "end": 39.76
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's the most common scenario, yes. A smaller model is the weak teacher, and a larger one is the strong student. But it could also apply to a model from a previous generation supervising a new one, or multiple specialized models teaching a single generalist. The core idea is that the supervisor, or teacher, has a lower performance ceiling than the student. The challenge, which this paper directly addresses, is ensuring the student can actually reach its higher potential and not just plateau at the teacher's level.",
+      "start": 40.02,
+      "end": 68.44
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central problem with traditional knowledge distillation here is that it optimizes the student to match the teacher's policy. If the teacher is weak, you're essentially telling the more capable student to copy the answers of a less capable one. It learns the teacher's good habits, but also its mistakes and capacity limits. The key contribution of this paper is a method called On-Policy Reverse Distillation, or OPRD. Instead of forcing the student to match the teacher's final policy, OPRD tries to distill the improvement the teacher learned during its own training.",
+      "start": 68.8,
+      "end": 100.8
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So it distills the 'policy shift'—the difference between the teacher before and after its reinforcement learning. But wouldn't directly optimizing the student to match that shift still be limiting? That shift is still something achieved by a weaker model.",
+      "start": 101.28,
+      "end": 114.12
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. And that's the nuance here. The authors show that making that policy shift a direct optimization target is also suboptimal. It's an improvement, but it's an improvement within the weak teacher's constraints. The student might have access to better solutions the teacher could never find. So, OPRD does something clever. It doesn't use the teacher's policy shift as a destination, but rather as a compass. It uses the direction of the teacher's improvement to accelerate the student's own, separate optimization process, which is driven by rewards from a verifier.",
+      "start": 114.12,
+      "end": 145.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Let's get into how that works. The student is learning via reinforcement learning, generating responses and getting rewards from a verifier, like a code executor or a math checker. This process generates a policy gradient at each step, which tells the model how to update its parameters to get more rewards. What OPRD does is take this student-generated gradient and modify it. It projects the student's gradient onto the direction of the teacher's policy shift. It then amplifies the part of the gradient that aligns with the teacher's direction, but leaves the orthogonal part untouched.",
+      "start": 146.3,
+      "end": 179.6
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Wait, so it's essentially saying, 'If the direction you want to go for your own reasons also happens to be a direction my weak teacher found useful, go that way, but faster'?",
+      "start": 180.14,
+      "end": 187.88
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That's a great way to put it. It scales up the updates that agree with the teacher's learned wisdom. Crucially, because it only rescales the student's existing gradient, if the original gradient is zero, the new one is too. This means the optimization still converges to the student's own optimal policy based on the verifier rewards, not the teacher's. The teacher just helps it get there faster and more efficiently. The student can still learn things the teacher never knew, because those updates would be in the orthogonal component of the gradient, which is preserved.",
+      "start": 188.68,
+      "end": 219.84
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "What about when the student's gradient points in a direction opposite to the teacher's shift? Does it dampen that?",
+      "start": 220.32,
+      "end": 225.7
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That's a key part of their design. Initially, it does. But they introduce an asymmetric schedule. Early in training, when the student is still exploring and its gradients might be noisy, it heavily favors teacher-aligned updates. But as training progresses, it gradually starts to amplify verifier-supported updates even if they conflict with the teacher's direction. This mechanism allows the student to first quickly learn what the teacher knows, and then confidently diverge and surpass the teacher once its own policy becomes more reliable.",
+      "start": 225.7,
+      "end": 253.7
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The implications of this are quite significant for the field. The primary impact is on the cost and efficiency of developing large-scale models. You no longer have to retrain each new, larger model from scratch. You can use a previous-generation 4-billion parameter model to effectively bootstrap an 8-billion parameter model, allowing it to surpass its teacher with 30 to 60 percent fewer training updates than pure reinforcement learning. They also show this works for consolidating multiple specialized teachers into one generalist student, which is a big deal for modular AI development.",
+      "start": 253.7,
+      "end": 286.8
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How does this compare to other methods? The report mentions things like W2S-OPD, which also seems to use the policy delta. Why is OPRD's approach of rescaling the gradient better?",
+      "start": 287.2,
+      "end": 296.6
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The main difference is that methods like W2S-OPD typically add the policy delta as a separate loss term. This creates a competing objective: maximize the verifier reward, but also match the teacher's shift. OPRD avoids this competition. By only modifying the student's gradient, the student is always and only optimizing for the verifier reward. The teacher guidance is integrated directly into that process as an accelerator, not a separate goal. This is why the student can maintain its own reasoning style and find novel solutions, rather than being pulled toward the teacher's specific behaviors.",
+      "start": 296.94,
+      "end": 332.44
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "So it's a more principled way to integrate the weak supervision. It guides without constraining.",
+      "start": 333.54,
+      "end": 337.88
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Precisely. The teacher's role shifts from being a source of truth to being an experienced guide that suggests promising directions for the more capable student to explore on its own terms.",
+      "start": 338.18,
+      "end": 348.7
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "To wrap up, the key takeaway from On-Policy Reverse Distillation is the shift in perspective. Instead of treating distillation as imitation, OPRD treats it as accelerated, guided exploration. It provides a robust and efficient framework for transferring knowledge 'uphill' from weaker to stronger models. This allows the student to benefit from the teacher's experience without being tethered to its performance ceiling, which is a valuable capability for the iterative and increasingly expensive process of foundation model development.",
+      "start": 348.9,
+      "end": 380.84
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 381.3,
+      "end": 385.855
+    }
+  ]
+}

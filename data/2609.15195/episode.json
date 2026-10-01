@@ -1,0 +1,242 @@
+{
+  "id": "2609.15195",
+  "title": "HarnessVLN: Unifying Training-Free Embodied Navigation through an Agent Harness",
+  "authors": [
+    "Yang Chen",
+    "Lirong Che",
+    "Zhenyu Huang",
+    "Wenbo Fu",
+    "Chuang Wang",
+    "Xu Cao",
+    "Daqi Liu",
+    "Yuzhe Yang",
+    "Jian Su",
+    "Lan-Zhe Guo"
+  ],
+  "abstract": "Embodied navigation requires agents to ground instructions or object goals in spatial observations and translate plans into successful execution. As multimodal large language models (MLLMs) become increasingly capable, they offer stronger support for navigation without task-specific training; however, improved semantic reasoning alone does not ensure that proposed actions remain consistent with spatial evidence, task progress, and execution outcomes. We introduce HarnessVLN, a zero-shot, training-free framework that unifies instruction-following and object-goal navigation through a shared Agent Harness. The Harness coordinates perception, memory, and execution tools through a unified interface, validating planner proposals for evidential support, geometric feasibility, and subgoal consistency before dispatch. It jointly manages hierarchical event memory and a persistent Spatiotemporal Graph to track task progress, preserve spatial evidence, and contextualize failures. Structured execution feedback updates this shared state, guiding subsequent planning, recovery, and termination. Across R2R, RxR, HM3D-v2, and HM3D-OVON, HarnessVLN achieves success rates of 59.6%, 51.4%, 76.0%, and 59.3%, respectively, outperforming prior training-free methods. Humanoid robot deployment further demonstrates its applicability to both navigation tasks in real-world environments. The project page is available at [this https URL].",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.15195",
+    "arxiv": "https://arxiv.org/abs/2609.15195"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a2dd-5da8-7a94-81c2-0c22e8f68376/podcast.mp3",
+  "duration": 321.593,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.5,
+      "en": "Welcome to Embodied AI Systems. Today's lecture is on “HarnessVLN: Unifying Training-Free Embodied Navigation through an Agent Harness,” a recent paper from researchers at Nanjing University and AGIBOT. We've seen a lot of work lately, like AgentVLN, that treats the Vision-Language Model as the 'brain' for an agent. This paper takes a different tack. Instead of just focusing on making the brain smarter, it asks how we build a better system around that brain to ensure reliable action in the real world. Go ahead, Noah?",
+      "zh": "欢迎来到具身智能系统课。今天要讲的论文是《HarnessVLN：通过智能体框架统一免训练具身导航》，这是南京大学和AGIBOT的研究人员最近发表的一篇论文。最近我们看到了很多类似AgentVLN这样的工作，都是把视觉语言模型当作智能体的“大脑”。这篇论文走了一条不同的路线。它不只是关注怎么让大脑更聪明，而是问：我们怎么围绕这个大脑构建一个更好的系统，来确保它在真实世界中能可靠地行动。Noah，你来说？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 31.98,
+      "end": 37.94,
+      "en": "Excuse me, Professor. You're saying the focus isn't on the MLLM's planning ability itself, but on the framework that uses the plan?",
+      "zh": "不好意思，教授。您的意思是，重点不在于多模态大模型本身的规划能力，而在于使用这个规划的框架？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.98,
+      "end": 67.72,
+      "en": "Exactly. The central argument is that semantic reasoning from a large model doesn't guarantee physical success. An agent can recognize a chair but fail to navigate to it. It might get stuck, repeat mistakes, or stop at the wrong place. HarnessVLN addresses this by creating a robust runtime architecture—the Agent Harness—that coordinates reasoning, perception, memory, and execution. It's a training-free framework designed to handle both instruction-following and object-goal navigation using the same control logic.",
+      "zh": "没错。核心论点是，大模型的语义推理并不能保证物理世界里的成功。一个智能体可以认出椅子，却走不到椅子那儿。它可能卡住、反复犯同样的错，或者停在错误的位置。HarnessVLN 解决这个问题的办法，是构建一套稳健的运行时架构——Agent Harness——来协调推理、感知、记忆和执行。这是一个无需训练的框架，用同一套控制逻辑同时处理指令跟随和物体目标导航。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 68.14,
+      "end": 70.04,
+      "en": "So what does this 'Harness' actually do?",
+      "zh": "那这个“Harness”到底起什么作用呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 70.24,
+      "end": 105.42,
+      "en": "Think of it as a rigorous manager for the MLLM. At each step, the MLLM proposes a semantic operation, like 'go to the table' or 'find the printer.' The Harness doesn't just execute this command. First, it validates it. It checks if there's enough spatial evidence for the target, if that evidence is recent, if the path is feasible, and if previous attempts to do this failed. Only validated proposals are passed to the navigation controller. This creates a critical separation between high-level semantic planning and low-level physical execution, adding a layer of verification that many zero-shot systems lack.",
+      "zh": "你可以把它想象成MLLM的一个严格管理者。每一步，MLLM会提出一个语义操作，比如“去桌子那儿”或者“找到打印机”。Harness不会直接执行这个指令。它首先会验证：检查目标是否有足够的空间证据、这些证据是不是最近的、路径是否可行、以及之前尝试做这件事有没有失败过。只有通过验证的提议才会被传给导航控制器。这样一来，高层语义规划和底层物理执行之间就有了一个关键的分离，增加了一层很多零样本系统所缺乏的验证机制。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 105.78,
+      "end": 110.1,
+      "en": "That sounds computationally intensive. Is this validation process based on a fixed set of rules?",
+      "zh": "这听起来计算量很大。这个验证过程是基于一套固定规则的吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 110.4,
+      "end": 132.24,
+      "en": "Yes, the orchestration is predefined. The paper focuses on the architectural contribution rather than a learned validation policy. And you're right to think about the overhead. Let's get into the technical components, because that's where the approach really takes shape. It relies on three core ideas: a unified tool interface, a hierarchical event memory, and a persistent spatiotemporal graph.",
+      "zh": "是的，编排流程是预先定义好的。这篇论文的重点是架构上的贡献，而不是学习出来的验证策略。你担心开销问题是对的。我们来看看技术组件吧，因为方法真正成型的地方就在这里。它依赖三个核心思路：统一的工具接口、分层的事件记忆，以及一个持久的时空图。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 132.64,
+      "end": 136.46,
+      "en": "Okay, so the interface standardizes how the MLLM interacts with the environment?",
+      "zh": "所以这个接口统一了多模态大模型和环境的交互方式？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 136.86,
+      "end": 169.88,
+      "en": "Correct. The MLLM can call tools like `observe`, `ground_target`, or `navigate_to`, but the Harness manages their execution and provides structured feedback. This keeps the MLLM from issuing arbitrary or unsafe commands. More importantly, this feedback fuels the memory systems. The hierarchical event memory is task-centric. It has a working memory for recent observations, a progress memory that tracks subgoals as pending, active, completed, or blocked, and a reflection memory that logs specific failures like collisions or unreachable targets.",
+      "zh": "没错。MLLM可以调用像`observe`、`ground_target`或`navigate_to`这样的工具，但Harness负责管理它们的执行并提供结构化反馈。这样可以防止MLLM发出任意或不安全的指令。更重要的是，这些反馈为记忆系统提供了燃料。分层事件记忆是以任务为中心的。它有一个工作记忆，用于存储最近的观察结果；一个进度记忆，追踪子目标的状态——待处理、进行中、已完成或受阻；还有一个反思记忆，记录具体的失败情况，比如碰撞或目标不可达。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 169.88,
+      "end": 173.26,
+      "en": "And the spatiotemporal graph? How is that different from the event memory?",
+      "zh": "那时空图呢？它和事件记忆有什么不同？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 173.6,
+      "end": 207.1,
+      "en": "The graph is environment-centric, not task-centric. It stores a persistent map of places, entities, and their spatial relationships, like which waypoints are navigable. It also gets lightweight annotations from the reflection memory. For example, if the agent fails to reach a target from a certain location, the graph notes that. When the MLLM plans its next move, the Harness retrieves relevant information from both memory systems. It can warn the planner, 'Last time you tried to reach the desk from this hallway, you got stuck.' This prevents the agent from repeating the same mistakes.",
+      "zh": "这个图是以环境为中心，而不是以任务为中心。它存储的是一张持久的地图，记录地点、实体以及它们之间的空间关系，比如哪些路点是可通行的。它还会从反思记忆中获得一些轻量级的标注。举个例子，如果智能体在某个位置没能到达目标，图里就会记下这一点。当MLLM规划下一步行动时，Harness会从两个记忆系统中检索相关信息。它可以提醒规划器：“上次你从这个走廊试图去桌子那边，结果卡住了。”这样就能防止智能体重复犯同样的错误。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 207.66,
+      "end": 214.8,
+      "en": "So it explicitly connects past failures to future planning. The ablation study in the paper must have shown a big impact from that memory system.",
+      "zh": "所以它明确把过去的失败和未来的规划联系了起来。论文里的消融实验肯定显示了那个记忆系统带来了很大的影响。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 215.18,
+      "end": 250.16,
+      "en": "It did. The full system improved success on the R2R benchmark by 18 percentage points over a baseline without these components. Adding event memory and the graph accounted for most of that gain. This supports their main thesis: the architecture surrounding the planner is just as critical as the planner itself. This work shifts the conversation. While many papers, like LightNav-0, focus on eliciting better spatial intelligence from the VLM, HarnessVLN argues that even a moderately capable VLM can perform well if it's embedded in a system that rigorously tracks progress, memory, and failure.",
+      "zh": "确实如此。完整系统在R2R基准上比没有这些组件的基线提升了18个百分点。其中大部分增益来自加入事件记忆和图结构。这也支持了他们的核心论点：规划器周边的架构和规划器本身同样关键。这项工作改变了讨论的方向。很多论文，比如LightNav-0，关注的是如何从VLM中激发出更好的空间智能，而HarnessVLN则认为，即使是一个能力中等的VLM，只要把它嵌入一个能严格追踪进度、记忆和失败的系统里，也能表现得很好。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 250.54,
+      "end": 256.66,
+      "en": "But it's not totally independent of the MLLM's power, right? The paper showed that performance still scaled with better models, from Qwen up to GPT-6-astra.",
+      "zh": "但它并不是完全独立于多模态大模型的能力，对吧？论文显示，性能仍然会随着模型变强而提升，从Qwen一直到GPT-6-astra都是如此。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 257.62,
+      "end": 286.1,
+      "en": "An excellent point. The Harness provides a performance floor and improves reliability, but the ceiling is still set by the quality of the planner's semantic reasoning. A key limitation is its reliance on large, often proprietary models. The real-world demonstrations were qualitative, so we don't have a clear picture of its latency or robustness on a physical robot under diverse conditions. The predefined validation rules are another area for future work; perhaps they could be learned or adapted over time.",
+      "zh": "说得非常好。Harness 提供了一个性能下限，也提升了可靠性，但上限仍然取决于规划器语义推理的质量。一个关键局限是它依赖大型模型，而且往往是闭源模型。真实世界的演示是定性的，所以我们并不清楚它在物理机器人上、在各种不同条件下的延迟或鲁棒性表现。预定义的验证规则也是未来工作的一个方向；也许它们可以随着时间被学习或自适应调整。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 286.44,
+      "end": 316.7,
+      "en": "So, to wrap up, the main contribution of HarnessVLN is architectural. It presents embodied navigation not just as a planning problem, but as a systems-level coordination problem. By separating the semantic planner from a validating Harness that manages memory, execution, and failure recovery, it creates a more reliable and modular agent. The key takeaway is that for agents to act successfully in the world, a powerful 'brain' isn't enough; you also need a robust 'nervous system' connecting that brain to the body.",
+      "zh": "总之，HarnessVLN的主要贡献在于架构层面。它把具身导航不只是当作一个规划问题，而是当作一个系统级的协调问题。通过把语义规划器与负责验证的Harness分开——由后者管理记忆、执行和故障恢复——它构建出了一个更可靠、更模块化的智能体。核心结论是：要让智能体在真实世界中成功行动，光有一个强大的“大脑”还不够，你还需要一套强健的“神经系统”，把大脑和身体连接起来。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 317.14,
+      "end": 321.593,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chen2026harnessvlnunifyingtrainingfreeembodied,\n      title={HarnessVLN: Unifying Training-Free Embodied Navigation through an Agent Harness}, \n      author={Yang Chen and Lirong Che and Zhenyu Huang and Wenbo Fu and Chuang Wang and Xu Cao and Daqi Liu and Yuzhe Yang and Jian Su and Lan-Zhe Guo},\n      year={2026},\n      eprint={2609.15195},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.15195}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    1.0,
+    0.583,
+    0.334,
+    0.696,
+    0.366,
+    0.625,
+    0.363,
+    0.576,
+    0.593,
+    0.511,
+    0.489,
+    0.5,
+    0.446,
+    0.307,
+    0.354,
+    0.767,
+    0.484,
+    0.459,
+    0.235,
+    0.314,
+    0.387,
+    0.2,
+    0.447,
+    0.38,
+    0.556,
+    0.569,
+    0.462,
+    0.401,
+    0.504,
+    0.444,
+    0.767,
+    0.701,
+    0.399,
+    0.462,
+    0.396,
+    0.512,
+    0.295,
+    0.504,
+    0.655,
+    0.676,
+    0.444,
+    0.395,
+    0.697,
+    0.727,
+    0.844,
+    0.768,
+    0.457,
+    0.426,
+    0.389,
+    0.278,
+    0.344,
+    0.27,
+    0.308,
+    0.328,
+    0.627,
+    0.313,
+    0.527,
+    0.37,
+    0.744,
+    0.544,
+    0.688,
+    0.362,
+    0.381,
+    0.501,
+    0.567,
+    0.447,
+    0.264,
+    0.355,
+    0.346,
+    0.336,
+    0.459,
+    0.573
+  ],
+  "published": "2026-09-14",
+  "license": "CC BY"
+}

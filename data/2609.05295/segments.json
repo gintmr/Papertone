@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 407.719,
+  "word_match_rate": 0.9505,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Language Model Training. Today's lecture is on a paper from Salesforce AI Research titled 'RISE: Recursive Improvement via Self-Extrapolating Policy Distillation.' We've seen a surge in on-policy distillation methods recently, like 'Self-Distilled Reasoner' and 'Reinforcement Learning via Self-Distillation,' which all try to get a model to teach itself. This paper questions a fundamental assumption in that process: the reliability of the teacher. It proposes that instead of using the current model or an external one as a teacher, we can construct a better teacher from the model's own learning trajectory. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.6
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. You mentioned on-policy distillation. Is the main problem there that the teacher model, even if it's the same base model, isn't a perfect guide for the student?",
+      "start": 38.1,
+      "end": 46.44
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Precisely. That's what the authors call the 'teacher quality bottleneck.' Existing methods often rely on a teacher that is given privileged information, like the correct answer. But the model might not be good enough at in-context learning to actually use that information effectively. This can lead to a distribution mismatch, where the teacher's guidance isn't actually helpful for the student's unconditioned generation. RISE attempts to solve this by getting rid of that kind of teacher altogether.",
+      "start": 46.84,
+      "end": 73.64
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The main concept behind RISE is to create a synthetic 'future teacher.' It does this by first running a standard reinforcement learning phase, specifically RLVR, which uses verifiable outcomes like a math problem's final answer. This gives a sparse reward signal and nudges the model's parameters in a positive direction. The key idea is to take this small update vector—the direction of improvement—and extrapolate it. They essentially say, 'If this small step was good, a bigger step in the same direction should be even better.' This extrapolated model then becomes the teacher.",
+      "start": 74.1,
+      "end": 111.18
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the 'future teacher' isn't a real, separate model? It's more like a mathematical construct based on the student's own recent progress?",
+      "start": 111.58,
+      "end": 118.0
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. It's a projection of where the model is headed. This future teacher then provides a dense, token-by-token supervisory signal in a second phase, which is an on-policy distillation step. This process effectively converts the sparse, sequence-level reward from the RLVR phase into rich, per-token guidance. The goal is to create a recursive loop: the student improves via RLVR, that improvement is extrapolated to create a better teacher, and that teacher then refines the student through distillation. This new, improved student then begins the next iteration.",
+      "start": 118.42,
+      "end": 154.14
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Wait, extrapolating seems risky. If the model takes one good step, you're assuming the next several steps are in the same linear direction. What stops it from overshooting and degrading performance?",
+      "start": 154.66,
+      "end": 164.44
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That's a critical point, and the authors address it directly. The method doesn't just adopt the extrapolated parameters as the new model. Instead, it uses that extrapolated state as a fixed teacher and then distills its knowledge back into the student. This distillation process acts as a form of trust region optimization, pulling the student towards the teacher but preventing it from taking too large or unstable a step. Furthermore, they use a decaying extrapolation factor. It starts off more aggressive early in training and becomes more conservative as the model gets closer to convergence, acknowledging that the 'safe' extrapolation range narrows over time.",
+      "start": 164.86,
+      "end": 203.02
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "That makes sense. So the distillation isn't just about copying the teacher, it's about reining in the extrapolation. What about the two extrapolation methods they propose, weight-space versus logit-space? Is one clearly better?",
+      "start": 203.36,
+      "end": 214.08
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "They explored both. Weight-space extrapolation involves directly manipulating the model's parameters. This creates a fully coherent model to act as the teacher, but it requires materializing those parameters and running a full forward pass, which is computationally more expensive. Logit-space extrapolation, on the other hand, works directly on the output probabilities. It's more efficient because you don't have to create a new set of weights. The paper's results showed that neither method was consistently dominant across all tasks and models. Both performed well, suggesting the core principle of extrapolation is robust to its specific implementation.",
+      "start": 214.36,
+      "end": 251.32
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "And this was tested on math and coding. Did it actually help with reasoning, or just pattern matching?",
+      "start": 251.92,
+      "end": 256.26
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The results indicate it helped with reasoning. On mathematical reasoning benchmarks like AIME, RISE showed significant accuracy gains over the RLVR-only baseline. For instance, on one model, it improved accuracy from about 30% to nearly 47%. An interesting finding was that it improved not just the average accuracy, but also the best-of-N accuracy. This suggests that RISE wasn't just sharpening the probability of known correct answers; it was actually expanding the set of problems the model could solve correctly. The method also generalized well, showing strong performance on agentic tasks in environments like ALFWorld and WebShop, which require sequential decision-making.",
+      "start": 256.64,
+      "end": 293.34
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The primary implication here is that we may have a more principled way to solve the teacher quality bottleneck in on-policy distillation. Instead of relying on external models or privileged context, which papers like 'Self-Distilled Reasoner' do, RISE leverages the model's own learning dynamics. It formalizes the intuition that the best teacher for a student is a slightly more advanced version of itself. This makes the entire self-improvement process more self-contained. It transforms distillation from a one-shot compression of a static teacher into a dynamic, recursive process where the teacher and student co-evolve.",
+      "start": 294.44,
+      "end": 331.2
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So it's a more principled way to generate a teacher. But isn't it still limited by the quality of the RLVR signal? If the reward is flawed or 'hackable,' wouldn't RISE just amplify that flaw more quickly?",
+      "start": 332.34,
+      "end": 341.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Absolutely. That is a key limitation the paper acknowledges. The extrapolation is grounded entirely by the direction provided by the RLVR update. If that update is based on a biased or exploitable reward, RISE will diligently and efficiently amplify that spurious direction. The method is a powerful accelerator, but it doesn't correct the course. It underscores that as we develop more efficient optimization techniques, the integrity and robustness of the underlying reward signal become even more critical.",
+      "start": 342.18,
+      "end": 370.66
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "To wrap up, RISE introduces a novel method for self-improvement by constructing a teacher not from what the model is, but from what it's becoming. It leverages the insight that the training trajectory itself is a rich source of information that can be extrapolated to create dense, token-level guidance. The main takeaway is that by intelligently projecting a model's own learning forward, we can bypass many of the challenges associated with teacher-student distillation and enable a more effective and efficient recursive improvement cycle. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 371.08,
+      "end": 407.719
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 444.943,
+  "word_match_rate": 0.9049,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Transformer Architectures, today’s lecture is on FlashLoop: Fast and Memory-Efficient Looped Transformers via Lazy Updates. Recent work such as Hyperloop Transformers and Mixture-of-Recursions reflects a growing interest in shared depth and adaptive computation. Wanqi Yang and Shiwei Liu, from ELLIS Institute Tübingen and the Max Planck Institute for Intelligent Systems, take a systems-focused approach: can repeated computation become cheaper at inference? I see your hand, Noah.",
+      "start": 0.0,
+      "end": 29.96
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what exactly is a looped Transformer?",
+      "start": 30.96,
+      "end": 33.98
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A looped Transformer applies the same Transformer block, or stack of blocks, multiple times. Sharing weights can reduce the number of parameters, but it doesn’t make each repeated evaluation free. Conventional implementations also keep a separate key-value cache for each loop, so computation and cache storage grow with the number of repetitions. FlashLoop targets this gap between parameter efficiency and actual inference efficiency, especially when long prompts make cache memory a major cost.",
+      "start": 35.12,
+      "end": 64.22
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: if the weights are shared, why does the cache still grow?",
+      "start": 65.14,
+      "end": 69.16
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Because each loop can produce different keys and values, even though it uses the same weights. Those loop-specific representations may be needed later for attention, so a conventional system stores them separately. The report gives a telling comparison: at a 32,000-token context, Ouro 2.6 billion with 4 loops uses 48 GiB of cache and takes 27 seconds to prefill on an A100. A larger non-looped model in the comparison needs about 4 GiB and 3 seconds.",
+      "start": 70.02,
+      "end": 100.86
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So the authors think later loops repeat some work that may not matter much?",
+      "start": 101.92,
+      "end": 105.64
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "That’s the central hypothesis. The authors measure how representations change from one loop to the next and find a lazy-update pattern. Later changes are concentrated in fewer token positions; attention differences tend to focus on a relatively stable subset of key columns; and the changes between successive key-value states become smaller at deeper loops. FlashLoop uses these patterns to avoid recomputing or storing information when its expected contribution is limited.",
+      "start": 106.96,
+      "end": 134.58
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how it decides which tokens are still active?",
+      "start": 135.56,
+      "end": 138.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "After the initial dense loops, FlashLoop scores tokens according to how much their representations changed. It keeps the highest-scoring tokens from the previous active set, making active sets nested: a token that stays active later generally had to be active before. Inactive tokens reuse their previous representations and cache entries. For some Ouro configurations, later loops process only 25% and then 10% of token rows, or 20% and then 8%.",
+      "start": 138.94,
+      "end": 169.74
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "This token selection is useful during both prompt processing and generation, but the two stages have different bottlenecks. During prefill, processing fewer token rows reduces repeated Transformer computation. During decoding, sparse updates also mean fewer new cache entries, while a separate attention technique reduces the keys examined for each query. The important idea is to exploit redundancy across loops, rather than independently compressing every loop’s computation and cache.",
+      "start": 169.74,
+      "end": 199.0
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Wait, if attention uses only selected keys, wouldn’t renormalizing them distort the result?",
+      "start": 200.46,
+      "end": 205.96
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Yes, and FlashLoop accounts for that. It uses attention statistics from the preceding loop to select key columns likely to matter, and it stores the total probability mass those columns had in the full distribution. In the current loop, attention runs on the selected subset, but its probabilities are scaled by that stored mass. This preserves the approximate contribution’s scale instead of treating the selected keys as if they were the entire attention distribution.",
+      "start": 206.94,
+      "end": 233.1
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The third insight concerns cache representation. Rather than quantizing each loop’s complete key-value state independently, FlashLoop stores a quantized base state from the first loop and quantized residual updates for later loops. Each residual is measured relative to the preceding reconstructed state. The implementation uses 4-bit group-wise quantization, while keeping the newest 64 tokens in higher precision. In sparse loops, it stores residuals only for active tokens, combining fewer entries with fewer bits per entry.",
+      "start": 234.06,
+      "end": 266.6
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the method require retraining the looped models or special hardware?",
+      "start": 267.54,
+      "end": 271.42
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "It is training-free and does not change pretrained model weights, but practical speedups do depend on implementation. The authors built custom GPU kernels for operations such as sparse attention, packed 4-bit storage, and fused updates. Those kernels help turn reduced computation and memory into wall-clock gains. Across the evaluated Ouro models and Huginn 3.5 billion, end-to-end speedups range from 1.52 to 1.64 times, with cache reductions from 5.18 to 6.06 times.",
+      "start": 272.22,
+      "end": 305.46
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How much accuracy is traded for those efficiency gains?",
+      "start": 306.4,
+      "end": 309.12
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "On five benchmarks, average accuracy changes range from a 0.37-point increase to a 0.88-point decrease across the tested models. Ablations suggest the components play different roles: sparse attention and token updates reduce computation, while residual quantization adds some accuracy cost. Quantizing full key-value states directly performs worse than quantizing residuals. The result is not lossless, but the reported benchmark changes are generally small relative to the memory and speed improvements.",
+      "start": 310.12,
+      "end": 341.52
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "FlashLoop’s broader contribution is to treat recurrence itself as a source of compressible structure. This differs from approaches such as Mixture-of-Recursions, which focuses on adaptive token-level depth and efficient caching, and Hyperloop Transformers, which reuse layers through a different architecture. FlashLoop instead approximates the repeated updates of an already pretrained looped model. That makes it a complementary inference strategy, though its calibration and specialized kernels are important practical considerations.",
+      "start": 343.04,
+      "end": 372.54
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "Could the approximation be risky for long-context retrieval or other tasks beyond these benchmarks?",
+      "start": 373.66,
+      "end": 378.74
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "That is a real limitation. The evaluation covers a small set of looped model families, and sparsity settings are calibrated separately for each model. Long-context results are broadly stable for perplexity and single-needle retrieval, but multi-needle retrieval drops from 9.2% to 7.5% in one reported comparison. The method also relies on hardware that handles dynamic gathering and packed low-bit formats efficiently. Broader testing across tasks, architectures, and hardware is still needed.",
+      "start": 378.74,
+      "end": 411.48
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The field is exploring several ways to make deeper computation practical, including adaptive depth, architectural weight sharing, and more efficient attention. FlashLoop adds a distinct lever: when a model repeatedly refines its states, later loops may need less work and less stored information than earlier ones. Its central lesson is not that every update can be removed, but that loop-to-loop changes can be measured and selectively compressed. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 412.4,
+      "end": 444.943
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "id": "2609.35457",
+  "title": "How Far Are We from Removing the Visual Encoder? Scaling Laws for Encoder-Free Multimodal Pretraining",
+  "authors": [
+    "Lin Chen",
+    "Bolin Ni",
+    "Qi Yang",
+    "Lan Jiang",
+    "Kun Ding",
+    "Xiaoran Fan",
+    "Hower Yang",
+    "Ying Wang",
+    "Shiming Xiang"
+  ],
+  "abstract": "Most modern multimodal large language models (MLLMs) build on a pretrained visual encoder that provides a strong visual prior. Encoder-free MLLMs instead learn visual representations directly from raw pixels, offering a simple and unified architecture, but their scaling behavior has not been systematically characterized. To fill this gap, we compare scaling laws for encoder-free and encoder-based MLLMs and report three main findings: (1) Removing the visual encoder shifts the compute-optimal allocation for the multimodal objective toward larger models, while leaving that for text nearly unchanged. (2) The two architectures exhibit nearly overlapping loss--compute frontiers on the text objective, but diverge on the multimodal objective: encoder-free models underperform at small scales yet are predicted to catch up at around $10^{22}$ FLOPs, well within practical pretraining budgets. (3) Without a visual encoder, the language model learns to take over its role via vision-specific adaptation: bidirectional interactions among visual tokens become increasingly beneficial as training compute grows, visual processing shifts toward earlier layers, and expert routing for visual tokens becomes more concentrated. Overall, our results indicate that the advantage of the visual prior provided by a pretrained encoder diminishes with scale, positioning encoder-free architectures as a promising direction for multimodal pretraining.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.35457",
+    "arxiv": "https://arxiv.org/abs/2609.35457"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0eb9f-c8ec-7f8f-9267-7e5315f7fd08/podcast.mp3",
+  "duration": 433.632,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.04,
+      "en": "In our graduate course, Scaling Laws for Multimodal Models, today’s lecture is on How Far Are We from Removing the Visual Encoder? Scaling Laws for Encoder-Free Multimodal Pretraining. Researchers at the Chinese Academy of Sciences Institute of Automation and Tencent ask whether a language-model decoder can learn vision without a separate pretrained visual encoder. Recent work such as Scaling Laws for Native Multimodal Models and The Scalability of Simplicity studies similar directions. I see a hand—yes, Noah?",
+      "zh": "在我们研究生课程“多模态模型的缩放定律”中，今天的讲座是“我们离去掉视觉编码器还有多远？无编码器多模态预训练的缩放定律”。中国科学院自动化研究所和腾讯的研究人员问，语言模型解码器能否在没有单独预训练视觉编码器的情况下学会视觉。最近的工作，比如《原生多模态模型的缩放定律》和《简单性的可扩展性》，研究了类似的方向。我看到有人举手——是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.18,
+      "end": 40.38,
+      "en": "Hi Professor, if encoder-free models start behind, why consider removing the visual encoder?",
+      "zh": "教授您好，如果无编码器的模型一开始就落后，那为什么还要考虑去掉视觉编码器呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.28,
+      "end": 69.36,
+      "en": "Because the encoder may be a useful head start rather than a permanent requirement. Most multimodal language models first convert image patches into representations with a pretrained vision model, then pass those representations to a language decoder. Encoder-free models send image patches directly to the decoder, asking it to learn both visual processing and language. This paper tests whether that extra learning burden remains costly as models, data, and compute grow.",
+      "zh": "因为编码器可能只是一个有用的先发优势，而不是永久必需。大多数多模态语言模型先用预训练的视觉模型把图像块转换成表示，再把这些表示传给语言解码器。无编码器的模型则直接把图像块送到解码器，让它同时学习视觉处理和语言。这篇论文检验的是，随着模型、数据和算力的增长，这份额外的学习负担是否依然代价高昂。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.16,
+      "end": 102.28,
+      "en": "The authors compare two matched model families, each built around the same 11 sparse mixture-of-experts decoders, ranging from 1.1 billion to 44 billion total parameters. They keep the training mixture, decoder designs, and visual-token granularity aligned. The encoder-based family uses a fixed, roughly 400-million-parameter pretrained vision transformer; the encoder-free family projects raw image patches directly into the decoder. This controlled setup helps isolate the effect of removing the encoder.",
+      "zh": "作者比较了两个匹配的模型家族，每个都围绕相同的11个稀疏专家混合解码器构建，总参数量从11亿到440亿不等。他们保持训练数据配比、解码器设计和视觉token粒度一致。基于编码器的家族使用一个固定的、约4亿参数的预训练视觉Transformer；无编码器的家族则把原始图像块直接投影到解码器中。这种受控设置有助于分离出移除编码器所带来的影响。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.2,
+      "end": 107.38,
+      "en": "Quick question: does the decoder get the same number of image tokens in both setups?",
+      "zh": "快速问一下：两种设置下，解码器拿到的图像token数量是一样的吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 108.12,
+      "end": 137.78,
+      "en": "Yes. Both systems represent images using the same number of visual tokens, with each token corresponding to a 32-by-32-pixel region. The encoder-free model’s visual tokens can attend to one another in both directions, while text remains causal. The authors also test a fully causal visual-token version. That comparison matters because it helps determine whether the results come from removing the encoder or from giving image patches additional opportunities to exchange information.",
+      "zh": "是的。两个系统都用相同数量的视觉token来表示图像，每个token对应一个32×32像素的区域。无编码器模型的视觉token可以双向互相注意力，而文本仍然是因果的。作者还测试了一个完全因果的视觉token版本。这个对比很重要，因为它有助于判断结果究竟是因为去掉了编码器，还是因为给了图像块更多交换信息的机会。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.84,
+      "end": 169.42,
+      "en": "The main scaling result is that text performance behaves much alike in the two families. For multimodal learning, however, the encoder-free model’s compute-optimal strategy favors a larger decoder and fewer training tokens than the encoder-based model. In practical terms, it needs more decoder capacity to learn visual representations while also modeling language. This difference remains when visual-token attention is made causal, so bidirectional attention alone does not explain it.",
+      "zh": "主要的扩展性结果是，两个系列在文本性能上的表现非常相似。但在多模态学习方面，无编码器模型的计算最优策略倾向于更大的解码器和更少的训练token，而有编码器的模型则相反。实际来说，它需要更强的解码器容量，才能在学习视觉表示的同时建模语言。即使把视觉token的注意力改成因果的，这一差异依然存在，所以双向注意力本身并不能解释这个现象。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 169.96,
+      "end": 175.42,
+      "en": "So the encoder-free model is still worse on multimodal tasks at the scales they actually trained?",
+      "zh": "那在他们实际训练的规模上，无编码器模型在多模态任务上还是更差吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 175.94,
+      "end": 203.36,
+      "en": "Correct. Across the measured range, the encoder-based models reach a given multimodal loss with less compute. But the encoder-free loss improves faster as compute increases. Extrapolating their fitted scaling trends, the authors estimate a crossover near 6.1 times ten to the twenty-first flops. That is a projection beyond the main measurements, not an observed result, so it should be treated as a conditional forecast rather than proof that parity has arrived.",
+      "zh": "没错。在他们实际测量的范围内，基于编码器的模型用更少的计算量就能达到相同的多模态损失。但无编码器模型的损失随着计算量增加下降得更快。通过外推他们拟合出的缩放趋势，作者估计交叉点大约在6.1×10²¹ flops附近。这是超出主要测量范围的外推预测，不是实际观察到的结果，所以应该把它当作一个有条件的预测，而不是已经实现持平的证据。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 204.28,
+      "end": 230.08,
+      "en": "The paper also looks inside the decoder for evidence of how visual learning develops. In one 8-billion-parameter model, attention to image tokens at a middle layer rises sharply after multimodal loss begins improving more quickly. The authors suggest a bootstrapping process: initially weak visual features receive little useful attention, but once they become informative, the decoder draws on them more, helping visual learning accelerate.",
+      "zh": "这篇论文还深入解码器内部，寻找视觉学习如何发展的证据。在一个80亿参数的模型中，当多模态损失开始更快下降后，中间层对图像token的注意力急剧上升。作者提出了一种自举过程：最初较弱的视觉特征获得的注意力很少，但一旦这些特征变得有信息量，解码器就会更多地利用它们，从而帮助视觉学习加速。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 231.16,
+      "end": 260.26,
+      "en": "Two further observations support that account. First, encoder-free visual representations begin changing in earlier decoder layers, while text representations remain more similar between the model families. That suggests early decoder layers take on part of the visual encoder’s role. Second, image tokens are routed more unevenly among the decoder’s experts, while text-token routing stays closely matched. Some experts may therefore be specializing in visual processing.",
+      "zh": "另外两个观察结果也支持这一解释。第一，无编码器的视觉表示在更早的解码器层就开始发生变化，而文本表示在不同模型系列之间则保持更高的相似度。这说明早期解码器层承担了部分视觉编码器的角色。第二，图像token在解码器的专家之间分配得更不均匀，而文本token的路由则保持高度一致。因此，一些专家可能正在专门处理视觉信息。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 261.32,
+      "end": 264.84,
+      "en": "Could that projected crossover change depending on the kind of visual task?",
+      "zh": "这种预计的交叉点会不会因视觉任务类型的不同而改变？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 265.8,
+      "end": 296.08,
+      "en": "Yes, and the paper’s topic-level results point in that direction. Encoder-free models improve relatively quickly on symbol- and language-heavy tasks such as charts, while they remain less efficient on optical character recognition and captioning in the measured range. Real applications differ in their dependence on fine text, spatial detail, and natural-image features, so a single overall crossover can hide meaningful variation. Developers should consider the task mix, not only an aggregate benchmark score.",
+      "zh": "是的，而且论文在任务主题层面的结果也指向这个方向。在图表这类符号和语言密集的任务上，无编码器模型提升得相对更快，而在光学字符识别和图像描述上，在测量范围内它们的效率仍然偏低。真实应用对精细文字、空间细节和自然图像特征的依赖程度各不相同，所以一个笼统的交叉点会掩盖有意义的变化。开发者应该考虑任务组合，而不只是一个总的基准分数。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 296.88,
+      "end": 326.46,
+      "en": "There are important limits to the comparison. The visual encoder stays fixed at roughly 400 million parameters, the data mixture is fixed, and the experiments use one family of sparse decoders. The crossover also relies on extrapolating fitted scaling laws. At around 100 billion training tokens, the largest reported encoder-free model still trails the encoder-based model on the average of 11 benchmarks. So the study identifies a scaling possibility, not a present-day universal replacement.",
+      "zh": "这一比较存在重要的局限。视觉编码器固定在大约4亿参数，数据配比固定，实验也只用了同一类稀疏解码器。交叉点还依赖于对拟合缩放律的外推。在约1000亿训练token时，报告的最大无编码器模型在11个基准的平均成绩上仍落后于基于编码器的模型。因此，这项研究指出的是一种缩放的可能性，而不是当下就能普遍替代的方案。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 326.46,
+      "end": 359.02,
+      "en": "This work extends the broader move toward native multimodal models, including the questions explored in Scaling Laws for Native Multimodal Models and The Scalability of Simplicity. Its contribution is to make the comparison quantitative: it asks how compute should be divided between model capacity and data, and how those choices change with architecture. The results suggest that simpler, unified designs may become more viable as compute grows, but only if their decoders are designed and trained to acquire visual competence.",
+      "zh": "这项工作延续了迈向原生多模态模型的整体趋势，也呼应了《原生多模态模型的缩放定律》和《简单性的可扩展性》中探讨的问题。它的贡献在于把比较量化了：研究计算资源应当如何在模型容量和数据之间分配，以及这些选择会如何随架构而变化。结果表明，随着算力增长，更简单、更统一的设计可能会变得更有可行性，但前提是它们的解码器在设计上和训练上都能获得视觉能力。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 360.1,
+      "end": 365.82,
+      "en": "Would you expect future models to add visual-specific structure inside the decoder rather than remove it entirely?",
+      "zh": "你预计未来的模型会在解码器内部加入视觉专用的结构，而不是把它完全去掉吗？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 366.92,
+      "end": 398.76,
+      "en": "That is a plausible direction. The evidence here suggests researchers could study early-layer visual transformations, bidirectional processing among image tokens, and experts that specialize by modality. Those choices might help a decoder learn vision more efficiently without restoring a separate pretrained encoder. The broader lesson is to treat architecture and compute allocation together: removing a component changes not just the model’s shape, but also what the remaining parameters must learn and how training resources should be spent.",
+      "zh": "这是一个合理的方向。这里的证据表明，研究者可以研究早期层的视觉变换、图像token之间的双向处理，以及按模态专门化的专家模块。这些选择或许能帮助解码器更高效地学习视觉，而不必重新引入一个单独的预训练编码器。更广泛的启示是，要把架构和算力分配放在一起考虑：移除一个组件不仅会改变模型的形态，也会改变剩余参数必须学习什么，以及训练资源应该如何分配。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 399.64,
+      "end": 433.632,
+      "en": "The paper does not show that visual encoders are already unnecessary. It shows that their advantage may narrow as decoder capacity and training compute increase, while text performance remains nearly unchanged. For PhD researchers, the key takeaway is to distinguish measured results from extrapolated ones and to ask which tasks benefit from each design. A visual encoder may be a valuable shortcut today, even if future scaling makes that shortcut less essential. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这篇论文并没有证明视觉编码器已经不再必要。它表明的是，随着解码器容量和训练算力的增加，视觉编码器的优势可能会缩小，而文本性能几乎保持不变。对博士生研究者来说，关键要点是区分实测结果和外推结果，并追问哪些任务能从每种设计中获益。视觉编码器在今天可能仍是一条有价值的捷径，即便未来的规模扩展会让这条捷径变得不那么不可或缺。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chen2026farremovingvisualencoder,\n      title={How Far Are We from Removing the Visual Encoder? Scaling Laws for Encoder-Free Multimodal Pretraining}, \n      author={Lin Chen and Bolin Ni and Qi Yang and Lan Jiang and Kun Ding and Xiaoran Fan and Hower Yang and Ying Wang and Shiming Xiang},\n      year={2026},\n      eprint={2609.35457},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.35457}, \n}",
+  "topics": [
+    "Model Interpretation",
+    "Multimodal Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    0.93,
+    0.785,
+    0.39,
+    0.494,
+    0.666,
+    0.377,
+    0.757,
+    0.658,
+    0.586,
+    0.621,
+    0.582,
+    0.698,
+    0.69,
+    0.527,
+    0.571,
+    0.58,
+    0.376,
+    0.388,
+    0.764,
+    0.501,
+    0.583,
+    0.431,
+    0.249,
+    0.7,
+    0.781,
+    0.553,
+    0.468,
+    0.532,
+    0.864,
+    1.0,
+    0.844,
+    0.731,
+    0.586,
+    0.545,
+    0.979,
+    0.662,
+    0.602,
+    0.573,
+    0.701,
+    0.576,
+    0.376,
+    0.382,
+    0.308,
+    0.329,
+    0.439,
+    0.276,
+    0.2,
+    0.251,
+    0.229,
+    0.48,
+    0.379,
+    0.378,
+    0.334,
+    0.251,
+    0.607,
+    0.665,
+    0.46,
+    0.44,
+    0.735,
+    0.514,
+    0.585,
+    0.537,
+    0.577,
+    0.814,
+    0.662,
+    0.603,
+    0.714,
+    0.612,
+    0.415,
+    0.49,
+    0.448,
+    0.418
+  ],
+  "published": "2026-09-28",
+  "license": "CC BY"
+}

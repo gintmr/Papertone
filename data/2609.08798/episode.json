@@ -1,0 +1,250 @@
+{
+  "id": "2609.08798",
+  "title": "Eliciting Weak-to-Strong Generalization with On-Policy Reverse Distillation",
+  "authors": [
+    "Youngrok Park",
+    "Sangmin Bae",
+    "Hojung Jung",
+    "Jongwoo Ko",
+    "Yunseon Choi",
+    "Young Jin Kim",
+    "Pashmina Cameron",
+    "Aaron Courville",
+    "Se-Young Yun"
+  ],
+  "abstract": "Weak-to-strong generalization asks whether stronger models can learn from weaker supervisors and surpass them. This question is particularly important for successive model generations and multi-domain consolidation, where repeating frontier-scale post-training from scratch can be prohibitively expensive. Yet conventional distillation treats the weak teacher as an optimization target, potentially imposing its capacity ceiling on the student. We introduce On-Policy Reverse Distillation (OPRD), which evaluates the teacher's policy shift relative to its reference policy on student rollouts and amplifies the component of the student's verifier-driven policy gradient along that direction. By rescaling only verifier-supported updates, OPRD preserves the stationary points of policy optimization while accelerating learning beyond the teacher. In both successive model transfer and multi-teacher distillation, OPRD achieves higher performance with fewer student updates than existing RL and distillation approaches. Response-style analysis shows that OPRD students remain closer to models trained with verifier-based RL alone than to their weak teachers, suggesting that teacher guidance accelerates rather than redirects the student's own optimization. Results in conventional strong-to-weak distillation further demonstrate that OPRD effectively combines verifier-driven policy optimization with teacher guidance regardless of capacity ordering.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.08798",
+    "arxiv": "https://arxiv.org/abs/2609.08798"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a08445-c35a-71bb-840a-f822e0751de5/podcast.mp3",
+  "duration": 385.855,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.34,
+      "en": "Welcome to Advanced Topics in Language Model Training. Today's lecture is on a paper from researchers at KAIST AI and Microsoft titled 'Eliciting Weak-to-Strong Generalization with On-Policy Reverse Distillation.' We've seen a lot of work recently in the on-policy distillation space, like 'Self-Distilled Reasoner,' which focuses on a model teaching itself. This paper tackles a different, but related, problem: how can a stronger, more capable model learn from a weaker one without inheriting its limitations? This is critical for making model development more efficient. Yes, Noah?",
+      "zh": "欢迎来到语言模型训练进阶专题。今天我们要讲的这篇论文来自KAIST AI和微软的研究人员，题目是《用同策略反向蒸馏激发弱到强的泛化》。最近在同策略蒸馏这个方向上有很多工作，比如《自蒸馏推理器》，它关注的是模型自己教自己。而这篇论文处理的是一个不同但相关的问题：一个更强、更有能力的模型，怎样才能从一个更弱的模型那里学习，同时又不继承它的局限？这对于让模型开发变得更高效至关重要。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.82,
+      "end": 39.76,
+      "en": "Excuse me, Professor. Could you clarify what 'weak-to-strong generalization' means in this context? Does it just mean a smaller model teaching a larger one?",
+      "zh": "教授，不好意思，您能解释一下这里说的“弱到强泛化”是什么意思吗？就是指小模型教大模型吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.02,
+      "end": 68.44,
+      "en": "That's the most common scenario, yes. A smaller model is the weak teacher, and a larger one is the strong student. But it could also apply to a model from a previous generation supervising a new one, or multiple specialized models teaching a single generalist. The core idea is that the supervisor, or teacher, has a lower performance ceiling than the student. The challenge, which this paper directly addresses, is ensuring the student can actually reach its higher potential and not just plateau at the teacher's level.",
+      "zh": "对，这是最常见的情况。小模型是弱老师，大模型是强学生。但也可以是一个上一代模型去监督一个新模型，或者多个专用模型教一个通用模型。核心在于，监督者或者说老师的性能上限比学生低。而这篇论文直接要解决的挑战，就是怎么确保学生真正发挥出更高的潜力，而不是停在老师的水平上。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 68.8,
+      "end": 100.8,
+      "en": "The central problem with traditional knowledge distillation here is that it optimizes the student to match the teacher's policy. If the teacher is weak, you're essentially telling the more capable student to copy the answers of a less capable one. It learns the teacher's good habits, but also its mistakes and capacity limits. The key contribution of this paper is a method called On-Policy Reverse Distillation, or OPRD. Instead of forcing the student to match the teacher's final policy, OPRD tries to distill the improvement the teacher learned during its own training.",
+      "zh": "传统知识蒸馏在这里的核心问题是，它让学生去匹配老师的策略。如果老师本身很弱，那你实际上就是在让能力更强的学生去照抄一个能力更差的学生的答案。学生会学到老师的好习惯，但也会学到它的错误和能力上限。这篇论文的关键贡献是一个叫“在策略反向蒸馏”（On-Policy Reverse Distillation，简称OPRD）的方法。OPRD不是迫使学生去匹配老师的最终策略，而是试图蒸馏出老师在自身训练过程中学到的提升。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 101.28,
+      "end": 114.12,
+      "en": "So it distills the 'policy shift'—the difference between the teacher before and after its reinforcement learning. But wouldn't directly optimizing the student to match that shift still be limiting? That shift is still something achieved by a weaker model.",
+      "zh": "所以它蒸馏的是“策略偏移”，也就是教师在强化学习前后的差异。但直接让学生去对齐这个偏移，不还是有局限吗？这个偏移毕竟是一个更弱的模型取得的。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 114.12,
+      "end": 145.82,
+      "en": "Exactly. And that's the nuance here. The authors show that making that policy shift a direct optimization target is also suboptimal. It's an improvement, but it's an improvement within the weak teacher's constraints. The student might have access to better solutions the teacher could never find. So, OPRD does something clever. It doesn't use the teacher's policy shift as a destination, but rather as a compass. It uses the direction of the teacher's improvement to accelerate the student's own, separate optimization process, which is driven by rewards from a verifier.",
+      "zh": "没错，这正是微妙之处。作者们发现，把这种策略偏移直接当作优化目标同样不是最优的。它确实是一种改进，但只是在弱教师能力范围内的改进。学生可能有机会找到教师永远找不到的更好的解。所以OPRD做了一件很聪明的事。它不把教师的策略偏移当作终点，而是当作指南针。它用教师改进的方向来加速学生自己独立的优化过程，而这个优化过程是由验证器给出的奖励驱动的。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 146.3,
+      "end": 179.6,
+      "en": "Let's get into how that works. The student is learning via reinforcement learning, generating responses and getting rewards from a verifier, like a code executor or a math checker. This process generates a policy gradient at each step, which tells the model how to update its parameters to get more rewards. What OPRD does is take this student-generated gradient and modify it. It projects the student's gradient onto the direction of the teacher's policy shift. It then amplifies the part of the gradient that aligns with the teacher's direction, but leaves the orthogonal part untouched.",
+      "zh": "我们来看看具体是怎么运作的。学生模型通过强化学习来学习，生成回答并从验证器那里获得奖励，比如代码执行器或者数学检查器。这个过程在每一步都会产生一个策略梯度，告诉模型该如何更新参数以获得更多奖励。OPRD的做法是，拿学生自己生成的梯度去修改它。它把学生的梯度投影到教师策略偏移的方向上。然后放大梯度中与教师方向一致的部分，而正交的那部分则保持不动。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 180.14,
+      "end": 187.88,
+      "en": "Wait, so it's essentially saying, 'If the direction you want to go for your own reasons also happens to be a direction my weak teacher found useful, go that way, but faster'?",
+      "zh": "等等，所以这本质上是在说：“如果你想走的方向，出于你自己的原因，恰好也是我那个弱老师觉得有用的方向，那就往那边走，但走快点”？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 188.68,
+      "end": 219.84,
+      "en": "That's a great way to put it. It scales up the updates that agree with the teacher's learned wisdom. Crucially, because it only rescales the student's existing gradient, if the original gradient is zero, the new one is too. This means the optimization still converges to the student's own optimal policy based on the verifier rewards, not the teacher's. The teacher just helps it get there faster and more efficiently. The student can still learn things the teacher never knew, because those updates would be in the orthogonal component of the gradient, which is preserved.",
+      "zh": "这个说法很到位。它会放大那些和老师学到的经验一致的更新。关键在于，因为它只是对学生的现有梯度做重新缩放，如果原始梯度是零，新的梯度也是零。这意味着优化仍然会收敛到学生自己基于验证器奖励的最优策略，而不是老师的。老师只是帮它更快、更高效地到达那里。学生仍然能学到老师从不知道的东西，因为这些更新会落在梯度的正交分量上，而那部分是被保留下来的。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 220.32,
+      "end": 225.7,
+      "en": "What about when the student's gradient points in a direction opposite to the teacher's shift? Does it dampen that?",
+      "zh": "那如果学生的梯度方向和老师的调整方向相反呢？这种情况会被抑制吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 225.7,
+      "end": 253.7,
+      "en": "That's a key part of their design. Initially, it does. But they introduce an asymmetric schedule. Early in training, when the student is still exploring and its gradients might be noisy, it heavily favors teacher-aligned updates. But as training progresses, it gradually starts to amplify verifier-supported updates even if they conflict with the teacher's direction. This mechanism allows the student to first quickly learn what the teacher knows, and then confidently diverge and surpass the teacher once its own policy becomes more reliable.",
+      "zh": "这是他们设计中的一个关键部分。一开始确实会抑制。但他们引入了一种非对称的调度策略。在训练早期，学生还在探索阶段，梯度可能比较嘈杂，这时候会大幅偏向与教师方向一致的更新。但随着训练推进，它逐渐开始放大验证器支持的更新，即使这些更新与教师的方向相冲突。这个机制让学生先快速学会教师已知的东西，然后等自己的策略变得更可靠之后，再自信地偏离并超越教师。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 253.7,
+      "end": 286.8,
+      "en": "The implications of this are quite significant for the field. The primary impact is on the cost and efficiency of developing large-scale models. You no longer have to retrain each new, larger model from scratch. You can use a previous-generation 4-billion parameter model to effectively bootstrap an 8-billion parameter model, allowing it to surpass its teacher with 30 to 60 percent fewer training updates than pure reinforcement learning. They also show this works for consolidating multiple specialized teachers into one generalist student, which is a big deal for modular AI development.",
+      "zh": "这对整个领域的影响相当大。最直接的影响是在开发大规模模型的成本和效率上。你不再需要每次从零开始训练一个更大的新模型。你可以用一个上一代的40亿参数模型来有效引导一个80亿参数模型，让它比纯强化学习少用30%到60%的训练更新就能超过老师。他们还证明了这同样适用于把多个专门的教师模型整合成一个通用的学生模型，这对模块化的AI开发意义重大。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 287.2,
+      "end": 296.6,
+      "en": "How does this compare to other methods? The report mentions things like W2S-OPD, which also seems to use the policy delta. Why is OPRD's approach of rescaling the gradient better?",
+      "zh": "和其他方法比起来怎么样？报告里提到了W2S-OPD之类的，看起来也用了策略增量。为什么OPRD这种重新缩放梯度的做法更好？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 296.94,
+      "end": 332.44,
+      "en": "The main difference is that methods like W2S-OPD typically add the policy delta as a separate loss term. This creates a competing objective: maximize the verifier reward, but also match the teacher's shift. OPRD avoids this competition. By only modifying the student's gradient, the student is always and only optimizing for the verifier reward. The teacher guidance is integrated directly into that process as an accelerator, not a separate goal. This is why the student can maintain its own reasoning style and find novel solutions, rather than being pulled toward the teacher's specific behaviors.",
+      "zh": "主要区别在于，像W2S-OPD这类方法通常把策略差值作为一个单独的损失项加进去。这就产生了一个相互竞争的目标：既要最大化验证器奖励，又要匹配教师的偏移。OPRD避免了这种竞争。它只修改学生的梯度，学生始终且只针对验证器奖励做优化。教师的引导作为加速器直接融入这个过程，而不是一个独立的目标。这就是为什么学生能保持自己的推理风格、找到新颖的解法，而不会被拉向教师的具体行为模式。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 333.54,
+      "end": 337.88,
+      "en": "So it's a more principled way to integrate the weak supervision. It guides without constraining.",
+      "zh": "所以这是一种更有原则的整合弱监督的方式。它提供引导，但不加约束。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 338.18,
+      "end": 348.7,
+      "en": "Precisely. The teacher's role shifts from being a source of truth to being an experienced guide that suggests promising directions for the more capable student to explore on its own terms.",
+      "zh": "正是如此。老师的角色从真相的来源转变为经验丰富的向导，为更有能力的学生指明有前景的方向，让学生按自己的方式去探索。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 348.9,
+      "end": 380.84,
+      "en": "To wrap up, the key takeaway from On-Policy Reverse Distillation is the shift in perspective. Instead of treating distillation as imitation, OPRD treats it as accelerated, guided exploration. It provides a robust and efficient framework for transferring knowledge 'uphill' from weaker to stronger models. This allows the student to benefit from the teacher's experience without being tethered to its performance ceiling, which is a valuable capability for the iterative and increasingly expensive process of foundation model development.",
+      "zh": "总结一下，On-Policy Reverse Distillation 的核心要点在于视角的转变。OPRD 不再把蒸馏当作模仿，而是把它看作一种加速的、有引导的探索。它提供了一个稳健高效的框架，把知识从较弱模型“逆流而上”传递给更强模型。这样一来，学生模型既能受益于老师的经验，又不会被老师的性能上限所束缚，这对于基础模型开发中迭代越来越昂贵的过程来说，是一种非常有价值的能力。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 381.3,
+      "end": 385.855,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{park2026elicitingweaktostronggeneralizationonpolicy,\n      title={Eliciting Weak-to-Strong Generalization with On-Policy Reverse Distillation}, \n      author={Youngrok Park and Sangmin Bae and Hojung Jung and Jongwoo Ko and Yunseon Choi and Young Jin Kim and Pashmina Cameron and Aaron Courville and Se-Young Yun},\n      year={2026},\n      eprint={2609.08798},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.08798}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.992,
+    0.462,
+    0.206,
+    0.338,
+    0.84,
+    0.383,
+    0.407,
+    0.496,
+    0.573,
+    0.57,
+    0.648,
+    0.533,
+    0.368,
+    0.2,
+    0.276,
+    0.201,
+    0.378,
+    0.311,
+    0.528,
+    0.272,
+    0.358,
+    0.851,
+    0.406,
+    0.338,
+    0.372,
+    0.468,
+    0.469,
+    0.452,
+    0.393,
+    0.221,
+    0.246,
+    0.297,
+    0.269,
+    0.383,
+    0.433,
+    0.575,
+    0.539,
+    0.662,
+    0.323,
+    0.465,
+    0.433,
+    0.561,
+    0.642,
+    0.594,
+    0.319,
+    0.339,
+    0.632,
+    0.515,
+    0.401,
+    0.396,
+    0.272,
+    0.209,
+    0.364,
+    0.258,
+    0.338,
+    1.0,
+    0.288,
+    0.478,
+    0.78,
+    0.501,
+    0.376,
+    0.578,
+    0.274,
+    0.503,
+    0.332,
+    0.453,
+    0.498,
+    0.443,
+    0.438,
+    0.397,
+    0.314,
+    0.48
+  ],
+  "published": "2026-09-08",
+  "license": "CC BY"
+}

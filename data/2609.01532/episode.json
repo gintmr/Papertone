@@ -1,0 +1,262 @@
+{
+  "id": "2609.01532",
+  "title": "Knowledge Distillation During Mid-Training Favors Reasoning over Factual Recall",
+  "authors": [
+    "Jacqueline He",
+    "Howard Yen",
+    "Shuyue Stella Li",
+    "Margaret Li",
+    "Hanqing Zeng",
+    "Yinglong Xia",
+    "Benyu Zhang",
+    "Zhuokai Zhao",
+    "Qiang Zhang",
+    "Pang Wei Koh",
+    "Luke Zettlemoyer",
+    "Wen-tau Yih"
+  ],
+  "abstract": "Logit-based knowledge distillation (KD) is used to train smaller language models (LMs) via supervision from stronger teachers, but whether its benefits are consistent across training stages remains unclear. Through controlled experiments, we find that forward Kullback-Leibler (KL) distillation--the standard KD formulation--with post-trained teachers behaves fundamentally differently during mid-training, an intermediate phase of self-supervised learning on curated corpora. Surprisingly, while forward KD simultaneously improves reasoning and factual recall during pre-training relative to standard next-token prediction (NTP), it instead slows factual recall acquisition during mid-training despite continued reasoning gains. We trace this stage dependence to an asymmetry in teacher confidence across data domains and the student's evolving knowledge state: teachers are more confident on procedural than knowledge-intensive data, while students acquire low-entropy factual knowledge earlier in training. To mitigate this imbalance, we propose Switch Distillation, a simple mid-training objective that distills on tokens where the teacher is confident, using teacher predictive entropy as a lightweight routing signal, and otherwise falls back to cross-entropy. Switch Distillation consistently outperforms existing distillation objectives across teacher sizes. Relative to standard NTP, it achieves 1.61-1.71x the reasoning performance and 1.13-1.19x the knowledge and commonsense performance while preserving 96.7-96.8% of factual recall. Crucially, these benefits persist after post-training: Switch Distillation closes the factual recall gap while maintaining 1.25-1.32x and 1.13-1.20x gains in reasoning and knowledge and commonsense, respectively.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.01532",
+    "arxiv": "https://arxiv.org/abs/2609.01532"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a06015-ae81-79bf-9dca-e79e87e8bd60/podcast.mp3",
+  "duration": 386.847,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.36,
+      "en": "Welcome to Advanced Topics in Language Model Training. Today's lecture is on 'Knowledge Distillation During Mid-Training Favors Reasoning over Factual Recall,' a paper from researchers at Meta AI and the University of Washington. We've seen a lot of recent work exploring on-policy methods, like in 'On-Policy Context Distillation for Language Models,' trying to make distillation more efficient. This paper takes a step back and asks a fundamental question: does distillation even work the same way at every stage of training? Yes, Noah?",
+      "zh": "欢迎来到语言模型训练进阶专题。今天这堂课讲的是《中期训练中的知识蒸馏更有利于推理而非事实记忆》，这是Meta AI和华盛顿大学的研究人员发表的一篇论文。最近有很多工作都在探索同策略方法，比如《面向语言模型的同策略上下文蒸馏》，试图让蒸馏更高效。这篇论文则退后一步，问了一个根本性的问题：蒸馏在训练的每个阶段，效果真的一样吗？好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 31.8,
+      "end": 38.88,
+      "en": "Hi Professor. You mentioned 'mid-training.' I thought the paradigm was just pre-training and then fine-tuning. Is mid-training becoming a standard, distinct stage?",
+      "zh": "教授您好。您提到了“中期训练”。我一直以为范式就是预训练然后微调。中期训练正在成为一个标准的、独立的阶段吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.24,
+      "end": 68.04,
+      "en": "That's a great question. It is. The field is moving towards this multi-stage paradigm. After massive pre-training on web-scale data, there's now this intermediate 'mid-training' phase. Here, the model continues self-supervised learning, but on a smaller, higher-quality curated dataset to boost specific skills like reasoning or coding before the final alignment or post-training stage. This paper investigates what happens when you apply a standard technique, knowledge distillation, during this specific phase.",
+      "zh": "这是个很好的问题。确实如此。这个领域正在转向这种多阶段的范式。在海量网络规模数据的预训练之后，现在有了这个中间的“中期训练”阶段。在这个阶段，模型继续做自监督学习，但用的是更小、更高质量的精选数据集，目的是在最后的对齐或后训练阶段之前，提升推理或编程等特定能力。这篇论文研究的就是在这个特定阶段应用一种标准技术——知识蒸馏——会发生什么。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 68.42,
+      "end": 92.22,
+      "en": "The central finding is what they call a 'reasoning-recall tradeoff.' During pre-training, when the model is starting from scratch, knowledge distillation helps improve both reasoning and factual recall. It's a clear win. However, during mid-training, the authors found that standard distillation improves the model's reasoning capabilities but actually slows down its ability to learn and recall facts. It creates a tension between these two skills.",
+      "zh": "核心发现就是他们所说的“推理与记忆的权衡”。在预训练阶段，模型从零开始学的时候，知识蒸馏既能提升推理能力，也能改善事实记忆，是明确的双赢。但在中期训练阶段，作者发现标准蒸馏虽然提升了模型的推理能力，却反而拖慢了它学习和记忆事实的速度，这就让这两种能力之间产生了矛盾。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 92.68,
+      "end": 97.76,
+      "en": "So what's special about mid-training that causes this tradeoff? Is it the data, or something about the model itself?",
+      "zh": "那么，中期训练到底有什么特别之处，导致了这种权衡？是数据的问题，还是模型本身的问题？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 98.14,
+      "end": 124.42,
+      "en": "It's the interaction between the two, specifically driven by the model's evolved knowledge state. The authors trace the cause to three interconnected factors. First, they found an 'asymmetric teacher supervision.' The powerful teacher model is much more confident, meaning it has lower predictive entropy, on procedural data that requires reasoning, like math or instruction-following. It's less confident on tokens related to factual recall from unstructured web text.",
+      "zh": "这是两者相互作用的结果，具体来说是由模型不断演进的知识状态驱动的。作者把原因归结为三个相互关联的因素。首先，他们发现了一种“不对称的教师监督”。强大的教师模型在需要推理的程序性数据上，比如数学或指令遵循，要自信得多，也就是说它的预测熵更低。而在与从非结构化网页文本中回忆事实相关的token上，它就没那么自信了。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 124.78,
+      "end": 126.96,
+      "en": "Wait, so the teacher model is just better at reasoning problems?",
+      "zh": "等等，所以教师模型只是更擅长推理问题吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 127.32,
+      "end": 151.66,
+      "en": "Essentially, its predictions are sharper and more reliable for reasoning-related tokens. The second factor is the student's knowledge. By the time mid-training begins, the student has already been pre-trained on trillions of tokens. It has already learned the 'easy' facts—the ones where the teacher was confident. The remaining unlearned facts are disproportionately the 'hard' ones, where the teacher's own predictions are uncertain and diffuse.",
+      "zh": "本质上，它对推理相关token的预测更锐利、更可靠。第二个因素是学生模型自身的知识。到中期训练开始时，学生模型已经在数万亿token上做过预训练了。它已经学会了那些“简单”的事实，也就是老师有把握的那些。剩下没学会的事实，不成比例地集中在那些“难”的上面，也就是老师自己的预测也不确定、很发散的那些。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 152.12,
+      "end": 155.94,
+      "en": "Okay, so the student is trying to learn facts where the teacher isn't a very good teacher.",
+      "zh": "好，所以学生要学的这些事实，恰恰是老师教不好的那些。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 156.38,
+      "end": 189.2,
+      "en": "Exactly. And that leads to the third factor: the distillation objective itself. The authors show through gradient analysis that when the teacher is uncertain, the learning signal from knowledge distillation on the correct, ground-truth token is significantly weaker than the signal from the standard training objective. So, for the very facts the student still needs to learn, KD is providing a weaker push in the right direction. The result is that reasoning gets a boost from the confident teacher, while factual learning gets attenuated.",
+      "zh": "确实如此。这就引出了第三个因素：蒸馏目标本身。作者通过梯度分析表明，当教师模型不确定时，知识蒸馏在正确的真实token上产生的学习信号，明显弱于标准训练目标产生的信号。所以，对于那些学生模型仍然需要学习的事实性知识，知识蒸馏在正确方向上提供的推力反而更弱。结果就是，推理能力从高置信度的教师模型那里得到了提升，而事实性知识的学习却被削弱了。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 189.72,
+      "end": 222.98,
+      "en": "Based on this analysis, their main contribution is a new method called Switch Distillation. It's a simple but effective idea. Instead of applying one objective to all tokens, it dynamically routes them. At each step, it calculates the teacher's predictive entropy for every token in the batch. For tokens where the teacher is highly confident, which are mostly reasoning-related, it applies reverse KL distillation to strongly mimic the teacher. For tokens where the teacher is uncertain, which are often factual, it switches back to the standard corpus supervision, ignoring the teacher's weak signal.",
+      "zh": "基于这个分析，他们的主要贡献是一个叫“切换蒸馏”的新方法。想法很简单但很有效。它不是对所有token都用同一个目标，而是动态地对它们进行路由。每一步，它会计算批次中每个token上教师模型的预测熵。对于教师模型非常自信的token——大多是推理相关的——它用反向KL蒸馏来强力模仿教师。对于教师模型不确定的token——通常是事实性的——它切换回标准的语料监督，忽略教师微弱的信号。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 223.34,
+      "end": 228.92,
+      "en": "That makes sense. It's like only listening to the teacher when the teacher is sure of the answer. Did they find this actually resolved the tradeoff?",
+      "zh": "这很合理。就像只在老师确定答案的时候才听老师的。他们有没有发现这真的解决了这个权衡问题？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 229.66,
+      "end": 255.22,
+      "en": "Yes, their results show it largely does. Switch Distillation achieved significant gains in reasoning and knowledge benchmarks, far surpassing the baseline, while almost completely preserving factual recall during mid-training. And interestingly, after the full post-training and alignment pipeline, the models trained with Switch Distillation often ended up with the best performance on factual recall as well, suggesting the initial mid-training specialization paid off.",
+      "zh": "是的，他们的结果表明这基本上解决了。Switch Distillation在推理和知识基准上取得了显著提升，远超基线，同时在中期训练中几乎完全保留了事实回忆能力。有趣的是，在完整的后训练和对齐流程之后，用Switch Distillation训练的模型在事实回忆上往往也表现最好，说明中期训练阶段的初步专门化是有回报的。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 255.48,
+      "end": 258.92,
+      "en": "Why reverse KL for the confident tokens instead of the more common forward KL?",
+      "zh": "为什么对置信度高的token用反向KL，而不是更常用的正向KL？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 259.62,
+      "end": 288.36,
+      "en": "They ablated that choice. Reverse KL is 'mode-seeking,' meaning it encourages the student to focus heavily on the teacher's single most likely prediction. This is beneficial when the teacher is confident. Forward KL is 'mean-seeking' and tries to match the entire distribution, which can be less effective if you just want the student to learn the teacher's best guess. The ablations confirmed that reverse KL performed slightly better in their setup, reinforcing the teacher's sharpest predictions.",
+      "zh": "他们做了消融实验来验证这个选择。反向KL是“寻峰”的，也就是说它会促使学生模型高度聚焦于教师模型最有可能的那个预测。当教师模型很有把握时，这是有好处的。而正向KL是“寻均”的，试图匹配整个分布，如果你只是想让学生学到教师最好的那个猜测，那效果可能就没那么好。消融实验证实，在他们的设定下反向KL表现略好，能进一步强化教师模型最确定的那些预测。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 288.94,
+      "end": 311.6,
+      "en": "The biggest implication here is the concept of 'stage-aware optimization.' It challenges the idea that a single training objective is optimal throughout a model's entire lifecycle. The best way to teach a model might depend on what it already knows. This work provides strong evidence that as a student model becomes more knowledgeable, our methods for transferring knowledge to it must also become more sophisticated.",
+      "zh": "这里最大的启示是“阶段感知优化”这个概念。它挑战了这样一种观念：单一的训练目标在模型整个生命周期中都是最优的。教模型的最佳方式可能取决于它已经知道什么。这项工作提供了强有力的证据，说明随着学生模型知识越来越丰富，我们向它传递知识的方法也必须变得越来越精细。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 312.16,
+      "end": 324.66,
+      "en": "So this seems different from something like 'Entropy-Aware On-Policy Distillation,' which also uses entropy but more as a way to balance on-policy and off-policy data. Here, it's about routing between different loss functions on the same data.",
+      "zh": "所以这跟“熵感知的在线策略蒸馏”不太一样，那个虽然也用到了熵，但更多是用来平衡在线策略和离线策略的数据。而这里说的是在同一批数据上，在不同损失函数之间做路由选择。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 325.0,
+      "end": 352.08,
+      "en": "Precisely. It's an optimization-centric approach, not a data-centric one. It's not about curating the data; it's about dynamically changing how you learn from the data you have, based on a teacher's state. This makes it complementary to efforts focused on building better datasets. You can combine a high-quality mid-training corpus with an intelligent, stage-aware learning objective like Switch Distillation to maximize learning efficiency, which is critical as high-quality data becomes a bottleneck.",
+      "zh": "正是如此。这是一种以优化为中心的方法，而不是以数据为中心。重点不在于筛选数据，而在于根据教师模型的状态，动态地改变你从已有数据中学习的方式。这使得它与那些专注于构建更好数据集的工作形成互补。你可以把高质量的中期训练语料和像Switch Distillation这样智能的、能感知阶段的学习目标结合起来，从而最大化学习效率，而这一点在高质量数据成为瓶颈时尤为关键。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 352.08,
+      "end": 386.847,
+      "en": "So to wrap up, this paper identifies a nuanced, stage-dependent tradeoff in knowledge distillation and proposes an elegant solution. The key takeaway is that the state of the student model matters. An intervention that works on a randomly initialized model might have unintended side effects on a model that's already an expert in many areas. Future training methods will likely need to be more adaptive, sensitive to the model's evolving knowledge throughout its training journey. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "总结一下，这篇论文发现了知识蒸馏中一个微妙的、依赖阶段的权衡，并提出了一个优雅的解决方案。核心结论是：学生模型的状态很重要。一个对随机初始化模型有效的干预，可能对一个已经在很多领域很擅长的模型产生意想不到的副作用。未来的训练方法很可能需要更具适应性，能够感知模型在整个训练过程中不断演变的知识状态。感谢收听。如果还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{he2026knowledgedistillationmidtrainingfavors,\n      title={Knowledge Distillation During Mid-Training Favors Reasoning over Factual Recall}, \n      author={Jacqueline He and Howard Yen and Shuyue Stella Li and Margaret Li and Hanqing Zeng and Yinglong Xia and Benyu Zhang and Zhuokai Zhao and Qiang Zhang and Pang Wei Koh and Luke Zettlemoyer and Wen-tau Yih},\n      year={2026},\n      eprint={2609.01532},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.01532}, \n}",
+  "topics": [
+    "Transformers",
+    "Knowledge Distillation",
+    "Lightweight Models"
+  ],
+  "peaks": [
+    1.0,
+    0.448,
+    0.545,
+    0.486,
+    0.325,
+    0.45,
+    0.463,
+    0.448,
+    0.502,
+    0.477,
+    0.379,
+    0.337,
+    0.464,
+    0.447,
+    0.294,
+    0.546,
+    0.35,
+    0.298,
+    0.672,
+    0.296,
+    0.479,
+    0.373,
+    0.417,
+    0.502,
+    0.433,
+    0.473,
+    0.449,
+    0.408,
+    0.358,
+    0.321,
+    0.509,
+    0.522,
+    0.428,
+    0.454,
+    0.347,
+    0.531,
+    0.314,
+    0.307,
+    0.335,
+    0.297,
+    0.313,
+    0.415,
+    0.531,
+    0.317,
+    0.212,
+    0.281,
+    0.2,
+    0.418,
+    0.737,
+    0.215,
+    0.268,
+    0.208,
+    0.3,
+    0.37,
+    0.454,
+    0.208,
+    0.278,
+    0.354,
+    0.369,
+    0.379,
+    0.458,
+    0.494,
+    0.254,
+    0.36,
+    0.259,
+    0.417,
+    0.51,
+    0.376,
+    0.526,
+    0.398,
+    0.43,
+    0.48
+  ],
+  "published": "2026-09-01",
+  "license": "CC BY"
+}

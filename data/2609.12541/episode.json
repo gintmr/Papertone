@@ -1,0 +1,248 @@
+{
+  "id": "2609.12541",
+  "title": "Agent as Policy for Robotic Manipulation",
+  "authors": [
+    "Mengzhao Jia",
+    "Yang Lin",
+    "Xixin Zhang",
+    "Zhihan Zhang",
+    "Xiaobai Liu",
+    "Meng Jiang"
+  ],
+  "abstract": "We demonstrate that a general-purpose agent can directly drive a physical robot throughout task execution without any task-specific or environment-specific training. We introduce Agent as Policy (AGP), which places task planning and execution under the agent's control. Given a task and a robot interface, the agent interprets visual evidence, writes executable programs, issues motion commands, and revises its actions in response to physical outcomes. This brings the agent's reasoning and programming capabilities into continuous interaction with the physical world. We study AGP across multiple real-world manipulation tasks spanning precision manipulation, dynamic motions, and deformable objects. These include assembly from human videos, block construction from goal images, dice flipping, targeted throwing, and bimanual towel folding. AGP achieves success rates of at least 80% in seven of eight task configurations and significantly outperforms previous agentic robot systems. We further study efficiency through task experience accumulation and find that reusing saved procedures and programs shortens execution time across repeated trials. These findings support a path for general-purpose agents to act as robot policies, extending their autonomy to physical manipulation through runtime reasoning, programming, and interaction.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.12541",
+    "arxiv": "https://arxiv.org/abs/2609.12541"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a09db6-f617-77e3-927a-e894f323fc42/podcast.mp3",
+  "duration": 336.797,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 29.8,
+      "en": "In our seminar on Embodied AI Systems, we've seen a lot of recent work on connecting language models to robots. Papers like 'Robotic Programmer' focus on translating instructions into policy code, while 'CaP-X' benchmarks these coding agents. Today's lecture is on “Agent as Policy for Robotic Manipulation,” a paper from researchers at Notre Dame and UC San Diego that proposes a different architecture. It moves away from generating a static program towards keeping the agent live in the execution loop. Yes, Noah?",
+      "zh": "在我们关于具身智能系统的研讨课上，我们看到了很多最近把语言模型连接到机器人的工作。像《Robotic Programmer》这样的论文，重点是把指令翻译成策略代码，而《CaP-X》则对这些编码智能体做基准测试。今天的讲座讲的是《Agent as Policy for Robotic Manipulation》，这是圣母大学和加州大学圣地亚哥分校的研究人员的一篇论文，它提出了一种不同的架构。它不再生成一个静态程序，而是让智能体一直留在执行回路里。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 30.2,
+      "end": 38.34,
+      "en": "Hi Professor. So, are you saying that instead of the agent writing a script for the robot to execute, the agent is continuously making decisions during the task itself?",
+      "zh": "教授您好。所以您的意思是，与其让智能体写一段脚本让机器人去执行，不如让智能体在任务过程中持续地做决策，是这样吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.76,
+      "end": 65.82,
+      "en": "Precisely. That’s the core contribution here. Earlier systems often treated the agent as a high-level planner or a one-shot code generator. You’d have a 'code as policy' system that generates a program, and then a separate system executes it. Or you'd have an orchestrator that sequences pre-trained skills. This paper's approach, which they call Agent as Policy or AGP, keeps the general-purpose agent active throughout. It functions as the robot policy itself.",
+      "zh": "正是如此。这就是这篇论文的核心贡献。早期的系统往往把智能体当作一个高层规划器，或者一个一次性生成代码的工具。你要么有一个“代码即策略”的系统，先生成一个程序，再由另一个独立的系统去执行它；要么有一个编排器，把预训练好的技能按顺序串起来。而这篇论文提出的方法，他们称之为“智能体即策略”，简称AGP，它让这个通用智能体在整个过程中始终保持活跃，直接充当机器人策略本身。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 66.1,
+      "end": 69.02,
+      "en": "So it's not just planning; it's also perceiving and reacting in real-time?",
+      "zh": "所以它不只是做规划，还要实时感知和反应？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 69.9,
+      "end": 97.38,
+      "en": "Correct. The agent is responsible for the entire loop: deciding what to observe from the cameras, interpreting visual and proprioceptive data, writing or modifying its own Python scripts to calculate things like object poses, issuing motion commands, and then observing the physical outcome to decide the next step. This is meant to handle the uncertainty of the real world—situations where an initial plan fails due to a small alignment error or an unexpected slip, and the robot needs to dynamically recover.",
+      "zh": "没错。这个智能体负责整个闭环：决定从摄像头观察什么、解读视觉和本体感知数据、编写或修改自己的Python脚本来计算物体位姿之类的东西、发出运动指令，然后观察物理结果来决定下一步。这是为了应对真实世界的不确定性——比如初始计划因为一点点对齐误差或意外打滑而失败，机器人需要动态恢复的情况。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 97.8,
+      "end": 100.54,
+      "en": "How does that work architecturally? Is it one monolithic agent?",
+      "zh": "它在架构上是如何运作的？是一个单体智能体吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 100.86,
+      "end": 132.24,
+      "en": "They use a two-stage process. First, a 'preparation agent' takes the user's request—which could be a video, an image, or just text—and creates a formal task definition. This includes the goal, constraints, and success criteria. Then, a separate 'execution agent' takes over. This agent gets the task definition and access to a workspace where it can save scripts, notes, and sensor data. Its policy is essentially a sequence of tool calls to observe the world, run code, or move the robot.",
+      "zh": "他们用的是一个两阶段流程。首先，一个“准备智能体”接收用户的请求——可能是视频、图片，也可能只是文字——然后生成一个正式的任务定义，包括目标、约束条件和成功标准。接着，一个独立的“执行智能体”接手。这个智能体会拿到任务定义，并且可以访问一个工作空间，在里面保存脚本、笔记和传感器数据。它的策略本质上就是一连串工具调用，用来观察世界、运行代码或者控制机器人移动。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 132.6,
+      "end": 138.66,
+      "en": "The paper mentioned a variety of tasks, from block stacking to bimanual towel folding. How did the system perform?",
+      "zh": "论文里提到了各种各样的任务，从搭积木到双臂叠毛巾。这个系统表现如何？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 138.66,
+      "end": 164.78,
+      "en": "The results were quite successful for many tasks, though the number of trials was small. It achieved 8 out of 10 successes on a complex four-pair assembly task and perfect scores on pyramid construction and dice flipping. The bimanual towel folding was interesting. Sequential folding worked in all five trials, but simultaneous folding only succeeded in three of five and left wrinkles. This highlights the challenges with deformable objects and precise coordination.",
+      "zh": "结果在很多任务上都相当成功，不过试验次数比较少。在一个复杂的四对装配任务上，它做到了十次里成功八次，而在金字塔搭建和掷骰子任务上则是满分。双手叠毛巾那个挺有意思。顺序折叠五次全成功，但同时折叠五次里只成了三次，还留下了褶皱。这也凸显了可变形物体和精确协调带来的挑战。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 165.26,
+      "end": 174.62,
+      "en": "Wait, what about the cost? The report noted that a single successful assembly trial took over 30 minutes and cost around 16 dollars in tokens. That seems prohibitive for practical use.",
+      "zh": "等等，那成本呢？报告里提到，一次成功的装配试验要花30多分钟，光token就花了大概16美元。这在实际应用里感觉根本用不起啊。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 174.98,
+      "end": 206.68,
+      "en": "That's a critical limitation, and you're right to point it out. The resource usage is substantial. The cost and time come from the entire process: the agent reasoning, generating code, executing it, observing, and then reasoning again. However, the authors did show that experience reuse helps. In repeated assembly trials, execution time dropped by nearly 30% by the fifth run because the agent could reuse its previously written and validated scripts for things like grasp calculations.",
+      "zh": "这确实是个关键局限，你指出来很对。资源消耗确实很大。成本和时间来自整个流程：智能体推理、生成代码、执行、观察，然后再推理。不过作者确实证明了经验复用是有帮助的。在重复的装配试验中，到第五次运行时执行时间下降了近30%，因为智能体可以复用之前编写并验证过的脚本，比如用于抓取计算的部分。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 207.3,
+      "end": 212.38,
+      "en": "That makes sense. It's learning by saving code. Did they test if that experience could transfer between different models?",
+      "zh": "这就说得通了，它是在通过保存代码来学习。那他们有没有测试这种经验能不能在不同模型之间迁移？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 212.82,
+      "end": 236.76,
+      "en": "They did. They took a less capable model, GPT-5.6 Terra, which initially only succeeded on 1 of 5 trials. When they gave it the workspace files—the scripts and notes—generated by the more capable GPT-6 Astra, its success rate jumped to 4 out of 5. This suggests that a powerful model could establish robust procedures that a cheaper model could then reuse, which is an interesting direction for mitigating the high costs.",
+      "zh": "他们确实做了。他们用一个能力较弱的模型GPT-5.6 Terra来测试，它一开始五次里只成功了一次。当他们把更强的GPT-6 Astra生成的工作区文件——那些脚本和笔记——交给它之后，成功率就跳到了五次里成功四次。这说明一个强大的模型可以建立起稳健的流程，然后让更便宜的模型去复用，这对于降低高昂成本来说是一个很有意思的方向。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 237.16,
+      "end": 266.56,
+      "en": "The key implication of this work is that it redefines the boundary between the agent and the robot. It treats the runtime coding agent as the policy, merging high-level reasoning with low-level control. This contrasts with approaches like OneVLA or GR-2, which aim to train a single, massive vision-language-action model on huge datasets. AGP doesn't require task-specific training; it leverages the general problem-solving and coding abilities of the foundation model at runtime.",
+      "zh": "这项工作的关键意义在于，它重新划定了智能体和机器人之间的边界。它把运行时编码智能体当作策略，将高层推理与底层控制融为一体。这与OneVLA或GR-2这类思路形成对比，后者旨在用海量数据训练一个单一的大规模视觉-语言-动作模型。AGP不需要针对特定任务进行训练，它在运行时直接利用基础模型通用的解题和编码能力。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 266.96,
+      "end": 272.44,
+      "en": "So it's trading the massive upfront cost of training a VLA for a higher per-inference cost during execution.",
+      "zh": "所以它是把训练VLA所需的高昂前期成本，换成了执行时更高的单次推理成本。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 272.44,
+      "end": 298.6,
+      "en": "Exactly. And that comes with its own set of challenges: speed, cost, and of course, safety. Having a language model generate and execute code that moves a physical arm requires significant safety protocols. But as a proof of concept, AGP establishes that a general-purpose agent can directly supervise and adapt robotic manipulation in the physical world, which is a compelling research direction.",
+      "zh": "没错。而这本身也带来了一系列挑战：速度、成本，当然还有安全。让语言模型生成并执行控制物理机械臂的代码，需要相当严格的安全协议。但作为一个概念验证，AGP证明了通用智能体能够直接监督并适应物理世界中的机器人操作，这是一个很有吸引力的研究方向。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 298.6,
+      "end": 331.82,
+      "en": "So to wrap up, 'Agent as Policy' provides evidence that a general coding agent can serve as a direct, runtime robot policy. It handles failure and uncertainty by keeping the agent in the loop to perceive, reason, and re-program as needed. While slow and expensive today, this approach of fusing reasoning and action at runtime points toward more flexible and adaptive robotic systems. The main takeaway is the conceptual shift: the policy isn't a pre-trained network or a fixed script, but the active, ongoing process of agent-driven computation.",
+      "zh": "总结一下，“智能体即策略”证明了通用编程智能体可以直接充当运行时的机器人策略。它通过让智能体始终在环、按需感知、推理和重新编程，来应对失败和不确定性。虽然目前又慢又贵，但这种在运行时融合推理与行动的方式，指向了更灵活、更具适应性的机器人系统。核心结论在于一个概念上的转变：策略不再是一个预训练网络或固定脚本，而是智能体驱动的、持续进行的主动计算过程。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 332.32,
+      "end": 336.797,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{jia2026agentpolicyroboticmanipulation,\n      title={Agent as Policy for Robotic Manipulation}, \n      author={Mengzhao Jia and Yang Lin and Xixin Zhang and Zhihan Zhang and Xiaobai Liu and Meng Jiang},\n      year={2026},\n      eprint={2609.12541},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.12541}, \n}",
+  "topics": [
+    "Agents",
+    "Imitation Learning",
+    "Multimodal Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.454,
+    0.212,
+    0.423,
+    0.407,
+    0.46,
+    0.554,
+    0.587,
+    0.377,
+    0.318,
+    0.383,
+    0.307,
+    0.269,
+    0.401,
+    0.587,
+    0.593,
+    0.626,
+    0.479,
+    0.332,
+    0.563,
+    0.481,
+    0.666,
+    0.428,
+    0.55,
+    0.527,
+    0.441,
+    0.321,
+    0.398,
+    0.747,
+    0.665,
+    0.633,
+    0.788,
+    0.477,
+    0.863,
+    0.518,
+    0.405,
+    0.481,
+    0.812,
+    0.511,
+    0.552,
+    0.87,
+    0.651,
+    0.463,
+    0.445,
+    0.341,
+    0.487,
+    0.395,
+    0.433,
+    0.2,
+    0.364,
+    0.993,
+    0.833,
+    0.685,
+    0.657,
+    0.739,
+    0.473,
+    0.65,
+    0.636,
+    0.66,
+    0.52,
+    0.721,
+    0.483,
+    0.627,
+    0.529,
+    0.557,
+    0.479,
+    0.522,
+    0.618,
+    0.286,
+    0.54,
+    0.325,
+    0.583
+  ],
+  "published": "2026-09-11",
+  "license": "arXiv 默认许可"
+}

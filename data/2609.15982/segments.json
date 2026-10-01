@@ -1,0 +1,186 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 399.281,
+  "word_match_rate": 0.9484,
+  "line_count": 25,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in AI Agents. Today's lecture is on 'The Router Within: Eliciting Native Skill Routing from a Frozen LLM,' a paper from researchers at Tsinghua University. We've seen a lot of recent work on augmenting agents with skills, like Alibaba's 'SkillRouter' which focuses on a retrieve-and-rerank pipeline. The dominant trend has been to treat skill selection as an external search problem. This paper challenges that assumption.",
+      "start": 0.0,
+      "end": 26.16
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "It asks whether the agent's own internal representations, generated during a normal forward pass, can be used for routing. Yes, Noah?",
+      "start": 26.16,
+      "end": 35.0
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. So, if I understand correctly, instead of having a separate retriever model that indexes skills, they're trying to make the main agent model find the right skill for itself, but without explicitly seeing a list of skills in its context?",
+      "start": 35.58,
+      "end": 48.22
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Precisely. That's the core objective. Current systems face a difficult trade-off. One approach is progressive disclosure, where you put skill names and descriptions in the context. This works, but it consumes valuable context space and creates attention competition with the user's actual task. As you add more skills, it becomes unmanageable.",
+      "start": 48.68,
+      "end": 67.58
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "And the other approach is retrieve-and-rerank.",
+      "start": 67.8,
+      "end": 68.94
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Correct. That keeps the context clean but outsources the decision to a separate model, like an embedding model. That external model doesn't share the agent's reasoning process. It might struggle to understand needs that arise mid-task, for example, after a tool returns an unexpected result. It's disconnected from the agent's live cognitive state.",
+      "start": 70.28,
+      "end": 90.16
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "This paper's system, named Gavel, tries to find a middle ground. It wants a task-only context, no standalone routing model, and cheap, installation-time indexing for new skills. The central hypothesis is that the necessary semantic information for routing already exists within the LLM's hidden states.",
+      "start": 90.52,
+      "end": 109.32
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So when they say 'frozen LLM,' they mean the base model's weights are completely unchanged? They aren't fine-tuning the agent to be a better router?",
+      "start": 109.32,
+      "end": 116.56
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. The agent backbone, a Qwen model in their main experiments, is not trained. All they train are two small linear projections. This is key. It means adding a new skill doesn't require a costly retraining run. You just perform one forward pass on the new skill to compute its representation for indexing. This makes the system scalable to tens of thousands of skills.",
+      "start": 117.28,
+      "end": 140.28
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The methodology is a two-stage process: 'Glance' and 'Verdict'. Let's start with the Glance. At installation time, each skill document is passed through the frozen LLM. At a specific intermediate layer—layer 44 out of 64, in this case—they use a learned projection to map every token's hidden state into a shared 768-dimensional routing space. These vectors form a 'key bank' for that skill.",
+      "start": 140.72,
+      "end": 167.3
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Hold on, storing a vector for every single token in a massive skill library sounds computationally expensive. How do they handle that?",
+      "start": 167.66,
+      "end": 174.98
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A valid concern. They compress the key banks using something called an epsilon-cover. It's a method that selects a smaller, representative set of vectors from the bank, ensuring that any vector they discard is still close to one they've kept. This reduced their storage needs by about eight and a half times.",
+      "start": 175.28,
+      "end": 191.18
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Then, during a live task, the user's query is also processed by the same frozen LLM. A second learned projection maps the task tokens into the same routing space. Each task token's vector is then used to search across all the compressed skill banks, finding the skill tokens it has the highest similarity with. This generates an initial ranking of all skills.",
+      "start": 191.18,
+      "end": 213.34
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So it's a very fine-grained, token-to-token matching process. What happens in the 'Verdict' stage?",
+      "start": 213.78,
+      "end": 218.22
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The glance stage produces a shortlist of about nine candidate skills on average. The verdict stage then does a more expensive, deeper evaluation of just these candidates. For each candidate skill, it appends the user's task to the skill document and asks the frozen LLM to generate two signals.",
+      "start": 218.22,
+      "end": 234.52
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The first is task likelihood: how predictable is the user's task, given the skill document? The second is a direct yes-or-no relevance judgment. The final score combines the initial glance score with these two new signals, much like a product-of-experts model.",
+      "start": 235.02,
+      "end": 250.74
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Why combine all three? Wouldn't the direct yes/no judgment be enough?",
+      "start": 251.08,
+      "end": 254.56
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Their ablation studies showed that relying on just one signal was less effective. The model's explicit yes/no judgment isn't perfectly calibrated. Combining contrastive evidence from the glance, generative evidence from the task likelihood, and discriminative evidence from the final judgment makes the decision more robust.",
+      "start": 254.9,
+      "end": 273.16
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The real significance here is architectural. Gavel shows a path to using the agent's own computation for routing. This could reduce context pressure and, importantly, means routing accuracy should naturally improve as the backbone LLM gets more capable, without needing to retrain a separate retrieval stack. It’s a departure from approaches like SkillOS or SAGE that rely on reinforcement learning to teach an agent which skills to pick. Gavel suggests the knowledge is already there, it just needs to be elicited.",
+      "start": 273.16,
+      "end": 304.42
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "So on their new benchmark, SkillTraj, how did this approach handle tasks where the need for a skill only becomes apparent mid-conversation, like after a tool fails?",
+      "start": 304.78,
+      "end": 313.52
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "That's where it showed a clear advantage. On scenarios where a tool's output revealed a new need, Gavel outperformed the strongest baseline by a significant margin. External retrievers struggled in those cases because they had to choose between embedding the entire noisy trajectory or just the last message, which might lack context. Gavel's approach, which weights recent tokens more heavily but still considers the whole history, proved more effective at capturing the agent's immediate state.",
+      "start": 313.88,
+      "end": 342.38
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "Are there any major limitations to this approach?",
+      "start": 342.7,
+      "end": 344.74
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "Certainly. The system isn't completely training-free; the two projection layers have to be trained once for each backbone model family. The verdict stage also adds some inference latency. And most of the evaluation relies on automated adjudication and simulated trajectories, so we'd need to see how these routing gains translate to real-world task completion rates. But it's a very promising direction.",
+      "start": 345.28,
+      "end": 366.94
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "text": "So, to wrap up, Gavel proposes a novel method for skill routing that uses the agent's own internal representations. It avoids context clutter and the need for a separate retrieval model by learning a lightweight interface into the frozen LLM's hidden states. The main takeaway is that for certain tasks, the best router might not be an external system, but rather a way to read what the agent model is already thinking. It’s about eliciting knowledge from the router within.",
+      "start": 367.56,
+      "end": 394.04
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 394.46,
+      "end": 399.281
+    }
+  ]
+}

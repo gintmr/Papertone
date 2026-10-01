@@ -1,0 +1,257 @@
+{
+  "id": "2609.35748",
+  "title": "Improving Test-Time Scaling with Adaptive Looped Transformers",
+  "authors": [
+    "Yichen You",
+    "Tianyu Fu",
+    "Aosong Feng",
+    "Xingtai Lv",
+    "Xuefei Ning",
+    "Ning Ding",
+    "Yu Wang"
+  ],
+  "abstract": "Looped transformers have demonstrated promising parameter efficiency by reusing layers for latent computation. Prior studies compare looped and non-looped models at matched parameters or per-token FLOPs. However, to the best of our knowledge, whether looping improves test-time scaling as outputs grow longer remains underexplored. Through post-training looped transformers, we study the accuracy-compute slope, measured as the accuracy gain per doubling of test-time decoding FLOPs. We find that existing looped transformers often yield steeper slopes than their non-looped baseline, yet underperform it at matched compute. While fixed-depth looping spends extra iterations on every token, our analysis shows that many tokens do not benefit from extra iterations. We therefore propose TaH2, which enables the model to focus extra iterations on the tokens that benefit from looping. It jointly post-trains the backbone and an iteration decider through lookahead depth supervision, which uses online labels indicating whether further iteration improves the prediction. TaH2 improves both the efficiency and attainable accuracy of test-time scaling. On challenging AIME benchmarks, TaH2 improves the accuracy-compute slope by 53% (2.74 vs. 1.79) over the non-looped baseline, exceeding the baseline's peak accuracy by about 3.4 points at matched test-time compute. As the maximum iteration depth increases, existing looped models largely plateau, while TaH2's gain over the non-looped baseline continues to grow from +2.8 points at depth 2 to +3.9 points at depth 8. Our code is available at this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.35748",
+    "arxiv": "https://arxiv.org/abs/2609.35748"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0eb3d-c1b3-7bda-a308-e664be80d404/podcast.mp3",
+  "duration": 422.765,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.96,
+      "en": "In Transformer Architectures, today’s lecture is on “Improving Test-Time Scaling with Adaptive Looped Transformers.” Researchers at Tsinghua University and Yale University ask how extra inference computation can improve reasoning without simply making a model larger. Work such as “Hyperloop Transformers” and “Think-at-Hard: Dynamic Looped Transformers for Improved Reasoning” reflects growing interest in recurrent and adaptive depth. This paper focuses specifically on whether that computation pays off at matched inference budgets. Go ahead, Noah.",
+      "zh": "在Transformer架构这门课上，今天讲的是“用自适应循环Transformer改进测试时扩展”。清华大学和耶鲁大学的研究者想搞清楚，额外的推理计算怎么才能提升推理能力，而不是单纯把模型做大。“Hyperloop Transformer”和“Think-at-Hard：用于提升推理的动态循环Transformer”这类工作，反映出大家对循环深度和自适应深度的兴趣越来越大。这篇论文特别关注的是，在推理预算相同的情况下，这些计算到底值不值。Noah，你来吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.04,
+      "end": 39.32,
+      "en": "Hi Professor, when you say “looped,” do you mean the model repeats the same layers?",
+      "zh": "教授您好，您说的“循环”是指模型重复使用相同的层吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.36,
+      "end": 70.94,
+      "en": "Exactly. A looped transformer reuses some or all of its layers, applying them repeatedly to hidden representations rather than producing a textual reasoning trace between passes. That can increase effective depth without adding a full new set of parameters. But parameter efficiency is not the same as compute efficiency: every extra pass costs inference time. The paper’s central question is whether carefully allocating those passes can improve accuracy as the inference budget grows.",
+      "zh": "没错。循环Transformer会复用部分或全部层，把它们反复作用于隐藏表示，而不是在每次传递之间生成文本形式的推理轨迹。这样可以在不增加一整套新参数的情况下提升有效深度。但参数效率不等于计算效率：每多一次传递都会增加推理时间。这篇论文的核心问题是，随着推理预算增长，精心分配这些传递次数能否提升准确率。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.9,
+      "end": 98.38,
+      "en": "The authors first compare Ouro and Huginn, two existing looped designs, with a standard transformer after post-training them from the same pretrained checkpoint. These looped models often gain accuracy faster as decoding computation increases, but still trail the standard model at similar compute levels. The distinction matters: a steeper scaling curve does not guarantee a better result at the budget a deployment can actually afford.",
+      "zh": "作者首先把Ouro和Huginn这两种已有的循环设计与一个标准Transformer做比较，方法是让它们从同一个预训练检查点出发进行后训练。这些循环模型往往随着解码计算量增加，准确率提升得更快，但在相同计算量水平下仍然落后于标准模型。这个区别很重要：更陡的扩展曲线并不保证在部署实际能负担的预算下就能得到更好的结果。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.3,
+      "end": 103.66,
+      "en": "So the problem is not recurrence itself, but how uniformly the model applies it?",
+      "zh": "所以问题不在于循环本身，而在于模型应用循环的方式太一刀切了？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.32,
+      "end": 127.56,
+      "en": "That is a key part of the diagnosis. A fixed-depth loop gives every token the same number of iterations, even when another pass helps some predictions, does nothing for others, or makes them worse. On validation tokens, the authors find little loss change for many tokens and a measurable worsening for others. Their proposed response is token-level adaptive depth, called Tah two.",
+      "zh": "这是诊断中的关键一环。固定深度的循环让每个token都经历相同的迭代次数，即便再跑一遍对某些预测有帮助，对另一些毫无作用，甚至会让结果更糟。在验证集token上，作者发现许多token的损失几乎没有变化，而另一些则出现了可测量的恶化。他们提出的应对方案是token级自适应深度，称为Tah two。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 129.64,
+      "end": 157.02,
+      "en": "Tah two combines a shared transformer backbone with a learned updater and a token-level decider. The updater uses the original token embedding together with the current hidden state to prepare the next recurrent input. The decider estimates whether the token should continue, using the embedding, hidden state, and leading prediction probabilities. Its additional components increase parameter count by less than 3%, while allowing different tokens to stop at different depths.",
+      "zh": "Tah two 把一个共享的 Transformer 主干和一个学习到的更新器以及一个 token 级决策器结合在一起。更新器利用原始 token 嵌入和当前隐藏状态来准备下一轮的循环输入。决策器则根据嵌入、隐藏状态以及领先的预测概率，估计这个 token 是否应该继续。它新增的组件让参数量增加不到 3%，同时允许不同的 token 在不同的深度停下来。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 157.96,
+      "end": 161.96,
+      "en": "Quick question: how does the decider learn that another pass is actually useful?",
+      "zh": "问个快问题：决策器怎么学会判断再跑一遍到底有没有用？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 161.96,
+      "end": 190.74,
+      "en": "The key is online lookahead supervision. During training, the system compares a token’s next-token loss before and after one additional iteration. If the loss falls, that pass helped; if it rises, continuing was harmful. For tokens that stop early, training briefly runs one extra iteration without gradients to check the decision. That lookahead is removed at inference, so serving does not pay for this training signal.",
+      "zh": "关键在于在线前瞻监督。训练时，系统会对比一个token在多做一次迭代前后的下一token损失。如果损失下降，说明这一轮有帮助；如果上升，说明继续下去反而有害。对于那些提前停止的token，训练时会短暂地多跑一次不带梯度的迭代，来检验这个决定是否正确。到了推理阶段，这个前瞻机制会被去掉，所以线上服务不需要为这个训练信号买单。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 190.74,
+      "end": 219.38,
+      "en": "The authors turn those measured gains into continuation labels, selecting improvements that cover 99% of the total positive gain. A cost-sensitive decider loss gives more weight to examples farther from the decision cutoff. The backbone, updater, and decider are optimized jointly, and training follows the decider’s own routing choices. This avoids teaching the model with an idealized routing policy that it cannot reproduce at inference.",
+      "zh": "作者把这些实测增益转成续跑标签，挑出的改进覆盖了总正增益的99%。一个对成本敏感的判断器损失会给离决策阈值更远的样本更高权重。主干、更新器和判断器联合优化，训练时也按判断器自己的路由选择来走。这样就避免了用一个模型在推理时根本复现不了的理想化路由策略来教它。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 219.38,
+      "end": 224.6,
+      "en": "Does Tah two combine predictions from every pass, or use only the final one?",
+      "zh": "Tah two是把每一轮的预测都结合起来，还是只用最后一轮的？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 225.34,
+      "end": 256.5,
+      "en": "It uses a stopping-weighted mixture of predictions from the iterations actually executed, rather than relying only on the final output. The main controlled experiments use post-trained Qwen three models, with a 1.7-billion-parameter model as the primary comparison. Evaluation spans mathematics, code, question answering, and tool use. The researchers vary generated-token budgets and estimate decoding flops, then also measure runtime with requests at different iteration depths.",
+      "zh": "它会把实际执行的各轮迭代预测按停止权重混合起来，而不是只看最终输出。主要对照实验用的是后训练过的Qwen三模型，以17亿参数模型作为主要比较对象。评测覆盖数学、代码、问答和工具使用。研究者改变生成token的预算并估算解码浮点运算量，同时还用不同迭代深度的请求测量运行时间。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 257.48,
+      "end": 287.8,
+      "en": "On the mathematics evaluation, Tah two at maximum depth two improves the accuracy gain per doubling of decoding flops by 53% over the standard model. At a matched budget of 191.7 trillion operations per response, its accuracy is about 15.4%, versus 12% for Standard. Deeper ceilings can raise peak performance, and results also improve across code, question answering, and tool-use tasks, though the size of the gain varies.",
+      "zh": "在数学评估上，最大深度为二的Tah two相比标准模型，在解码flops每翻一倍时的准确率提升高了53%。在每响应191.7万亿次运算的相同预算下，它的准确率约为15.4%，而标准模型为12%。更深的深度上限可以提高峰值性能，而且在代码、问答和工具使用任务上结果也有所改善，不过提升幅度各不相同。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 288.86,
+      "end": 294.26,
+      "en": "Hold on, if deeper ceilings can improve accuracy, why is depth two described as the better trade-off?",
+      "zh": "等等，如果更深的层数上限能提高准确率，那为什么又说深度为二才是更好的权衡呢？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 295.7,
+      "end": 325.18,
+      "en": "Because peak accuracy and accuracy per unit of inference compute are different objectives. In these experiments, depth two offers the most favorable accuracy-to-compute trade-off among the tested Tah two variants, while larger ceilings can reach higher accuracy. Adaptive execution also matters for latency: depth-two Tah two uses 1.22 times the decoding flops per token of Standard and adds roughly 30% to 34% end-to-end latency.",
+      "zh": "因为峰值准确率和单位推理计算量带来的准确率是两回事。在这些实验里，深度为二在测试过的Tah two变体中提供了最划算的准确率与计算量权衡，而更大的上限则能达到更高的准确率。自适应执行对延迟也很重要：深度为二的Tah two每个token的解码浮点运算量是标准版的1.22倍，端到端延迟大约增加30%到34%。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 326.08,
+      "end": 356.2,
+      "en": "The broader implication is that recurrent models should be evaluated by how accuracy changes as inference budgets expand, not only by parameter counts or compute at one fixed setting. This complements work such as “Hyperloop Transformers,” which explores layer reuse, while Tah two emphasizes token-specific decisions based on actual prediction improvement. The contribution is not simply adding depth; it is making depth conditional on evidence that more computation helps.",
+      "zh": "更广泛的意义在于，循环模型应该根据推理预算扩大时准确率如何变化来评估，而不只是看参数量或某个固定设置下的计算量。这与“Hyperloop Transformer”这类工作形成互补，后者探索的是层复用，而Tah two强调的是基于实际预测提升来做token级别的决策。它的贡献不只是增加深度，而是让深度取决于有证据表明更多计算确实有帮助。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 357.2,
+      "end": 360.7,
+      "en": "What should we be cautious about before applying this approach to other models?",
+      "zh": "在把这种方法用到其他模型之前，我们需要警惕什么？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 361.78,
+      "end": 390.98,
+      "en": "The evidence is promising but bounded. The study focuses on Qwen three models and supervised fine-tuning, so transfer to other architectures or reinforcement-learning settings remains open. Training is also more expensive: the depth-two 1.7-billion-parameter version uses an estimated 1.87 times the training flops of Standard. At inference, savings depend on serving systems that can efficiently batch tokens requiring different depths.",
+      "zh": "证据令人鼓舞，但仍有局限。这项研究聚焦于Qwen三系列模型和有监督微调，因此能否迁移到其他架构或强化学习场景仍是未知数。训练成本也更高：深度为二的17亿参数版本，估计训练浮点运算量是标准版的1.87倍。在推理阶段，能否节省算力取决于服务系统能否高效地对需要不同深度的token进行批处理。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 391.9,
+      "end": 422.765,
+      "en": "The takeaway is that extra computation is most useful when it is allocated according to the needs of individual predictions. Tah two shows one practical way to make that decision: measure whether another recurrent pass reduces loss, then train a decider to act on that signal. For researchers, the next questions concern broader generalization and efficient serving. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，额外的计算只有在根据每个预测的具体需求来分配时才最有用。Tah two 展示了一种做出这种决定的实用方法：衡量再做一次循环计算是否能降低损失，然后训练一个决策器根据这个信号来行动。对研究者来说，接下来的问题涉及更广泛的泛化能力和高效的服务部署。感谢收听。如果还有任何问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{you2026improvingtesttimescalingadaptive,\n      title={Improving Test-Time Scaling with Adaptive Looped Transformers}, \n      author={Yichen You and Tianyu Fu and Aosong Feng and Xingtai Lv and Xuefei Ning and Ning Ding and Yu Wang},\n      year={2026},\n      eprint={2609.35748},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.35748}, \n}",
+  "topics": [
+    "Transformers",
+    "Inference Optimization",
+    "Lightweight Models"
+  ],
+  "peaks": [
+    0.98,
+    0.568,
+    0.516,
+    0.362,
+    0.366,
+    0.264,
+    0.844,
+    1.0,
+    0.253,
+    0.372,
+    0.213,
+    0.306,
+    0.767,
+    0.394,
+    0.608,
+    0.254,
+    0.471,
+    0.829,
+    0.44,
+    0.297,
+    0.261,
+    0.29,
+    0.77,
+    0.627,
+    0.317,
+    0.323,
+    0.237,
+    0.824,
+    0.695,
+    0.547,
+    0.514,
+    0.415,
+    0.715,
+    0.643,
+    0.635,
+    0.676,
+    0.458,
+    0.431,
+    0.638,
+    0.669,
+    0.37,
+    0.321,
+    0.263,
+    0.38,
+    0.464,
+    0.352,
+    0.208,
+    0.274,
+    0.2,
+    0.725,
+    0.324,
+    0.445,
+    0.417,
+    0.425,
+    0.242,
+    0.633,
+    0.681,
+    0.275,
+    0.337,
+    0.274,
+    0.367,
+    0.497,
+    0.532,
+    0.344,
+    0.404,
+    0.209,
+    0.336,
+    0.4,
+    0.473,
+    0.206,
+    0.314,
+    0.203
+  ],
+  "published": "2026-09-28",
+  "license": "arXiv 默认许可"
+}

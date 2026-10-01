@@ -1,0 +1,303 @@
+{
+  "id": "2609.15982",
+  "title": "The Router Within: Eliciting Native Skill Routing from a Frozen LLM",
+  "authors": [
+    "Ruishuo Chen",
+    "Xun Wang",
+    "Yu Chen",
+    "Zhuoran Li",
+    "Longbo Huang"
+  ],
+  "abstract": "Skills extend an LLM agent beyond its parametric knowledge, and the gain they promise rests on picking the right one. Deployed harnesses route by preloading every skill's metadata into the context, which disperses the agent's attention and caps the library size. Retrieval pipelines move the selection out of the context, but also out of the agent's capability. We show that the frozen agent LLM already carries the routing signal in its own forward passes, and that two linear maps suffice to read it out with no skill text in the context. Our Gavel (Glance And Verdict from a frozen LLM) reads it in two steps. A glance scores the full library by matching the task's mid-layer states against a compact bank that one forward pass builds for each skill at installation, with the two maps as the only trained parameters. A verdict then resumes each shortlisted skill's forward pass, reads the model's own likelihood and yes/no judgment, and fuses both with the glance as a product of experts. Trained once, Gavel transfers zero-shot to three public benchmarks and SkillTraj, our new benchmark of 372 simulated agent trajectories. On Qwen3-32B it outperforms progressive disclosure and retrieve-and-rerank pipelines that add 1.2B to 16B external parameters, by up to 13.4 points on written tasks and up to 21.9 when the need for a skill arises mid-rollout. Routing accuracy improves as the backbone does, and in a bash-agent harness Gavel lets the 32B trigger the right skill on Skill-Use more often than models of up to 1.6T parameters in Codex.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.15982",
+    "arxiv": "https://arxiv.org/abs/2609.15982"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a2e4-e31f-7352-98c1-e9fb51b81f79/podcast.mp3",
+  "duration": 399.281,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 26.16,
+      "en": "Welcome to Advanced Topics in AI Agents. Today's lecture is on 'The Router Within: Eliciting Native Skill Routing from a Frozen LLM,' a paper from researchers at Tsinghua University. We've seen a lot of recent work on augmenting agents with skills, like Alibaba's 'SkillRouter' which focuses on a retrieve-and-rerank pipeline. The dominant trend has been to treat skill selection as an external search problem. This paper challenges that assumption.",
+      "zh": "欢迎来到AI智能体进阶专题。今天的讲座围绕一篇来自清华大学研究者的论文——《内在的路由器：从冻结的大语言模型中激发原生技能路由》。最近我们看到了很多关于给智能体增加技能的工作，比如阿里的SkillRouter，它聚焦于检索加重排序的流程。主流趋势一直把技能选择当作一个外部搜索问题。这篇论文挑战了这个假设。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 26.16,
+      "end": 35.0,
+      "en": "It asks whether the agent's own internal representations, generated during a normal forward pass, can be used for routing. Yes, Noah?",
+      "zh": "它问的是，智能体在正常前向传播过程中生成的内部表征，能不能直接用来做路由。好，诺亚？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 35.58,
+      "end": 48.22,
+      "en": "Excuse me, Professor. So, if I understand correctly, instead of having a separate retriever model that indexes skills, they're trying to make the main agent model find the right skill for itself, but without explicitly seeing a list of skills in its context?",
+      "zh": "不好意思，教授。所以，如果我理解得没错的话，他们不是用一个单独的检索器模型来给技能建索引，而是想让主智能体模型自己去找到合适的技能，但又不用在上下文里明确看到一份技能列表？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 48.68,
+      "end": 67.58,
+      "en": "Precisely. That's the core objective. Current systems face a difficult trade-off. One approach is progressive disclosure, where you put skill names and descriptions in the context. This works, but it consumes valuable context space and creates attention competition with the user's actual task. As you add more skills, it becomes unmanageable.",
+      "zh": "正是如此，这就是核心目标。目前的系统面临一个很难的权衡。一种做法是渐进式披露，把技能名称和描述放进上下文里。这确实有效，但会占用宝贵的上下文空间，还会和用户的实际任务争夺注意力。技能一多，就管不过来了。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 67.8,
+      "end": 68.94,
+      "en": "And the other approach is retrieve-and-rerank.",
+      "zh": "另一种方法是先检索再重排序。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 70.28,
+      "end": 90.16,
+      "en": "Correct. That keeps the context clean but outsources the decision to a separate model, like an embedding model. That external model doesn't share the agent's reasoning process. It might struggle to understand needs that arise mid-task, for example, after a tool returns an unexpected result. It's disconnected from the agent's live cognitive state.",
+      "zh": "没错。这样虽然能保持上下文干净，但把决策外包给了一个独立的模型，比如嵌入模型。那个外部模型并不共享智能体的推理过程。它可能很难理解任务中途出现的需求，比如某个工具返回了意料之外的结果之后。它和智能体实时的认知状态是脱节的。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 90.52,
+      "end": 109.32,
+      "en": "This paper's system, named Gavel, tries to find a middle ground. It wants a task-only context, no standalone routing model, and cheap, installation-time indexing for new skills. The central hypothesis is that the necessary semantic information for routing already exists within the LLM's hidden states.",
+      "zh": "这篇论文的系统叫Gavel，试图找到一个折中方案。它想要一个只包含任务的上下文，不要单独的路由模型，并且在新技能加入时用低成本的安装时索引。核心假设是：路由所需的语义信息，其实已经存在于LLM的隐藏状态里了。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 109.32,
+      "end": 116.56,
+      "en": "So when they say 'frozen LLM,' they mean the base model's weights are completely unchanged? They aren't fine-tuning the agent to be a better router?",
+      "zh": "所以他们说“冻结LLM”的时候，意思就是基础模型的权重完全不变？他们并没有微调智能体让它成为更好的路由器？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 117.28,
+      "end": 140.28,
+      "en": "Exactly. The agent backbone, a Qwen model in their main experiments, is not trained. All they train are two small linear projections. This is key. It means adding a new skill doesn't require a costly retraining run. You just perform one forward pass on the new skill to compute its representation for indexing. This makes the system scalable to tens of thousands of skills.",
+      "zh": "没错。智能体的主干，在他们主要实验里用的是Qwen模型，是不训练的。他们训练的只是两个小的线性投影。这一点很关键。这意味着新增一项技能不需要跑一次昂贵的重训练。你只要对新技能做一次前向传播，算出它的表示用于索引就行。这让系统能扩展到成千上万项技能。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 140.72,
+      "end": 167.3,
+      "en": "The methodology is a two-stage process: 'Glance' and 'Verdict'. Let's start with the Glance. At installation time, each skill document is passed through the frozen LLM. At a specific intermediate layer—layer 44 out of 64, in this case—they use a learned projection to map every token's hidden state into a shared 768-dimensional routing space. These vectors form a 'key bank' for that skill.",
+      "zh": "这个方法分两个阶段：Glance和Verdict。先看Glance阶段。在安装时，每个技能文档都会过一遍冻结的LLM。在某个特定的中间层——这里是64层中的第44层——他们用一个学习到的投影，把每个token的隐藏状态映射到一个共享的768维路由空间。这些向量就构成了该技能的键库。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 167.66,
+      "end": 174.98,
+      "en": "Hold on, storing a vector for every single token in a massive skill library sounds computationally expensive. How do they handle that?",
+      "zh": "等等，如果技能库那么大，还要给每个token都存一个向量，计算开销岂不是很大？他们是怎么处理的？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 175.28,
+      "end": 191.18,
+      "en": "A valid concern. They compress the key banks using something called an epsilon-cover. It's a method that selects a smaller, representative set of vectors from the bank, ensuring that any vector they discard is still close to one they've kept. This reduced their storage needs by about eight and a half times.",
+      "zh": "这个担心很合理。他们用一种叫epsilon-cover的方法来压缩关键向量库。这个方法会从库里挑出一组更小的、有代表性的向量，确保被丢弃的向量仍然和保留下来的某个向量很接近。这样就把存储需求降低了大约八倍半。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 191.18,
+      "end": 213.34,
+      "en": "Then, during a live task, the user's query is also processed by the same frozen LLM. A second learned projection maps the task tokens into the same routing space. Each task token's vector is then used to search across all the compressed skill banks, finding the skill tokens it has the highest similarity with. This generates an initial ranking of all skills.",
+      "zh": "然后在实际任务中，用户的查询也会由同一个冻结的LLM处理。第二个学习到的投影把任务token映射到同一个路由空间。接着，每个任务token的向量会在所有压缩后的技能库中搜索，找出与之相似度最高的技能token。这样就生成了所有技能的初步排名。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 213.78,
+      "end": 218.22,
+      "en": "So it's a very fine-grained, token-to-token matching process. What happens in the 'Verdict' stage?",
+      "zh": "所以这是一个非常细粒度的、token对token的匹配过程。那“裁决”阶段又发生了什么？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 218.22,
+      "end": 234.52,
+      "en": "The glance stage produces a shortlist of about nine candidate skills on average. The verdict stage then does a more expensive, deeper evaluation of just these candidates. For each candidate skill, it appends the user's task to the skill document and asks the frozen LLM to generate two signals.",
+      "zh": "初筛阶段平均会挑出大约九个候选技能。裁决阶段再对这些候选做更昂贵、更深入的评估。对每个候选技能，它会把用户任务附加到技能文档后面，然后让冻结的LLM生成两个信号。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 235.02,
+      "end": 250.74,
+      "en": "The first is task likelihood: how predictable is the user's task, given the skill document? The second is a direct yes-or-no relevance judgment. The final score combines the initial glance score with these two new signals, much like a product-of-experts model.",
+      "zh": "第一个是任务可能性：给定技能文档，用户任务的可预测性有多高？第二个是直接的“是或否”相关性判断。最终得分把最初的粗略评分和这两个新信号结合起来，很像一个专家乘积模型。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 251.08,
+      "end": 254.56,
+      "en": "Why combine all three? Wouldn't the direct yes/no judgment be enough?",
+      "zh": "为什么要三个信号一起用呢？直接做个是或否的判断不就够了吗？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 254.9,
+      "end": 273.16,
+      "en": "Their ablation studies showed that relying on just one signal was less effective. The model's explicit yes/no judgment isn't perfectly calibrated. Combining contrastive evidence from the glance, generative evidence from the task likelihood, and discriminative evidence from the final judgment makes the decision more robust.",
+      "zh": "他们的消融实验表明，只依赖单一信号效果会差一些。模型明确给出的是/否判断并没有那么准。把来自快速一瞥的对比证据、来自任务似然度的生成证据，以及来自最终判断的判别证据结合起来，决策会更稳健。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 273.16,
+      "end": 304.42,
+      "en": "The real significance here is architectural. Gavel shows a path to using the agent's own computation for routing. This could reduce context pressure and, importantly, means routing accuracy should naturally improve as the backbone LLM gets more capable, without needing to retrain a separate retrieval stack. It’s a departure from approaches like SkillOS or SAGE that rely on reinforcement learning to teach an agent which skills to pick. Gavel suggests the knowledge is already there, it just needs to be elicited.",
+      "zh": "真正的意义在于架构层面。Gavel展示了一条利用智能体自身计算来做路由的路径。这可以减轻上下文压力，更重要的是，这意味着随着骨干LLM能力增强，路由准确率应该会自然提升，而不需要重新训练一套独立的检索栈。这与SkillOS或SAGE等依赖强化学习来教智能体选择哪些技能的方法不同。Gavel表明知识其实已经存在，只需要被激发出来。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 304.78,
+      "end": 313.52,
+      "en": "So on their new benchmark, SkillTraj, how did this approach handle tasks where the need for a skill only becomes apparent mid-conversation, like after a tool fails?",
+      "zh": "那么在他们新的基准SkillTraj上，这种方法是如何处理那些只有在对话中途才显现出技能需求的任务的呢，比如工具调用失败之后？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 313.88,
+      "end": 342.38,
+      "en": "That's where it showed a clear advantage. On scenarios where a tool's output revealed a new need, Gavel outperformed the strongest baseline by a significant margin. External retrievers struggled in those cases because they had to choose between embedding the entire noisy trajectory or just the last message, which might lack context. Gavel's approach, which weights recent tokens more heavily but still considers the whole history, proved more effective at capturing the agent's immediate state.",
+      "zh": "这正是它展现出明显优势的地方。在工具输出暴露出新需求的场景中，Gavel 大幅超越了最强的基线。外部检索器在这些情况下表现不佳，因为它们不得不在两种方案之间做选择：要么嵌入整条嘈杂的轨迹，要么只嵌入最后一条消息，而后者可能缺乏上下文。Gavel 的做法是对近期 token 赋予更高权重，同时仍然考虑完整历史，这在捕捉智能体即时状态方面被证明更为有效。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 342.7,
+      "end": 344.74,
+      "en": "Are there any major limitations to this approach?",
+      "zh": "这个方法有什么主要的局限吗？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 345.28,
+      "end": 366.94,
+      "en": "Certainly. The system isn't completely training-free; the two projection layers have to be trained once for each backbone model family. The verdict stage also adds some inference latency. And most of the evaluation relies on automated adjudication and simulated trajectories, so we'd need to see how these routing gains translate to real-world task completion rates. But it's a very promising direction.",
+      "zh": "当然。这个系统并不是完全无需训练的；两个投影层需要针对每个主干模型系列各训练一次。判定阶段也会增加一些推理延迟。而且大部分评估依赖自动裁决和模拟轨迹，所以还需要看看这些路由带来的提升在真实世界的任务完成率上能转化出多少。但这是一个非常有前景的方向。"
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "start": 367.56,
+      "end": 394.04,
+      "en": "So, to wrap up, Gavel proposes a novel method for skill routing that uses the agent's own internal representations. It avoids context clutter and the need for a separate retrieval model by learning a lightweight interface into the frozen LLM's hidden states. The main takeaway is that for certain tasks, the best router might not be an external system, but rather a way to read what the agent model is already thinking. It’s about eliciting knowledge from the router within.",
+      "zh": "总结一下，Gavel提出了一种新的技能路由方法，利用智能体自身的内部表示。它通过学习一个轻量级接口接入冻结LLM的隐藏状态，避免了上下文杂乱和单独检索模型的需求。核心结论是，对某些任务来说，最好的路由器可能不是外部系统，而是读取智能体模型已经在想什么的方式。关键在于从内部的路由器中引出知识。"
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "start": 394.46,
+      "end": 399.281,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chen2026routerwithinelicitingnative,\n      title={The Router Within: Eliciting Native Skill Routing from a Frozen LLM}, \n      author={Ruishuo Chen and Xun Wang and Yu Chen and Zhuoran Li and Longbo Huang},\n      year={2026},\n      eprint={2609.15982},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.15982}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    1.0,
+    0.437,
+    0.347,
+    0.384,
+    0.283,
+    0.621,
+    0.253,
+    0.397,
+    0.335,
+    0.402,
+    0.424,
+    0.339,
+    0.534,
+    0.511,
+    0.472,
+    0.311,
+    0.364,
+    0.593,
+    0.392,
+    0.517,
+    0.385,
+    0.377,
+    0.324,
+    0.29,
+    0.2,
+    0.434,
+    0.376,
+    0.338,
+    0.436,
+    0.295,
+    0.454,
+    0.358,
+    0.345,
+    0.305,
+    0.499,
+    0.579,
+    0.381,
+    0.372,
+    0.524,
+    0.461,
+    0.373,
+    0.521,
+    0.39,
+    0.269,
+    0.543,
+    0.435,
+    0.538,
+    0.429,
+    0.392,
+    0.487,
+    0.326,
+    0.355,
+    0.213,
+    0.313,
+    0.321,
+    0.426,
+    0.352,
+    0.59,
+    0.384,
+    0.4,
+    0.475,
+    0.527,
+    0.425,
+    0.331,
+    0.472,
+    0.437,
+    0.486,
+    0.425,
+    0.31,
+    0.376,
+    0.439,
+    0.433
+  ],
+  "published": "2026-09-14",
+  "license": "CC BY"
+}

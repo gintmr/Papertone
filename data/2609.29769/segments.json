@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 504.084,
+  "word_match_rate": 0.9081,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical graduate seminar on Evaluation Methods for Language Models, today’s lecture is on Jev as a typed classifier for rubric judging. Recent work such as “JEV-as-a-Judge: Accept When Confident, Escalate When Unsure” explores confidence-based escalation, while “Evaluating Judges as Evaluators: The JETTS Benchmark of LLM-as-Judges as Test-Time Scaling Evaluators” studies judge behavior in evaluation pipelines. The field is looking for reliable ways to scale evaluation; this paper asks whether structured, batched decisions can reduce the cost of rubric grading. Yes, Noah?",
+      "start": 0.0,
+      "end": 40.72
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is Jev generating explanations, or does it answer in a more constrained format?",
+      "start": 41.84,
+      "end": 46.76
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It gives fixed-choice answers with probabilities over allowed verdicts, rather than composing a free-form explanation for each criterion. The practical difference is the unit of work. A conventional L-L-M judge is called once for every submission–criterion pair. Jev can receive one submission and all its criteria together, then return structured verdicts and confidence scores. That makes it a plausible lower-cost first-stage grader, but the important question is whether its accuracy holds up across different kinds of criteria.",
+      "start": 47.66,
+      "end": 78.86
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So it can bundle criteria, but does the study compare the same grading tasks and inputs?",
+      "start": 80.06,
+      "end": 84.88
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The comparison covers 5,003 submission–criterion pairs in 9 panels drawn from 7 public benchmarks. Jev is compared with three flash-tier L-L-M judges: Luna, Gemini, and DeepSeek. The criteria come from rubrics fixed before the study, but the complete prompts and input conditions were not identical. Two panels contain only binary criteria; the other 7 are graded panels, some of which also include binary criteria. That distinction matters because performance differed by criterion type.",
+      "start": 86.06,
+      "end": 117.68
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "For binary criteria, verdict accuracy is the share of predictions matching the label. For graded criteria, exact accuracy requires the predicted level to match the label exactly; the study also reports quadratic-weighted kappa, which measures ordinal agreement. In a representative binary task, RiceChem, Jev Choice reached 81% verdict accuracy on 819 pairs, while the L-L-M judges ranged from 76.1% to 79.2%. Jev’s advantages were mostly on binary criteria, whereas its graded results were less competitive.",
+      "start": 118.6,
+      "end": 154.26
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: when the paper says results are inconclusive, does that mean the systems are effectively tied?",
+      "start": 155.3,
+      "end": 161.32
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "No. The authors resampled units 10,000 times and treated a comparison as separated when its 95% interval excluded zero. They also tested parity using a five-point margin chosen after verdict collection. A result that establishes neither separation nor parity is simply inconclusive; it does not demonstrate equivalence. Across 27 paired accuracy comparisons, 8 were separated before correction, and most of the rest were inconclusive. So we should not summarize the findings as Jev matching L-L-M judges overall.",
+      "start": 161.32,
+      "end": 195.96
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The cost and elapsed-time measurements show the operational attraction, with important boundaries. Across the 9 panels, Jev Choice cost $0.063, compared with $20.587 for Gemini, or 325 times as much. Recorded wall time was 29 seconds for Jev and 950 seconds for Gemini, about 33 times as long. These numbers reflect the study’s call structure, prices, API conditions, and concurrency; they are not evidence of token or compute savings, nor a normalized latency comparison.",
+      "start": 196.88,
+      "end": 231.44
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Hold on, why can judges agree with one another yet still disagree with human labels?",
+      "start": 232.5,
+      "end": 237.02
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "On every graded panel, the matched judges’ average agreement with one another exceeded their average agreement with human labels. Yet on 6 of 7 graded panels, every matched judge predicted a lower mean level than the labels. Agreement measures whether ratings move together, not whether they land at the same point on the scale. On ELLIPSE learner essays, for example, Gemini’s exact accuracy was 29.8%, while Jev Choice’s average prediction sat 1.25 levels below the label mean.",
+      "start": 238.08,
+      "end": 270.24
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A post-hoc analysis shifted Jev Choice’s ELLIPSE predictions upward by one level; exact accuracy rose from 13.4% to 50.4%, near the 51.4% rater reference. That reference scores each rater against the mean of the other raters, so it is not a ceiling for an automated judge. The shift suggests that scale location contributes to the observed mismatch, but it was not a prospective correction and does not identify its cause. Missing conventions are one possibility among several, not a demonstrated explanation.",
+      "start": 270.24,
+      "end": 305.1
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Could confidence help route only Jev’s uncertain cases to a stronger judge and preserve the savings?",
+      "start": 306.06,
+      "end": 311.36
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "That is the proposed cascade: retain Jev’s confident answers and send less-confident cases to an L-L-M fallback. Confidence can rank Jev’s own correctness, but it does not guarantee correctness. On 6 of 7 graded panels, its area under the receiver operating characteristic curve for identifying its own errors was 0.57 to 0.70; ELLIPSE was the exception at 0.49. Performance also varied by criterion, with values of 0.41 on LFQA factuality and 0.52 on USR PersonaChat engaging.",
+      "start": 312.54,
+      "end": 347.12
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The more surprising issue is whether a fallback can correct a confident mistake. The authors define a repeated error as an L-L-M returning Jev’s same wrong answer on a pair where Jev is wrong. Among 84 sampled high-confidence graded errors, the three L-L-M judges repeated Jev’s error on 242 of 252 verdicts, or 96%. A baseline accounting for criterion and label tendencies predicted 126.7 repeats. The excess supports correlated errors relative to that baseline, though it does not explain why the errors are shared.",
+      "start": 349.26,
+      "end": 384.2
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Does that mean all those repeated answers were clearly wrong according to human raters?",
+      "start": 385.2,
+      "end": 388.78
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "No. Many sampled mistakes came from pairs where raters disagreed, so they are not all unambiguous errors against a unanimous human judgment. In a separate HealthBench sample, however, 11 of 12 sampled errors had unanimous physician labels. The cascade results also need careful interpretation: cross-fitted replays of recorded verdicts gained at most 1.5 percentage points on average over the best single judge, and fell below it on 6 panels. Optimistic oracle thresholds gained at most 2 points; these were not newly run live cascades.",
+      "start": 390.5,
+      "end": 424.18
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does this connect to the broader work on judge diversity and test-time scaling?",
+      "start": 425.22,
+      "end": 429.34
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "It extends concerns raised by work such as “Correlated Errors in Large Language Models” into a practical rubric-grading setup: different judges may repeat a cheap judge’s mistakes rather than supply independent corrections. That does not mean diversity is useless in every setting. Here, the measured excess remains after a baseline controls for criterion and label, but it applies to these panels and flash-tier judges. Compared with confidence-escalation approaches, the paper emphasizes that routing helps only when the fallback has useful independent information.",
+      "start": 430.26,
+      "end": 465.7
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The broader lesson is to evaluate the whole decision pipeline, not just a model’s accuracy or confidence in isolation. Jev’s batching can substantially reduce recorded cost in this setup, especially for binary criteria, while graded performance remains benchmark-dependent. Confidence can help choose which cases to review, but shared mistakes limit what review recovers. Future work should test different prompts, model tiers, and live cascade designs, and investigate rating conventions without assuming they caused the observed gaps. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 466.84,
+      "end": 504.084
+    }
+  ]
+}

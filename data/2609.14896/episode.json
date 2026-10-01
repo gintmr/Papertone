@@ -1,0 +1,241 @@
+{
+  "id": "2609.14896",
+  "title": "Forty Shades of Blue: Quality-Diversity Alignment via Mode-Conditioned Reinforcement Learning",
+  "authors": [
+    "Jiayi Yuan",
+    "Hangoo Kang",
+    "James Jihao Liu",
+    "Yejin Choi",
+    "Vikram Iyer",
+    "Liwei Jiang",
+    "Natasha Jaques"
+  ],
+  "abstract": "A notable byproduct of LLM alignment training is mode collapse: the progressive loss of output diversity that narrows a model's expressivity at inference time. This degradation is especially limiting for applications requiring open-ended exploration and pluralistic perspectives, such as scientific ideation and creative writing. We present MoDA (Mode-conditioned Diversity Alignment), an online post-training RL algorithm that jointly optimizes generation quality and diversity, inspired by the coordination perspective in multi-agent reinforcement learning (MARL). MoDA trains a single shared LLM policy conditioned on abstract numbered roles, where each role acts as an agent competing to produce outputs distinct from the others. This formulation encourages mode-conditioned agents to explore complementary regions of the high-quality output space without requiring hand-crafted personas or architectural modifications. MoDA employs a prompt-adaptive quality gating mechanism that calibrates a reference quality threshold and grants diversity rewards only to responses that meet the threshold, preventing reward-hacking behaviors that compromise response quality. To study quality-diversity tradeoffs, we evaluate MoDA on a comprehensive suite of benchmarks spanning seven general capability tasks and four domain-specific diversity tasks in scientific ideation and creative writing. MoDA improves SBERT diversity by 265% on the Infinite-Chat held-out prompts, while increasing average general capability pass@1 by 10.3% over the Qwen3-8B baseline. Compared with the strongest DivPO baseline, MoDA improves SBERT diversity from 0.274 to 0.482 (+75.9%) and E-Vendi from 2.86 to 4.4 (+53.8%), while improving average general capability pass@1 by 7.0%. Overall, MoDA provides a drop-in alternative to standard post-training methods that preserves and expands the model's expressive output space while improving quality.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.14896",
+    "arxiv": "https://arxiv.org/abs/2609.14896"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a348-b5d6-751d-9340-c36e82963b2e/podcast.mp3",
+  "duration": 327.654,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.82,
+      "en": "Welcome to Advanced Topics in Language Model Alignment. Today's lecture is on “Forty Shades of Blue: Quality-Diversity Alignment via Mode-Conditioned Reinforcement Learning,” a paper from researchers at the University of Washington and Stanford. We've seen a trend in works like 'Diverse Preference Optimization' or DivPO that try to bake diversity directly into the preference tuning process. This paper addresses the same core problem of mode collapse, where alignment makes models repetitive, but it proposes a different path.",
+      "zh": "欢迎来到语言模型对齐进阶专题。今天的讲座是关于“四十度蓝：通过模式条件强化学习实现质量-多样性对齐”，这是华盛顿大学和斯坦福大学研究人员的论文。我们在“多样化偏好优化”或DivPO这类工作中看到了一种趋势，就是试图把多样性直接融入到偏好调优过程中。这篇论文处理的是同一个核心问题，也就是模式坍缩，即对齐会让模型变得重复，但它提出了一条不同的路径。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 32.26,
+      "end": 32.74,
+      "en": "Yes, Noah?",
+      "zh": "好的，诺亚？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 33.2,
+      "end": 40.48,
+      "en": "Excuse me, Professor. You mentioned mode collapse. Is that just a term for the model getting stuck in a rut and giving the same type of answer over and over after RLHF?",
+      "zh": "不好意思，教授。您刚才提到了模式坍塌。这个词是不是就是指模型在RLHF之后陷入固定套路，反反复复给出同一类答案？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 41.14,
+      "end": 67.6,
+      "en": "Essentially, yes. Optimization concentrates probability on a few high-reward responses, reducing variety. The central contribution of this paper, called MODA, is to make diversity a conditional behavior rather than a global one. Instead of training a model to always be diverse, they train a single policy that can operate in two modes: a standard mode for single-answer queries, and a diverse mode for when you want multiple, distinct options.",
+      "zh": "基本上是的。优化会把概率集中在少数几个高奖励的回答上，从而减少多样性。这篇论文的核心贡献叫MODA，就是把多样性变成一种有条件的、而非全局的行为。他们不是训练模型永远保持多样，而是训练一个单一策略，让它能在两种模式下运行：一种是标准模式，用于只需要单一答案的查询；另一种是多样模式，用于你想要多个不同选项的时候。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 67.98,
+      "end": 70.48,
+      "en": "So it’s like a switch? How does the model know which mode to use?",
+      "zh": "所以这就像一个开关？模型怎么知道该用哪种模式呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 70.48,
+      "end": 109.8,
+      "en": "Exactly. The switch is an explicit instruction in the prompt. During training, they prepend simple role identifiers like “You are role 1,” “You are role 2,” and so on, up to six roles. The model then generates a response for each role. The key is that the optimization process encourages these different roles to produce distinct, high-quality answers for the same initial prompt. When you want a standard answer during inference, you just omit the role identifier. The authors' goal was to preserve the model's core capabilities for things like factual recall while unlocking structured exploration for creative or open-ended tasks.",
+      "zh": "没错。这个开关是提示词里的一条明确指令。训练的时候，他们会在前面加上简单的角色标识，比如“你是角色1”“你是角色2”，一直到六个角色。然后模型会为每个角色分别生成一个回答。关键在于，优化过程会鼓励这些不同角色针对同一个初始提示给出各不相同、质量又高的答案。到了推理阶段，如果你想要一个标准答案，只要不加角色标识就行。作者的目标是，在保留模型事实回忆这类核心能力的同时，为创意或开放式任务解锁一种结构化的探索方式。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 109.8,
+      "end": 113.82,
+      "en": "So the roles aren't predefined personas? They just emerge from the training objective?",
+      "zh": "所以这些角色并不是预先设定好的人设？它们只是从训练目标里自然涌现出来的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 114.54,
+      "end": 142.94,
+      "en": "Correct. The roles start as blank slates. Their distinct behaviors are shaped entirely by the reward function, which has two critical components. The first is a prompt-adaptive quality gate. Before a response can even be considered for a diversity reward, it has to pass a quality threshold. This threshold is set dynamically for each prompt based on the performance of a frozen reference model. This prevents the model from generating nonsense just to be different.",
+      "zh": "没错。这些角色一开始就是一张白纸。它们各自不同的行为完全是由奖励函数塑造的，而这个奖励函数有两个关键组成部分。第一个是提示自适应的质量门槛。一个回答在被纳入多样性奖励的考量之前，必须先通过一个质量阈值。这个阈值是根据一个冻结的参考模型的表现，为每个提示动态设定的。这样可以防止模型为了与众不同而生成毫无意义的内容。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 143.24,
+      "end": 146.1,
+      "en": "And what's the second component? The diversity reward itself?",
+      "zh": "那第二个组成部分是什么？多样性奖励本身吗？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 146.46,
+      "end": 180.8,
+      "en": "Yes, it’s a group-relative diversity reward. For each response in the group of six, the diversity score is its semantic distance to its nearest neighbor in that same group. This specifically encourages each role to find its own niche, away from the others. It penalizes duplication. If five roles produce similar answers, the sixth role gets a large reward for being different, while the other five get low diversity scores. This is all balanced with a standard quality reward and optimized using an algorithm they call Group Relative Policy Optimization, or GRPO.",
+      "zh": "是的，这是一个组内相对多样性奖励。对于一组六个回答中的每一个，多样性得分就是它与同组中最近邻的语义距离。这专门鼓励每个角色找到自己独特的定位，远离其他角色。它会惩罚重复。如果五个角色给出了相似的答案，第六个角色因为与众不同而获得高奖励，而其他五个的多样性得分则很低。所有这些都与一个标准的质量奖励相平衡，并通过他们称为组相对策略优化（GRPO）的算法进行优化。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 181.34,
+      "end": 195.76,
+      "en": "A quick question about the quality gate. It relies on a reward model to score responses. The paper acknowledges that reward models can have their own biases, like preferring longer text. Couldn't that skew what the model considers a 'quality' response and undermine the whole process?",
+      "zh": "关于质量门控，我有个简短的问题。它依赖一个奖励模型来给回复打分。论文里也承认，奖励模型本身可能有偏见，比如偏好更长的文本。那这难道不会扭曲模型对“高质量”回复的判断，进而破坏整个流程吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 196.28,
+      "end": 218.96,
+      "en": "That's an important critique, and yes, it is a significant limitation. The performance of MODA is coupled to the reliability of the reward model. If the reward model is flawed, the quality gate could be ineffective or even counterproductive. The authors note this. It highlights an ongoing challenge in the field: our alignment techniques are often only as good as our methods for evaluating quality.",
+      "zh": "这是一个重要的批评，没错，这确实是一个显著的局限。MODA的性能与奖励模型的可靠性紧密耦合。如果奖励模型本身有缺陷，质量门控可能就会失效，甚至适得其反。作者也指出了这一点。这凸显了该领域一个持续存在的挑战：我们的对齐技术往往取决于我们评估质量的方法有多好。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 218.96,
+      "end": 253.74,
+      "en": "The main implication of this work is shifting the framing of diversity from an unconditional, model-wide property to a controllable, conditional capability. This makes a lot of sense for practical applications. You don't always want your model to be wildly creative, especially when you're asking for a stock price. But for tasks like scientific brainstorming or generating multiple marketing taglines, this kind of structured exploration is highly valuable. This approach, inspired by multi-agent reinforcement learning, provides a template for training models with multiple distinct but related skills within a single set of parameters.",
+      "zh": "这项工作的主要意义在于，把多样性的定位从一种无条件的、贯穿整个模型的属性，转变为一种可控的、有条件的的能力。这对实际应用来说非常合理。你并不总是希望模型天马行空，尤其是在问股价的时候。但对于科学头脑风暴或生成多条营销标语这类任务，这种结构化的探索就非常有价值。这种方法受多智能体强化学习启发，为在单一参数集内训练具备多种不同但相关技能的模型提供了一个模板。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 254.2,
+      "end": 263.12,
+      "en": "It seems to align with the goals of other methods like Vector Policy Optimization, which also aims to generate a diverse set of candidates. How is MODA's approach fundamentally different?",
+      "zh": "这似乎和向量策略优化等其他方法的目标一致，它们同样旨在生成多样化的候选方案。那MODA的做法从根本上有什么不同？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 263.44,
+      "end": 291.42,
+      "en": "That's a good connection. Both are interested in diverse solution sets. VPO uses vector-valued rewards and stochastic scalarization to encourage exploration of different reward dimensions. MODA's approach is more explicit in its interface. The use of numbered roles creates a discrete set of behaviors that can be directly addressed. This might offer a more interpretable and controllable way for a user to request specific types of variation, though that's an empirical question for future work.",
+      "zh": "这个联系很好。两者都关注多样化的解集。VPO用向量值奖励和随机标量化来鼓励探索不同的奖励维度。MODA的方法在接口上更显式。用编号角色创建了一组离散的行为，可以直接指定。这可能为用户请求特定类型的变体提供了一种更可解释、更可控的方式，不过这还是个有待未来工作验证的实证问题。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 291.62,
+      "end": 322.44,
+      "en": "So, to wrap up, the paper finds that MODA significantly increases semantic diversity—by over 265 percent on one metric—without degrading, and in some cases even improving, performance on standard capability benchmarks. The key takeaway is the concept of a mode interface. By treating diversity as a selectable mode of operation, we can get the benefits of exploratory generation for open-ended tasks without sacrificing the reliability needed for single-answer queries. It's an elegant solution to a persistent tension in model alignment.",
+      "zh": "总结一下，这篇论文发现MODA显著提升了语义多样性——在某一指标上提升超过265%——同时没有降低标准能力基准上的表现，在某些情况下甚至还有提升。核心要点是模式接口这个概念。把多样性当作一种可选择的运行模式，我们就能在开放式任务中获得探索性生成的好处，同时不牺牲单答案查询所需的可靠性。这是对模型对齐中一个长期矛盾的精巧解法。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 322.44,
+      "end": 327.654,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yuan2026shadesbluequalitydiversityalignment,\n      title={Forty Shades of Blue: Quality-Diversity Alignment via Mode-Conditioned Reinforcement Learning}, \n      author={Jiayi Yuan and Hangoo Kang and James Jihao Liu and Yejin Choi and Vikram Iyer and Liwei Jiang and Natasha Jaques},\n      year={2026},\n      eprint={2609.14896},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.14896}, \n}",
+  "topics": [
+    "NLP",
+    "Multi-Agent",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.985,
+    0.662,
+    0.43,
+    0.646,
+    0.395,
+    0.432,
+    0.351,
+    0.749,
+    0.595,
+    0.457,
+    0.362,
+    0.467,
+    0.454,
+    0.378,
+    0.303,
+    0.534,
+    0.705,
+    0.283,
+    0.438,
+    0.463,
+    0.248,
+    0.647,
+    0.629,
+    0.439,
+    0.519,
+    0.465,
+    0.546,
+    0.281,
+    0.513,
+    0.32,
+    0.437,
+    0.583,
+    0.47,
+    0.541,
+    0.342,
+    0.279,
+    0.332,
+    0.388,
+    0.566,
+    0.283,
+    0.619,
+    0.421,
+    0.577,
+    0.29,
+    0.603,
+    1.0,
+    0.756,
+    0.697,
+    0.876,
+    0.55,
+    0.461,
+    0.401,
+    0.687,
+    0.457,
+    0.831,
+    0.641,
+    0.636,
+    0.356,
+    0.396,
+    0.37,
+    0.2,
+    0.201,
+    0.273,
+    0.219,
+    0.955,
+    0.551,
+    0.266,
+    0.533,
+    0.515,
+    0.397,
+    0.708,
+    0.593
+  ],
+  "published": "2026-09-14",
+  "license": "CC BY"
+}

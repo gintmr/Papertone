@@ -56,6 +56,30 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f075-7897-7252-bd15-f54e5b6ecb2a/podcast.mp3"
     },
     {
+      "id": "2609.35748",
+      "title": "Improving Test-Time Scaling with Adaptive Looped Transformers",
+      "authors": [
+        "Yichen You",
+        "Tianyu Fu",
+        "Aosong Feng",
+        "Xingtai Lv",
+        "Xuefei Ning",
+        "Ning Ding",
+        "Yu Wang"
+      ],
+      "duration": 422.765188,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Transformers",
+        "Inference Optimization",
+        "Lightweight Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.35748",
+      "published": "2026-09-28",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb3d-c1b3-7bda-a308-e664be80d404/podcast.mp3"
+    },
+    {
       "id": "2609.35738",
       "title": "Harness Learning Enables Generalizable Test-Time Adaptation",
       "authors": [
@@ -80,6 +104,32 @@
       "path": "2609.35738",
       "published": "2026-09-28",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb86-b9e5-7275-ab78-7992e92dea18/podcast.mp3"
+    },
+    {
+      "id": "2609.35457",
+      "title": "How Far Are We from Removing the Visual Encoder? Scaling Laws for Encoder-Free Multimodal Pretraining",
+      "authors": [
+        "Lin Chen",
+        "Bolin Ni",
+        "Qi Yang",
+        "Lan Jiang",
+        "Kun Ding",
+        "Xiaoran Fan",
+        "Hower Yang",
+        "Ying Wang",
+        "Shiming Xiang"
+      ],
+      "duration": 433.632063,
+      "license": "CC BY",
+      "topics": [
+        "Model Interpretation",
+        "Multimodal Learning",
+        "Representation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.35457",
+      "published": "2026-09-28",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb9f-c8ec-7f8f-9267-7e5315f7fd08/podcast.mp3"
     },
     {
       "id": "2609.35318",
@@ -123,6 +173,59 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb99-de6d-7aec-8bc6-289a98344fc3/podcast.mp3"
     },
     {
+      "id": "2609.33803",
+      "title": "Diffusion Reward Models",
+      "authors": [
+        "Xiangyang Wang",
+        "Bingxiang He",
+        "Zeyuan Liu",
+        "Jiaze Wang",
+        "Ziqing Qiao",
+        "Yuxin Zuo",
+        "Huan-ang Gao",
+        "Cheng Qian",
+        "Wenbin Zhang",
+        "Ran Li",
+        "Youbang Sun",
+        "Ning Ding",
+        "Yuanchun Shi",
+        "Zhiyuan Liu",
+        "Chaojun Xiao",
+        "Chun Yu"
+      ],
+      "duration": 444.891,
+      "license": "CC BY",
+      "topics": [
+        "Reinforcement Learning",
+        "Fine Tuning",
+        "Generative Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.33803",
+      "published": "2026-09-27",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb24-cbf2-70a5-a3fb-44456de4b4e9/podcast.mp3"
+    },
+    {
+      "id": "2609.endpoint-constrained-trajectory-optimization",
+      "title": "Guiding End-to-End Driving Models with Endpoint-Constrained Trajectory Optimization",
+      "authors": [
+        "Brayden Zhang",
+        "Mahsa Golchoubian",
+        "Igor Gilitschenski",
+        "Boris Ivanovic",
+        "Kashyap Chitta"
+      ],
+      "duration": 412.159563,
+      "license": "User Uploaded",
+      "topics": [
+        "Autonomous Vehicles"
+      ],
+      "cover": "cover.png",
+      "path": "2609.endpoint-constrained-trajectory-optimization",
+      "published": "2026-09-26",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0dc33-d94b-7919-8d36-bb9602679447/podcast.mp3"
+    },
+    {
       "id": "2609.31947",
       "title": "On-Policy Attention Linearization",
       "authors": [
@@ -144,6 +247,102 @@
       "path": "2609.31947",
       "published": "2026-09-25",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eab2-6941-7c1e-b3fa-93c9fc98fa8a/podcast.mp3"
+    },
+    {
+      "id": "2609.31620",
+      "title": "FuseReg: Regularizing Layer Fusion Mitigates the Reconstruction-Generation Gap in Representation Autoencoders",
+      "authors": [
+        "Hongyang Du",
+        "Yunfei Xie",
+        "Junjie Ye",
+        "Jiawei Yang",
+        "Xiaoyan Cong",
+        "Haodong Zhang",
+        "Yongchao Huang",
+        "Haiyu Wu",
+        "Zongxia Li",
+        "Shihang Gui",
+        "Dawei Liu",
+        "Runhao Li",
+        "Jingcheng Ni",
+        "Chen Wei",
+        "Randall Balestriero",
+        "Yue Wang"
+      ],
+      "duration": 426.108875,
+      "license": "CC BY",
+      "topics": [
+        "Generative Models",
+        "Image Generation",
+        "Optimization Methods"
+      ],
+      "cover": "cover.png",
+      "path": "2609.31620",
+      "published": "2026-09-25",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0e5c0-9cb1-78d0-ad82-f9c97f332980/podcast.mp3"
+    },
+    {
+      "id": "2609.29845",
+      "title": "Your Transformer Can Hold Two Thoughts at Once: Evidence of Linear Superposition in LLMs",
+      "authors": [
+        "Pavel Tikhonov",
+        "Anton Korznikov",
+        "Matvey Mikhalchuk",
+        "Nikita Dragunov",
+        "Temurbek Rahmatullaev",
+        "Polina Druzhinina",
+        "Anton Razzhigaev",
+        "Ivan Oseledets",
+        "Elena Tutubalina"
+      ],
+      "duration": 406.203688,
+      "license": "CC BY-NC-ND",
+      "topics": [
+        "NLP",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.29845",
+      "published": "2026-09-24",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d697-c1d2-73fb-86eb-61a6570a94e5/podcast.mp3"
+    },
+    {
+      "id": "2609.29812",
+      "title": "FlashLoop: Fast and Memory-Efficient Looped Transformers via Lazy Updates",
+      "authors": [
+        "Wanqi Yang",
+        "Shiwei Liu"
+      ],
+      "duration": 444.943188,
+      "license": "CC BY",
+      "topics": [
+        "Attention Mechanisms",
+        "Transformers",
+        "Inference Optimization"
+      ],
+      "cover": "cover.png",
+      "path": "2609.29812",
+      "published": "2026-09-24",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d693-186d-7d13-a092-8a81f39d5a91/podcast.mp3"
+    },
+    {
+      "id": "2609.29769",
+      "title": "JEV vs. LLMs as Rubric Judges: Cheaper, Faster, and Wrong in the Same Places",
+      "authors": [
+        "Delip Rao",
+        "Chris Callison-Burch"
+      ],
+      "duration": 504.084438,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Human-AI",
+        "Inference Optimization",
+        "Lightweight Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.29769",
+      "published": "2026-09-24",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d728-083f-7be1-b51b-263e8610ba80/podcast.mp3"
     },
     {
       "id": "2609.29171",
@@ -239,6 +438,35 @@
       "path": "2609.kl-regularized-policy-optimization-agentic-rl",
       "published": "2026-09-21",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c1fd-5cec-727c-8553-a3e78c1234f7/podcast.mp3"
+    },
+    {
+      "id": "2609.24997",
+      "title": "VideoGen-Agent: Reinforcing Video Generation Agents",
+      "authors": [
+        "Binxu Li",
+        "Haoyi Duan",
+        "Yuhui Zhang",
+        "Yaohui Zhang",
+        "Zihao Lin",
+        "Kaituo Feng",
+        "Suozhi Huang",
+        "Xiangyi Li",
+        "Yu Li",
+        "Chunyuan Li",
+        "Shilong Liu",
+        "Mengdi Wang"
+      ],
+      "duration": 385.123417,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Reinforcement Learning",
+        "Fine Tuning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.24997",
+      "published": "2026-09-21",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0c71d-7adb-74f4-a883-532dc79a837f/podcast.mp3"
     },
     {
       "id": "2609.24919",
@@ -649,6 +877,28 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a32e-4c59-710c-9151-cc292ac24e60/podcast.mp3"
     },
     {
+      "id": "2609.15982",
+      "title": "The Router Within: Eliciting Native Skill Routing from a Frozen LLM",
+      "authors": [
+        "Ruishuo Chen",
+        "Xun Wang",
+        "Yu Chen",
+        "Zhuoran Li",
+        "Longbo Huang"
+      ],
+      "duration": 399.2815,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "Machine Learning",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.15982",
+      "published": "2026-09-14",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a2e4-e31f-7352-98c1-e9fb51b81f79/podcast.mp3"
+    },
+    {
       "id": "2609.15973",
       "title": "Discovery Foundation Models: Toward Open-Ended Discovery Intelligence",
       "authors": [
@@ -719,6 +969,55 @@
       "path": "2609.15309",
       "published": "2026-09-14",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a33e-ce68-7d26-a015-42c9bfa431fb/podcast.mp3"
+    },
+    {
+      "id": "2609.15195",
+      "title": "HarnessVLN: Unifying Training-Free Embodied Navigation through an Agent Harness",
+      "authors": [
+        "Yang Chen",
+        "Lirong Che",
+        "Zhenyu Huang",
+        "Wenbo Fu",
+        "Chuang Wang",
+        "Xu Cao",
+        "Daqi Liu",
+        "Yuzhe Yang",
+        "Jian Su",
+        "Lan-Zhe Guo"
+      ],
+      "duration": 321.593417,
+      "license": "CC BY",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2609.15195",
+      "published": "2026-09-14",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a2dd-5da8-7a94-81c2-0c22e8f68376/podcast.mp3"
+    },
+    {
+      "id": "2609.14896",
+      "title": "Forty Shades of Blue: Quality-Diversity Alignment via Mode-Conditioned Reinforcement Learning",
+      "authors": [
+        "Jiayi Yuan",
+        "Hangoo Kang",
+        "James Jihao Liu",
+        "Yejin Choi",
+        "Vikram Iyer",
+        "Liwei Jiang",
+        "Natasha Jaques"
+      ],
+      "duration": 327.654,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "Multi-Agent",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.14896",
+      "published": "2026-09-14",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a348-b5d6-751d-9340-c36e82963b2e/podcast.mp3"
     },
     {
       "id": "2609.14849",
@@ -848,6 +1147,29 @@
       "path": "2609.13009",
       "published": "2026-09-11",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a09d7c-a686-70d2-a144-b49a96b5d307/podcast.mp3"
+    },
+    {
+      "id": "2609.12541",
+      "title": "Agent as Policy for Robotic Manipulation",
+      "authors": [
+        "Mengzhao Jia",
+        "Yang Lin",
+        "Xixin Zhang",
+        "Zhihan Zhang",
+        "Xiaobai Liu",
+        "Meng Jiang"
+      ],
+      "duration": 336.796833,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Imitation Learning",
+        "Multimodal Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.12541",
+      "published": "2026-09-11",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a09db6-f617-77e3-927a-e894f323fc42/podcast.mp3"
     },
     {
       "id": "2609.12039",
@@ -1016,6 +1338,57 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0846e-bd31-7482-b836-bb31614745d5/podcast.mp3"
     },
     {
+      "id": "2609.08798",
+      "title": "Eliciting Weak-to-Strong Generalization with On-Policy Reverse Distillation",
+      "authors": [
+        "Youngrok Park",
+        "Sangmin Bae",
+        "Hojung Jung",
+        "Jongwoo Ko",
+        "Yunseon Choi",
+        "Young Jin Kim",
+        "Pashmina Cameron",
+        "Aaron Courville",
+        "Se-Young Yun"
+      ],
+      "duration": 385.85475,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.08798",
+      "published": "2026-09-08",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a08445-c35a-71bb-840a-f822e0751de5/podcast.mp3"
+    },
+    {
+      "id": "2609.08084",
+      "title": "Marigold V2: Revisiting Diffusion Transformers for Monocular Depth Estimation",
+      "authors": [
+        "Igor Pavlovic",
+        "Thiemo Wandel",
+        "Anton Obukhov",
+        "Luca Bartolomei",
+        "Andrey Davydov",
+        "Fabio Tosi",
+        "Matteo Poggi",
+        "Sabine Süsstrunk",
+        "Dengxin Dai"
+      ],
+      "duration": 367.569083,
+      "license": "CC BY-SA",
+      "topics": [
+        "Domain Adaptation",
+        "Fine Tuning",
+        "Generative Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.08084",
+      "published": "2026-09-08",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a083f2-faf6-7572-8b69-672f126b70ea/podcast.mp3"
+    },
+    {
       "id": "2609.07303",
       "title": "Long-Horizon Language Model Reinforcement Learning via Progressive Point Matching",
       "authors": [
@@ -1034,6 +1407,168 @@
       "path": "2609.07303",
       "published": "2026-09-07",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a083e0-791b-791d-81d1-b77d10ef4485/podcast.mp3"
+    },
+    {
+      "id": "2609.05295",
+      "title": "RISE: Recursive Improvement via Self-Extrapolating Policy Distillation",
+      "authors": [
+        "Yang Li",
+        "Semih Yavuz",
+        "Shafiq Joty"
+      ],
+      "duration": 407.719167,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Reinforcement Learning",
+        "Fine Tuning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.05295",
+      "published": "2026-09-04",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a079a7-4817-7592-bf1a-00868abd3459/podcast.mp3"
+    },
+    {
+      "id": "2609.04298",
+      "title": "Harbor Adapters and Harbor-Index: Infrastructure and a Curated Meta-Dataset for Large-Scale Agentic Evaluation",
+      "authors": [
+        "Lin Shi",
+        "Haowei Lin",
+        "Zixuan Zhu",
+        "Xiaoyue Zhou",
+        "Xiang Li",
+        "Xiangning Lin",
+        "Yaxuan Deng",
+        "Han Xu",
+        "Yuangang Li",
+        "Shanda Li",
+        "Zizhao Chen",
+        "Hanwen Xing",
+        "Harsh Raj",
+        "Bo Chen",
+        "Quan Shi",
+        "Steven Dillmann",
+        "Yipeng Gao",
+        "Puneesh Khanna",
+        "Ruofan Lu",
+        "Chao Beyond Zhou",
+        "Michael Yang",
+        "Robert Zhang",
+        "Siyuan Chai",
+        "Jiayu Chang",
+        "Yizhao Chen",
+        "Xiaokun Chen",
+        "Yiwei Dai",
+        "Wenting Yang",
+        "Hange Liu",
+        "Minghao Liu",
+        "Zihan Wang",
+        "Adnan El Assadi",
+        "Benedikt Stroebl",
+        "E. Kelly Buchanan",
+        "Han Meng",
+        "Junwei He",
+        "Longxuan Yu",
+        "Radin Shayanfar",
+        "Yukyung Lee",
+        "Zhikang Dong",
+        "Allen G Hart",
+        "Anjiang Wei",
+        "Anurag Kashyap",
+        "Arpandeep Khatua",
+        "Audrey Jixin Zheng",
+        "Chengrui Ma",
+        "David Heineman",
+        "Dubing Chen",
+        "Hai-Anh Trinh",
+        "Haishuo Fang",
+        "Hefan Zhang",
+        "Hui Shen",
+        "Issa Sugiura",
+        "Jiankai Sun",
+        "Jiechao Gao",
+        "Junhong Lin",
+        "Junnan Li",
+        "Kai Yang",
+        "Lei Hsiung",
+        "Maoyu Wang",
+        "Mengze Tang",
+        "Nabil Omi",
+        "Negin Raoof",
+        "Nicholas Edwards",
+        "Octavia Guo",
+        "Orfeas Menis Mastromichalakis",
+        "Pengliang Ji",
+        "Przemysław Hejman",
+        "Qi Qi",
+        "Qunshu Lin",
+        "Richard Zhuang",
+        "Rui Yang",
+        "Ruichen Zheng",
+        "Ryan Marten",
+        "Shaghayegh Fazliani",
+        "Shizheng Hou",
+        "Sicong Jiang",
+        "Sijie Li",
+        "Boqin Yuan",
+        "Michael Glass",
+        "Song Bian",
+        "Terry Yue Zhuo",
+        "Tianqing Wu",
+        "Tom Tang",
+        "Wanjia Zhao",
+        "Weihao Xuan",
+        "Wenhua Liang",
+        "Xian Liu",
+        "Xin Lan",
+        "Xuan Zhang",
+        "Xuandong Zhao",
+        "Yanchuan Tang",
+        "Yifan Jiang",
+        "Yijiang Li",
+        "Yitong Guan",
+        "Yizhi Li",
+        "Yonghui Liu",
+        "Yuheng Tang",
+        "Yujun",
+        "Yunfei Zhao",
+        "Yuxin Wang",
+        "Yuxuan Tang",
+        "Zhenheng Tang",
+        "Zhifei Li",
+        "Ziruo Wang",
+        "Ziyu She",
+        "Kaiyuan Liu",
+        "Iheb Chaabane",
+        "Yuxin Tang",
+        "Xiangyi Li",
+        "Satya Sai Srinath Namburi GNVV",
+        "Xinyue Zheng",
+        "Andy Konwinski",
+        "Boxuan Li",
+        "Leon Liangyu Chen",
+        "Alex Dimakis",
+        "Nicholas Carlini",
+        "Soroush Vosoughi",
+        "Sanmi Koyejo",
+        "Di He",
+        "Etash Guha",
+        "Benjamin Feuer",
+        "Mike Merrill",
+        "Ludwig Schmidt",
+        "Alex Shaw"
+      ],
+      "duration": 333.06125,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Data Curation",
+        "ML Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2609.04298",
+      "published": "2026-09-03",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a079be-963b-7709-b4da-3b5890aab7ea/podcast.mp3"
     },
     {
       "id": "2609.05533",
@@ -1107,6 +1642,35 @@
       "path": "2609.02847",
       "published": "2026-09-02",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a06502-1e1c-7f60-b6a8-946b725f0e1b/podcast.mp3"
+    },
+    {
+      "id": "2609.01532",
+      "title": "Knowledge Distillation During Mid-Training Favors Reasoning over Factual Recall",
+      "authors": [
+        "Jacqueline He",
+        "Howard Yen",
+        "Shuyue Stella Li",
+        "Margaret Li",
+        "Hanqing Zeng",
+        "Yinglong Xia",
+        "Benyu Zhang",
+        "Zhuokai Zhao",
+        "Qiang Zhang",
+        "Pang Wei Koh",
+        "Luke Zettlemoyer",
+        "Wen-tau Yih"
+      ],
+      "duration": 386.847417,
+      "license": "CC BY",
+      "topics": [
+        "Transformers",
+        "Knowledge Distillation",
+        "Lightweight Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.01532",
+      "published": "2026-09-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a06015-ae81-79bf-9dca-e79e87e8bd60/podcast.mp3"
     },
     {
       "id": "2608.ocg-optical-character-grounded-reasoning",

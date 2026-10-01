@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 422.765,
+  "word_match_rate": 0.9125,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Transformer Architectures, today’s lecture is on “Improving Test-Time Scaling with Adaptive Looped Transformers.” Researchers at Tsinghua University and Yale University ask how extra inference computation can improve reasoning without simply making a model larger. Work such as “Hyperloop Transformers” and “Think-at-Hard: Dynamic Looped Transformers for Improved Reasoning” reflects growing interest in recurrent and adaptive depth. This paper focuses specifically on whether that computation pays off at matched inference budgets. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 33.96
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say “looped,” do you mean the model repeats the same layers?",
+      "start": 35.04,
+      "end": 39.32
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. A looped transformer reuses some or all of its layers, applying them repeatedly to hidden representations rather than producing a textual reasoning trace between passes. That can increase effective depth without adding a full new set of parameters. But parameter efficiency is not the same as compute efficiency: every extra pass costs inference time. The paper’s central question is whether carefully allocating those passes can improve accuracy as the inference budget grows.",
+      "start": 40.36,
+      "end": 70.94
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors first compare Ouro and Huginn, two existing looped designs, with a standard transformer after post-training them from the same pretrained checkpoint. These looped models often gain accuracy faster as decoding computation increases, but still trail the standard model at similar compute levels. The distinction matters: a steeper scaling curve does not guarantee a better result at the budget a deployment can actually afford.",
+      "start": 71.9,
+      "end": 98.38
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the problem is not recurrence itself, but how uniformly the model applies it?",
+      "start": 99.3,
+      "end": 103.66
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That is a key part of the diagnosis. A fixed-depth loop gives every token the same number of iterations, even when another pass helps some predictions, does nothing for others, or makes them worse. On validation tokens, the authors find little loss change for many tokens and a measurable worsening for others. Their proposed response is token-level adaptive depth, called Tah two.",
+      "start": 104.32,
+      "end": 127.56
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Tah two combines a shared transformer backbone with a learned updater and a token-level decider. The updater uses the original token embedding together with the current hidden state to prepare the next recurrent input. The decider estimates whether the token should continue, using the embedding, hidden state, and leading prediction probabilities. Its additional components increase parameter count by less than 3%, while allowing different tokens to stop at different depths.",
+      "start": 129.64,
+      "end": 157.02
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: how does the decider learn that another pass is actually useful?",
+      "start": 157.96,
+      "end": 161.96
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The key is online lookahead supervision. During training, the system compares a token’s next-token loss before and after one additional iteration. If the loss falls, that pass helped; if it rises, continuing was harmful. For tokens that stop early, training briefly runs one extra iteration without gradients to check the decision. That lookahead is removed at inference, so serving does not pay for this training signal.",
+      "start": 161.96,
+      "end": 190.74
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The authors turn those measured gains into continuation labels, selecting improvements that cover 99% of the total positive gain. A cost-sensitive decider loss gives more weight to examples farther from the decision cutoff. The backbone, updater, and decider are optimized jointly, and training follows the decider’s own routing choices. This avoids teaching the model with an idealized routing policy that it cannot reproduce at inference.",
+      "start": 190.74,
+      "end": 219.38
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does Tah two combine predictions from every pass, or use only the final one?",
+      "start": 219.38,
+      "end": 224.6
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "It uses a stopping-weighted mixture of predictions from the iterations actually executed, rather than relying only on the final output. The main controlled experiments use post-trained Qwen three models, with a 1.7-billion-parameter model as the primary comparison. Evaluation spans mathematics, code, question answering, and tool use. The researchers vary generated-token budgets and estimate decoding flops, then also measure runtime with requests at different iteration depths.",
+      "start": 225.34,
+      "end": 256.5
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "On the mathematics evaluation, Tah two at maximum depth two improves the accuracy gain per doubling of decoding flops by 53% over the standard model. At a matched budget of 191.7 trillion operations per response, its accuracy is about 15.4%, versus 12% for Standard. Deeper ceilings can raise peak performance, and results also improve across code, question answering, and tool-use tasks, though the size of the gain varies.",
+      "start": 257.48,
+      "end": 287.8
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, if deeper ceilings can improve accuracy, why is depth two described as the better trade-off?",
+      "start": 288.86,
+      "end": 294.26
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Because peak accuracy and accuracy per unit of inference compute are different objectives. In these experiments, depth two offers the most favorable accuracy-to-compute trade-off among the tested Tah two variants, while larger ceilings can reach higher accuracy. Adaptive execution also matters for latency: depth-two Tah two uses 1.22 times the decoding flops per token of Standard and adds roughly 30% to 34% end-to-end latency.",
+      "start": 295.7,
+      "end": 325.18
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader implication is that recurrent models should be evaluated by how accuracy changes as inference budgets expand, not only by parameter counts or compute at one fixed setting. This complements work such as “Hyperloop Transformers,” which explores layer reuse, while Tah two emphasizes token-specific decisions based on actual prediction improvement. The contribution is not simply adding depth; it is making depth conditional on evidence that more computation helps.",
+      "start": 326.08,
+      "end": 356.2
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "What should we be cautious about before applying this approach to other models?",
+      "start": 357.2,
+      "end": 360.7
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The evidence is promising but bounded. The study focuses on Qwen three models and supervised fine-tuning, so transfer to other architectures or reinforcement-learning settings remains open. Training is also more expensive: the depth-two 1.7-billion-parameter version uses an estimated 1.87 times the training flops of Standard. At inference, savings depend on serving systems that can efficiently batch tokens requiring different depths.",
+      "start": 361.78,
+      "end": 390.98
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The takeaway is that extra computation is most useful when it is allocated according to the needs of individual predictions. Tah two shows one practical way to make that decision: measure whether another recurrent pass reduces loss, then train a decider to act on that signal. For researchers, the next questions concern broader generalization and efficient serving. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 391.9,
+      "end": 422.765
+    }
+  ]
+}

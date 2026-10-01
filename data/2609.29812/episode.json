@@ -1,0 +1,268 @@
+{
+  "id": "2609.29812",
+  "title": "FlashLoop: Fast and Memory-Efficient Looped Transformers via Lazy Updates",
+  "authors": [
+    "Wanqi Yang",
+    "Shiwei Liu"
+  ],
+  "abstract": "Looped Transformers have attracted substantial attention as a parameter-efficient approach to increasing computational depth through repeated application of shared Transformer blocks. However, their practical advantages over conventional Transformers remain under debate: each additional loop incurs another Transformer pass and requires caching another set of KV states, causing inference FLOPs and KV-cache memory to grow continuously with loop depth. This overhead becomes particularly severe at large loop counts and long context, preventing the parameter efficiency of Looped Transformers from translating into practical inference efficiency. In this paper, we find that much of the additional computation and storage introduced by looping is redundant. As recurrence proceeds, state changes become increasingly concentrated on a small subset of tokens; attention-output differences are dominated by a sparse and stable subset of key columns; and KV residuals between adjacent loops become progressively more amenable to low-bit quantization. Building on these observations, we introduce FlashLoop, a training-free inference framework that reduces cross-loop redundancy through token-sparse updates, sparse attention, and KV-residual quantization. Across several Looped Transformers models, FlashLoop delivers lossless accuracy while achieving up to 1.64$\\times$ end-to-end speedup and up to 6$\\times$ KV-cache memory reduction, substantially improving the practicality of scaling Looped Transformers to greater computational depths and longer context.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.29812",
+    "arxiv": "https://arxiv.org/abs/2609.29812"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0d693-186d-7d13-a092-8a81f39d5a91/podcast.mp3",
+  "duration": 444.943,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 29.96,
+      "en": "In Transformer Architectures, today’s lecture is on FlashLoop: Fast and Memory-Efficient Looped Transformers via Lazy Updates. Recent work such as Hyperloop Transformers and Mixture-of-Recursions reflects a growing interest in shared depth and adaptive computation. Wanqi Yang and Shiwei Liu, from ELLIS Institute Tübingen and the Max Planck Institute for Intelligent Systems, take a systems-focused approach: can repeated computation become cheaper at inference? I see your hand, Noah.",
+      "zh": "在Transformer架构这节课上，今天要讲的是FlashLoop：通过惰性更新实现快速且内存高效的循环Transformer。最近像Hyperloop Transformer和Mixture-of-Recursions这样的工作，反映出大家对共享深度和自适应计算的兴趣越来越大。来自图宾根ELLIS研究所和马克斯·普朗克智能系统研究所的Wanqi Yang和Shiwei Liu，采取了一种以系统为中心的思路：重复计算能不能在推理时变得更便宜？诺亚，我看到你举手了。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 30.96,
+      "end": 33.98,
+      "en": "Hi Professor, what exactly is a looped Transformer?",
+      "zh": "教授您好，循环Transformer到底是什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 35.12,
+      "end": 64.22,
+      "en": "A looped Transformer applies the same Transformer block, or stack of blocks, multiple times. Sharing weights can reduce the number of parameters, but it doesn’t make each repeated evaluation free. Conventional implementations also keep a separate key-value cache for each loop, so computation and cache storage grow with the number of repetitions. FlashLoop targets this gap between parameter efficiency and actual inference efficiency, especially when long prompts make cache memory a major cost.",
+      "zh": "循环Transformer就是把同一个Transformer块或块堆叠重复应用多次。共享权重可以减少参数量，但并不会让每一次重复计算变得免费。传统实现还会为每次循环单独保留一份键值缓存，所以计算量和缓存存储都会随重复次数增长。FlashLoop正是针对参数效率和实际推理效率之间的这个落差，尤其是在长提示词让缓存内存成为主要开销的时候。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 65.14,
+      "end": 69.16,
+      "en": "Quick question: if the weights are shared, why does the cache still grow?",
+      "zh": "快速问一下：既然权重是共享的，为什么缓存还是会增长？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 70.02,
+      "end": 100.86,
+      "en": "Because each loop can produce different keys and values, even though it uses the same weights. Those loop-specific representations may be needed later for attention, so a conventional system stores them separately. The report gives a telling comparison: at a 32,000-token context, Ouro 2.6 billion with 4 loops uses 48 GiB of cache and takes 27 seconds to prefill on an A100. A larger non-looped model in the comparison needs about 4 GiB and 3 seconds.",
+      "zh": "因为每一轮循环都可能生成不同的键和值，哪怕用的是同一套权重。这些跟循环绑定的表示后面做注意力时可能还要用到，所以传统系统会把它们分开存。报告里给了一个很说明问题的对比：在 32000 token 的上下文下，带 4 轮循环的 Ouro 2.6B 要用 48 GiB 缓存，在 A100 上预填充要花 27 秒。对比中一个更大的非循环模型只需要大约 4 GiB 和 3 秒。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 101.92,
+      "end": 105.64,
+      "en": "So the authors think later loops repeat some work that may not matter much?",
+      "zh": "所以作者认为，后面几轮循环其实是在重复一些可能没那么重要的工作？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 106.96,
+      "end": 134.58,
+      "en": "That’s the central hypothesis. The authors measure how representations change from one loop to the next and find a lazy-update pattern. Later changes are concentrated in fewer token positions; attention differences tend to focus on a relatively stable subset of key columns; and the changes between successive key-value states become smaller at deeper loops. FlashLoop uses these patterns to avoid recomputing or storing information when its expected contribution is limited.",
+      "zh": "这就是核心假设。作者测量了表示在相邻循环之间如何变化，发现了一种惰性更新模式。后面的变化集中在更少的token位置上；注意力差异往往集中在相对稳定的一小部分关键列上；而随着循环加深，相邻键值状态之间的变化也越来越小。FlashLoop利用这些模式，在预期贡献有限时避免重新计算或存储信息。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 135.56,
+      "end": 138.94,
+      "en": "Can you clarify how it decides which tokens are still active?",
+      "zh": "你能具体说说它是怎么判断哪些token还处于活跃状态的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 138.94,
+      "end": 169.74,
+      "en": "After the initial dense loops, FlashLoop scores tokens according to how much their representations changed. It keeps the highest-scoring tokens from the previous active set, making active sets nested: a token that stays active later generally had to be active before. Inactive tokens reuse their previous representations and cache entries. For some Ouro configurations, later loops process only 25% and then 10% of token rows, or 20% and then 8%.",
+      "zh": "在最初的几轮密集循环之后，FlashLoop 会根据 token 表示变化的程度来打分。它从上一轮的活跃集合中保留得分最高的 token，使活跃集合形成嵌套结构：一个 token 如果后面仍然活跃，通常之前也必须是活跃的。不活跃的 token 则复用之前的表示和缓存条目。在某些 Ouro 配置下，后续循环只处理 25% 再降到 10% 的 token 行，或者 20% 再降到 8%。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 169.74,
+      "end": 199.0,
+      "en": "This token selection is useful during both prompt processing and generation, but the two stages have different bottlenecks. During prefill, processing fewer token rows reduces repeated Transformer computation. During decoding, sparse updates also mean fewer new cache entries, while a separate attention technique reduces the keys examined for each query. The important idea is to exploit redundancy across loops, rather than independently compressing every loop’s computation and cache.",
+      "zh": "这种token选择在提示处理和生成阶段都很有用，但两个阶段的瓶颈不同。在预填充阶段，处理更少的token行能减少重复的Transformer计算。在解码阶段，稀疏更新也意味着更少的新缓存条目，同时另一种注意力技术减少了每个查询需要检查的键。关键思路是利用循环之间的冗余，而不是独立地压缩每个循环的计算和缓存。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 200.46,
+      "end": 205.96,
+      "en": "Wait, if attention uses only selected keys, wouldn’t renormalizing them distort the result?",
+      "zh": "等等，如果注意力只用选中的那些键，那重新归一化岂不是会让结果失真？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 206.94,
+      "end": 233.1,
+      "en": "Yes, and FlashLoop accounts for that. It uses attention statistics from the preceding loop to select key columns likely to matter, and it stores the total probability mass those columns had in the full distribution. In the current loop, attention runs on the selected subset, but its probabilities are scaled by that stored mass. This preserves the approximate contribution’s scale instead of treating the selected keys as if they were the entire attention distribution.",
+      "zh": "是的，FlashLoop 考虑到了这一点。它利用上一轮循环的注意力统计信息，挑选出可能重要的关键列，并记录这些列在完整分布中所占的总概率质量。在当前循环中，注意力只在选中的子集上运行，但它的概率会按存储的概率质量进行缩放。这样就能保留近似贡献的尺度，而不是把选中的键当作整个注意力分布来处理。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 234.06,
+      "end": 266.6,
+      "en": "The third insight concerns cache representation. Rather than quantizing each loop’s complete key-value state independently, FlashLoop stores a quantized base state from the first loop and quantized residual updates for later loops. Each residual is measured relative to the preceding reconstructed state. The implementation uses 4-bit group-wise quantization, while keeping the newest 64 tokens in higher precision. In sparse loops, it stores residuals only for active tokens, combining fewer entries with fewer bits per entry.",
+      "zh": "第三个洞见跟缓存表示有关。FlashLoop 不是把每一轮循环的完整键值状态单独量化，而是存一个第一轮循环的量化基础状态，再为后续循环存量化后的残差更新。每个残差都是相对于前一轮重建后的状态来衡量的。具体实现用的是 4 比特分组量化，同时把最新的 64 个 token 保留在更高精度。在稀疏循环里，它只给活跃的 token 存残差，这样条目更少，每个条目的比特数也更少。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 267.54,
+      "end": 271.42,
+      "en": "Does the method require retraining the looped models or special hardware?",
+      "zh": "这个方法需要重新训练循环模型或者用特殊硬件吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 272.22,
+      "end": 305.46,
+      "en": "It is training-free and does not change pretrained model weights, but practical speedups do depend on implementation. The authors built custom GPU kernels for operations such as sparse attention, packed 4-bit storage, and fused updates. Those kernels help turn reduced computation and memory into wall-clock gains. Across the evaluated Ouro models and Huginn 3.5 billion, end-to-end speedups range from 1.52 to 1.64 times, with cache reductions from 5.18 to 6.06 times.",
+      "zh": "它不需要训练，也不会改变预训练模型的权重，但实际能提速多少取决于具体实现。作者为稀疏注意力、打包4位存储、融合更新等操作写了定制的GPU内核。这些内核把减少的计算量和内存占用真正转化成了实际运行时间的缩短。在评测的Ouro系列模型和Huginn 35亿参数模型上，端到端提速在1.52到1.64倍之间，缓存则减少了5.18到6.06倍。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 306.4,
+      "end": 309.12,
+      "en": "How much accuracy is traded for those efficiency gains?",
+      "zh": "这些效率提升换来的准确率损失有多大？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 310.12,
+      "end": 341.52,
+      "en": "On five benchmarks, average accuracy changes range from a 0.37-point increase to a 0.88-point decrease across the tested models. Ablations suggest the components play different roles: sparse attention and token updates reduce computation, while residual quantization adds some accuracy cost. Quantizing full key-value states directly performs worse than quantizing residuals. The result is not lossless, but the reported benchmark changes are generally small relative to the memory and speed improvements.",
+      "zh": "在五个基准上，各测试模型的平均准确率变化从提升0.37个百分点到下降0.88个百分点不等。消融实验表明，各组件扮演着不同角色：稀疏注意力和token更新减少了计算量，而残差量化则带来了一定的准确率损失。直接量化完整的键值状态比量化残差表现更差。结果并非无损，但相比内存和速度的提升，所报告的基准变化总体上是小的。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 343.04,
+      "end": 372.54,
+      "en": "FlashLoop’s broader contribution is to treat recurrence itself as a source of compressible structure. This differs from approaches such as Mixture-of-Recursions, which focuses on adaptive token-level depth and efficient caching, and Hyperloop Transformers, which reuse layers through a different architecture. FlashLoop instead approximates the repeated updates of an already pretrained looped model. That makes it a complementary inference strategy, though its calibration and specialized kernels are important practical considerations.",
+      "zh": "FlashLoop更广泛的贡献在于，它把循环本身当作一种可压缩结构的来源。这跟Mixture-of-Recursions这类方法不同，后者关注的是自适应的token级深度和高效缓存；也跟Hyperloop Transformer不同，后者通过另一种架构来复用层。FlashLoop的做法是去近似一个已经预训练好的循环模型里那些重复的更新。这让它成为一种互补的推理策略，不过它的校准和专用kernel在实际应用中也是重要的考量。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 373.66,
+      "end": 378.74,
+      "en": "Could the approximation be risky for long-context retrieval or other tasks beyond these benchmarks?",
+      "zh": "这种近似对长上下文检索或这些基准之外的其他任务来说，会不会有风险？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 378.74,
+      "end": 411.48,
+      "en": "That is a real limitation. The evaluation covers a small set of looped model families, and sparsity settings are calibrated separately for each model. Long-context results are broadly stable for perplexity and single-needle retrieval, but multi-needle retrieval drops from 9.2% to 7.5% in one reported comparison. The method also relies on hardware that handles dynamic gathering and packed low-bit formats efficiently. Broader testing across tasks, architectures, and hardware is still needed.",
+      "zh": "这确实是个实打实的局限。评估只覆盖了少数几类循环模型，而且稀疏度设置是针对每个模型单独校准的。长上下文的结果在困惑度和单针检索上大体稳定，但在一次报告的比较中，多针检索从9.2%掉到了7.5%。这个方法还依赖能高效处理动态收集和打包低比特格式的硬件。要跨任务、跨架构、跨硬件做更广泛的测试，仍然很有必要。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 412.4,
+      "end": 444.943,
+      "en": "The field is exploring several ways to make deeper computation practical, including adaptive depth, architectural weight sharing, and more efficient attention. FlashLoop adds a distinct lever: when a model repeatedly refines its states, later loops may need less work and less stored information than earlier ones. Its central lesson is not that every update can be removed, but that loop-to-loop changes can be measured and selectively compressed. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这个领域正在探索几种让更深层计算变得可行的方式，包括自适应深度、架构层面的权重共享，以及更高效的注意力机制。FlashLoop 提供了一个独特的杠杆：当模型反复精炼自身状态时，后面的循环可能比前面的循环需要更少的计算和更少的存储信息。它的核心启示不是每一次更新都可以被去掉，而是循环之间的变化可以被测量并有选择地压缩。感谢收听。如果还有更多问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yang2026flashloopfastmemoryefficientlooped,\n      title={FlashLoop: Fast and Memory-Efficient Looped Transformers via Lazy Updates}, \n      author={Wanqi Yang and Shiwei Liu},\n      year={2026},\n      eprint={2609.29812},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.29812}, \n}",
+  "topics": [
+    "Attention Mechanisms",
+    "Transformers",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    0.981,
+    0.6,
+    0.694,
+    0.399,
+    0.3,
+    0.424,
+    0.379,
+    0.414,
+    0.239,
+    0.411,
+    0.283,
+    0.589,
+    0.708,
+    0.788,
+    0.817,
+    0.569,
+    0.621,
+    0.806,
+    0.648,
+    0.307,
+    0.441,
+    0.425,
+    0.635,
+    0.657,
+    0.351,
+    0.219,
+    0.49,
+    0.476,
+    0.415,
+    0.641,
+    0.39,
+    0.638,
+    0.466,
+    0.436,
+    0.502,
+    0.346,
+    0.421,
+    0.478,
+    0.396,
+    0.401,
+    0.392,
+    0.491,
+    0.491,
+    0.439,
+    0.849,
+    0.715,
+    0.867,
+    1.0,
+    0.5,
+    0.294,
+    0.344,
+    0.241,
+    0.22,
+    0.207,
+    0.275,
+    0.551,
+    0.433,
+    0.326,
+    0.241,
+    0.238,
+    0.418,
+    0.663,
+    0.408,
+    0.677,
+    0.495,
+    0.535,
+    0.588,
+    0.2,
+    0.407,
+    0.333,
+    0.295,
+    0.228
+  ],
+  "published": "2026-09-24",
+  "license": "CC BY"
+}
