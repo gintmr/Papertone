@@ -1134,12 +1134,21 @@ function serviceBase() {
 /* ── 路由 ────────────────────────────────────────────── */
 async function route() {
   const id = location.hash.replace(/^#\/?/, '');
-  const onEpisode = Boolean(id) && index.some((x) => x.id === id);
+  const onVisitors = id === 'visitors';
+  const onEpisode = !onVisitors && Boolean(id) && index.some((x) => x.id === id);
 
-  $('#view-list').hidden = onEpisode;
+  $('#view-list').hidden = onEpisode || onVisitors;
   $('#view-episode').hidden = !onEpisode;
-  document.body.dataset.view = onEpisode ? 'episode' : 'list';
+  $('#view-visitors').hidden = !onVisitors;
+  document.body.dataset.view = onVisitors ? 'visitors' : onEpisode ? 'episode' : 'list';
 
+  if (onVisitors) {
+    // 保持播放不中断：迷你条照常显示，方便边看统计边听
+    $('#mini').hidden = !episode;
+    updateMini();
+    await openVisitors();
+    return;
+  }
   if (onEpisode) {
     $('#mini').hidden = true;
     await openEpisode(id);
@@ -1151,6 +1160,409 @@ async function route() {
     renderCards($('#search').value);
     updateMini();
   }
+}
+
+/* ── 访客统计 ──────────────────────────────────────────
+   移植自博客上的 visitor-analytics 组件：采集端每次载入上报一条匿名访问，
+   展示端读汇总与访问记录。后端是 Supabase Edge Function，前端只拿到公开
+   端点，哈希盐与服务角色密钥都在 Edge Function 的 secrets 里。
+
+   与原版的差别：
+     1. 本站是哈希路由的单页应用，pathname 恒为 /Papertone/（论文在 # 后面），
+        所以只上报这一个路径，访问记录里也就不需要「页面」列
+     2. 世界地图 124KB，改成打开本页时才注入，主页面的体积不受影响
+     3. 采集在页面载入时立刻做，展示等真的打开 #/visitors 再拉
+   校验逻辑（validate*）是从原版原样搬过来的：后端返回的东西一律当作
+   不可信输入，结构不对就整份丢弃，宁可不显示也不显示错的东西。
+   ────────────────────────────────────────────────────── */
+const VISITOR_PATHS = new Set(['/Papertone/']);
+const VISITOR_LOCAL = new Set(['localhost', '127.0.0.1', '[::1]']);
+const visitorNum = new Intl.NumberFormat('en');
+const visitorRegions = typeof Intl.DisplayNames === 'function'
+  ? new Intl.DisplayNames(['en'], { type: 'region' }) : null;
+const VISITOR_REGION_LABELS = new Map([
+  ['CN', 'China mainland'], ['HK', 'Hong Kong (China)'],
+  ['MO', 'Macao (China)'], ['TW', 'Taiwan (China)'],
+]);
+const ACTIVITY_PAGE_SIZE = 20;
+const MAX_ACTIVITY_PAGE = 1000000;
+
+function visitorConfig() {
+  try {
+    const raw = JSON.parse(document.getElementById('visitor-config')?.textContent || '{}');
+    if (!raw || raw.enabled !== true) return null;
+    const endpoint = new URL(raw.endpoint);
+    if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password) return null;
+    const allowedOrigins = Array.isArray(raw.allowedOrigins)
+      ? raw.allowedOrigins.filter((origin) => {
+        try { const u = new URL(origin); return u.protocol === 'https:' && u.origin === origin; }
+        catch { return false; }
+      }) : [];
+    return { endpoint: endpoint.href, allowedOrigins };
+  } catch { return null; }
+}
+
+function visitorDemoMode() {
+  return VISITOR_LOCAL.has(location.hostname)
+    && new URLSearchParams(location.search).get('visitor-demo') === '1';
+}
+
+function canRecordVisit(config) {
+  return Boolean(config && location.protocol === 'https:'
+    && !VISITOR_LOCAL.has(location.hostname)
+    && config.allowedOrigins.includes(location.origin)
+    && VISITOR_PATHS.has(location.pathname)
+    && navigator.globalPrivacyControl !== true
+    && navigator.doNotTrack !== '1' && navigator.doNotTrack !== 'yes');
+}
+
+const vIsCount = (v) => Number.isSafeInteger(v) && v >= 0;
+const vIsTimestamp = (v) => typeof v === 'string' && v.length <= 40 && Number.isFinite(Date.parse(v));
+
+function validateVisitorSummary(value) {
+  if (!value || value.version !== 1 || !vIsTimestamp(value.generatedAt)
+    || (value.since !== null && !vIsTimestamp(value.since))
+    || !vIsCount(value.totals?.pageviews) || !vIsCount(value.totals?.visitorDays)
+    || value.totals.visitorDays > value.totals.pageviews
+    || !/^\d{4}-\d{2}-\d{2}$/.test(value.today?.date || '')
+    || !vIsCount(value.today?.pageviews) || !vIsCount(value.today?.visitors)
+    || value.today.visitors > value.today.pageviews
+    || !Array.isArray(value.countries) || value.countries.length > 300) return null;
+  const seen = new Set();
+  let views = 0;
+  let days = 0;
+  for (const country of value.countries) {
+    if (!country || (country.code !== null && !/^[A-Z]{2}$/.test(country.code))
+      || seen.has(country.code) || !vIsCount(country.pageviews) || !vIsCount(country.visitorDays)
+      || country.visitorDays > country.pageviews) return null;
+    seen.add(country.code);
+    views += country.pageviews;
+    days += country.visitorDays;
+  }
+  if (!Number.isSafeInteger(views) || views > value.totals.pageviews
+    || !Number.isSafeInteger(days) || days > value.totals.visitorDays) return null;
+  return value;
+}
+
+const vIsSnapshot = (v) => typeof v === 'string' && /^[1-9]\d{0,18}$/.test(v)
+  && BigInt(v) <= 9223372036854775807n;
+
+function validateVisitorActivity(value) {
+  if (!value || value.version !== 2 || value.pageSize !== ACTIVITY_PAGE_SIZE
+    || !vIsCount(value.totalRecords) || !vIsCount(value.totalPages)
+    || value.totalPages !== Math.ceil(value.totalRecords / ACTIVITY_PAGE_SIZE)
+    || !Number.isSafeInteger(value.page) || value.page < 1
+    || value.page > MAX_ACTIVITY_PAGE || value.page > Math.max(1, value.totalPages)
+    || !Array.isArray(value.records)
+    || value.records.length !== Math.min(ACTIVITY_PAGE_SIZE,
+      value.totalRecords - (value.page - 1) * ACTIVITY_PAGE_SIZE)
+    || (value.totalRecords === 0 ? value.snapshot !== null : !vIsSnapshot(value.snapshot))) return null;
+  for (const record of value.records) {
+    if (!record || !vIsTimestamp(record.visitedAt)
+      || (record.countryCode !== null && !/^[A-Z]{2}$/.test(record.countryCode))
+      || (record.path !== null && !VISITOR_PATHS.has(record.path))) return null;
+  }
+  return value;
+}
+
+const visitorCountryName = (code) => {
+  if (VISITOR_REGION_LABELS.has(code)) return VISITOR_REGION_LABELS.get(code);
+  try { return visitorRegions?.of(code) || code; } catch { return code; }
+};
+
+/** 带超时的请求；失败一律吞掉，统计坏了不能影响收听 */
+async function visitorFetch(url, options = {}, ms = 6500, signal, consume = (r) => r) {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  if (signal?.aborted) controller.abort();
+  else signal?.addEventListener('abort', abort, { once: true });
+  const timer = setTimeout(abort, ms);
+  try {
+    const response = await fetch(url, {
+      ...options, signal: controller.signal, credentials: 'omit', cache: 'no-store',
+    });
+    return await consume(response);
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', abort);
+  }
+}
+
+async function recordVisit(config) {
+  if (typeof crypto.randomUUID !== 'function') return;
+  // 一次文档一个 ID，重试复用；不做任何持久化身份
+  const body = JSON.stringify({ eventId: crypto.randomUUID(), path: location.pathname });
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await visitorFetch(config.endpoint, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true,
+      }, 4000);
+      if (response.ok || response.status < 500) return;
+    } catch { /* 统计失败不影响页面 */ }
+    if (attempt === 0) await new Promise((r) => setTimeout(r, 800));
+  }
+}
+
+/** 本地设计预览：只在 localhost 且带 ?visitor-demo=1 时生效，绝不替代真实数据 */
+function visitorPreviewSummary() {
+  const countries = [
+    { code: 'CN', pageviews: 138, visitorDays: 73 }, { code: 'US', pageviews: 92, visitorDays: 48 },
+    { code: 'AE', pageviews: 53, visitorDays: 26 }, { code: 'GB', pageviews: 26, visitorDays: 15 },
+    { code: 'DE', pageviews: 18, visitorDays: 9 }, { code: 'JP', pageviews: 12, visitorDays: 7 },
+    { code: 'SG', pageviews: 9, visitorDays: 4 }, { code: 'AU', pageviews: 6, visitorDays: 3 },
+    { code: null, pageviews: 5, visitorDays: 4 },
+  ];
+  return { version: 1, generatedAt: '2026-09-11T12:00:00Z', since: '2026-09-01T00:00:00Z',
+    totals: { pageviews: 359, visitorDays: 189 },
+    today: { date: '2026-09-11', pageviews: 15, visitors: 8 }, countries };
+}
+
+function visitorPreviewActivity(pageRequested) {
+  const totalRecords = 43;
+  const totalPages = Math.ceil(totalRecords / ACTIVITY_PAGE_SIZE);
+  const page = Math.min(pageRequested, totalPages);
+  const offset = (page - 1) * ACTIVITY_PAGE_SIZE;
+  const records = Array.from(
+    { length: Math.min(ACTIVITY_PAGE_SIZE, totalRecords - offset) }, (_, index) => {
+      const position = offset + index;
+      const date = new Date(Date.UTC(2026, 8, position < 15 ? 11 : 10, 11, 55 - position * 3));
+      return { visitedAt: date.toISOString(),
+        countryCode: position > 36 ? null : ['CN', 'US', 'AE', 'GB', 'SG'][position % 5],
+        path: position > 36 ? null : '/Papertone/' };
+    });
+  return { version: 2, records, page, pageSize: ACTIVITY_PAGE_SIZE,
+    totalRecords, totalPages, snapshot: '43' };
+}
+
+function renderVisitorSummary(card, summary, demo) {
+  const countries = summary.countries
+    .filter((c) => c.code !== null && c.pageviews > 0)
+    .sort((a, b) => b.pageviews - a.pageviews || a.code.localeCompare(b.code));
+  const values = { ...summary.totals, countries: countries.length };
+  for (const node of card.querySelectorAll('[data-visitor-value]')) {
+    node.textContent = visitorNum.format(values[node.dataset.visitorValue]);
+  }
+  for (const node of card.querySelectorAll('[data-visitor-today-value]')) {
+    node.textContent = visitorNum.format(summary.today[node.dataset.visitorTodayValue]);
+  }
+  card.querySelector('[data-visitor-today-date]').textContent = `${summary.today.date} UTC`;
+
+  const byCode = new Map(countries.map((c) => [c.code, c.pageviews]));
+  const max = Math.max(1, ...byCode.values());
+  for (const shape of card.querySelectorAll('.visitor-map [data-country]')) {
+    const views = byCode.get(shape.dataset.country) || 0;
+    const strength = views > 0 ? 20 + 45 * Math.log1p(views) / Math.log1p(max) : 8;
+    shape.style.setProperty('--visitor-country-strength', `${strength}%`);
+  }
+  card.dataset.state = summary.totals.pageviews > 0 ? 'ready' : 'empty';
+
+  const unknown = summary.countries.find((c) => c.code === null);
+  const all = unknown?.pageviews ? [...countries, unknown] : countries;
+  card.querySelector('[data-visitor-country-rows]').replaceChildren(...all.map((country) => {
+    const row = document.createElement('tr');
+    const name = document.createElement('th');
+    name.scope = 'row';
+    name.textContent = country.code === null ? 'Unknown location' : visitorCountryName(country.code);
+    row.append(name);
+    for (const value of [country.pageviews, country.visitorDays]) {
+      const cell = document.createElement('td');
+      cell.textContent = visitorNum.format(value);
+      row.append(cell);
+    }
+    return row;
+  }));
+  const countryStatus = card.querySelector('[data-visitor-countries-status]');
+  countryStatus.hidden = all.length > 0;
+  countryStatus.textContent = 'No country or region totals recorded yet.';
+
+  const dateFormat = new Intl.DateTimeFormat('en',
+    { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const since = summary.since ? `Since ${dateFormat.format(new Date(summary.since))}` : '';
+  card.querySelector('[data-visitor-status]').textContent = demo
+    ? 'Sample data for design review. No visits are recorded in this preview.'
+    : summary.totals.pageviews === 0
+      ? 'No visits recorded yet.'
+      : `${since ? `${since} · ` : ''}Updated ${dateFormat.format(new Date(summary.generatedAt))} UTC`;
+}
+
+function createActivityRow(record) {
+  const row = document.createElement('tr');
+  const dateCell = document.createElement('td');
+  const time = document.createElement('time');
+  time.dateTime = record.visitedAt;
+  time.textContent = new Date(record.visitedAt).toISOString().slice(0, 19).replace('T', ' ');
+  dateCell.append(time);
+  const country = document.createElement('td');
+  country.textContent = record.countryCode === null
+    ? (record.path === null ? 'Not recorded' : 'Unknown location')
+    : visitorCountryName(record.countryCode);
+  row.append(dateCell, country);
+  return row;
+}
+
+const visitorState = { mapLoaded: false, summaryLoaded: false, recording: Promise.resolve() };
+
+/** 打开 #/visitors 时才做的事：注入地图、拉汇总、拉第一页记录 */
+async function openVisitors() {
+  const card = document.querySelector('[data-visitor-card]');
+  if (!card) return;
+  const config = visitorConfig();
+  const demo = visitorDemoMode();
+  card.querySelector('[data-visitor-demo]').hidden = !demo;
+
+  if (!visitorState.mapLoaded) {
+    visitorState.mapLoaded = true;
+    try {
+      const svg = await fetch('assets/world-countries.svg').then((r) => r.text());
+      const figure = card.querySelector('[data-visitor-map]');
+      figure.innerHTML = svg;
+      figure.hidden = false;
+    } catch { /* 地图拿不到不影响数字 */ }
+  }
+
+  if (visitorState.summaryLoaded) return;
+  visitorState.summaryLoaded = true;
+
+  if (demo) {
+    renderVisitorSummary(card, visitorPreviewSummary(), true);
+    await loadVisitorActivity(card, { page: 1, snapshot: null }, true, config);
+    return;
+  }
+  if (!config) {
+    card.querySelector('[data-visitor-status]').textContent = 'Visitor statistics are not connected yet.';
+    card.querySelector('[data-visitor-activity-status]').textContent = 'Visit history is not connected yet.';
+    return;
+  }
+
+  card.dataset.state = 'loading';
+  card.querySelector('[data-visitor-status]').textContent = 'Loading visitor statistics…';
+  try {
+    // 等本次上报落地再读，否则首访会先看到一个永久的 0
+    await visitorState.recording.catch(() => {});
+    const summary = await visitorFetch(config.endpoint, { headers: { Accept: 'application/json' } },
+      6500, undefined, async (response) => {
+        if (!response.ok) throw new Error('summary unavailable');
+        return validateVisitorSummary(await response.json());
+      });
+    if (!summary) throw new Error('invalid summary');
+    renderVisitorSummary(card, summary, false);
+  } catch {
+    card.dataset.state = 'error';
+    card.querySelector('[data-visitor-status]').textContent
+      = 'Visitor statistics are temporarily unavailable.';
+  }
+  await loadVisitorActivity(card, { page: 1, snapshot: null }, false, config);
+}
+
+let visitorActivity = null;
+let visitorActivityLoading = false;
+let visitorActivityFailed = null;
+
+async function loadVisitorActivity(card, request, demo, config) {
+  if (visitorActivityLoading) return;
+  const rows = card.querySelector('[data-visitor-activity-rows]');
+  const status = card.querySelector('[data-visitor-activity-status]');
+  const pagination = card.querySelector('[data-visitor-pagination]');
+  const previous = card.querySelector('[data-visitor-previous]');
+  const next = card.querySelector('[data-visitor-next]');
+  const refresh = card.querySelector('[data-visitor-refresh]');
+  const retry = card.querySelector('[data-visitor-retry]');
+  const pageLabel = card.querySelector('[data-visitor-page-label]');
+
+  if (!demo && !config) return;
+  visitorActivityLoading = true;
+  visitorActivityFailed = null;
+  const lastPage = () => Math.min(visitorActivity?.totalPages || 1, MAX_ACTIVITY_PAGE);
+  const sync = () => {
+    pagination.hidden = !visitorActivity?.totalPages;
+    previous.disabled = visitorActivityLoading || !visitorActivity || visitorActivity.page <= 1;
+    next.disabled = visitorActivityLoading || !visitorActivity
+      || visitorActivity.page >= lastPage();
+    refresh.disabled = visitorActivityLoading;
+    refresh.textContent = visitorActivityLoading ? 'Refreshing…' : 'Refresh';
+    retry.hidden = !visitorActivityFailed;
+    retry.disabled = visitorActivityLoading;
+  };
+  sync();
+  status.textContent = 'Loading visit history…';
+
+  try {
+    let result;
+    if (demo) {
+      result = visitorPreviewActivity(request.page);
+    } else {
+      const url = new URL(config.endpoint);
+      url.searchParams.set('view', 'activity');
+      url.searchParams.set('page', String(request.page));
+      if (request.snapshot !== null) url.searchParams.set('snapshot', request.snapshot);
+      result = await visitorFetch(url.href, { headers: { Accept: 'application/json' } },
+        6500, undefined, async (response) => {
+          if (!response.ok) throw new Error('activity unavailable');
+          return validateVisitorActivity(await response.json());
+        });
+    }
+    if (!result) throw new Error('invalid activity');
+    rows.replaceChildren(...result.records.map(createActivityRow));
+    visitorActivity = result;
+    pageLabel.textContent = `Page ${visitorNum.format(result.page)} of ${visitorNum.format(result.totalPages)}`;
+    const first = (result.page - 1) * ACTIVITY_PAGE_SIZE + 1;
+    const last = first + result.records.length - 1;
+    status.textContent = result.totalRecords === 0
+      ? 'No visit records available yet.'
+      : `Showing ${visitorNum.format(first)}–${visitorNum.format(last)} of ${visitorNum.format(result.totalRecords)} visit records.`;
+  } catch {
+    visitorActivityFailed = request;
+    status.textContent = 'Visit history is temporarily unavailable. Please try again.';
+  } finally {
+    visitorActivityLoading = false;
+    sync();
+  }
+}
+
+/** 记录一次访问；只在正式域名 + https + 允许来源 + 未被 DNT/GPC 拒绝时执行 */
+function maybeRecordVisit() {
+  const config = visitorConfig();
+  if (visitorDemoMode() || !canRecordVisit(config)) return;
+  if (document.visibilityState === 'visible') visitorState.recording = recordVisit(config);
+  else {
+    visitorState.recording = new Promise((resolve) => {
+      const onVisible = () => {
+        if (document.visibilityState !== 'visible') return;
+        document.removeEventListener('visibilitychange', onVisible);
+        recordVisit(config).then(resolve, resolve);
+      };
+      document.addEventListener('visibilitychange', onVisible);
+    });
+  }
+}
+
+function setupVisitors() {
+  const card = document.querySelector('[data-visitor-card]');
+  if (!card) return;
+  maybeRecordVisit();
+  const open = () => { location.hash = '#/visitors'; };
+  $('#open-visitors').addEventListener('click', () => {
+    closeSync();
+    open();
+  });
+  card.querySelector('[data-visitor-previous]').addEventListener('click', () => {
+    if (visitorActivity) loadVisitorActivity(card,
+      { page: visitorActivity.page - 1, snapshot: visitorActivity.snapshot },
+      visitorDemoMode(), visitorConfig());
+  });
+  card.querySelector('[data-visitor-next]').addEventListener('click', () => {
+    if (visitorActivity) loadVisitorActivity(card,
+      { page: visitorActivity.page + 1, snapshot: visitorActivity.snapshot },
+      visitorDemoMode(), visitorConfig());
+  });
+  card.querySelector('[data-visitor-refresh]').addEventListener('click', () => {
+    loadVisitorActivity(card, { page: 1, snapshot: null }, visitorDemoMode(), visitorConfig());
+  });
+  card.querySelector('[data-visitor-retry]').addEventListener('click', () => {
+    if (visitorActivityFailed) {
+      loadVisitorActivity(card, visitorActivityFailed, visitorDemoMode(), visitorConfig());
+    }
+  });
 }
 
 (async function boot() {
@@ -1173,6 +1585,7 @@ async function route() {
 
   renderFilters();
   renderContinue();
+  setupVisitors();
   window.addEventListener('hashchange', route);
   route();
 })();
