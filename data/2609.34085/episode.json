@@ -162,6 +162,11 @@
   ],
   "cover": "cover.png",
   "bibtex": "@misc{zhu2026ade2ejepajointembeddingpredictivearchitecture,\n      title={AD-E2E-JEPA: A Joint-Embedding Predictive Architecture For End-to-End Autonomous Driving}, \n      author={Haoran Zhu and Wancong Zhang and Yann LeCun and Anna Choromanska},\n      year={2026},\n      eprint={2609.34085},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.34085}, \n}",
+  "topics": [
+    "Computer Vision",
+    "Robotics",
+    "Machine Learning"
+  ],
   "peaks": [
     0.879,
     0.687,
@@ -237,10 +242,5 @@
     0.414
   ],
   "published": "2026-09-28",
-  "license": "arXiv 默认许可",
-  "topics": [
-    "Computer Vision",
-    "Robotics",
-    "Machine Learning"
-  ]
+  "license": "arXiv 默认许可"
 }

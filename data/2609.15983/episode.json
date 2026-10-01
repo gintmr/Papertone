@@ -124,6 +124,11 @@
   ],
   "cover": "cover.png",
   "bibtex": "@misc{lin2026stellarcolosseummanyagentharness,\n      title={Stellar Colosseum: A Many-Agent Harness for Long-Horizon Research in Mathematics and Theoretical Computer Science}, \n      author={Honghao Lin and David P. Woodruff and Yuan Deng and Jieming Mao and Song Zuo and Vahab Mirrokni},\n      year={2026},\n      eprint={2609.15983},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.15983}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning",
+    "AI"
+  ],
   "peaks": [
     1.0,
     0.762,
@@ -199,10 +204,5 @@
     0.713
   ],
   "published": "2026-09-14",
-  "license": "arXiv 默认许可",
-  "topics": [
-    "NLP",
-    "Machine Learning",
-    "AI"
-  ]
+  "license": "arXiv 默认许可"
 }

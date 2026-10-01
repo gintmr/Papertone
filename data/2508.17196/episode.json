@@ -1,0 +1,292 @@
+{
+  "id": "2508.17196",
+  "title": "BudgetThinker: Empowering Budget-aware LLM Reasoning with Control Tokens",
+  "authors": [
+    "Hao Wen",
+    "Xinrui Wu",
+    "Yi Sun",
+    "Feifei Zhang",
+    "Liye Chen",
+    "Jie Wang",
+    "Yunxin Liu",
+    "Yunhao Liu",
+    "Ya-Qin Zhang",
+    "Yuanchun Li"
+  ],
+  "abstract": "Recent advancements in Large Language Models (LLMs) have leveraged increased test-time computation to enhance reasoning capabilities, a strategy that, while effective, incurs significant latency and resource costs, limiting their applicability in real-world time-constrained or cost-sensitive scenarios. This paper introduces BudgetThinker, a novel framework designed to empower LLMs with budget-aware reasoning, enabling precise control over the length of their thought processes. We propose a methodology that periodically inserts special control tokens during inference to continuously inform the model of its remaining token budget. This approach is coupled with a comprehensive two-stage training pipeline, beginning with Supervised Fine-Tuning (SFT) to familiarize the model with budget constraints, followed by a curriculum-based Reinforcement Learning (RL) phase that utilizes a length-aware reward function to optimize for both accuracy and budget adherence. We demonstrate that BudgetThinker significantly surpasses strong baselines in maintaining performance across a variety of reasoning budgets on challenging mathematical benchmarks. Our method provides a scalable and effective solution for developing efficient and controllable LLM reasoning, making advanced models more practical for deployment in resource-constrained and real-time environments.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2508.17196",
+    "arxiv": "https://arxiv.org/abs/2508.17196"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/0198e474-1196-7127-83cb-cd1f60cd9ea8/podcast.mp3",
+  "duration": 414.458,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.56,
+      "en": "In our graduate seminar on Efficient Language Model Reasoning, today’s lecture is on BudgetThinker: Empowering Budget-Aware L-L-M Reasoning with Control Tokens. Recent work such as L1: Controlling How Long A Reasoning Model Thinks With Reinforcement Learning and Scalable Chain of Thoughts via Elastic Reasoning reflects a field-wide push to make reasoning more efficient. This paper, from a team largely at Tsinghua University, tackles that challenge with explicit budget signals. I see a hand raised—yes, Noah?",
+      "zh": "在我们关于高效语言模型推理的研究生研讨课上，今天的讲座讲的是BudgetThinker：用控制token让大语言模型具备预算感知的推理能力。最近的一些工作，比如L1：用强化学习控制推理模型思考多久，以及通过弹性推理实现可扩展的思维链，都反映出整个领域正在推动让推理变得更高效。这篇论文来自一个主要由清华大学成员组成的团队，用显式的预算信号来应对这一挑战。我看到有人举手——是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.66,
+      "end": 40.3,
+      "en": "Hi Professor, when you say a reasoning budget, do you mean a limit on how many tokens the model can generate?",
+      "zh": "教授您好，您说的推理预算，是指限制模型能生成多少token吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.4,
+      "end": 66.18,
+      "en": "Exactly. The paper treats the length of a model’s reasoning and answer as a resource that users should be able to constrain. Longer reasoning can improve performance, but it also raises latency and computational cost, and extra thinking can sometimes become redundant. BudgetThinker aims to help a model adapt its reasoning to a specified token limit, rather than relying on a prompt that merely asks it to be brief.",
+      "zh": "没错。这篇论文把模型推理和回答的长度当作一种资源，用户应该能够对它加以限制。更长的推理可以提升表现，但也会增加延迟和计算成本，而且多出来的思考有时会变得冗余。BudgetThinker 的目标是帮助模型根据指定的 token 上限来调整自己的推理，而不是靠一句只是让它简短点的提示词。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 67.14,
+      "end": 70.9,
+      "en": "So the main idea is to tell the model how much room it has while it is reasoning?",
+      "zh": "所以核心思路就是在模型推理的过程中，告诉它还剩下多少空间？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 71.96,
+      "end": 97.02,
+      "en": "Yes, and the key is that the signal continues during generation. BudgetThinker inserts a small set of special control tokens as the model uses successive fractions of its allotted budget. With 8 signals, for example, the model receives updates as it passes budget milestones. The signals provide context about progress, much like checkpoints on a route, so the model can adjust how much detail it spends on what remains.",
+      "zh": "是的，关键在于这个信号在整个生成过程中会持续存在。BudgetThinker会在模型逐步用完分配预算的不同比例时，插入一小组特殊的控制token。比如用8个信号的话，模型每跨过一个预算节点就会收到一次更新。这些信号提供了关于进度的上下文，就像路线上的检查点一样，让模型可以调整在剩余预算里对每个部分花多少笔墨。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 98.06,
+      "end": 102.8,
+      "en": "Why signal fractions of the budget instead of inserting a token every fixed number of words?",
+      "zh": "为什么要按预算比例发信号，而不是每固定字数就插入一个token呢？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 103.88,
+      "end": 131.2,
+      "en": "A ratio-based schedule scales to different budget sizes while keeping the same number of control tokens. Fixed-interval signaling would need to account for widely varying lengths, and frequent insertions may distract the model. The authors compare these alternatives and find that the ratio-based strategy works best in their experiments. It is a useful design choice: the model learns progress relative to its own deadline, not just a count of elapsed tokens.",
+      "zh": "基于比例的安排能适应不同的预算规模，同时保持控制token数量不变。固定间隔的信号方式则必须应对长度差异很大的情况，而且频繁插入可能会分散模型的注意力。作者比较了这些替代方案，发现基于比例的策略在他们的实验中效果最好。这是一个有用的设计选择：模型学到的是相对于自身截止期限的进度，而不只是已用token的数量。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 132.26,
+      "end": 135.08,
+      "en": "How does the model learn what those new control tokens mean?",
+      "zh": "模型是怎么学会这些新控制token的含义的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 135.94,
+      "end": 161.44,
+      "en": "Training has 2 stages. First, supervised fine-tuning teaches the model to use the tokens in examples with assigned budgets. The data combines complex reasoning problems with shorter reasoning tasks, so the model encounters different amounts of work. Then reinforcement learning refines its behavior, rewarding correct answers and proper format while also encouraging it to stay within the requested limit.",
+      "zh": "训练分两个阶段。首先，监督微调通过带预算标注的示例教模型怎么用这些token。数据里既有复杂的推理问题，也有较短的推理任务，所以模型会遇到不同规模的工作量。然后用强化学习来优化它的行为，对正确答案和规范格式给予奖励，同时鼓励它别超出要求的预算。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 162.24,
+      "end": 166.64,
+      "en": "Quick question: does the training reward punish going over budget more than finishing early?",
+      "zh": "快速问一下：训练奖励对超出预算的惩罚是不是比提前结束更重？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 167.46,
+      "end": 194.1,
+      "en": "It does. The length reward penalizes deviations from the target, but the penalty is asymmetric: exceeding the budget is much more costly than using fewer tokens. In the reported setup, the over-budget penalty factor is 16. The reward still values accuracy, so the model is not simply trained to stop as soon as possible; it has to manage a trade-off between solving the task and respecting the limit.",
+      "zh": "是的。长度奖励会对偏离目标长度的行为进行惩罚，但这种惩罚是不对称的：超出预算的代价远高于使用更少token。在报告的设置中，超预算惩罚系数是16。奖励仍然重视准确性，所以模型并不是被训练成尽快停止；它必须在解决任务和遵守限制之间进行权衡。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 194.1,
+      "end": 198.64,
+      "en": "And what prevents the model from becoming good only at one particular budget?",
+      "zh": "那又是什么防止模型只擅长某一个特定的预算呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 199.56,
+      "end": 224.36,
+      "en": "The authors use a curriculum. Training begins with larger budgets, then moves through tighter limits, which lets the model first practice extended reasoning and gradually learn to condense it. A final mixed-budget phase samples across the learned range. That last step matters because focusing on short budgets can harm performance at longer ones; mixing them helps recover that capability while retaining better budget following.",
+      "zh": "作者采用了课程学习的方式。训练从较大的预算开始，然后逐步过渡到更紧的限制，这样模型可以先练习扩展推理，再逐渐学会压缩推理。最后一个混合预算阶段会在已学到的范围内采样。这一步很关键，因为只关注短预算会损害长预算下的表现；混合训练有助于恢复这种能力，同时保持更好的预算遵循。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 225.44,
+      "end": 227.84,
+      "en": "How should we interpret the results for actual deployment?",
+      "zh": "我们该如何解读这些结果对实际部署的意义？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 228.98,
+      "end": 267.68,
+      "en": "On MATH-500 and AMC 2023, BudgetThinker improves average accuracy by 4.2% over the original models and 5.7% over ThinkPrune across tested budgets. It also follows budgets more precisely and uses the allotted tokens more effectively. On A-I-M-E 2024, the methods perform comparably, suggesting that tight length control alone does not solve exceptionally demanding problems. Inference also uses a modified engine to enforce the limit and reserve a small buffer for the final answer.",
+      "zh": "在MATH-500和AMC 2023上，BudgetThinker在测试的各个预算档位下，平均准确率比原始模型提升了4.2%，比ThinkPrune提升了5.7%。它还能更精确地遵循预算，更有效地利用分配的token。在A-I-M-E 2024上，两种方法表现相当，说明仅靠严格的长度控制并不能解决特别困难的问题。推理时还使用了一个修改过的引擎来强制执行限制，并为最终答案预留了一小块缓冲。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 268.58,
+      "end": 273.38,
+      "en": "Could that inference-time truncation cut off a useful conclusion, even if the reasoning is well managed?",
+      "zh": "推理时的截断会不会把有用的结论也切掉，哪怕推理过程管理得再好？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 274.2,
+      "end": 302.6,
+      "en": "That is a practical concern. The system enforces the limit by truncating reasoning and appending final-answer tags, with a buffer reserved for the answer. This makes the budget operationally strict, but it also means deployment choices—such as buffer size and where the budget is set—can affect answer quality. A token budget is therefore not a guarantee of correctness; it is a control over computation that needs to be paired with evaluation.",
+      "zh": "这确实是个实际问题。系统通过截断推理并追加最终答案标签来强制执行限制，同时为答案预留缓冲区。这让预算在操作层面变得严格，但也意味着部署选择——比如缓冲区大小和预算设定位置——会影响答案质量。因此，token预算并不保证正确性；它是对计算量的控制，必须配合评估使用。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 303.44,
+      "end": 307.16,
+      "en": "How does this approach relate to L1 or Elastic Reasoning?",
+      "zh": "这个方法跟L1或弹性推理有什么关系？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 308.14,
+      "end": 338.44,
+      "en": "Those works share the broader goal of adapting reasoning length to resource constraints. BudgetThinker’s distinguishing mechanism is its continuing, explicit control-token feedback, paired with supervised training and reinforcement learning. The connection is important: the field is moving beyond simply asking models to think less, toward training them to allocate reasoning effort under changing constraints. BudgetThinker adds a concrete way to communicate progress through the available budget.",
+      "zh": "这些工作都有一个更宏观的目标，就是让推理长度适应资源约束。BudgetThinker 的独特机制在于它持续、显式的控制 token 反馈，并结合监督训练和强化学习。这个联系很重要：这个领域正在超越单纯让模型少想一点，转向训练模型在变化的约束下分配推理投入。BudgetThinker 增加了一种具体方式，通过可用预算来传达进展。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 339.46,
+      "end": 343.12,
+      "en": "Does the evidence show that this will work equally well beyond math tasks?",
+      "zh": "现有证据能说明这在数学任务之外也同样有效吗？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 344.0,
+      "end": 373.06,
+      "en": "That remains open. The reported evaluations focus on mathematical reasoning, and the results across 2 model sizes do not establish performance in settings such as robotics or interactive agents. Nor does precise length control necessarily meet a wall-clock deadline, since token generation speed and system overhead also matter. Future work could test diverse tasks, measure end-to-end latency, and examine whether the same signals transfer to different model families.",
+      "zh": "这个问题还没有定论。目前报告的评估主要集中在数学推理上，而且两个模型规模上的结果并不能说明它在机器人或交互式智能体这类场景中也能有同样的表现。精确控制长度也不一定就能满足实际的时间期限，因为token生成速度和系统开销同样重要。未来的工作可以测试更多样化的任务，测量端到端延迟，并考察这些信号是否能迁移到不同的模型家族。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 374.14,
+      "end": 379.4,
+      "en": "So the broader lesson is that efficient reasoning needs active resource management, not just shorter answers?",
+      "zh": "所以更宏观的启示是，高效推理需要主动的资源管理，而不只是把答案变短？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 380.4,
+      "end": 414.458,
+      "en": "That is a useful takeaway. BudgetThinker treats reasoning as something a model can pace, with explicit feedback and training that rewards both correctness and constraint-following. Its results suggest that managing a budget can improve efficiency without automatically sacrificing accuracy, though the gains depend on task, budget, and deployment. The memorable point is simple: giving a model a limit is not enough; it also needs a way to track and respond to that limit. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这是个很有用的结论。BudgetThinker 把推理看作模型可以自己掌控节奏的过程，通过明确的反馈和训练，让模型在追求正确性的同时也遵守约束。它的结果表明，管理预算可以在不自动牺牲准确率的前提下提升效率，不过收益大小取决于任务、预算和部署环境。最值得记住的一点很简单：只给模型一个限制是不够的，它还需要一种方式来追踪并回应这个限制。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wen2025budgetthinkerempoweringbudgetawarellm,\n      title={BudgetThinker: Empowering Budget-aware LLM Reasoning with Control Tokens}, \n      author={Hao Wen and Xinrui Wu and Yi Sun and Feifei Zhang and Liye Chen and Jie Wang and Yunxin Liu and Yunhao Liu and Ya-Qin Zhang and Yuanchun Li},\n      year={2025},\n      eprint={2508.17196},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2508.17196}, \n}",
+  "topics": [
+    "Transformers",
+    "Fine Tuning",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    0.905,
+    0.746,
+    0.673,
+    0.457,
+    0.369,
+    0.206,
+    0.948,
+    0.55,
+    0.463,
+    0.401,
+    0.495,
+    0.546,
+    0.706,
+    0.876,
+    0.698,
+    0.607,
+    0.634,
+    0.737,
+    0.689,
+    0.262,
+    0.654,
+    0.361,
+    0.275,
+    0.57,
+    0.443,
+    0.417,
+    0.475,
+    0.708,
+    0.468,
+    0.628,
+    0.424,
+    0.595,
+    0.553,
+    0.405,
+    0.855,
+    0.769,
+    0.423,
+    0.434,
+    0.305,
+    0.463,
+    0.479,
+    0.516,
+    0.399,
+    0.498,
+    0.572,
+    0.478,
+    0.469,
+    0.416,
+    0.584,
+    0.667,
+    0.733,
+    0.682,
+    0.467,
+    0.923,
+    0.288,
+    0.415,
+    0.363,
+    0.2,
+    0.363,
+    0.741,
+    1.0,
+    0.495,
+    0.621,
+    0.586,
+    0.208,
+    0.524,
+    0.56,
+    0.4,
+    0.278,
+    0.538,
+    0.471,
+    0.397
+  ],
+  "published": "2025-08-24",
+  "license": "arXiv 默认许可"
+}

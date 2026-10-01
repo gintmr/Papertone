@@ -760,6 +760,33 @@
       "path": "2606.10620",
       "published": "2026-06-09",
       "audio_url": "https://paper-podcasts.alphaxiv.org/019eaf93-3bfe-7d68-8979-bde50c06611b/podcast.mp3"
+    },
+    {
+      "id": "2508.17196",
+      "title": "BudgetThinker: Empowering Budget-aware LLM Reasoning with Control Tokens",
+      "authors": [
+        "Hao Wen",
+        "Xinrui Wu",
+        "Yi Sun",
+        "Feifei Zhang",
+        "Liye Chen",
+        "Jie Wang",
+        "Yunxin Liu",
+        "Yunhao Liu",
+        "Ya-Qin Zhang",
+        "Yuanchun Li"
+      ],
+      "duration": 414.458188,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Transformers",
+        "Fine Tuning",
+        "Inference Optimization"
+      ],
+      "cover": "cover.png",
+      "path": "2508.17196",
+      "published": "2025-08-24",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/0198e474-1196-7127-83cb-cd1f60cd9ea8/podcast.mp3"
     }
   ]
 }

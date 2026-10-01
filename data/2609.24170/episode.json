@@ -170,6 +170,9 @@
   ],
   "cover": "cover.png",
   "bibtex": "@misc{zhang2026unexpectedrobotpolicyearly,\n      title={An Unexpected Robot Policy: Early Evaluations of GPT-6 Astra on RoboDojo and Beyond}, \n      author={Wenbo Zhang and Kaixuan Wang and Yutao Ouyang and Xiaoyu Huang and Liyang Li and Kailun Su and Weiyang Jin and Wenhao Chai and Haotian Liang and Zhiyang Dou and Yue Chen and Tianxing Chen},\n      year={2026},\n      eprint={2609.24170},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.24170}, \n}",
+  "topics": [
+    "Computer Vision"
+  ],
   "peaks": [
     0.709,
     0.36,
@@ -245,8 +248,5 @@
     0.432
   ],
   "published": "2026-09-21",
-  "license": "arXiv 默认许可",
-  "topics": [
-    "Computer Vision"
-  ]
+  "license": "arXiv 默认许可"
 }
