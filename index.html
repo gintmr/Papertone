@@ -290,6 +290,12 @@
               <button type="button" role="menuitem" data-min="60">60 min</button>
               <button type="button" role="menuitem" data-min="end">End of episode</button>
               <button type="button" role="menuitem" data-min="off">Turn off</button>
+              <form class="menu-custom" id="sleep-custom" role="none">
+                <label class="sr-only" for="sleep-custom-input">Custom minutes</label>
+                <input id="sleep-custom-input" type="number" inputmode="numeric"
+                       min="1" max="600" step="1" placeholder="Custom min" />
+                <button type="submit">Set</button>
+              </form>
             </div>
           </div>
           <a class="plain-btn" id="link-alphaxiv" target="_blank" rel="noopener">Paper</a>

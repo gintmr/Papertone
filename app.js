@@ -615,7 +615,10 @@ async function openEpisode(id, preset) {
   $('#mini-title').textContent = episode.title;
 
   const saved = loadProgress()[id];
-  if (saved && saved.time > 3) {
+  const savedTotal = episode.duration || 0;
+  // 上次已经听到结尾的不要再跳回去：否则一打开就立刻播完，
+  // 紧接着触发自动续播跳到下一集，看起来像「点了没播就换集了」。
+  if (saved && saved.time > 3 && (!savedTotal || saved.time / savedTotal < 0.95)) {
     audio.addEventListener('loadedmetadata', () => { audio.currentTime = saved.time; }, { once: true });
   }
   updateMini();
@@ -700,7 +703,15 @@ function toggle() {
 }
 
 function skip(delta) {
-  audio.currentTime = Math.min(audio.duration || 1e9, Math.max(0, audio.currentTime + delta));
+  const total = audio.duration || (episode && episode.duration) || 0;
+  // 已经在结尾了还往前推，就直接接下一集。
+  // 否则会把 currentTime 钳在 duration 上原地不动——锁屏上把进度推到结束
+  // 之后就再也走不动，而且这种「推到结尾」不一定触发 ended，不会自动续播。
+  if (delta > 0 && total && audio.currentTime >= total - 0.3) {
+    const next = neighbourId(1);
+    if (next) { goToEpisode(next, true); return; }
+  }
+  audio.currentTime = Math.min(total || 1e9, Math.max(0, audio.currentTime + delta));
 }
 
 function stepLine(dir) {
@@ -943,8 +954,6 @@ function wireMediaSession() {
     stop: () => { audio.pause(); },
     previoustrack: () => goToEpisode(neighbourId(-1), true),
     nexttrack: () => goToEpisode(neighbourId(1), true),
-    seekbackward: (d) => skip(-((d && d.seekOffset) || 15)),
-    seekforward: (d) => skip((d && d.seekOffset) || 15),
     seekto: (d) => {
       if (d && Number.isFinite(d.seekTime)) audio.currentTime = d.seekTime;
     },
@@ -1101,6 +1110,16 @@ $('#playmode-menu').addEventListener('click', (e) => {
 $('#sleep-menu').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-min]');
   if (btn) setSleep(btn.dataset.min);
+});
+
+// 自定义分钟数。范围卡在 1–600 分钟，避免填进离谱的值。
+$('#sleep-custom').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const input = $('#sleep-custom-input');
+  const minutes = Math.round(Number(input.value));
+  if (!Number.isFinite(minutes) || minutes < 1) { input.focus(); return; }
+  setSleep(Math.min(600, minutes));
+  input.value = '';
 });
 
 $('#copy-cite').addEventListener('click', async () => {
