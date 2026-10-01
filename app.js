@@ -526,6 +526,9 @@ async function openEpisode(id) {
   revealed = new Set();
   currentIdx = -1;
 
+  // 锁屏卡片与后台播放：换集就更新一次
+  updateMediaSession(episode);
+
   $('#ep-title').textContent = episode.title;
   $('#ep-authors').textContent = (episode.authors || []).join(' · ');
   $('#ep-date').textContent = fmtDate(episode);
@@ -829,6 +832,75 @@ function updateMini() {
   syncPlayIcons();
 }
 
+/* ── 后台播放与锁屏控制（Media Session）───────────────
+   手机浏览器只有在「这是一个正在播放的媒体会话」时，才愿意在息屏／切到
+   后台之后继续出声，并在锁屏上给一张正在播放的卡片。网页默认什么都不声明，
+   系统就按普通网页处理——息屏即冻结，音频跟着停。
+   这里做三件事：
+     1. 把当前论文写进锁屏卡片（标题、作者、封面）
+     2. 把锁屏／蓝牙耳机上的播放、暂停、上一集、下一集、快进快退接回播放器
+     3. 持续上报播放位置，锁屏进度条才准
+   没有 Media Session 的浏览器会直接跳过，不影响其它逻辑。
+   ────────────────────────────────────────────────────── */
+const hasMediaSession = 'mediaSession' in navigator;
+let lastPositionPing = 0;
+
+function episodeArtwork(ep) {
+  const src = coverUrl(ep);
+  if (!src) return [];
+  try { return [{ src: /^(https?:|blob:)/.test(src) ? src : new URL(src, location.href).href }]; }
+  catch { return []; }
+}
+
+function updateMediaSession(ep) {
+  if (!hasMediaSession) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: (ep && ep.title) || 'Papertone',
+      artist: (ep && ep.authors || []).slice(0, 3).join(', ') || 'Papertone',
+      album: 'Papertone',
+      artwork: episodeArtwork(ep),
+    });
+  } catch (e) { /* 部分浏览器对 artwork 挑剔，失败就当没有 */ }
+}
+
+/** 锁屏进度条；duration 不可用时不上报，免得显示成乱的值 */
+function updateMediaPosition() {
+  if (!hasMediaSession || !navigator.mediaSession.setPositionState) return;
+  if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+  try {
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate || 1,
+      position: Math.min(audio.currentTime, audio.duration),
+    });
+  } catch (e) { /* 忽略 */ }
+}
+
+function setMediaPlaybackState(state) {
+  if (!hasMediaSession) return;
+  try { navigator.mediaSession.playbackState = state; } catch (e) { /* 忽略 */ }
+}
+
+function wireMediaSession() {
+  if (!hasMediaSession) return;
+  const handlers = {
+    play: () => { audio.play().catch(() => {}); },
+    pause: () => { audio.pause(); },
+    stop: () => { audio.pause(); },
+    previoustrack: () => goToEpisode(neighbourId(-1), true),
+    nexttrack: () => goToEpisode(neighbourId(1), true),
+    seekbackward: (d) => skip(-((d && d.seekOffset) || 15)),
+    seekforward: (d) => skip((d && d.seekOffset) || 15),
+    seekto: (d) => {
+      if (d && Number.isFinite(d.seekTime)) audio.currentTime = d.seekTime;
+    },
+  };
+  for (const [name, fn] of Object.entries(handlers)) {
+    try { navigator.mediaSession.setActionHandler(name, fn); } catch (e) { /* 不支持的动作跳过 */ }
+  }
+}
+
 /* ── 定时停止 ────────────────────────────────────────── */
 function sleepRemaining() {
   return sleepDeadline ? Math.max(0, (sleepDeadline - Date.now()) / 1000) : 0;
@@ -906,6 +978,15 @@ audio.addEventListener('timeupdate', () => {
   highlight(findLine(audio.currentTime));
   updateMini();
   scheduleWave(pct / 100);
+
+  // 定时停止改由「媒体进度」驱动：息屏后台时 setInterval 会被节流到几十秒
+  // 一次甚至停掉，而 timeupdate 跟着音频走，照样在跑。到点就在这里收尾。
+  if (sleepDeadline && Date.now() >= sleepDeadline) tickSleep();
+  // 锁屏进度条不用每秒都刷，5 秒一次足够
+  if (Date.now() - lastPositionPing > 5000) {
+    lastPositionPing = Date.now();
+    updateMediaPosition();
+  }
 });
 
 audio.addEventListener('loadedmetadata', () => {
@@ -914,14 +995,24 @@ audio.addEventListener('loadedmetadata', () => {
 
 audio.addEventListener('pause', () => {
   if (episode) saveProgress(episode.id, audio.currentTime);
+  setMediaPlaybackState('paused');
   updateMini();
 });
 
-audio.addEventListener('play', updateMini);
+audio.addEventListener('play', () => {
+  setMediaPlaybackState('playing');
+  updateMini();
+});
 audio.addEventListener('volumechange', updateMini);
 
 audio.addEventListener('ended', () => {
   handleEpisodeEnd();
+});
+
+// 息屏／切后台期间 setInterval 可能被冻结，回到前台立刻补一次判断
+document.addEventListener('visibilitychange', () => {
+  if (sleepDeadline) tickSleep();
+  updateMediaPosition();
 });
 
 bindScrub(bar);
@@ -971,6 +1062,7 @@ wireMenu('#mode-btn', '#mode-menu');
 wireMenu('#playmode-btn', '#playmode-menu');
 wireMenu('#sleep-btn', '#sleep-menu');
 wireMenu('#more-toggle', '#more-menu');
+wireMediaSession();
 renderPlayMode();
 
 document.addEventListener('click', (e) => {
