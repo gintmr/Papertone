@@ -1,0 +1,251 @@
+{
+  "id": "2609.40305",
+  "title": "Looped Diffusion Transformer",
+  "authors": [
+    "Yong Xien Chng",
+    "Tianyi Chen",
+    "Wenwen Tong",
+    "Haiwen Diao",
+    "Zhongang Cai",
+    "Lei Yang",
+    "Ziwei Liu",
+    "Lewei Lu",
+    "Dahua Lin",
+    "Gao Huang"
+  ],
+  "abstract": "Improving text-to-image models has traditionally relied on increasing model size or the number of denoising steps. In this work, we explore an alternative way to scale computation by repeatedly running shared Transformer blocks within each denoising step, effectively increasing computational depth while keeping the parameter count fixed. This looped computation enables iterative refinement of internal representations without explicit reasoning tokens. However, naive looping fails to consistently improve image quality. We trace this problem to weak supervision across intermediate loops and unregulated attention updates that progressively erode local information. To overcome these challenges, we propose Looped Diffusion Transformer (Looped-DiT), which combines deep supervision across intermediate loops with self-modulating attention to stabilize looped feature updates. Under matched-parameter and matched-compute settings, Looped-DiT consistently outperforms non-looped baselines. Notably, a 260M-parameter looped model can surpass a model 6.5x larger across multiple text-to-image benchmarks while requiring 4.9x lower inference compute. Beyond this performance gain, we find that looped computation can offer a more effective form of iterative computation for diffusion models, with increasing loop depth yielding larger gains than adding more denoising steps under a fixed inference budget. Furthermore, deeper loops can progressively correct mistakes made in earlier loops, exhibiting behaviors suggestive of latent reasoning. Together, these results show that looped computation offers a promising way to scale visual generation models.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.40305",
+    "arxiv": "https://arxiv.org/abs/2609.40305"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f56b-1797-72bd-9269-50ebe7951093/podcast.mp3",
+  "duration": 477.022,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.02,
+      "en": "In Transformer Architectures for Visual Generation, today’s lecture is on looped dee eye tee. Recent work such as “Reflection Tuning” and “Inference-Time Scaling for Diffusion Models beyond Scaling Denoising Steps” explores ways to improve images by spending computation during generation. This paper takes a different route: reuse the same Transformer blocks inside each denoising step. The practical question is whether that can help a model coordinate objects and their relationships without simply making it larger. Noah, I see your hand—go ahead.",
+      "zh": "在《用于视觉生成的Transformer架构》这门课里，今天讲的是循环DiT。最近像《Reflection Tuning》和《Inference-Time Scaling for Diffusion Models beyond Scaling Denoising Steps》这样的工作，探索的是通过在生成过程中多花计算来提升图像质量。这篇论文走的是另一条路：在每个去噪步骤里复用同一批Transformer块。实际问题是，这样做能不能帮助模型协调各个物体及其相互关系，而不是单纯把模型做大。Noah，我看到你举手了——你说。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.06,
+      "end": 42.3,
+      "en": "Hi Professor, what makes a prompt like a gym scene difficult beyond drawing the individual objects?",
+      "zh": "教授您好，像健身房这种场景的提示词，除了画出各个物体之外，难点到底在哪儿？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.22,
+      "end": 68.52,
+      "en": "The prompt asks for an unoccluded mirror, a weight rack against a wall, and storage mounted on the wall. Each item might be recognizable on its own, yet the image must also place them consistently without one obscuring another. In the paper’s example, the scene changes across successive loops. Treat that as a concrete illustration of refinement, not evidence that the model reliably reasons across prompts or situations.",
+      "zh": "这个提示词要求画一面没被遮挡的镜子、靠墙的哑铃架，还有装在墙上的储物柜。每个物件单独拿出来可能都认得出来，但图像还得把它们摆得彼此一致，不能互相遮挡。在论文的例子里，场景会随着一轮轮循环发生变化。把这当作对逐步细化的一个具体说明就好，别当成模型能可靠地对各种提示词或情境进行推理的证据。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 69.78,
+      "end": 102.04,
+      "en": "A denoising step is one model evaluation as a sampler moves from a noisier image toward a cleaner one. Looped computation happens inside that evaluation: some blocks run once, a shared middle group runs repeatedly, and later blocks produce the prediction. In this model, 17 unique blocks are divided into groups of 6, 5, and 6. The middle five are reused over four training loops, creating 32 block applications per denoising step without adding copies of those parameters.",
+      "zh": "一个去噪步骤就是采样器从更嘈杂的图像走向更清晰图像时的一次模型评估。循环计算发生在这次评估内部：有些块只跑一次，中间一组共享的块反复运行，后面的块则负责生成预测。在这个模型里，17 个独立的块被分成 6、5、6 三组。中间那五个块在四轮训练循环中被重复使用，于是每个去噪步骤产生 32 次块运算，却没有增加这些参数的副本。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 102.72,
+      "end": 108.9,
+      "en": "Quick question: if the same blocks run several times, why doesn’t the model automatically improve each time?",
+      "zh": "问个简单的问题：如果同样的模块跑了好几遍，为什么模型不会每次都自动变好呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 109.88,
+      "end": 138.42,
+      "en": "Because repetition alone does not tell early loop states what a useful intermediate result should look like. If training supervises only the final prediction, those earlier states receive no direct target. The authors add Deep Supervision: each intermediate state is passed through the shared later blocks to make a prediction, and that prediction is trained against the clean-image target. These extra predictions guide training, but they are not evaluated at inference.",
+      "zh": "因为单纯重复并不能告诉循环早期的状态什么才算有用的中间结果。如果训练只监督最终预测，那些早期状态就没有直接的目标。作者加入了深度监督：每个中间状态都会经过共享的后续模块做出预测，而这个预测会以干净图像为目标进行训练。这些额外预测用于指导训练，但在推理时并不参与评估。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 139.56,
+      "end": 170.3,
+      "en": "The second component addresses attention updates that may keep changing token representations as the loop proceeds. The authors test X-S-A, a parameter-free modulation that removes the part of an attention update pointing along that token’s own value direction. They also test Gated Attention, which uses a learned gate. These choices regulate updates inside the looped blocks; they do not establish that attention drift is the only reason naive repetition can fail.",
+      "zh": "第二个组件要解决的，是注意力更新可能在循环推进过程中不断改变 token 表示的问题。作者测试了 X-S-A，这是一种无参数调制方法，会去掉注意力更新中沿着该 token 自身值方向的那一部分。他们还测试了门控注意力，它使用一个学习到的门。这些选择用来调节循环块内部的更新；它们并不能证明注意力漂移是朴素重复可能失败的唯一原因。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 171.32,
+      "end": 177.76,
+      "en": "So Deep Supervision teaches the intermediate steps, while X-S-A changes how their representations are updated?",
+      "zh": "所以深度监督是在教中间步骤，而X-S-A改变的是这些步骤的表示更新方式？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 178.78,
+      "end": 215.04,
+      "en": "That is the useful distinction. One supplies direct learning signals to intermediate predictions; the other modifies attention updates during repeated computation. The paper’s ablations support the combination: on four reasoning-related benchmarks, the B/32 model with its final-and-mean supervision weighting plus X-S-A averages 59.1. Final-loop-only supervision without attention modulation scores 55.2. Those results are consistent with both components helping, though an ablation cannot prove a complete causal account.",
+      "zh": "这正是有用的区分。一个是为中间预测提供直接的学习信号，另一个是在重复计算过程中改变注意力的更新方式。论文的消融实验支持将两者结合：在四个与推理相关的基准上，采用最终加均值监督加权并配合X-S-A的B/32模型平均得分59.1。仅使用最终循环监督而不做注意力调制则得分55.2。这些结果与两个组件都有帮助这一结论一致，不过消融实验无法证明完整的因果解释。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 216.04,
+      "end": 255.88,
+      "en": "The controlled comparison asks whether looping helps beyond simply spending more training computation on depth. At matched training compute, Looped-DiT B/32 averages 59.1, compared with 58.1 for a deeper non-looped model using Deep Supervision. Both use 1,246 training giga floating-point operations and 267 inference giga floating-point operations. Separately, a parameter-matched baseline has 260 million parameters and averages 55.2; the looped model also has 260 million, but that comparison uses more training compute.",
+      "zh": "这项受控对比想弄清楚的是：循环除了单纯把更多训练算力花在加深层数上之外，是否还有额外好处。在训练算力匹配的情况下，Looped-DiT B/32 平均得分 59.1，而一个更深的非循环模型使用深度监督，平均得分 58.1。两者都用了 1,246 训练 GFLOPs 和 267 推理 GFLOPs。另外，一个参数量匹配的基线有 2.6 亿参数，平均得分 55.2；循环模型同样有 2.6 亿参数，但那个对比用了更多训练算力。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 256.84,
+      "end": 261.04,
+      "en": "Does the paper also test whether loops help when the inference-compute budget is fixed?",
+      "zh": "论文是否也测试了在推理计算预算固定的情况下，循环是否有帮助？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 262.04,
+      "end": 296.58,
+      "en": "Yes. In a separate B/32 experiment, the researchers match per-image inference computation while comparing settings with 25 to 50 denoising steps. In those tested settings, four-loop inference scores higher than single-pass alternatives, including the same loop-trained checkpoint with looping disabled. This suggests that some computation can be allocated to internal refinement instead of additional denoising steps. It does not show that looping always wins, or that it reduces elapsed time or generation attempts.",
+      "zh": "是的。在另一项B/32实验中，研究者匹配了每张图像的推理计算量，同时比较了25到50个去噪步骤的设置。在这些测试设置中，四轮循环推理的得分高于单次推理的替代方案，包括同一个循环训练的检查点在禁用循环时的表现。这表明，一部分计算可以分配给内部细化，而不是增加去噪步骤。但这并不说明循环总是更优，也不说明它能减少耗时或生成尝试次数。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 296.58,
+      "end": 336.76,
+      "en": "For broader context, the B/16 result averages six benchmarks and scores 71.5, versus 69.0 for Intern V-L U. Their parameter counts are 260 million and 1.7 billion, respectively; reported inference costs are 150 versus 732 tera floating-point operations per image. The benchmarks cover different tasks, from object composition and dense-prompt adherence to spatial understanding and instruction following. So the average is not a single measure of reasoning, and it should not be conflated with B/32’s four-benchmark mean.",
+      "zh": "更宏观地看，B/16 的结果是六个基准的平均分，得分 71.5，而 Intern V-L U 是 69.0。两者参数量分别是 2.6 亿和 17 亿；报告的推理开销是每张图 150 对 732 万亿次浮点运算。这些基准覆盖了不同任务，从物体组合、密集提示遵循，到空间理解和指令跟随。所以这个平均分并不是对推理能力的单一衡量，也不应该和 B/32 的四基准均值混为一谈。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 337.52,
+      "end": 342.08,
+      "en": "Can the mechanism experiments tell us whether the model preserves spatial information as it loops?",
+      "zh": "机制实验能告诉我们模型在循环过程中是否保留了空间信息吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 343.06,
+      "end": 374.28,
+      "en": "They offer evidence consistent with that interpretation. In the authors’ analysis, X-S-A produces smaller attention writes relative to the residual stream, and image-token position information remains more decodable as loop depth increases. A figure also shows a prompt requesting 2 toy elephants and 4 white balloons: the sequence without X-S-A adds a balloon in later loops, while the modulated sequence preserves the count. That example illustrates a possible mechanism; it does not establish a general guarantee.",
+      "zh": "他们提供的证据与这一解释相符。在作者的分析中，X-S-A 相对于残差流产生的注意力写入更小，而且随着循环深度增加，图像 token 的位置信息仍然更容易被解码出来。一张图还展示了一个要求画 2 只玩具大象和 4 个白色气球的提示：没有 X-S-A 的序列在后续循环中多加了一个气球，而经过调制的序列则保持了数量不变。这个例子说明了一种可能的机制，但并不能构成普遍的保证。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 374.28,
+      "end": 409.94,
+      "en": "This work extends, rather than originates, recurrent computation for visual generation. Earlier work such as “Elastic Looped Transformers” studied shared-block recurrence in class-conditional image and video generation. Looped-DiT instead focuses on open-ended text-conditioned images, direct supervision of intermediate predictions against the clean target, and compositional prompts. Its experiments use pixel-space models at 512 by 512 resolution, so claims about much larger models, latent-space systems, or higher resolutions remain open.",
+      "zh": "这项工作是对视觉生成中循环计算的延续，而非开创。此前的“弹性循环Transformer”等研究已经探讨过类别条件图像和视频生成中的共享块循环。而Looped-DiT则聚焦于开放式文本条件图像、对中间预测直接以干净目标进行监督，以及组合式提示词。其实验使用的是512×512分辨率的像素空间模型，因此关于更大规模模型、潜空间系统或更高分辨率的结论仍有待验证。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 410.92,
+      "end": 442.18,
+      "en": "The broader implication is a different way to think about inference-time scaling. Computation need not be added only by enlarging a network or extending a sampler; a shared block can also revisit the current representation within each denoising step. The paper’s case is that this can be useful when intermediate predictions are trained and attention updates are regulated. Its results support that approach in the tested setup, while leaving the limits of scaling and the nature of the model’s internal reasoning unresolved.",
+      "zh": "更广泛的意义在于，它提供了一种思考推理时扩展的不同方式。计算量不一定只能通过扩大网络或延长采样器来增加；共享模块也可以在每一个去噪步骤中重新审视当前的表示。这篇论文的主张是，当中间预测经过训练、注意力更新受到调控时，这种做法可以带来收益。其结果在测试设置中支持了这一方法，但扩展的极限以及模型内部推理的本质仍未得到解答。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 443.06,
+      "end": 477.022,
+      "en": "The memorable takeaway is that repeating a computation is not enough: the model needs guidance for what intermediate refinement should produce, and its updates may need regulation. Looped-DiT combines those ideas while keeping its unique parameter count fixed, then tests them with controlled comparisons and visual examples. The evidence is promising for the studied text-to-image setting, but it should be read with its benchmark, compute, and scale limitations in view. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "最值得记住的一点是，单纯重复计算还不够：模型需要有人告诉它中间细化应该产出什么，而且它的更新可能还需要加以约束。Looped-DiT 把这些思路结合起来，同时保持自己独特的参数量不变，然后用受控对比和可视化例子来检验它们。对于所研究的文本到图像场景来说，证据是令人鼓舞的，但解读时也应该看到它在基准、算力和规模上的局限。感谢收听。如果还有别的问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chng2026loopeddiffusiontransformer,\n      title={Looped Diffusion Transformer}, \n      author={Yong Xien Chng and Tianyi Chen and Wenwen Tong and Haiwen Diao and Zhongang Cai and Lei Yang and Ziwei Liu and Lewei Lu and Dahua Lin and Gao Huang},\n      year={2026},\n      eprint={2609.40305},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.40305}, \n}",
+  "topics": [
+    "Computer Vision",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.744,
+    0.634,
+    0.48,
+    0.435,
+    0.388,
+    0.513,
+    0.622,
+    0.583,
+    0.577,
+    0.48,
+    0.561,
+    0.44,
+    0.385,
+    0.296,
+    0.265,
+    0.381,
+    0.83,
+    0.588,
+    0.654,
+    0.492,
+    0.419,
+    0.243,
+    0.387,
+    0.26,
+    0.223,
+    0.271,
+    0.667,
+    0.51,
+    0.321,
+    0.423,
+    0.408,
+    0.445,
+    0.73,
+    0.454,
+    0.564,
+    0.527,
+    0.479,
+    0.461,
+    0.443,
+    0.632,
+    0.66,
+    0.693,
+    0.412,
+    0.442,
+    0.639,
+    0.404,
+    0.629,
+    0.608,
+    0.527,
+    0.492,
+    0.368,
+    1.0,
+    0.614,
+    0.406,
+    0.775,
+    0.7,
+    0.434,
+    0.476,
+    0.464,
+    0.269,
+    0.298,
+    0.302,
+    0.571,
+    0.466,
+    0.315,
+    0.225,
+    0.496,
+    0.367,
+    0.327,
+    0.215,
+    0.2,
+    0.247
+  ],
+  "published": "2026-09-30",
+  "license": "CC BY"
+}

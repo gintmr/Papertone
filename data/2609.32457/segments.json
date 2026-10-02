@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 375.17,
+  "word_match_rate": 0.9495,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course Transformer Architectures, today’s lecture is on “Write Back the Delta: Revisiting the Same Tokens with Fresh Representations.” Recent work such as “Recirculation” and “Mixture-of-Recursions” explores feedback or repeated computation. This paper takes a different angle: rather than rerunning layers, it asks how to reuse information the model has already computed. Researchers from Tongji University and Shanghai Jiao Tong University make that question concrete. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 32.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why does a Transformer need information sent backward if later layers already process earlier representations?",
+      "start": 33.16,
+      "end": 40.06
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That’s the central limitation the paper examines. In a standard decoder-only Transformer, information moves forward through the layers: later computations can build on earlier ones, but they cannot directly revise the representation an earlier layer processed. Imagine a team that keeps discovering useful evidence but cannot send it back to update an earlier draft. ReFlux proposes a feedback route, potentially making internal discoveries available where they could improve later processing.",
+      "start": 41.54,
+      "end": 68.1
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So is the key idea to send the entire deeper representation back to an earlier layer?",
+      "start": 69.22,
+      "end": 74.0
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Not quite. The paper argues that a deeper representation contains both information inherited from earlier layers and computation newly added along the way. ReFlux returns that newly accumulated difference, which the authors call the depth increment. The distinction matters because sending the whole state may replay information the target layer already has. In controlled comparisons across Gemma and Qwen models, the increment generally reduced perplexity more than either the full deeper state or the target state.",
+      "start": 74.82,
+      "end": 105.78
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The authors also test whether this advantage holds as feedback becomes more extensive. They vary the number of feedback rounds, the number of active routes, and context length. Full-state feedback tends to level off after relatively few routes or rounds, while increments continue to help as routes are added. That pattern supports the paper’s main proposal: separating newly accumulated computation from inherited information can make feedback more complementary.",
+      "start": 106.7,
+      "end": 133.66
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How does the model decide which layer pairs should exchange these increments?",
+      "start": 134.78,
+      "end": 138.22
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "ReFlux considers directed routes from deeper layers to shallower ones, then uses a learned router to select useful routes for the current context. The router predicts both whether a route should be active and how strongly it should write. Before each write, the increment is rescaled relative to the target representation, helping control its effect. The backbone stays frozen; training updates only the router, using next-token prediction on a mixture of text data.",
+      "start": 139.2,
+      "end": 166.44
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That input-dependent choice is important because a fixed feedback path may not suit every example. The routing analysis finds more active routes on higher-loss contexts and longer depth spans on multi-hop tasks. In the paper’s interpretation, harder examples can benefit from broader internal information access. A static rule based only on representation similarity does not reliably find useful routes, so the router must learn from language-modeling objectives rather than geometry alone.",
+      "start": 167.4,
+      "end": 197.08
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "What does streaming execution save, and what trade-off does it introduce?",
+      "start": 198.08,
+      "end": 201.84
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Synchronous ReFlux makes a first pass, records representations, then makes another pass to refine each same token; it improves performance but costs roughly twice the backbone flops. Streaming instead carries an increment from the previous token into the current token, avoiding a second backbone traversal. Prompt processing can remain parallel, while decoding uses the cached feedback. This preserves backbone flops, with reported runtime overhead around 1.02 times for Gemma three one billion and 1.08 times for Qwen three four billion.",
+      "start": 203.02,
+      "end": 238.26
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Across five models and ten language-modeling corpora, both execution styles generally lower perplexity. Reasoning gains are strongest where answers require combining evidence: average multi-hop accuracy improves by a reported 4.7 percentage points. Streaming gains are somewhat smaller than synchronous gains, but retain much of the benefit. These results suggest a practical use case: improving access to internal evidence during generation without adding reasoning tokens or changing the pretrained backbone weights.",
+      "start": 238.26,
+      "end": 271.22
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Could this be considered a cheaper version of looped reasoning, and what remains unproven?",
+      "start": 272.24,
+      "end": 276.28
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "It is related, but the mechanism differs. “Mixture-of-Recursions” allocates repeated computation, while ReFlux redirects computation already produced; “Recirculation” also sends contextualized activations backward, whereas ReFlux favors the newly accumulated increment. The approaches could complement each other. Still, streaming feedback arrives one token later, and synchronous refinement is costly. Results cover a limited set of model families and tasks, and do not establish effects on safety, factual reliability, or instruction following.",
+      "start": 277.2,
+      "end": 310.92
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The broader implication is that model improvement may involve not only producing more computation, but also making existing computation accessible at the right place. ReFlux offers evidence that a compact, learned feedback mechanism can help with language modeling and evidence composition while leaving the backbone frozen. Its limits make the next questions clear: test larger and instruction-tuned models, train routers directly for streaming, and measure reliability under realistic deployment conditions.",
+      "start": 311.82,
+      "end": 342.14
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So the takeaway is to return useful updates, not simply replay the whole state?",
+      "start": 343.34,
+      "end": 347.5
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Exactly. ReFlux’s memorable idea is that feedback can be more useful when it carries what a layer has newly learned, rather than everything it already represents. Whether this principle generalizes will depend on broader evaluations and efficient implementations, but it gives researchers a precise way to study information access across Transformer depth. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 348.48,
+      "end": 375.17
+    }
+  ]
+}

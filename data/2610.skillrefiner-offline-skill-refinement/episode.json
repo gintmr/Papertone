@@ -1,0 +1,261 @@
+{
+  "id": "2610.skillrefiner-offline-skill-refinement",
+  "title": "SkillRefiner: Offline Skill Refinement from Historical Agent Traces",
+  "authors": [
+    "Anirudh Khatry",
+    "Calvin Smith",
+    "Greg Durrett",
+    "Isil Dillig",
+    "Graham Neubig"
+  ],
+  "abstract": "Skills capture procedural knowledge that helps agents solve complex tasks. Existing skill-refinement methods improve these instructions by generating new rollouts with candidate skills, which can be costly or impractical when environments are not replayable or supervision arrives only after deployment. We introduce SKILLREFINER, an offline method that refines deployed agent skills from historical execution traces and observed outcomes. SKILLREFINER summarizes long trajectories, clusters recurring behaviors and failure modes, and derives targeted edits from each cluster. Successful clusters reinforce effective behavior, while failure clusters produce guardrails and procedural corrections that are checked against supporting evidence. We evaluate SKILLREFINER on spreadsheet manipulation, mathematical reasoning, and production pull-request review. SkillRefiner improves over both the LLM and human authored skills across all settings while using 1.4–42× fewer refinement tokens than competing refinement methods.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.skillrefiner-offline-skill-refinement",
+    "arxiv": "https://arxiv.org/abs/2610.skillrefiner-offline-skill-refinement"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3",
+  "duration": 481.985,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 30.9,
+      "en": "In our graduate course, Adaptive Agents and Learning from Experience, today’s lecture is on SKILLREFINER. Recent work such as SkillOS and WikiSkill explores how agents can curate and preserve reusable skills. This paper asks a related but practical question: can an agent learn from its past work without rerunning tasks each time? In production code review, useful feedback may arrive only after developers revise code days or weeks later. Yes, Noah?",
+      "zh": "在我们研究生课程“自适应智能体与从经验中学习”中，今天的讲座讲的是SKILLREFINER。最近像SkillOS和WikiSkill这样的工作，探索了智能体如何整理和保存可复用的技能。这篇论文问了一个相关但更实际的问题：智能体能不能从过去的工作中学习，而不用每次都重新跑任务？在生产环境的代码审查中，有用的反馈可能要到开发者几天甚至几周后修改代码时才出现。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.02,
+      "end": 36.68,
+      "en": "Hi Professor, if feedback arrives that late, what can the agent actually learn from it?",
+      "zh": "教授您好，如果反馈来得这么晚，智能体到底能从中学到什么呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 37.24,
+      "end": 66.78,
+      "en": "It can treat records of earlier work, along with outcomes that become available later, as supervision for improving its instructions. The key is not to wait for a new round of task executions before making a change. Instead, SKILLREFINER finds recurring patterns in existing traces, separates patterns associated with success from those associated with failure, and uses them to propose edits. The authors report improvements across their tested settings, including delayed-feedback review.",
+      "zh": "它可以把以往工作的记录，连同后来才拿到的结果，当作监督信号来改进自己的指令。关键在于，不必等新一轮任务执行完再去做改动。SKILLREFINER 会从已有的轨迹里找出反复出现的模式，把跟成功相关的模式和跟失败相关的模式分开，再用它们来提出修改。作者报告说，在他们测试的各种设置下都有提升，包括延迟反馈的评审场景。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 67.72,
+      "end": 99.14,
+      "en": "A skill here means reusable natural-language procedural guidance for an agent: instructions about how to approach a task, rather than a change to the model’s parameters. The method starts with historical execution traces, their outcomes, and any available evaluator feedback. It summarizes each trace, capturing its context, strategy, and notable actions, then represents those summaries so similar runs can be grouped. The important design choice is that successful and failed runs are clustered separately.",
+      "zh": "这里的技能指的是给智能体用的可复用自然语言流程指导，也就是关于如何处理任务的说明，而不是对模型参数的改动。这个方法从历史执行轨迹、这些轨迹的结果以及任何可获得的评估反馈入手。它先对每条轨迹做总结，提炼出上下文、策略和值得注意的动作，再把这些总结表示出来，以便把相似的运行归到一组。关键的设计选择在于，成功的运行和失败的运行是分开聚类的。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.18,
+      "end": 104.3,
+      "en": "Quick question: why group by outcome instead of clustering all similar runs together?",
+      "zh": "问个快问题：为什么按结果分组，而不是把所有相似的轨迹聚在一起？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 105.38,
+      "end": 134.4,
+      "en": "Because similar-looking tasks can teach different lessons depending on whether the agent succeeded. A successful cluster can reveal a behavior worth reinforcing; a failure cluster can identify a recurring problem. SKILLREFINER proposes an edit for each cluster, but treats clusters with just one trace as noise, so a single unusual run does not independently rewrite the skill. This turns a collection of individual histories into candidate guidance grounded in repeated patterns.",
+      "zh": "因为看起来相似的任务，可能因为智能体成功与否而带来不同的经验教训。成功的聚类能揭示值得强化的行为；失败的聚类则能识别反复出现的问题。SKILLREFINER会为每个聚类提出修改建议，但把只有一条轨迹的聚类当作噪声处理，所以单次异常运行不会独立改写技能。这就把一堆零散的历史记录，变成了基于重复模式提炼出的候选指导。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 135.46,
+      "end": 165.26,
+      "en": "There is an important asymmetry in what happens next. For successful clusters, a proposed edit reinforces behavior observed across those runs. For failed clusters, the traces can identify what went wrong, and evaluator feedback may add detail, but the proposed remedy comes from the language model’s prior knowledge. A separate evidence gate checks whether the targeted behavior occurred and whether the failure evidence plausibly supports the proposal. It does not test the repair by replaying the task.",
+      "zh": "接下来发生的事情里有一个重要的不对称。对于成功的聚类，提出的修改是在强化这些轨迹中观察到的行为。而对于失败的聚类，轨迹能指出哪里出了问题，评估器的反馈也可能补充细节，但提出的补救方案来自语言模型自身的先验知识。另有一道证据门控，用来检查目标行为是否真的发生过，以及失败证据是否合理地支持这一提案。它并不会通过重放任务来检验修复方案。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 165.26,
+      "end": 169.82,
+      "en": "Can you clarify what the evidence gate proves, and what it cannot prove?",
+      "zh": "你能说清楚这个证据门控到底能证明什么、不能证明什么吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 170.76,
+      "end": 199.04,
+      "en": "It can check whether the proposal’s rationale fits the cluster evidence; it cannot establish that the proposed fix will work. Supported failure-derived edits and success-derived reinforcements are merged with the initial skill. If a restriction based on failure conflicts with useful positive guidance, the merge is instructed to limit that restriction to the context where the failure appeared. So the result can be conditional guidance, not a universal ban based on one kind of outcome.",
+      "zh": "它能检查提案的理由是否与聚类证据相符，但无法证明所提出的修复方案一定有效。由失败推导出的受支持编辑和由成功推导出的强化会与初始技能合并。如果基于失败的限制与有用的正面指导相冲突，合并时会要求把该限制限定在失败出现的上下文中。因此，结果可以是有条件的指导，而不是基于某一种结果的一刀切禁令。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 200.06,
+      "end": 241.16,
+      "en": "The evaluation covers spreadsheet manipulation, mathematical reasoning, and pull-request review, across eight combinations of initial-skill source and agent model. For spreadsheets and math, official automatic evaluators assess outputs. Review is different: developers’ later revisions supply delayed signals, and a fixed G-P-T five point four mini judge matches agent suggestions to issues addressed by developers. The team uses those matches to calculate F-one on 145 held-out historical pull requests, after using 639 for refinement. That is a proxy for review usefulness, not a complete quality judgment.",
+      "zh": "评估覆盖了电子表格操作、数学推理和拉取请求审查，横跨初始技能来源与智能体模型的八种组合。对于电子表格和数学，由官方自动评估器来评判输出。审查则不同：开发者后续的修改提供了延迟信号，再由一个固定的GPT-5.4 mini评判器将智能体的建议与开发者实际处理的问题进行匹配。团队用这些匹配结果，在639个历史拉取请求用于改进之后，在145个留出的历史拉取请求上计算F1分数。这只是审查有用性的一个代理指标，并非对质量的完整判断。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 241.16,
+      "end": 245.48,
+      "en": "How should we read the spreadsheet result alongside the token comparison?",
+      "zh": "我们该怎么把电子表格的结果和token对比放在一起看呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 246.54,
+      "end": 288.36,
+      "en": "In one held-out SpreadsheetBench setting, the initial skill was authored by a language model and the agent was G-P-T five point four mini. SKILLREFINER reached 84% accuracy, compared with 79% for Trace to Skill and 78.5% for gepa, on 200 evaluation tasks. The difference was significant against both baselines under paired bootstrap testing. Refinement used 2.78 million tokens, versus 6.87 million for Trace to Skill and 117.22 million for gepa. Those are refinement-token counts, not elapsed time or total computation.",
+      "zh": "在一个留出的SpreadsheetBench设定里，初始技能是由语言模型编写的，智能体是GPT-5.4 mini。SKILLREFINER在200个评估任务上达到了84%的准确率，而Trace to Skill是79%，gepa是78.5%。在配对bootstrap检验下，这个差异对两个基线都显著。精炼过程用了278万token，而Trace to Skill用了687万，gepa用了1.1722亿。这些是精炼token的计数，不是耗时或总计算量。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 289.5,
+      "end": 297.56,
+      "en": "Another question: do the ablations show that failure traces are the main source of the gains?",
+      "zh": "还有一个问题：消融实验是否表明失败轨迹是收益的主要来源？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 297.56,
+      "end": 328.48,
+      "en": "They suggest that failure-derived proposals and evidence gating matter in the tested pipeline, without showing that any particular repair caused an improvement. In the representative SpreadsheetBench setup with MiniMax M two point seven, removing failure proposals lowered performance by 8 percentage points; removing success proposals changed it by zero, and removing the gate lowered it by 5 points. Across eight settings, removing failure proposals hurt more in seven. The authors also find that successful runs provide useful signals in some cases.",
+      "zh": "这些结果表明，在测试的流程中，来自失败的提议和证据门控确实重要，但并没有证明某一次具体的修复带来了提升。在具有代表性的 SpreadsheetBench 设置中，使用 MiniMax M 2.7，去掉失败提议会让性能下降 8 个百分点；去掉成功提议则没有变化，而去掉门控会下降 5 个百分点。在八种设置中，有七种情况下去掉失败提议带来的负面影响更大。作者还发现，成功轨迹在某些情况下也能提供有用的信号。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 329.48,
+      "end": 362.82,
+      "en": "The distinction from Trace to Skill is that Trace to Skill proposes trajectory-level patches from individual runs and consolidates them, while SKILLREFINER first groups semantically similar runs by outcome. Compared with gepa, which proposes changes, generates executions, and evaluates candidates during optimization, SKILLREFINER works from executions already collected. That difference matters when outcomes arrive late or replay is impractical. It does not mean the token counts establish lower wall-clock time or total computation.",
+      "zh": "与Trace to Skill的区别在于，Trace to Skill从单次运行中提出轨迹级补丁并加以整合，而SKILLREFINER先按结果把语义相似的运行分组。与gepa相比——后者在优化过程中提出改动、生成执行并评估候选——SKILLREFINER是基于已经收集好的执行来工作的。当结果来得晚或轨迹重放不现实时，这一差异就很关键。但这并不意味着token数量就能说明实际耗时更短或总计算量更低。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 363.86,
+      "end": 367.84,
+      "en": "So does the review experiment show that replay is impossible in real code review?",
+      "zh": "那么，评审实验是否表明在真实代码评审中无法进行回放？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 368.78,
+      "end": 401.38,
+      "en": "No. It shows SKILLREFINER operating in a setting where the paper uses delayed developer revisions as supervision and does not include gepa, because immediate replay with automated feedback is unavailable for that evaluation. It does not establish that replay is impossible in every review workflow. In the review plots, SKILLREFINER occupies a favorable upper-left position relative to Trace to Skill for both displayed models, while gepa is absent. The measured F-one remains a judged match to addressed issues, not every dimension of review quality.",
+      "zh": "不是。它只是表明，在论文把开发者后续修订当作监督信号、且不包含 gepa 的设定下，SKILLREFINER 能够运行，因为那种评估拿不到带自动反馈的即时回放。这并不能证明回放在所有评审流程里都不可能。在评审的图中，对展示的两个模型来说，SKILLREFINER 相对 Trace to Skill 都处在更有利的左上位置，而 gepa 并未出现。测得的 F1 仍然是针对已处理问题的判定匹配，并不代表评审质量的每一个维度。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 402.32,
+      "end": 406.24,
+      "en": "How does this connect to the broader move toward agents that evolve their own skills?",
+      "zh": "这与让智能体自我演化技能这一更广泛的趋势有何关联？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 406.24,
+      "end": 440.92,
+      "en": "Work such as SkillOS and WikiSkill also explores turning experience into persistent, reusable guidance. SKILLREFINER contributes a more specific account of how outcome-separated patterns can inform edits, and how failure-derived edits can be checked against their evidence before merging. Its results shift attention from collecting new optimization rollouts alone toward using information that accumulates during deployment. The central research question becomes not just what an agent remembers, but how repeated evidence should shape conditional instructions.",
+      "zh": "像SkillOS和WikiSkill这类工作也在探索如何把经验转化为持久、可复用的指导。SKILLREFINER则更具体地说明了，结果分离的模式如何为编辑提供依据，以及由失败得出的编辑在合并前如何对照证据进行检查。它的结果把注意力从单纯收集新的优化轨迹，转向利用部署过程中积累的信息。核心研究问题不再只是智能体记住了什么，而是重复出现的证据应该如何塑造条件式指令。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 442.16,
+      "end": 481.985,
+      "en": "The practical lesson is that historical traces can serve as supervision even when useful outcomes arrive later, but the evidence has limits: it can localize recurring behavior without proving that a proposed remedy is correct. SKILLREFINER’s distinctive step is compiling repeated, outcome-separated patterns into conditional, evidence-checked guidance, rather than treating every run as an isolated lesson. That offers a way to refine instructions without repeatedly generating new executions during refinement. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "实际经验是，历史轨迹即便在有用结果较晚才出现时也能充当监督信号，但这种证据有局限：它能定位反复出现的行为，却不能证明所提出的补救措施一定正确。SKILLREFINER 的独特之处在于，把反复出现、按结果分离的模式汇编成有条件的、经过证据检验的指导，而不是把每次运行都当作孤立的教训。这提供了一种在精炼阶段无需反复生成新执行就能改进指令的方法。感谢收听。如果还有任何问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{khatry-skillrefiner-2025,\n  author = {Khatry, Anirudh and Smith, Calvin and Durrett, Greg and Dillig, Isil and Neubig, Graham},\n  keywords = {Artificial Intelligence (cs.AI), Agents, Machine Learning (cs.LG), Skill Refinement, Historical Traces, FOS: Computer and information sciences},\n  title = {SkillRefiner: Offline Skill Refinement from Historical Agent Traces},\n  publisher = {arXiv},\n  year = {2025}\n}",
+  "topics": [
+    "Agents"
+  ],
+  "peaks": [
+    0.735,
+    0.619,
+    0.437,
+    0.464,
+    0.46,
+    1.0,
+    0.6,
+    0.539,
+    0.346,
+    0.485,
+    0.655,
+    0.596,
+    0.44,
+    0.465,
+    0.373,
+    0.689,
+    0.483,
+    0.605,
+    0.508,
+    0.504,
+    0.417,
+    0.535,
+    0.526,
+    0.449,
+    0.417,
+    0.531,
+    0.37,
+    0.338,
+    0.29,
+    0.408,
+    0.532,
+    0.332,
+    0.399,
+    0.262,
+    0.224,
+    0.248,
+    0.574,
+    0.487,
+    0.368,
+    0.224,
+    0.279,
+    0.213,
+    0.2,
+    0.443,
+    0.872,
+    0.41,
+    0.677,
+    0.61,
+    0.371,
+    0.684,
+    0.56,
+    0.608,
+    0.532,
+    0.625,
+    0.574,
+    0.655,
+    0.515,
+    0.523,
+    0.404,
+    0.353,
+    0.823,
+    0.551,
+    0.408,
+    0.436,
+    0.424,
+    0.298,
+    0.63,
+    0.537,
+    0.332,
+    0.235,
+    0.299,
+    0.315
+  ],
+  "published": "2026-10-01",
+  "license": "User Uploaded"
+}

@@ -2,6 +2,84 @@
   "generated_at": null,
   "episodes": [
     {
+      "id": "2610.skillrefiner-offline-skill-refinement",
+      "title": "SkillRefiner: Offline Skill Refinement from Historical Agent Traces",
+      "authors": [
+        "Anirudh Khatry",
+        "Calvin Smith",
+        "Greg Durrett",
+        "Isil Dillig",
+        "Graham Neubig"
+      ],
+      "duration": 481.984813,
+      "license": "User Uploaded",
+      "topics": [
+        "Agents"
+      ],
+      "cover": "cover.png",
+      "path": "2610.skillrefiner-offline-skill-refinement",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
+    },
+    {
+      "id": "2609.40305",
+      "title": "Looped Diffusion Transformer",
+      "authors": [
+        "Yong Xien Chng",
+        "Tianyi Chen",
+        "Wenwen Tong",
+        "Haiwen Diao",
+        "Zhongang Cai",
+        "Lei Yang",
+        "Ziwei Liu",
+        "Lewei Lu",
+        "Dahua Lin",
+        "Gao Huang"
+      ],
+      "duration": 477.0215,
+      "license": "CC BY",
+      "topics": [
+        "Computer Vision",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.40305",
+      "published": "2026-09-30",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f56b-1797-72bd-9269-50ebe7951093/podcast.mp3"
+    },
+    {
+      "id": "2609.38163",
+      "title": "Rethinking Representations for World-Action Modeling",
+      "authors": [
+        "Haoyi Jiang",
+        "Liu Liu",
+        "Xinjiang Wang",
+        "Zhihao Sun",
+        "Zequn Chen",
+        "Sen Wang",
+        "Xinjie Wang",
+        "Xia Chen",
+        "Jingfeng Yao",
+        "Weiheng Zhao",
+        "Shanglin Yuan",
+        "Zhizhong Su",
+        "Wei Sui",
+        "Wenyu Liu",
+        "Xinggang Wang"
+      ],
+      "duration": 418.872938,
+      "license": "CC BY",
+      "topics": [
+        "Contrastive Learning",
+        "Reinforcement Learning",
+        "Embedding Methods"
+      ],
+      "cover": "cover.png",
+      "path": "2609.38163",
+      "published": "2026-09-29",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f05a-7a2a-7345-b1d4-b4472ee0d2c4/podcast.mp3"
+    },
+    {
       "id": "2609.37725",
       "title": "Context Language Models",
       "authors": [
@@ -152,6 +230,33 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebdf-531d-781a-beae-adab43a13055/podcast.mp3"
     },
     {
+      "id": "2609.34261",
+      "title": "RoboICL: Embodied In-Context Learning with GPT-6 Astra",
+      "authors": [
+        "Fangcheng Liu",
+        "Yeqing Shen",
+        "Anda Cheng",
+        "Weishi Mi",
+        "Chao Tang",
+        "Chenyuan Liu",
+        "Yushun Xiang",
+        "Tingguang Li",
+        "Yong-Lu Li",
+        "Yehui Tang"
+      ],
+      "duration": 493.504625,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Few Shot Learning",
+        "Imitation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.34261",
+      "published": "2026-09-28",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb13-a7ad-75be-b54d-e75086eda69b/podcast.mp3"
+    },
+    {
       "id": "2609.34085",
       "title": "AD-E2E-JEPA: A Joint-Embedding Predictive Architecture For End-to-End Autonomous Driving",
       "authors": [
@@ -224,6 +329,31 @@
       "path": "2609.endpoint-constrained-trajectory-optimization",
       "published": "2026-09-26",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0dc33-d94b-7919-8d36-bb9602679447/podcast.mp3"
+    },
+    {
+      "id": "2609.32457",
+      "title": "Write Back the $Δ$: Revisiting the Same Tokens with Fresh Representations",
+      "authors": [
+        "Wencheng Ye",
+        "Anning Hu",
+        "Xiangdong Zhang",
+        "Tianyi Wang",
+        "Yikang Li",
+        "Hengyu Jin",
+        "Bing Li",
+        "Junchi Yan"
+      ],
+      "duration": 375.17025,
+      "license": "CC BY",
+      "topics": [
+        "Transformers",
+        "Inference Optimization",
+        "Reasoning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.32457",
+      "published": "2026-09-26",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eacf-14bc-7d25-8988-0d3d525d5f70/podcast.mp3"
     },
     {
       "id": "2609.31947",
@@ -663,6 +793,32 @@
       "path": "2609.19644",
       "published": "2026-09-17",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b31b-5185-7477-a048-6de11493d0a7/podcast.mp3"
+    },
+    {
+      "id": "2609.18197",
+      "title": "WholeBodyWAM: Learning Whole-Body World Action Models with Scalable Motion Priors",
+      "authors": [
+        "Bowei Zhang",
+        "Qiyao Zhang",
+        "Shuanghao Bai",
+        "Xinhua Wang",
+        "Meng Li",
+        "Yilei Wang",
+        "Leiwang Zhang",
+        "Jian Tang",
+        "Lu Zhou",
+        "Lei Sun",
+        "Zhengping Che"
+      ],
+      "duration": 406.15175,
+      "license": "CC BY",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2609.18197",
+      "published": "2026-09-16",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0acfe-b8c3-7312-8109-12a01e19f774/podcast.mp3"
     },
     {
       "id": "2609.18094",
@@ -1387,6 +1543,33 @@
       "path": "2609.08084",
       "published": "2026-09-08",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a083f2-faf6-7572-8b69-672f126b70ea/podcast.mp3"
+    },
+    {
+      "id": "2609.07747",
+      "title": "Dex-X: Learning Visual-Tactile Dexterous Manipulation From Human Videos with Simulated Interaction",
+      "authors": [
+        "Ruoqu Chen",
+        "Feixiang Ruan",
+        "Liu Cao",
+        "Zihao Wang",
+        "Botian Xu",
+        "Shiqin Tong",
+        "Jiajun Liu",
+        "Mingzhi Pei",
+        "Chenyu Zhang",
+        "Wanli Xing",
+        "Kaifeng Zhang",
+        "Mengdi Xu"
+      ],
+      "duration": 424.17625,
+      "license": "CC BY",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2609.07747",
+      "published": "2026-09-07",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a083eb-0d9b-79be-bffa-fb2d35a2e087/podcast.mp3"
     },
     {
       "id": "2609.07303",

@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 481.985,
+  "word_match_rate": 0.9301,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course, Adaptive Agents and Learning from Experience, today’s lecture is on SKILLREFINER. Recent work such as SkillOS and WikiSkill explores how agents can curate and preserve reusable skills. This paper asks a related but practical question: can an agent learn from its past work without rerunning tasks each time? In production code review, useful feedback may arrive only after developers revise code days or weeks later. Yes, Noah?",
+      "start": 0.0,
+      "end": 30.9
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if feedback arrives that late, what can the agent actually learn from it?",
+      "start": 32.02,
+      "end": 36.68
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It can treat records of earlier work, along with outcomes that become available later, as supervision for improving its instructions. The key is not to wait for a new round of task executions before making a change. Instead, SKILLREFINER finds recurring patterns in existing traces, separates patterns associated with success from those associated with failure, and uses them to propose edits. The authors report improvements across their tested settings, including delayed-feedback review.",
+      "start": 37.24,
+      "end": 66.78
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "A skill here means reusable natural-language procedural guidance for an agent: instructions about how to approach a task, rather than a change to the model’s parameters. The method starts with historical execution traces, their outcomes, and any available evaluator feedback. It summarizes each trace, capturing its context, strategy, and notable actions, then represents those summaries so similar runs can be grouped. The important design choice is that successful and failed runs are clustered separately.",
+      "start": 67.72,
+      "end": 99.14
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: why group by outcome instead of clustering all similar runs together?",
+      "start": 100.18,
+      "end": 104.3
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Because similar-looking tasks can teach different lessons depending on whether the agent succeeded. A successful cluster can reveal a behavior worth reinforcing; a failure cluster can identify a recurring problem. SKILLREFINER proposes an edit for each cluster, but treats clusters with just one trace as noise, so a single unusual run does not independently rewrite the skill. This turns a collection of individual histories into candidate guidance grounded in repeated patterns.",
+      "start": 105.38,
+      "end": 134.4
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "There is an important asymmetry in what happens next. For successful clusters, a proposed edit reinforces behavior observed across those runs. For failed clusters, the traces can identify what went wrong, and evaluator feedback may add detail, but the proposed remedy comes from the language model’s prior knowledge. A separate evidence gate checks whether the targeted behavior occurred and whether the failure evidence plausibly supports the proposal. It does not test the repair by replaying the task.",
+      "start": 135.46,
+      "end": 165.26
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify what the evidence gate proves, and what it cannot prove?",
+      "start": 165.26,
+      "end": 169.82
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It can check whether the proposal’s rationale fits the cluster evidence; it cannot establish that the proposed fix will work. Supported failure-derived edits and success-derived reinforcements are merged with the initial skill. If a restriction based on failure conflicts with useful positive guidance, the merge is instructed to limit that restriction to the context where the failure appeared. So the result can be conditional guidance, not a universal ban based on one kind of outcome.",
+      "start": 170.76,
+      "end": 199.04
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The evaluation covers spreadsheet manipulation, mathematical reasoning, and pull-request review, across eight combinations of initial-skill source and agent model. For spreadsheets and math, official automatic evaluators assess outputs. Review is different: developers’ later revisions supply delayed signals, and a fixed G-P-T five point four mini judge matches agent suggestions to issues addressed by developers. The team uses those matches to calculate F-one on 145 held-out historical pull requests, after using 639 for refinement. That is a proxy for review usefulness, not a complete quality judgment.",
+      "start": 200.06,
+      "end": 241.16
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How should we read the spreadsheet result alongside the token comparison?",
+      "start": 241.16,
+      "end": 245.48
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "In one held-out SpreadsheetBench setting, the initial skill was authored by a language model and the agent was G-P-T five point four mini. SKILLREFINER reached 84% accuracy, compared with 79% for Trace to Skill and 78.5% for gepa, on 200 evaluation tasks. The difference was significant against both baselines under paired bootstrap testing. Refinement used 2.78 million tokens, versus 6.87 million for Trace to Skill and 117.22 million for gepa. Those are refinement-token counts, not elapsed time or total computation.",
+      "start": 246.54,
+      "end": 288.36
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Another question: do the ablations show that failure traces are the main source of the gains?",
+      "start": 289.5,
+      "end": 297.56
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "They suggest that failure-derived proposals and evidence gating matter in the tested pipeline, without showing that any particular repair caused an improvement. In the representative SpreadsheetBench setup with MiniMax M two point seven, removing failure proposals lowered performance by 8 percentage points; removing success proposals changed it by zero, and removing the gate lowered it by 5 points. Across eight settings, removing failure proposals hurt more in seven. The authors also find that successful runs provide useful signals in some cases.",
+      "start": 297.56,
+      "end": 328.48
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The distinction from Trace to Skill is that Trace to Skill proposes trajectory-level patches from individual runs and consolidates them, while SKILLREFINER first groups semantically similar runs by outcome. Compared with gepa, which proposes changes, generates executions, and evaluates candidates during optimization, SKILLREFINER works from executions already collected. That difference matters when outcomes arrive late or replay is impractical. It does not mean the token counts establish lower wall-clock time or total computation.",
+      "start": 329.48,
+      "end": 362.82
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So does the review experiment show that replay is impossible in real code review?",
+      "start": 363.86,
+      "end": 367.84
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "No. It shows SKILLREFINER operating in a setting where the paper uses delayed developer revisions as supervision and does not include gepa, because immediate replay with automated feedback is unavailable for that evaluation. It does not establish that replay is impossible in every review workflow. In the review plots, SKILLREFINER occupies a favorable upper-left position relative to Trace to Skill for both displayed models, while gepa is absent. The measured F-one remains a judged match to addressed issues, not every dimension of review quality.",
+      "start": 368.78,
+      "end": 401.38
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does this connect to the broader move toward agents that evolve their own skills?",
+      "start": 402.32,
+      "end": 406.24
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Work such as SkillOS and WikiSkill also explores turning experience into persistent, reusable guidance. SKILLREFINER contributes a more specific account of how outcome-separated patterns can inform edits, and how failure-derived edits can be checked against their evidence before merging. Its results shift attention from collecting new optimization rollouts alone toward using information that accumulates during deployment. The central research question becomes not just what an agent remembers, but how repeated evidence should shape conditional instructions.",
+      "start": 406.24,
+      "end": 440.92
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The practical lesson is that historical traces can serve as supervision even when useful outcomes arrive later, but the evidence has limits: it can localize recurring behavior without proving that a proposed remedy is correct. SKILLREFINER’s distinctive step is compiling repeated, outcome-separated patterns into conditional, evidence-checked guidance, rather than treating every run as an isolated lesson. That offers a way to refine instructions without repeatedly generating new executions during refinement. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 442.16,
+      "end": 481.985
+    }
+  ]
+}

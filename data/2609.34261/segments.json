@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 493.505,
+  "word_match_rate": 0.9373,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate seminar on embodied intelligence, today’s lecture is on Robo I-C-L: Embodied In-Context Learning with G-P-T six Astra. Recent work such as Robo T-T-T: Context Scaling for Robot Policies and In-Context Robot Learning with V-L-M Agents reflects growing interest in adapting robot behavior at inference time. Researchers from Samsung Research and Shanghai Jiao Tong University study a context-based approach. I see you, Noah—go ahead.",
+      "start": 0.0,
+      "end": 34.68
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the model is frozen, what exactly changes when it faces a new task?",
+      "start": 35.68,
+      "end": 40.6
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The model’s parameters stay fixed; what changes is the information supplied to it during execution. That distinction matters because much of the field improves robot policies through robot-specific training, reinforcement learning, or additional trajectory data. Robo I-C-L instead asks whether demonstrations and the robot’s own feedback can be organized well enough to steer a general-purpose vision-language model. The goal is practical adaptation without updating model weights.",
+      "start": 41.54,
+      "end": 71.34
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central idea is to give the model two kinds of context, rather than treating every example as interchangeable. Demonstrations show useful procedures: which actions tend to come first, how an object is approached, and what a successful sequence looks like. Interaction memory records what has happened in the current attempt, including failures and partial execution. Together, they let a frozen model compare a new situation with both prior guidance and immediate experience.",
+      "start": 72.34,
+      "end": 101.6
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the demonstrations are examples in the prompt, not training data used to update the model?",
+      "start": 102.44,
+      "end": 107.18
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The prompt labels demonstrations as “TRAIN,” but that label means they are examples supplied to the model; it does not mean parameter training. Each example uses a shared observation, action, receipt, and next-observation format. A receipt captures what the controller actually carried out, not just what the model proposed. That distinction helps the model notice when a grasp failed or an action sequence was interrupted.",
+      "start": 107.88,
+      "end": 137.34
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The authors also avoid placing entire demonstrations into the context window. Instead, they sample non-overlapping action blocks across early, middle, and late trajectory stages, preserving useful starting and resulting observations. When parts of a trajectory are skipped, an explicit gap marker warns the model that the two visible states were not consecutive. This is a little like giving a researcher representative pages from a lab notebook while clearly marking where pages are missing.",
+      "start": 138.4,
+      "end": 167.9
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: how does the system remember a long episode without letting recent events push out everything important?",
+      "start": 168.76,
+      "end": 174.34
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It uses bounded anchored memory. Some memory slots retain interactions from roughly fixed points across the episode, preserving a sketch of how the task developed; the final slot retains the latest completed interaction for local correction. Only actions that execute for a positive number of steps become anchors. If an action is rejected and nothing moves, the model can replan from the same state instead of recording a misleading transition.",
+      "start": 175.36,
+      "end": 201.32
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Action chunks are another important choice. The model proposes several control steps at once, with shorter chunks on shorter tasks and longer chunks on tasks with more generous step limits. Short chunks invite frequent visual correction, while long chunks reduce model calls. In simulation, each action describes Cartesian movement and gripper targets for both arms. Deterministic software checks action dimensions and bounds before solving inverse kinematics and executing the valid portion.",
+      "start": 202.4,
+      "end": 231.84
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The results suggest that this organization helps on tasks requiring memory and correction. Across 30 RoboDojo tasks, Robo I-C-L scores 50.64 overall, compared with 33.68 for the strongest listed comparison baseline. It also reaches 78 on Deposit Coin, including 37 full-score episodes out of 50, where precise insertion is required. Still, performance is not uniformly strongest: on long-horizon tasks, some baselines do better. The method helps, but does not remove control difficulty.",
+      "start": 232.72,
+      "end": 268.18
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How convincing is that comparison, given the different tasks and the possibility that demonstrations sometimes hurt performance?",
+      "start": 269.18,
+      "end": 275.12
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "That is an important qualification. The paper also reports a separate ten-task panel, where one-shot Robo I-C-L scores 60.60, compared with 45.60 for its zero-shot condition. Yet Classify Objects falls from 100 to 71 when a demonstration is added, suggesting that extra context can distract the model or consume useful capacity. The reported gains should therefore be read as task-dependent evidence, not a guarantee that more examples always improve control.",
+      "start": 276.22,
+      "end": 308.04
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The real-robot study tests Peg in Hole, Folding Towel, and Building Bridge on a Franka Research 3, using wrist-mounted and external R-G-B cameras. Across those tasks, mean progress rises from 14.45 without demonstrations to 63.33 with one and 78.89 with three. But there are only five trials per condition. Adaptation to changed geometry is also incomplete: a larger unseen towel scores 40, even though a seen towel scores 100.",
+      "start": 308.88,
+      "end": 341.46
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "For deployment, the shared interaction format offers a useful audit trail: researchers can inspect the observation, the proposed action, the controller’s receipt, and the resulting state. The approach also reuses stable prompt prefixes to support provider-side K-V cache reuse. An optional action-reuse gate reduces model calls on two development tasks, but its effect on success differs by task. Efficiency and reliability therefore need to be evaluated together, rather than assuming fewer calls mean better behavior.",
+      "start": 342.56,
+      "end": 376.32
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Does this approach replace learned robot policies, or is it more of a complement to them?",
+      "start": 377.26,
+      "end": 381.68
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "It is best understood as a complementary direction. RoboTTT studies extending policy context through test-time training, while Robo I-C-L emphasizes structured demonstrations and online execution history without parameter updates. Other approaches, including reinforcement-learning fine-tuning of vision-language-action models, pursue specialized control through training. These strategies address different constraints: data and compute budgets, adaptation needs, and the importance of predictable feedback. A useful next step is to compare them under the same tasks and robot interfaces.",
+      "start": 381.68,
+      "end": 419.82
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The evidence remains limited to one foundation model, one main simulation environment, and a small real-robot study. The memory and action-reuse settings were selected on development tasks, so held-out evaluation is needed to test whether those choices generalize. We also do not yet know how well the framework transfers to other models, embodiments, cameras, or control interfaces. Its broader contribution is a testable claim: context design can itself be a control variable, but it needs careful validation.",
+      "start": 421.06,
+      "end": 453.92
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The takeaway is that a frozen model can still adapt when its context is structured to distinguish guidance from experience and proposals from executed actions. Robo I-C-L offers a concrete way to represent that information, retain both long-range and recent evidence, and adjust action horizons. Its uneven results also remind us to measure failures, not just averages. For embodied systems, a useful memory is not merely a longer history; it is a history that preserves the right evidence. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 454.94,
+      "end": 493.505
+    }
+  ]
+}

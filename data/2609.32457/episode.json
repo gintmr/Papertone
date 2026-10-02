@@ -1,0 +1,242 @@
+{
+  "id": "2609.32457",
+  "title": "Write Back the $Δ$: Revisiting the Same Tokens with Fresh Representations",
+  "authors": [
+    "Wencheng Ye",
+    "Anning Hu",
+    "Xiangdong Zhang",
+    "Tianyi Wang",
+    "Yikang Li",
+    "Hengyu Jin",
+    "Bing Li",
+    "Junchi Yan"
+  ],
+  "abstract": "Transformers process information strictly forward through depth, preventing deeper computation from revisiting and refining earlier representations. To augment the standard forward pass, existing approaches either re-execute depth, incurring additional computation, or modify the residual stream using predefined directions, limiting their instance-level adaptation. Recently, inference-time feedback offers a direct mechanism for recycling endogenously produced computation by writing deeper residual states back to earlier layers, yet what should be fed back remains unclear. We argue that the depth increment Delta, capturing newly accumulated computation between two layers, provides a more effective, composable, and scalable feedback signal than the full state. Building on this observation, we introduce ReFlux, a learnable feedback graph that dynamically selects and composes increment-carrying routes. ReFlux supports synchronous feedback to the same token and streaming feedback to subsequent tokens. Extensive experiments across various models, corpora, and benchmarks show that synchronous ReFlux consistently reduces perplexity across ten language-modeling corpora, and improves accuracy by 2.1-2.3 points, with gains reaching 4.7 points on multi-hop reasoning. Streaming ReFlux further retains most of these gains while preserving the base model's 1x theoretical backbone FLOPs. These results establish ReFlux as an efficient paradigm for unlocking the latent computational potential of LLMs, allowing them to revisit the same tokens with fresh representations. Code implementation can be found at this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.32457",
+    "arxiv": "https://arxiv.org/abs/2609.32457"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0eacf-14bc-7d25-8988-0d3d525d5f70/podcast.mp3",
+  "duration": 375.17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.12,
+      "en": "In our graduate course Transformer Architectures, today’s lecture is on “Write Back the Delta: Revisiting the Same Tokens with Fresh Representations.” Recent work such as “Recirculation” and “Mixture-of-Recursions” explores feedback or repeated computation. This paper takes a different angle: rather than rerunning layers, it asks how to reuse information the model has already computed. Researchers from Tongji University and Shanghai Jiao Tong University make that question concrete. Go ahead, Noah.",
+      "zh": "在我们研究生课程Transformer架构里，今天的讲座主题是“把增量写回去：用新的表示重新审视同样的token”。最近像“Recirculation”和“Mixture-of-Recursions”这样的工作探索了反馈或重复计算。这篇论文走了一个不同的角度：与其重新跑层，它问的是如何复用模型已经计算过的信息。来自同济大学和上海交通大学的研究者把这个问题的具体化了。请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.16,
+      "end": 40.06,
+      "en": "Hi Professor, why does a Transformer need information sent backward if later layers already process earlier representations?",
+      "zh": "教授您好，既然后面的层已经处理了前面的表示，为什么Transformer还需要把信息往回送呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.54,
+      "end": 68.1,
+      "en": "That’s the central limitation the paper examines. In a standard decoder-only Transformer, information moves forward through the layers: later computations can build on earlier ones, but they cannot directly revise the representation an earlier layer processed. Imagine a team that keeps discovering useful evidence but cannot send it back to update an earlier draft. ReFlux proposes a feedback route, potentially making internal discoveries available where they could improve later processing.",
+      "zh": "这正是这篇论文要探讨的核心局限。在标准的仅解码器Transformer里，信息是逐层向前流动的：后面的计算可以基于前面的结果继续推进，但没法直接回头修改前面某一层已经处理过的表示。就好比一个团队不断发现有用的证据，却没办法把这些证据送回去更新早先的草稿。ReFlux提出了一条反馈通路，让内部发现有可能被送到真正能改善后续处理的地方。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 69.22,
+      "end": 74.0,
+      "en": "So is the key idea to send the entire deeper representation back to an earlier layer?",
+      "zh": "那关键思路是不是把整个更深的表示送回前面的层？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.82,
+      "end": 105.78,
+      "en": "Not quite. The paper argues that a deeper representation contains both information inherited from earlier layers and computation newly added along the way. ReFlux returns that newly accumulated difference, which the authors call the depth increment. The distinction matters because sending the whole state may replay information the target layer already has. In controlled comparisons across Gemma and Qwen models, the increment generally reduced perplexity more than either the full deeper state or the target state.",
+      "zh": "不完全是。这篇论文认为，更深层的表示既包含从前面层继承来的信息，也包含沿途新加入的计算。ReFlux 返回的是新累积出来的那部分差异，作者把它叫做深度增量。这个区分很关键，因为把整个状态送回去，可能会把目标层已经有的信息又重复一遍。在 Gemma 和 Qwen 模型上做的受控对比中，深度增量通常比完整的深层状态或目标状态更能降低困惑度。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 106.7,
+      "end": 133.66,
+      "en": "The authors also test whether this advantage holds as feedback becomes more extensive. They vary the number of feedback rounds, the number of active routes, and context length. Full-state feedback tends to level off after relatively few routes or rounds, while increments continue to help as routes are added. That pattern supports the paper’s main proposal: separating newly accumulated computation from inherited information can make feedback more complementary.",
+      "zh": "作者还测试了当反馈变得更广泛时，这一优势是否依然成立。他们变化了反馈轮数、活跃路由数量和上下文长度。完整状态反馈在相对较少的路由或轮数之后就趋于饱和，而增量随着路由增加仍能持续带来帮助。这一规律支持了论文的核心主张：把新累积的计算与继承来的信息分开，能让反馈更具互补性。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 134.78,
+      "end": 138.22,
+      "en": "How does the model decide which layer pairs should exchange these increments?",
+      "zh": "模型是怎么决定哪些层之间应该交换这些增量的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 139.2,
+      "end": 166.44,
+      "en": "ReFlux considers directed routes from deeper layers to shallower ones, then uses a learned router to select useful routes for the current context. The router predicts both whether a route should be active and how strongly it should write. Before each write, the increment is rescaled relative to the target representation, helping control its effect. The backbone stays frozen; training updates only the router, using next-token prediction on a mixture of text data.",
+      "zh": "ReFlux考虑的是从深层到浅层的有向路径，然后用一个学习出来的路由器为当前上下文挑选有用的路径。路由器会同时预测一条路径是否应该激活，以及它应该以多强的程度写入。每次写入之前，增量会相对于目标表示重新缩放，从而帮助控制它的影响。主干保持冻结，训练只更新路由器，用的是在混合文本数据上的下一token预测。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 167.4,
+      "end": 197.08,
+      "en": "That input-dependent choice is important because a fixed feedback path may not suit every example. The routing analysis finds more active routes on higher-loss contexts and longer depth spans on multi-hop tasks. In the paper’s interpretation, harder examples can benefit from broader internal information access. A static rule based only on representation similarity does not reliably find useful routes, so the router must learn from language-modeling objectives rather than geometry alone.",
+      "zh": "这种依赖输入的选择很重要，因为固定的反馈路径未必适合每个样本。路由分析发现，损失更高的上下文会激活更多路由，多跳任务中的深度跨度也更长。按照论文的解释，更难的样本可以从更广泛的内部信息访问中获益。仅基于表示相似度的静态规则无法可靠地找到有用路由，因此路由器必须从语言建模目标中学习，而不能只依赖几何关系。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 198.08,
+      "end": 201.84,
+      "en": "What does streaming execution save, and what trade-off does it introduce?",
+      "zh": "流式执行节省了什么，又引入了什么权衡？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 203.02,
+      "end": 238.26,
+      "en": "Synchronous ReFlux makes a first pass, records representations, then makes another pass to refine each same token; it improves performance but costs roughly twice the backbone flops. Streaming instead carries an increment from the previous token into the current token, avoiding a second backbone traversal. Prompt processing can remain parallel, while decoding uses the cached feedback. This preserves backbone flops, with reported runtime overhead around 1.02 times for Gemma three one billion and 1.08 times for Qwen three four billion.",
+      "zh": "同步 ReFlux 先做一遍前向，记录表示，再做一遍来精炼同一个 token；它能提升性能，但代价大约是骨干网络算力的两倍。流式则把前一个 token 的增量带到当前 token，避免第二次骨干网络遍历。提示处理可以保持并行，而解码时使用缓存的反馈。这样保持了骨干网络算力，报告的开销大约是 Gemma 3 1B 的 1.02 倍和 Qwen 3 4B 的 1.08 倍。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 238.26,
+      "end": 271.22,
+      "en": "Across five models and ten language-modeling corpora, both execution styles generally lower perplexity. Reasoning gains are strongest where answers require combining evidence: average multi-hop accuracy improves by a reported 4.7 percentage points. Streaming gains are somewhat smaller than synchronous gains, but retain much of the benefit. These results suggest a practical use case: improving access to internal evidence during generation without adding reasoning tokens or changing the pretrained backbone weights.",
+      "zh": "在五个模型和十个语言建模语料库上，两种执行方式通常都能降低困惑度。当答案需要综合证据时，推理能力的提升最为明显：多跳准确率平均提升了4.7个百分点。流式带来的提升略小于同步方式，但仍保留了大部分收益。这些结果表明了一个实际用途：在生成过程中改善对内部证据的获取，同时不增加推理token，也不改变预训练的主干权重。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 272.24,
+      "end": 276.28,
+      "en": "Could this be considered a cheaper version of looped reasoning, and what remains unproven?",
+      "zh": "这能算是一种更省成本的循环推理吗？还有哪些问题尚未得到验证？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 277.2,
+      "end": 310.92,
+      "en": "It is related, but the mechanism differs. “Mixture-of-Recursions” allocates repeated computation, while ReFlux redirects computation already produced; “Recirculation” also sends contextualized activations backward, whereas ReFlux favors the newly accumulated increment. The approaches could complement each other. Still, streaming feedback arrives one token later, and synchronous refinement is costly. Results cover a limited set of model families and tasks, and do not establish effects on safety, factual reliability, or instruction following.",
+      "zh": "这跟它有关，但机制不一样。“Mixture-of-Recursions”分配的是重复计算，而ReFlux重定向的是已经产生的计算；“Recirculation”也是把上下文化后的激活往回送，而ReFlux更偏向新累积出来的增量。这些方法可以互补。不过，流式反馈会晚一个token到达，同步细化成本也很高。结果只覆盖了有限的模型家族和任务，也没有证明对安全性、事实可靠性或指令遵循的影响。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 311.82,
+      "end": 342.14,
+      "en": "The broader implication is that model improvement may involve not only producing more computation, but also making existing computation accessible at the right place. ReFlux offers evidence that a compact, learned feedback mechanism can help with language modeling and evidence composition while leaving the backbone frozen. Its limits make the next questions clear: test larger and instruction-tuned models, train routers directly for streaming, and measure reliability under realistic deployment conditions.",
+      "zh": "更广泛的意义在于，模型改进可能不仅涉及产生更多计算，还涉及让已有计算在正确的位置可被访问。ReFlux 提供的证据表明，一个紧凑的、可学习的反馈机制可以在保持主干冻结的情况下帮助语言建模和证据组合。它的局限也让接下来的问题变得清晰：测试更大规模和经过指令微调的模型，直接为流式处理训练路由器，并在真实部署条件下衡量可靠性。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 343.34,
+      "end": 347.5,
+      "en": "So the takeaway is to return useful updates, not simply replay the whole state?",
+      "zh": "所以关键在于返回有用的更新，而不是简单地把整个状态重放一遍？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 348.48,
+      "end": 375.17,
+      "en": "Exactly. ReFlux’s memorable idea is that feedback can be more useful when it carries what a layer has newly learned, rather than everything it already represents. Whether this principle generalizes will depend on broader evaluations and efficient implementations, but it gives researchers a precise way to study information access across Transformer depth. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "没错。ReFlux 最令人印象深刻的想法是，当反馈携带的是某一层新学到的东西，而不是它已经表示的全部内容时，反馈会更有用。这个原则能否推广，还要看更广泛的评估和高效的实现，但它为研究人员提供了一种精确的方法，来研究 Transformer 各层深度上的信息获取。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{ye2026writedeltarevisitingtokens,\n      title={Write Back the $\\Delta$: Revisiting the Same Tokens with Fresh Representations}, \n      author={Wencheng Ye and Anning Hu and Xiangdong Zhang and Tianyi Wang and Yikang Li and Hengyu Jin and Bing Li and Junchi Yan},\n      year={2026},\n      eprint={2609.32457},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.32457}, \n}",
+  "topics": [
+    "Transformers",
+    "Inference Optimization",
+    "Reasoning"
+  ],
+  "peaks": [
+    0.949,
+    0.628,
+    0.58,
+    0.676,
+    0.479,
+    0.413,
+    0.565,
+    0.535,
+    0.707,
+    0.538,
+    0.497,
+    0.34,
+    0.266,
+    0.494,
+    0.562,
+    0.535,
+    0.441,
+    0.382,
+    0.414,
+    0.494,
+    0.703,
+    0.535,
+    0.596,
+    0.456,
+    0.534,
+    0.362,
+    0.721,
+    1.0,
+    0.659,
+    0.747,
+    0.426,
+    0.455,
+    0.24,
+    0.297,
+    0.201,
+    0.24,
+    0.225,
+    0.2,
+    0.444,
+    0.499,
+    0.402,
+    0.457,
+    0.33,
+    0.324,
+    0.396,
+    0.481,
+    0.779,
+    0.623,
+    0.535,
+    0.565,
+    0.392,
+    0.441,
+    0.462,
+    0.991,
+    0.711,
+    0.904,
+    0.655,
+    0.563,
+    0.643,
+    0.6,
+    0.627,
+    0.316,
+    0.361,
+    0.335,
+    0.365,
+    0.372,
+    0.36,
+    0.794,
+    0.455,
+    0.364,
+    0.204,
+    0.316
+  ],
+  "published": "2026-09-26",
+  "license": "CC BY"
+}

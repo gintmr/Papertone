@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 418.873,
+  "word_match_rate": 0.9209,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on robot learning and world models, today’s lecture is on ReWAM, a representation-centered approach to world-action modeling. Recent work such as JEPA-WAM and OpenWAM reflects a broader trend: robots should learn not only to choose actions, but also to model how scenes change. ReWAM asks how those goals can share a visual representation without competing to shape it in the same way. This matters because a robot needs useful information, not just a detailed picture. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.02
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say a detailed picture might not help, do you mean reconstruction can distract from control?",
+      "start": 35.08,
+      "end": 41.4
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is the tension. A representation trained to reconstruct every visible detail may preserve information that does little for deciding what to do. A compact state designed for control, though, still needs to support predictions about how the scene evolves. ReWAM’s proposal is to let the action objective shape that state, while a separate world-model objective learns transitions within it. Its main RoboTwin result is 93.6% success in random scenes, compared with 92.2% for AHA-WAM, without generative video pre-training.",
+      "start": 42.26,
+      "end": 76.6
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors first test whether visual reconstruction quality predicts control quality. In a matched RoboTwin comparison without generative video pre-training, W-A-M features based on frozen dino features outperform video V-A-E latents by 4.90 percentage points on clean scenes and 9.22 points on random scenes. Yet the dino features have lower RGB reconstruction SSIM: 0.70 versus 0.91. In this experiment, better pixel reconstruction did not mean better control; that result does not show reconstruction is never useful.",
+      "start": 77.28,
+      "end": 115.92
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what does ReWAM change before it trains the action policy?",
+      "start": 116.9,
+      "end": 120.84
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It calibrates the visual features and then compresses them into a compact representation. Feature Calibration combines information across dino layers, normalizes the features, and adjusts the diffusion noise schedule for the target size. Together, those steps add 12.20 percentage points in average RoboTwin success over raw dino features. A trainable Temporal Representation Bottleneck, or T-R-B, then organizes features from neighboring frames into compact tokens, giving the action and world branches a shared state to work with.",
+      "start": 121.74,
+      "end": 155.74
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The central design is called A-G-R-S, or Action-Grounded Representation Shaping. During joint training, action-loss gradients pass through the current representation and can adjust the bottleneck. World-prediction-loss gradients stop at the current and future representations instead. The world model therefore learns how states transition, while the action objective shapes what the state should preserve. Think of it as letting one learner tune the map for decisions while another studies movement across that map.",
+      "start": 156.38,
+      "end": 188.16
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify whether the robot predicts future states while it is acting?",
+      "start": 188.92,
+      "end": 192.44
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. ReWAM trains a branch to predict future representations, but at inference it processes the current state to condition action generation; it does not generate future states then. The gradient-routing ablation tests whether this distinction matters. With A-G-R-S, one-epoch RoboTwin success is 90.70% on clean scenes and 89.12% on random scenes. Allowing world-loss gradients through the current representation lowers those results to 84.32% and 82.90%; routing gradients through both current and future representations degrades performance further.",
+      "start": 193.44,
+      "end": 234.62
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Those ablations use a matched one-epoch budget, unlike the five-epoch main comparison. The authors suggest that world-loss gradients could encourage representation collapse or predictive shortcuts, but those are hypotheses, not mechanisms directly established by the experiment. For the main RoboTwin evaluation, success is averaged over 50 tasks, with 100 episodes per task in each setting. Keeping these protocols separate matters: it prevents us from treating the ablation numbers as though they were measured under the same training budget as the headline comparison.",
+      "start": 234.62,
+      "end": 270.72
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So is the key claim that the action objective should always control the representation?",
+      "start": 271.82,
+      "end": 275.88
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The evidence supports a narrower claim: in these controlled comparisons, the routing design that lets action loss shape the current representation performs better than the tested alternatives. It does not establish that the world model contributes nothing to representation learning, or that this division is optimal for every robot task. On RoboDojo, after approximately 600 hours of embodied pre-training, ReWAM reports a mean partial-progress score of 12.29 and a mean binary success rate of 8.28%, averaged across five capability categories.",
+      "start": 276.98,
+      "end": 311.56
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "That RoboDojo average also has an important boundary: Open instruction following is a weakness. The authors attribute the gap to the lack of generative video pre-training, so the aggregate result should not be read as strong performance in every category. ReWAM extends a representation-centered direction also seen in Fast-WAM, which retains video co-training but skips future-video denoising at deployment. ReWAM’s distinct contribution is to specify how action and world-prediction objectives shape a shared state.",
+      "start": 311.56,
+      "end": 343.6
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should this influence future world-action models, given the instruction-following limitation?",
+      "start": 344.56,
+      "end": 349.38
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "It suggests that researchers should evaluate representations by their usefulness to both control and prediction, rather than relying on reconstruction metrics alone. It also makes gradient routing a testable design choice: future work can compare alternative ways of sharing information between action and world objectives, across tasks and training conditions. At the same time, ReWAM’s RoboDojo weakness cautions that representation shaping does not automatically provide broad instruction generalization. Results here motivate further tests; they do not settle a universal recipe.",
+      "start": 350.34,
+      "end": 386.08
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The takeaway is that a robot’s internal state can serve two jobs without giving both training objectives identical influence over it. ReWAM’s results favor a state shaped by action learning while the world model learns its dynamics, with the evidence bounded by the tested settings and its instruction-following weakness. Two jobs, distinct signals: that is the design principle to carry forward. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 386.08,
+      "end": 418.873
+    }
+  ]
+}

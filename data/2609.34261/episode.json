@@ -1,0 +1,260 @@
+{
+  "id": "2609.34261",
+  "title": "RoboICL: Embodied In-Context Learning with GPT-6 Astra",
+  "authors": [
+    "Fangcheng Liu",
+    "Yeqing Shen",
+    "Anda Cheng",
+    "Weishi Mi",
+    "Chao Tang",
+    "Chenyuan Liu",
+    "Yushun Xiang",
+    "Tingguang Li",
+    "Yong-Lu Li",
+    "Yehui Tang"
+  ],
+  "abstract": "General-purpose vision-language models offer a promising way to zero-shot robot control: \\gptastra{} excels at open-ended and language- or image-conditioned manipulation but remains substantially weaker on high-precision and long-horizon tasks. We introduce \\emph{RoboICL}, an in-context robot-control framework that narrows these gaps without robot-specific parameter updates or a learned VLA. RoboICL separates \\emph{demonstration context}, which provides recorded examples when available, from \\emph{interaction memory}, which accumulates the model's own actions and observed outcomes. Both use a shared observation--action--receipt--observation grammar. To preserve experience across task stages, RoboICL combines sampled demonstration blocks with bounded anchored memory. Fixed anchors keep earlier rollout interactions available for in-context learning, while the latest interaction supports immediate error correction. Across 30 RoboDojo tasks, using zero shot for Open and one demonstration elsewhere, RoboICL improves on official zero-shot \\gptastra{} by 20--27 progress-score points in every category. It leads the leaderboard baselines on Memory and Open, achieves comparable performance to the strongest Precision baseline, and remains competitive on Long-Horizon. Its 30-task Overall score is 50.64, versus 33.68 for the strongest baseline. On a separate ten-task subset, RoboICL scores 60.60, within 2.00 points of the $\\pi_{0.5}$ + \\gptastra{} hybrid approach. On three real-robot tasks, mean progress rises from 14.45 at zero shot to 63.33 at one shot and 78.89 at three shots. On two development tasks, optional Jev-gated action reuse reduces \\gptastra{} calls by 33--48\\%. Code is available at \\href{this https URL}{this https URL}.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.34261",
+    "arxiv": "https://arxiv.org/abs/2609.34261"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0eb13-a7ad-75be-b54d-e75086eda69b/podcast.mp3",
+  "duration": 493.505,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.68,
+      "en": "In a hypothetical graduate seminar on embodied intelligence, today’s lecture is on Robo I-C-L: Embodied In-Context Learning with G-P-T six Astra. Recent work such as Robo T-T-T: Context Scaling for Robot Policies and In-Context Robot Learning with V-L-M Agents reflects growing interest in adapting robot behavior at inference time. Researchers from Samsung Research and Shanghai Jiao Tong University study a context-based approach. I see you, Noah—go ahead.",
+      "zh": "在一场假设中的具身智能研究生研讨课上，今天的讲座主题是Robo I-C-L：基于GPT-6 Astra的具身上下文学习。最近的一些工作，比如Robo T-T-T：机器人策略的上下文扩展，以及基于V-L-M智能体的上下文机器人学习，都反映出人们对在推理时适配机器人行为越来越感兴趣。来自三星研究院和上海交通大学的研究人员研究了一种基于上下文的方法。我看到你了，Noah，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.68,
+      "end": 40.6,
+      "en": "Hi Professor, if the model is frozen, what exactly changes when it faces a new task?",
+      "zh": "教授您好，如果模型是冻结的，那它面对一个新任务时，到底什么变了呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.54,
+      "end": 71.34,
+      "en": "The model’s parameters stay fixed; what changes is the information supplied to it during execution. That distinction matters because much of the field improves robot policies through robot-specific training, reinforcement learning, or additional trajectory data. Robo I-C-L instead asks whether demonstrations and the robot’s own feedback can be organized well enough to steer a general-purpose vision-language model. The goal is practical adaptation without updating model weights.",
+      "zh": "模型的参数保持不变，真正变化的是执行过程中提供给它的信息。这个区分很重要，因为领域内很多方法都是通过针对机器人的专门训练、强化学习或者额外的轨迹数据来改进机器人策略的。而Robo I-C-L反过来问的是：能不能把演示和机器人自身的反馈组织得足够好，从而引导一个通用的视觉语言模型？目标是在不更新模型权重的前提下实现实际可用的适应。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 72.34,
+      "end": 101.6,
+      "en": "The central idea is to give the model two kinds of context, rather than treating every example as interchangeable. Demonstrations show useful procedures: which actions tend to come first, how an object is approached, and what a successful sequence looks like. Interaction memory records what has happened in the current attempt, including failures and partial execution. Together, they let a frozen model compare a new situation with both prior guidance and immediate experience.",
+      "zh": "核心思路是给模型提供两种不同的上下文，而不是把每个示例都当作可以互换的。演示展示有用的流程：哪些动作通常先做，如何接近一个物体，以及一个成功的序列长什么样。交互记忆则记录当前尝试中发生了什么，包括失败和部分执行的情况。两者结合起来，就能让一个冻结的模型把新情况同时与先前的指导和当下的经验进行对比。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 102.44,
+      "end": 107.18,
+      "en": "So the demonstrations are examples in the prompt, not training data used to update the model?",
+      "zh": "所以这些示范只是提示里的示例，并不是用来更新模型的训练数据？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.88,
+      "end": 137.34,
+      "en": "Exactly. The prompt labels demonstrations as “TRAIN,” but that label means they are examples supplied to the model; it does not mean parameter training. Each example uses a shared observation, action, receipt, and next-observation format. A receipt captures what the controller actually carried out, not just what the model proposed. That distinction helps the model notice when a grasp failed or an action sequence was interrupted.",
+      "zh": "没错。提示词里把这些演示标注为“TRAIN”，但这个标签的意思是它们是提供给模型的示例，并不是说要做参数训练。每个示例都采用统一的观察、动作、回执和下一观察的格式。回执记录的是控制器实际执行了什么，而不只是模型提出了什么。这个区别能帮助模型注意到抓取失败或动作序列被打断的情况。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.4,
+      "end": 167.9,
+      "en": "The authors also avoid placing entire demonstrations into the context window. Instead, they sample non-overlapping action blocks across early, middle, and late trajectory stages, preserving useful starting and resulting observations. When parts of a trajectory are skipped, an explicit gap marker warns the model that the two visible states were not consecutive. This is a little like giving a researcher representative pages from a lab notebook while clearly marking where pages are missing.",
+      "zh": "作者也没有把整段演示塞进上下文窗口，而是从轨迹的早期、中期和后期分别采样互不重叠的动作块，保留有用的起始观测和结果观测。当轨迹中有部分被跳过时，会用一个明确的空缺标记提醒模型，这两个可见状态并不连续。这有点像给研究者一本实验记录本里的代表性页面，同时清楚标出哪些页缺失了。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 168.76,
+      "end": 174.34,
+      "en": "Quick question: how does the system remember a long episode without letting recent events push out everything important?",
+      "zh": "问个简单的问题：系统怎么在记住一段很长的轨迹的同时，又不让最近发生的事把重要的东西全挤出去？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 175.36,
+      "end": 201.32,
+      "en": "It uses bounded anchored memory. Some memory slots retain interactions from roughly fixed points across the episode, preserving a sketch of how the task developed; the final slot retains the latest completed interaction for local correction. Only actions that execute for a positive number of steps become anchors. If an action is rejected and nothing moves, the model can replan from the same state instead of recording a misleading transition.",
+      "zh": "它用的是有界锚定记忆。有些记忆槽会保留整个轨迹中大致固定时间点的交互，从而留下任务如何展开的粗略轮廓；最后一个槽则保留最近一次完成的交互，用于局部纠正。只有实际执行了正数步数的动作才会成为锚点。如果某个动作被拒绝、什么都没动，模型就可以从同一状态重新规划，而不是记录一次误导性的状态转移。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 202.4,
+      "end": 231.84,
+      "en": "Action chunks are another important choice. The model proposes several control steps at once, with shorter chunks on shorter tasks and longer chunks on tasks with more generous step limits. Short chunks invite frequent visual correction, while long chunks reduce model calls. In simulation, each action describes Cartesian movement and gripper targets for both arms. Deterministic software checks action dimensions and bounds before solving inverse kinematics and executing the valid portion.",
+      "zh": "动作块是另一个重要选择。模型会一次提出多个控制步骤，任务较短时用较短的块，步数限制更宽松时用较长的块。短块便于频繁进行视觉校正，长块则能减少模型调用次数。在仿真中，每个动作描述的是笛卡尔运动以及双臂的夹爪目标。确定性软件会先检查动作的维度和边界，然后再求解逆运动学并执行有效部分。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 232.72,
+      "end": 268.18,
+      "en": "The results suggest that this organization helps on tasks requiring memory and correction. Across 30 RoboDojo tasks, Robo I-C-L scores 50.64 overall, compared with 33.68 for the strongest listed comparison baseline. It also reaches 78 on Deposit Coin, including 37 full-score episodes out of 50, where precise insertion is required. Still, performance is not uniformly strongest: on long-horizon tasks, some baselines do better. The method helps, but does not remove control difficulty.",
+      "zh": "结果表明，这种组织方式对需要记忆和纠错的任务有帮助。在30个RoboDojo任务上，Robo I-C-L总体得分50.64，而所列最强对比基线为33.68。它在Deposit Coin任务上也达到78分，50次中有37次满分，该任务要求精确插入。不过，表现并非在所有方面都最强：在长时程任务上，一些基线做得更好。该方法有帮助，但并未消除控制难度。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 269.18,
+      "end": 275.12,
+      "en": "How convincing is that comparison, given the different tasks and the possibility that demonstrations sometimes hurt performance?",
+      "zh": "考虑到任务各不相同，而且演示有时反而会拖累表现，这个对比到底有多大说服力呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 276.22,
+      "end": 308.04,
+      "en": "That is an important qualification. The paper also reports a separate ten-task panel, where one-shot Robo I-C-L scores 60.60, compared with 45.60 for its zero-shot condition. Yet Classify Objects falls from 100 to 71 when a demonstration is added, suggesting that extra context can distract the model or consume useful capacity. The reported gains should therefore be read as task-dependent evidence, not a guarantee that more examples always improve control.",
+      "zh": "这是一个重要的限定条件。论文还报告了另一个包含十个任务的评测面板，其中单样本的 Robo I-C-L 得分为 60.60，而零样本条件下为 45.60。然而，在加入一个演示后，Classify Objects 的得分从 100 降到了 71，这说明额外的上下文可能会分散模型的注意力，或者占用有用的容量。因此，所报告的提升应当被理解为依赖于任务的证据，而不能保证更多示例总能改善控制。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 308.88,
+      "end": 341.46,
+      "en": "The real-robot study tests Peg in Hole, Folding Towel, and Building Bridge on a Franka Research 3, using wrist-mounted and external R-G-B cameras. Across those tasks, mean progress rises from 14.45 without demonstrations to 63.33 with one and 78.89 with three. But there are only five trials per condition. Adaptation to changed geometry is also incomplete: a larger unseen towel scores 40, even though a seen towel scores 100.",
+      "zh": "真实机器人研究在Franka Research 3上测试了插销入孔、叠毛巾和搭桥三项任务，使用了腕部安装的摄像头和外部RGB摄像头。在这些任务上，平均进度从无演示时的14.45提升到一次演示时的63.33，三次演示时达到78.89。但每种条件只有五次试验。对几何变化的适应也不完全：面对更大的未见过的毛巾，得分只有40，而见过的毛巾得分是100。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 342.56,
+      "end": 376.32,
+      "en": "For deployment, the shared interaction format offers a useful audit trail: researchers can inspect the observation, the proposed action, the controller’s receipt, and the resulting state. The approach also reuses stable prompt prefixes to support provider-side K-V cache reuse. An optional action-reuse gate reduces model calls on two development tasks, but its effect on success differs by task. Efficiency and reliability therefore need to be evaluated together, rather than assuming fewer calls mean better behavior.",
+      "zh": "在部署方面，这种共享的交互格式提供了一条有用的审计线索：研究者可以检查观察结果、提议的动作、控制器的接收情况以及由此产生的状态。该方法还复用稳定的提示前缀，以支持服务提供方侧的K-V缓存复用。一个可选的动作复用门控在两个开发任务上减少了模型调用次数，但其对成功率的影响因任务而异。因此，效率和可靠性需要一起评估，而不能想当然地认为调用次数更少就意味着行为更好。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 377.26,
+      "end": 381.68,
+      "en": "Does this approach replace learned robot policies, or is it more of a complement to them?",
+      "zh": "这种方法是要取代学习到的机器人策略，还是更多作为一种补充？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 381.68,
+      "end": 419.82,
+      "en": "It is best understood as a complementary direction. RoboTTT studies extending policy context through test-time training, while Robo I-C-L emphasizes structured demonstrations and online execution history without parameter updates. Other approaches, including reinforcement-learning fine-tuning of vision-language-action models, pursue specialized control through training. These strategies address different constraints: data and compute budgets, adaptation needs, and the importance of predictable feedback. A useful next step is to compare them under the same tasks and robot interfaces.",
+      "zh": "更准确的理解是，这是一条互补的路线。RoboTTT研究的是通过测试时训练来扩展策略上下文，而Robo I-C-L则强调结构化演示和在线执行历史，不做参数更新。其他方法，包括对视觉-语言-动作模型做强化学习微调，走的是通过训练实现专门控制的路线。这些策略应对的是不同约束：数据和算力预算、适应需求，以及可预测反馈的重要性。下一步有用的做法，是在相同任务和机器人接口下对它们进行比较。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 421.06,
+      "end": 453.92,
+      "en": "The evidence remains limited to one foundation model, one main simulation environment, and a small real-robot study. The memory and action-reuse settings were selected on development tasks, so held-out evaluation is needed to test whether those choices generalize. We also do not yet know how well the framework transfers to other models, embodiments, cameras, or control interfaces. Its broader contribution is a testable claim: context design can itself be a control variable, but it needs careful validation.",
+      "zh": "目前证据仍局限于一个基础模型、一个主要仿真环境和一项小规模真机研究。记忆和动作复用这些设置是在开发任务上选定的，因此还需要在留出集上评估，检验这些选择是否具有泛化性。我们也尚不清楚这个框架迁移到其他模型、本体、相机或控制接口上的效果如何。它更广泛的意义在于提出了一个可检验的主张：上下文设计本身可以成为一个控制变量，但这需要仔细验证。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 454.94,
+      "end": 493.505,
+      "en": "The takeaway is that a frozen model can still adapt when its context is structured to distinguish guidance from experience and proposals from executed actions. Robo I-C-L offers a concrete way to represent that information, retain both long-range and recent evidence, and adjust action horizons. Its uneven results also remind us to measure failures, not just averages. For embodied systems, a useful memory is not merely a longer history; it is a history that preserves the right evidence. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，即使模型参数冻结，只要把上下文组织好，让模型能区分引导信息和经验信息、区分提议动作和已执行动作，它依然能适应新任务。Robo I-C-L 提供了一套具体方法来表示这些信息，同时保留长期和近期证据，并调整动作视野。它参差不齐的结果也提醒我们，要衡量失败情况，而不只是看平均值。对于具身系统来说，有用的记忆不只是更长的历史，而是能保留正确证据的历史。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{liu2026roboiclembodiedincontextlearning,\n      title={RoboICL: Embodied In-Context Learning with GPT-6 Astra}, \n      author={Fangcheng Liu and Yeqing Shen and Anda Cheng and Weishi Mi and Chao Tang and Chenyuan Liu and Yushun Xiang and Tingguang Li and Yong-Lu Li and Yehui Tang},\n      year={2026},\n      eprint={2609.34261},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.34261}, \n}",
+  "topics": [
+    "Agents",
+    "Few Shot Learning",
+    "Imitation Learning"
+  ],
+  "peaks": [
+    0.815,
+    0.375,
+    0.426,
+    0.34,
+    0.214,
+    0.744,
+    0.481,
+    0.522,
+    0.561,
+    0.547,
+    0.664,
+    0.44,
+    0.468,
+    0.379,
+    0.364,
+    0.774,
+    0.553,
+    0.383,
+    0.435,
+    0.359,
+    0.639,
+    0.627,
+    0.448,
+    0.57,
+    0.578,
+    0.688,
+    0.391,
+    0.389,
+    0.387,
+    0.446,
+    0.589,
+    0.447,
+    0.438,
+    0.452,
+    1.0,
+    0.898,
+    0.696,
+    0.675,
+    0.677,
+    0.614,
+    0.517,
+    0.337,
+    0.3,
+    0.268,
+    0.24,
+    0.594,
+    0.454,
+    0.311,
+    0.279,
+    0.337,
+    0.659,
+    0.52,
+    0.407,
+    0.379,
+    0.427,
+    0.834,
+    0.548,
+    0.489,
+    0.397,
+    0.338,
+    0.273,
+    0.564,
+    0.436,
+    0.35,
+    0.277,
+    0.2,
+    0.498,
+    0.535,
+    0.36,
+    0.372,
+    0.267,
+    0.344
+  ],
+  "published": "2026-09-28",
+  "license": "arXiv 默认许可"
+}
