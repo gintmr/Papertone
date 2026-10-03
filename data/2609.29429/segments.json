@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 430.315,
+  "word_match_rate": 0.9325,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Language Model Safety and Evaluation, today's lecture is on “Just Ask Jev: Reinforcement Learning for Calibrated Decisions as a Zero-Shot Detector of AI Alignment Failures.” Recent work such as “RewardBench: Evaluating Reward Models for Language Modeling” and “Checklists Are Better Than Reward Models For Aligning Language Models” reflects a growing focus on evaluating and improving model behavior. This paper asks whether one general-purpose decision model can help monitor many kinds of failures. The authors include researchers at Griffith University and Nanyang Technological University. I see a hand—yes, Noah?",
+      "start": 0.0,
+      "end": 40.98
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does Jev do differently from a typical safety classifier?",
+      "start": 41.96,
+      "end": 45.86
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A typical classifier is often trained for a particular risk category and returns a score for that task. Jev is a commercial model trained with reinforcement learning for calibrated decisions, and it answers typed questions about a supplied interaction state. It can return probabilities for several questions in one call. The paper tests whether those probabilities can provide affordable, zero-shot scores across existing alignment benchmarks, rather than proposing a new detector-training method.",
+      "start": 46.88,
+      "end": 76.92
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The evaluation uses R-L-C-D-AlignBench, which combines 44 benchmarks and 7,193 detection instances across 10 failure categories, including jailbreaks, sycophancy, deception, privacy violations, and reward hacking. The target models range from 2 billion to 7 billion parameters. Each example receives a binary reference label, but those labels come from different sources: rule-based scorers, L-L-M judges, and multi-turn trajectory judges. That variation matters because the detector is evaluated against what each benchmark actually calls a failure.",
+      "start": 77.9,
+      "end": 121.64
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does Jev see the whole conversation, or just the model’s answer?",
+      "start": 122.58,
+      "end": 126.54
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The researchers compare different input states. The canonical state contains the target model’s input and output, approximating what a response-level monitor might receive. Paired variants add or remove one field at a time, such as a gold answer, an injected instruction, or a list of secrets. This is a useful design choice: it helps separate whether a score changes because Jev was asked a better question or because it received information that clarifies the label.",
+      "start": 126.54,
+      "end": 155.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "They also compare generic questions with targeted ones that spell out the behavior or benchmark rubric. Across 31 usable benchmarks, a generic yes-or-no probability question reaches a median A-U-R-O-C of 0.886 and beats the stronger simple baseline on 25. Targeted strategies reach 0.911 across 38 benchmarks, but their median gain over the best generic readout is only 0.006, with uncertainty spanning no gain. So elaborate wording is not a dependable advantage.",
+      "start": 155.42,
+      "end": 193.14
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the probabilities are useful mainly for ranking examples, not automatically as trustworthy confidence estimates?",
+      "start": 194.18,
+      "end": 199.9
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. Keeping Jev’s soft probabilities usually works better than forcing its categorical or ordinal answers into a single hard label. For real monitoring, the ranking can help prioritize interactions for review. But a score of 0.5 should not be treated as a universal decision boundary. Across benchmarks, a threshold fitted using 10 labeled examples can improve median F one, although it does not help consistently, especially when labels are validated.",
+      "start": 201.0,
+      "end": 230.42
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Context provides another practical lesson. Information a system-level monitor might normally possess improves the generic question in only one of seven relevant comparisons with a statistically positive paired interval. Label-defining information can have a much larger effect: adding a secret list to a privacy benchmark raises A-U-R-O-C from about 0.79 to 0.95. That may mean Jev can apply the benchmark’s specific criterion more effectively, not that it has become a better detector of privacy risk in general.",
+      "start": 231.56,
+      "end": 263.42
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Could those large context gains make a benchmark look easier than deployment would be?",
+      "start": 264.28,
+      "end": 269.24
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Yes, and that is why the distinction between ordinary context and label keys is important. A gold answer or secret list may define the benchmark’s label, but a deployed monitor may not have it. The study also compares Jev with human judgments: on StrongREJECT, its agreement is close to the reference judge’s agreement. Yet performance varies, and Jev agrees less well than that judge on some GPT-3.5-generated responses.",
+      "start": 269.62,
+      "end": 295.62
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The cost analysis suggests a possible operational use. For 19 benchmarks scored by API-based L-L-M judges, the authors estimate a full Jev pass at $0.30 compared with $18.96 for the reference judges, using stated list prices. The ratio falls to about 12 to 1 under an alternative pricing comparison with Jev asked only the generic question. This is useful evidence, but the savings depend on pricing and how many questions the system asks.",
+      "start": 295.62,
+      "end": 328.14
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does the paper connect detector evaluation to benchmark quality, beyond just comparing scores?",
+      "start": 329.08,
+      "end": 334.14
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The authors inspect confident disagreements and find cases where the benchmark label may not capture the intended behavior. For example, one prompt-injection benchmark labels whether the model answered the injected task correctly, rather than simply whether it followed the injection. That makes the score partly a test of task correctness. This concern connects to broader evaluation work, including RewardBench, where conclusions depend on whether a benchmark’s examples and criteria truly measure the capability of interest.",
+      "start": 335.1,
+      "end": 366.88
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The study therefore shifts attention from asking only, “How accurate is the detector?” to also asking, “What information and construct does the label encode?” Its evidence has clear limits: it evaluates one version of one commercial model, English-language benchmarks, and mostly automated labels, many of them unvalidated. Jev’s probabilities need threshold checks for each application. Further work should test more models, settings, and human-validated labels before treating these results as general.",
+      "start": 367.86,
+      "end": 400.92
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The main takeaway is that a single decision model can offer a low-cost way to rank many kinds of alignment failures, and its multi-question interface may fit screening pipelines. But the score is only as meaningful as the question, context, and reference label behind it. Use Jev to help find cases worth examining, not as a universal safety verdict. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 401.78,
+      "end": 430.315
+    }
+  ]
+}

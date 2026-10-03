@@ -1,0 +1,271 @@
+{
+  "id": "2609.36720",
+  "title": "T$^2$Mem: Learning Test-Time Memory for Robotics",
+  "authors": [
+    "Yize Liu",
+    "Huang Huang",
+    "Yining Hong",
+    "Zijian Du",
+    "Zhi Cao",
+    "Li Fei-Fei",
+    "Jiajun Wu"
+  ],
+  "abstract": "Memory-dependent robotic manipulation requires policies to use information that is no longer available in the current observation. Retaining history alone is insufficient: memory must preserve information that supports future actions. One challenge is whether a memory-free foundation model can learn to retain and use historical information from action demonstrations alone, without external memory support. We introduce T$^2$Mem, a framework that develops this capability within a pretrained vision-language-action policy, without external reasoning models or memory-specific annotations. T$^2$Mem uses test-time training to encode observation history into compact fast weights through online self-supervised updates, avoiding repeated processing of the full history. An observation-grounded interface extracts vision-language information for memory formation and supplies retrieved context to the action expert. Action supervision shapes what the memory learns to retain and use, while alternating memory-policy learning gives each component a fixed counterpart during optimization. Across 16 RoboMME tasks, T$^2$Mem improves average success from 17.93% to 56.83% over the memory-free base policy and outperforms the recurrent-memory methods reported in the benchmark, while controlled profiling indicates at least 3x inference speedup over explicit methods. Project website: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.36720",
+    "arxiv": "https://arxiv.org/abs/2609.36720"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0efe0-db83-720f-b48c-97f3a907e260/podcast.mp3",
+  "duration": 480.496,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.94,
+      "en": "In a graduate course on Learning and Memory for Robotic Manipulation, today’s lecture is on T-squared Mem: Learning Test-Time Memory for Robotics. Recent work such as Robo T-T-T: Context Scaling for Robot Policies and Memory V-L-A explores how robot policies can use longer histories or persistent memory. This paper, from researchers at Stanford and the University of Michigan, takes another route: learning compact, episode-specific memory inside the policy. Since robots often act on information that is no longer visible, that design choice matters. I see your hand, Noah—go ahead.",
+      "zh": "在一门关于机器人操作的学习与记忆的研究生课程中，今天的讲座是关于T-squared Mem：学习测试时记忆用于机器人技术。最近的工作，比如Robo T-T-T：机器人策略的上下文扩展和Memory V-L-A，探索了机器人策略如何利用更长的历史或持久记忆。这篇论文来自斯坦福大学和密歇根大学的研究人员，走了另一条路：在策略内部学习紧凑的、针对每个回合的记忆。由于机器人经常根据不再可见的信息行动，这个设计选择很重要。我看到你举手了，Noah——请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.88,
+      "end": 44.86,
+      "en": "Hi Professor, is the main problem that a robot forgets what it saw once an object is hidden?",
+      "zh": "教授您好，主要问题是不是物体一旦被挡住，机器人就忘了自己看到过什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.68,
+      "end": 70.8,
+      "en": "That is one central case, but the broader issue is that a current camera image may not contain everything needed for the next action. A robot might need to remember which container held a cube, count repeated movements, or copy a procedure shown in a demonstration. T-squared Mem argues that memory should preserve information because it will help choose later actions, rather than simply reconstructing the past.",
+      "zh": "这是一个核心案例，但更广泛的问题在于，当前摄像头画面未必包含下一步行动所需的全部信息。机器人可能需要记住哪个容器里装过方块、数清重复动作的次数，或者复制演示中展示的操作流程。T-squared Mem 主张，记忆应当保留信息，是因为这些信息有助于选择后续行动，而不是单纯为了重建过去。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 71.76,
+      "end": 74.1,
+      "en": "So this is not just a larger history window?",
+      "zh": "所以这不只是把历史窗口开得更大吗？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 75.14,
+      "end": 102.8,
+      "en": "Exactly. Many memory systems keep images, keyframes, maps, or language summaries that a policy later retrieves. Recurrent policies instead compress history into a hidden state. T-squared Mem uses test-time training: it adapts a small set of temporary parameters during an episode. You can think of these fast weights as a compact notebook whose contents change as observations arrive, rather than a growing archive of every frame.",
+      "zh": "正是如此。很多记忆系统会保存图像、关键帧、地图或语言摘要，之后再由策略去检索。而循环策略则把历史压缩进一个隐藏状态。T-squared Mem 用的是测试时训练：它在一个回合中临时调整一小部分参数。你可以把这些快速权重想象成一个紧凑的笔记本，内容随着观测到来而不断变化，而不是一个不断增长、记录每一帧的档案库。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 103.72,
+      "end": 131.34,
+      "en": "The system builds on the pretrained pi zero point five vision-language-action policy. A learned interface reads semantic features from the vision-language model and uses them to query and update the fast-weight memory. The action policy then combines retrieved information with its current view. Crucially, memory updates use observations at deployment, while action demonstrations during training teach the system which memories are useful for control.",
+      "zh": "这个系统建立在预训练的 pi 0.5 视觉-语言-动作策略之上。一个学习到的接口从视觉-语言模型中读取语义特征，并用这些特征来查询和更新快权重记忆。动作策略随后把检索到的信息和当前视图结合起来。关键在于，记忆更新在部署时使用观测，而训练时的动作演示则教会系统哪些记忆对控制有用。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 132.22,
+      "end": 135.64,
+      "en": "Quick question: does the robot write down the action it just took?",
+      "zh": "快速问一下：机器人会把它刚刚执行的动作写下来吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 135.64,
+      "end": 164.44,
+      "en": "No. The memory pathway is restricted to valid vision-language features, rather than action or proprioception tokens, so it cannot use those as a shortcut for writing. Reads also happen before writes: an observation can inform subsequent decisions, not the action predicted from that same observation. This timing gives the method a clear causal interpretation and helps distinguish remembered evidence from information that only became available afterward.",
+      "zh": "不会。记忆通路只限于有效的视觉语言特征，而不是动作或本体感觉的token，所以它没法拿这些当捷径来写入。读取也发生在写入之前：一次观测可以影响后续决策，但不会影响从同一次观测中预测出的动作。这种时序安排让该方法有了清晰的因果解释，也有助于把记住的证据和事后才获得的信息区分开来。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 164.44,
+      "end": 194.56,
+      "en": "A second important idea is alternating optimization. First, the policy learns task-specific visuomotor behavior. Then the action model is held fixed while the memory interface learns, so action loss can shape what it stores. Next, memory is held fixed while the policy learns to use its retrieved content. Repeating these phases addresses a potential instability: if memory and policy both change at once, each may continually alter what the other has learned to interpret.",
+      "zh": "第二个重要思路是交替优化。首先，策略学习特定任务下的视觉运动行为。然后固定动作模型，让记忆接口去学习，这样动作损失就能塑造它存储的内容。接着固定记忆，让策略学习如何使用检索到的内容。反复进行这几个阶段可以解决一个潜在的不稳定问题：如果记忆和策略同时变化，双方可能会不断改变对方已经学会解读的东西。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 195.62,
+      "end": 198.94,
+      "en": "Can you clarify how this memory stays small over a long episode?",
+      "zh": "你能解释一下这个记忆在长回合中是如何保持小规模的吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 200.08,
+      "end": 230.92,
+      "en": "Its size is fixed rather than proportional to the number of observations. The episode-specific state has about 9.5 million parameters, or 36.35 mebibytes, excluding activations and attention caches. Sixteen memory heads use nonlinear networks to store and retrieve associations. Adaptive writing reduces updates that repeat information already represented, while preserving stronger updates for less familiar content. This is intended to limit interference with earlier bindings.",
+      "zh": "它的规模是固定的，不会随观测数量的增加而增长。这个针对每个回合的状态大约有950万参数，也就是36.35兆字节，其中不包括激活值和注意力缓存。十六个记忆头使用非线性网络来存储和检索关联。自适应写入会减少那些重复已有信息的更新，同时为不太熟悉的内容保留更强的更新。这样做的目的是限制对先前绑定关系的干扰。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 231.84,
+      "end": 266.06,
+      "en": "The authors evaluate the method on RoboMME, a benchmark spanning 16 tasks involving counting, hidden objects, object references, and imitation. T-squared Mem reaches a 56.83% average success rate, compared with 17.93% for the original memory-free policy. Its strongest evidence is not only the overall score: disabling online writes sharply reduces success on several tasks, suggesting that episode-specific updates, rather than just the learned initialization, contribute to performance.",
+      "zh": "作者在RoboMME上评估了该方法，这是一个涵盖16项任务的基准，涉及计数、隐藏物体、物体指代和模仿。T-squared Mem达到了56.83%的平均成功率，而原本无记忆的策略只有17.93%。其最强有力的证据不只是总体得分：禁用在线写入会大幅降低若干任务的成功率，这表明对表现的贡献来自针对每个回合的更新，而不只是学到的初始化。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 266.06,
+      "end": 270.68,
+      "en": "Hold on, does the memory always help when object locations change?",
+      "zh": "等等，当物体位置发生变化时，记忆总是有帮助吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 271.68,
+      "end": 300.58,
+      "en": "No, and that boundary is informative. The system does relatively well when it must retrieve an earlier observation or track repeated events, but it is weaker on swap tasks where object-location bindings change over time. It can retain an association without reliably reasoning through how later events invalidate it. The benchmark also includes motor execution: on insertion tasks, a policy may choose the right target yet still fail at the final precise movement.",
+      "zh": "不，而这个边界本身就很有信息量。当系统需要检索早先的观察结果或追踪重复事件时，它表现得相对不错，但在物体位置绑定随时间变化的交换任务上就比较弱。它能记住某种关联，却无法可靠地推理出后续事件如何使这一关联失效。这个基准还包含动作执行：在插入任务中，策略可能选对了目标，却仍在最后那一下精确动作上失败。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 301.62,
+      "end": 333.52,
+      "en": "Interventions further test whether memory content matters. With the correct demonstration memory, the model succeeds in 300 of 300 trials; with conflicting memory, it succeeds in only 1 of 300. On a hidden-object task, writing before the object is concealed reaches 76.67% success, while writing only afterward reaches 20.67%. These results support a specific interpretation: the system must encode useful evidence when it is observable, and later retrieve that evidence.",
+      "zh": "干预实验进一步检验了记忆内容是否重要。当记忆中是正确示范时，模型在300次试验中成功了300次；当记忆内容相互冲突时，300次里只成功了1次。在一个隐藏物体的任务中，在物体被遮挡之前写入记忆能达到76.67%的成功率，而只在遮挡之后写入则只有20.67%。这些结果支持一个具体的解释：系统必须在证据可观察时将其编码，之后再检索出来。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 334.54,
+      "end": 336.4,
+      "en": "How should we interpret the speed comparisons?",
+      "zh": "我们该如何理解这些速度对比？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 337.66,
+      "end": 376.88,
+      "en": "In controlled batch-size-one profiling on R-T-X A5000 G-P-Us, end-to-end model inference takes 146.6 milliseconds for T-squared Mem, versus 440 milliseconds for FrameSamp plus Modul and 10,135.6 milliseconds for MemER. The authors exclude initialization, environment execution, and physical action time, so these measurements do not represent a complete robot cycle. They do suggest that compact fast-weight memory can reduce computation relative to repeatedly processing extensive history.",
+      "zh": "在受控的批大小为1的测试中，使用RTX A5000 GPU对T-squared Mem进行端到端模型推理需要146.6毫秒，而FrameSamp加Modul需要440毫秒，MemER则需要10135.6毫秒。作者排除了初始化、环境执行和物理动作时间，因此这些测量并不代表完整的机器人周期。但它们确实表明，紧凑的快速权重记忆相比反复处理大量历史信息，可以减少计算量。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 377.74,
+      "end": 407.48,
+      "en": "The broader contribution is a middle path between explicit memory banks and generic recurrent summaries. Compared with systems such as Memory V-L-A, which organizes memory through perceptual and cognitive components, T-squared Mem learns an internal representation shaped by action supervision. Its test-time updates resemble the adaptation direction explored by Robo T-T-T, but the focus here is selectively retaining decision-relevant information within a pretrained policy, without memory-content labels.",
+      "zh": "更广泛的贡献在于，它在显式记忆库和通用循环摘要之间走出了一条中间路线。与Memory V-L-A这类通过感知和认知组件来组织记忆的系统相比，T-squared Mem学习的是由动作监督塑造的内部表示。它在测试时的更新类似于Robo T-T-T探索的适应方向，但这里的重点是在预训练策略中选择性地保留与决策相关的信息，而不依赖记忆内容标签。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 408.68,
+      "end": 412.36,
+      "en": "So what should researchers test next before treating this as a general solution?",
+      "zh": "那么，在把它当作通用解决方案之前，研究者接下来应该测试些什么呢？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 413.28,
+      "end": 443.64,
+      "en": "The evidence is promising but bounded: evaluation centers on one benchmark and one pretrained policy family, and controlled profiling is not physical-robot validation. Future work should test longer tasks, distribution shifts, changing object relations, and real-world sensing and control. It should also examine whether stronger temporal reasoning improves the weak swap results, and how fast-weight updates behave across interruptions or uncertain observations. Those questions will determine where this memory design transfers.",
+      "zh": "证据是有前景的，但也有局限：评估集中在一个基准和一个预训练策略家族上，而受控的性能分析并不等于物理机器人验证。未来的工作应该测试更长的任务、分布偏移、变化的物体关系，以及真实世界的感知与控制。还应该考察更强的时间推理是否能改善较弱的交换结果，以及快速权重更新在中断或不确定观测下表现如何。这些问题将决定这种记忆设计能迁移到哪些场景。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 444.74,
+      "end": 480.496,
+      "en": "The memorable takeaway is that a robot’s memory need not be a catalog of everything it has seen. T-squared Mem trains a compact, changing state to preserve evidence that can guide later action, using demonstrations to shape that state and observations to update it online. Its results show both the value and the limits of that idea: remembering an association is useful, but robustly tracking how the world changes remains a separate challenge. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "值得记住的一点是，机器人的记忆不必是它见过的一切的目录。T-squared Mem 训练一个紧凑且不断变化的状态，用来保留能够指导后续行动的证据，利用示范来塑造该状态，并利用观测在线更新它。它的结果既展示了这一想法的价值，也展示了其局限：记住一种关联是有用的，但稳健地跟踪世界如何变化仍然是一个单独的挑战。感谢收听。如果你还有任何问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{liu2026t2memlearningtesttimememory,\n      title={T$^2$Mem: Learning Test-Time Memory for Robotics}, \n      author={Yize Liu and Huang Huang and Yining Hong and Zijian Du and Zhi Cao and Li Fei-Fei and Jiajun Wu},\n      year={2026},\n      eprint={2609.36720},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.36720}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    0.506,
+    0.419,
+    0.359,
+    0.215,
+    0.308,
+    0.232,
+    0.725,
+    0.338,
+    0.302,
+    0.352,
+    0.388,
+    0.556,
+    0.261,
+    0.27,
+    0.2,
+    0.532,
+    0.422,
+    0.375,
+    0.38,
+    0.218,
+    0.545,
+    0.291,
+    0.373,
+    0.308,
+    0.301,
+    0.601,
+    0.626,
+    0.494,
+    0.533,
+    0.474,
+    0.491,
+    0.287,
+    0.396,
+    0.318,
+    0.514,
+    0.589,
+    0.281,
+    0.332,
+    0.417,
+    0.302,
+    0.682,
+    0.395,
+    0.483,
+    0.434,
+    0.28,
+    0.759,
+    0.649,
+    0.566,
+    0.512,
+    0.49,
+    0.703,
+    0.572,
+    0.365,
+    0.233,
+    0.474,
+    0.435,
+    0.568,
+    0.628,
+    0.458,
+    0.453,
+    0.449,
+    0.478,
+    0.35,
+    0.246,
+    0.337,
+    0.222,
+    0.969,
+    0.749,
+    0.671,
+    1.0,
+    0.648,
+    0.533
+  ],
+  "published": "2026-09-29",
+  "license": "arXiv 默认许可"
+}

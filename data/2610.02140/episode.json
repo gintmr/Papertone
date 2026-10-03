@@ -1,0 +1,245 @@
+{
+  "id": "2610.02140",
+  "title": "Finetuning with Sampling: SFT Learns Better Than You Think",
+  "authors": [
+    "Aayush Karan",
+    "Sitan Chen",
+    "Yilun Du"
+  ],
+  "abstract": "Introducing new capabilities to frontier models has long been the goal of posttraining, which predominantly employs supervised finetuning (SFT) and reinforcement learning (RL) to this end. Conventional wisdom dictates that RL enables strong generalization on new tasks without losing existing capabilities, while SFT is prone to weak generalization and catastrophic forgetting. At the same time, SFT can learn from off-policy expert data, whereas RL must rely on a model's ability to find successful trajectories with repeated sampling. In our work, we seek to leverage the strength of on-policy learning while utilizing the privileged information contained in off-policy data. However, rather than modifying the learning objective to accommodate this data, we instead tailor the data distribution to better suit the learner. We introduce a Markov chain Monte Carlo (MCMC) sampling algorithm that progressively transforms off-policy traces to be more on-policy given a reference model for finetuning. Across tasks like scientific skill acquisition, mathematical reasoning, and open-ended expertise, our sampling algorithm enables SFT to rival prevailing posttraining techniques, often generalizing better and forgetting less than strong on-policy baselines. In addition, the resulting finetuned models exhibit strong distributional performance and are capable of learning beyond sharpening the base model distribution. At a higher level, our approach presents sampling as a model-native operator that shapes data for learnability, offering broader utility as a general-purpose primitive throughout the posttraining stack.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.02140",
+    "arxiv": "https://arxiv.org/abs/2610.02140"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0fac6-3980-74a8-8516-eb17968084b3/podcast.mp3",
+  "duration": 419.448,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.22,
+      "en": "In our graduate course on Language Model Posttraining, today's lecture is on Finetuning with Sampling: S-F-T Learns Better Than You Think. Recent work such as S-F-T Memorizes, R-L Generalizes and Self-Distillation Enables Continual Learning reflects a field searching for ways to combine useful expert guidance with stronger generalization. This paper, by researchers at Harvard, takes a different route: it changes the examples before training. I see your hand, Noah; go ahead.",
+      "zh": "在我们关于语言模型后训练的研究生课程中，今天的讲座主题是带采样的微调：S-F-T比你想象的学得更好。最近的一些工作，比如S-F-T记忆、R-L泛化以及自蒸馏实现持续学习，反映出这个领域正在寻找方法，把有用的专家指导与更强的泛化能力结合起来。这篇论文由哈佛的研究人员完成，走了一条不同的路：它在训练之前就改变了样本。我看到你举手了，Noah，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.18,
+      "end": 37.52,
+      "en": "Hi Professor, why does changing the examples matter if S-F-T already has expert answers?",
+      "zh": "教授您好，既然S-F-T已经有专家答案了，为什么改变示例还会有影响呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.62,
+      "end": 69.36,
+      "en": "That is the central tension. S-F-T can learn from a demonstration even when the model cannot produce it, but examples far from the model’s own behavior may encourage brittle learning or forgetting. Reinforcement learning usually trains on the model’s own outputs, which can help preserve existing behavior, yet it may offer little signal when successful answers are rare. This paper asks whether expert examples can be reshaped to retain their useful information while becoming more familiar to the model.",
+      "zh": "这正是核心矛盾所在。SFT即使模型自己产不出某个示范，也能从中学到东西，但如果示例跟模型自身的行为差得太远，可能会导致脆弱的学习甚至遗忘。强化学习通常用模型自己的输出来训练，这有助于保留已有行为，但当成功答案很稀少时，它可能提供不了什么信号。这篇论文要问的是：能不能把专家示例重新塑形，既保留其中有用的信息，又让模型觉得更熟悉？"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 70.26,
+      "end": 75.3,
+      "en": "So the goal is to make expert solutions sound more like the model, without losing what makes them correct?",
+      "zh": "所以目标就是让专家解法听起来更像模型自己会说的话，同时又不丢掉让它正确的东西？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 76.08,
+      "end": 107.28,
+      "en": "Exactly. The authors imagine many possible trajectories that preserve the essential information in an expert solution. Instead of training on the original wording alone, they aim to sample from that set of valid alternatives, favoring trajectories the base model considers more likely. Think of translating a technical explanation into a dialect a student already understands, while keeping the scientific claim intact. The contribution is a data-preparation method; the S-F-T objective itself stays unchanged.",
+      "zh": "完全正确。作者设想出许多可能的轨迹，它们都保留了专家解答中的关键信息。他们不是只拿原始措辞来训练，而是试图从这组合法的替代方案中采样，偏向那些基础模型认为更可能出现的轨迹。就好比把一段技术讲解翻译成学生已经能听懂的方言，同时保持科学论断不变。这项贡献是一种数据准备方法，S-F-T的目标本身并没有改变。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 108.3,
+      "end": 111.74,
+      "en": "Quick question: how do they generate those alternative trajectories in practice?",
+      "zh": "快速问一下：他们实际上是怎么生成这些替代轨迹的？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 112.78,
+      "end": 144.24,
+      "en": "They use projection sampling, based on the Metropolis–Hastings family of Markov chain Monte Carlo methods. Starting with an expert trace, the procedure proposes a replacement continuation using the base model, prompted to stay consistent with the expert solution and reach the same correct answer. Proposals are considered in blocks of 32 tokens rather than regenerating an entire long response at once. The experiments use up to 10 sampling steps and sequences up to 1,856 tokens.",
+      "zh": "他们用的是投影采样，基于Metropolis-Hastings这一类马尔可夫链蒙特卡洛方法。从一条专家轨迹出发，让基础模型提出一个替换的后续续写，同时提示它要与专家解法保持一致，并得出相同的正确答案。每次考虑的是32个token组成的块，而不是一次性重新生成整段长回复。实验中最多用10步采样，序列长度最多到1856个token。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 145.28,
+      "end": 176.94,
+      "en": "There are two useful insights here. First, sampling is meant to preserve task-relevant content while shifting examples toward the base model’s distribution. Second, the transformed dataset is tailored to a particular base model: examples prepared for one model may not suit another. The method is tested on chemistry, math, and medical question answering, with expert trajectories drawn from generated or existing solutions. That makes the proposal relevant to settings where successful self-generated training examples are scarce.",
+      "zh": "这里有两个有用的洞见。第一，采样的目的是保留任务相关内容，同时把样本往基础模型的分布上偏移。第二，转换后的数据集是针对某个特定基础模型定制的：为一个模型准备的样本未必适合另一个。这个方法在化学、数学和医学问答上做了测试，专家轨迹来自生成的或已有的解答。这就让该方案适用于那些成功自生成训练样本稀缺的场景。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 177.96,
+      "end": 183.74,
+      "en": "Hold on, is the implemented sampler exact Metropolis–Hastings, and does it always preserve the expert information?",
+      "zh": "等一下，这个实现出来的采样器真的是精确的Metropolis–Hastings吗？它总能保留专家信息吗？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 184.82,
+      "end": 217.24,
+      "en": "Not exactly, and that qualification matters. The appendix says the implementation approximates the usual acceptance test: rather than always calculating the full proposal-probability ratio, it accepts a candidate when its likelihood is higher than the current one. So the practical sampler is more aggressive than exact Metropolis–Hastings. Information preservation is high but imperfect; transformed-data accuracy ranges from 93.94% to 95.86%, depending on the task and model.",
+      "zh": "不完全是，而这个限定很重要。附录里说，实现上近似了通常的接受检验：它并不总是计算完整的提议概率比，而是在候选样本的似然高于当前样本时就接受它。所以实际用的采样器比精确的 Metropolis–Hastings 更激进。信息保留程度很高但并不完美；变换后数据的准确率在 93.94% 到 95.86% 之间，具体取决于任务和模型。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 218.1,
+      "end": 222.44,
+      "en": "Can you clarify whether the results show a consistent improvement across all three domains?",
+      "zh": "你能说明一下，这些结果是否显示三个领域都有持续一致的提升吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 223.6,
+      "end": 265.06,
+      "en": "No, the pattern is mixed. On chemistry with a 7-billion-parameter Qwen model, sampling S-F-T reaches 66% accuracy, above vanilla S-F-T at 61.8%, while its average score on prior-capability benchmarks is 0.586 versus 0.520 for vanilla S-F-T. On math, it reaches 49.5% on held-out problems and performs well on MATH 500. But on medical questions, its 45.8% trails on-policy self-distillation at 46.6%, though retention is better than vanilla S-F-T.",
+      "zh": "不是，情况比较复杂。在化学任务上，用70亿参数的Qwen模型，采样S-F-T达到了66%的准确率，高于普通S-F-T的61.8%，而在先验能力基准上的平均分是0.586，普通S-F-T是0.520。在数学任务上，它在留出问题上达到了49.5%，在MATH 500上表现也不错。但在医学问题上，它的45.8%落后于同策略自蒸馏的46.6%，不过保持能力比普通S-F-T要好。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 266.06,
+      "end": 271.52,
+      "en": "How does this relate to self-distillation, and what does the math result suggest about combining it with R-L?",
+      "zh": "这和自蒸馏有什么关系？数学实验的结果又说明把它和强化学习结合起来会怎样？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 273.32,
+      "end": 309.26,
+      "en": "Self-Distillation Enables Continual Learning uses a demonstration-aware teacher to guide a model’s own generated answers; here, the central intervention happens earlier, when training data is constructed. The math experiments also test a sequence of methods: initializing reinforcement learning from the sampling-S-F-T checkpoint raises accuracy to 54.5% on held-out MATH levels 3 to 5. That suggests compatible expert data can provide a useful starting point for later R-L, though it does not establish that the combination will help every task.",
+      "zh": "自蒸馏实现持续学习这篇工作用一个能感知示例的教师模型来引导模型自己生成的答案；而这里，核心干预发生在更早的阶段，也就是构建训练数据的时候。数学实验还测试了一系列方法：从采样SFT检查点初始化强化学习，在留出的MATH第3到第5级上把准确率提升到了54.5%。这说明兼容的专家数据可以为后续的强化学习提供一个有用的起点，但并不能证明这种组合对每个任务都有帮助。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 310.18,
+      "end": 314.2,
+      "en": "What should we be cautious about before treating this as a general posttraining recipe?",
+      "zh": "在把它当作通用的后训练配方之前，我们需要警惕什么？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 314.2,
+      "end": 346.54,
+      "en": "The evidence is limited to the tested tasks, models, and evaluation setups. Results vary, the sampler uses an approximate acceptance rule, and medical answers are judged by an automated grader. The authors also report single-shot benchmark performance, which cannot establish how the method behaves in broader deployment. Their analyses are still informative: more sampling steps coincide with lower divergence from the base model and higher chemistry accuracy, while transferring samples across models performs poorly.",
+      "zh": "目前证据仅限于所测试的任务、模型和评估设置。结果存在波动，采样器使用的是近似接受规则，医学答案由自动评分器判定。作者报告的也只是单次基准表现，无法说明该方法在更广泛部署中的行为。不过他们的分析仍有参考价值：采样步数越多，与基础模型的偏离越小，化学准确率越高；而把样本跨模型迁移的效果则很差。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 347.5,
+      "end": 380.56,
+      "en": "The broader shift is conceptual: sampling need not only improve answers at inference time; it can also prepare expert data for training. That complements work combining expert guidance and model-generated behavior, but changes the point of intervention from the learning objective to the dataset. The key question for future research is whether content-preserving transformations can be made reliable, affordable, and useful across more domains. For now, projection sampling is a promising but bounded way to make demonstrations more compatible with a model.",
+      "zh": "更广泛的转变是概念层面的：采样不只是在推理阶段改进答案，它还能为训练准备专家数据。这与把专家指导和模型生成行为结合起来的工作形成互补，但把干预点从学习目标转移到了数据集。未来研究的关键问题是，内容保持型变换能否在更多领域做到可靠、低成本且有用。就目前而言，投影采样是一种有前景但有边界的方法，能让示范数据与模型更兼容。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 381.48,
+      "end": 419.448,
+      "en": "The takeaway is that expert supervision and model compatibility need not be treated as opposites: carefully transformed examples may retain useful guidance while asking the model to learn from trajectories closer to its own distribution. Yet the gains depend on the task and implementation, so evaluation should measure both new skills and retained capabilities. Sampling S-F-T is best viewed as a practical research direction, not a universal replacement for vanilla S-F-T or reinforcement learning. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，专家监督和模型兼容性不必被当成对立面：经过精心转换的样本可能既保留了有用的指导，又让模型从更接近自身分布的轨迹中学习。但收益取决于任务和实现方式，所以评估时既要衡量新技能，也要衡量保留下来的能力。把采样用于S-F-T，最好看作一个务实的研究方向，而不是对原始S-F-T或强化学习的通用替代。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{karan2026finetuningsamplingsftlearns,\n      title={Finetuning with Sampling: SFT Learns Better Than You Think}, \n      author={Aayush Karan and Sitan Chen and Yilun Du},\n      year={2026},\n      eprint={2610.02140},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.02140}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.975,
+    0.571,
+    0.58,
+    0.438,
+    0.333,
+    0.458,
+    0.603,
+    0.976,
+    0.735,
+    0.663,
+    0.554,
+    0.478,
+    0.903,
+    0.717,
+    0.563,
+    0.364,
+    0.431,
+    0.31,
+    0.466,
+    0.779,
+    0.614,
+    0.488,
+    0.566,
+    0.606,
+    0.313,
+    0.589,
+    0.379,
+    0.497,
+    0.411,
+    0.329,
+    0.639,
+    0.798,
+    0.72,
+    0.814,
+    0.621,
+    0.484,
+    0.324,
+    0.647,
+    0.488,
+    0.239,
+    0.482,
+    0.268,
+    0.276,
+    0.208,
+    0.2,
+    0.207,
+    0.7,
+    0.748,
+    0.481,
+    0.333,
+    0.334,
+    0.257,
+    0.288,
+    0.448,
+    1.0,
+    0.769,
+    0.932,
+    0.625,
+    0.442,
+    0.514,
+    0.781,
+    0.566,
+    0.542,
+    0.582,
+    0.56,
+    0.525,
+    0.364,
+    0.368,
+    0.411,
+    0.295,
+    0.381,
+    0.29
+  ],
+  "published": "2026-10-01",
+  "license": "CC BY"
+}

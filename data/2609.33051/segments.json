@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 511.164,
+  "word_match_rate": 0.9167,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Efficient Language Model Inference, today’s lecture is on “SketchSSM: Write to the Full State, Read from a Compact Sketch.” Recent work such as “xKV: Cross-Layer KV-Cache Compression via Aligned Singular Vector Extraction” and “Hardware-Efficient Attention for Fast Decoding” reflects a broader push to reduce memory traffic during language-model inference. This paper, from researchers at Seoul National University, Berkeley, and KAIST, tackles a related bottleneck in recurrent layers. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 36.28
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what exactly is the bottleneck if these models already use fixed-size states?",
+      "start": 37.4,
+      "end": 42.14
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Good question. Fixed-size recurrent states avoid a cache that grows with every token, but each decoding step still needs to read the state to produce its output. At large batch sizes, that repeated memory access can dominate the layer’s latency. SketchSSM asks whether we can reduce the cost of reading the state without changing the state used for future updates. That distinction matters because approximation errors in a recurrent state can influence every later step.",
+      "start": 43.1,
+      "end": 71.04
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The key idea is to treat state updates and state reads differently. SketchSSM retains the full-precision recurrent state, typically in F-P thirty-two, and applies buffered updates to it exactly. It compresses only the representation used to produce state-dependent outputs between updates. Think of keeping a complete ledger for accounting, but making a smaller index for frequent lookups. The ledger remains authoritative; the index makes repeated access cheaper.",
+      "start": 72.0,
+      "end": 101.72
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the model still has the full state, but it does not read all of it for every token?",
+      "start": 102.68,
+      "end": 106.9
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The authors group decoding into windows of 16 steps. During most steps, the layer buffers the information needed for state updates and avoids accessing the full state. At the flush step, it applies those updates exactly, then builds a compact sketch from the updated state. The output contribution from the buffered updates is also computed exactly. Only the contribution from the fixed state at the start of the window is approximated.",
+      "start": 107.96,
+      "end": 135.98
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "To build the sketch, the method uses a small set of calibrated query directions. At each flush, it records how the current state responds to those directions. Later, it combines those stored responses to estimate the state’s response to the actual query. With sketch rank G much smaller than the key dimension, the state-dependent read falls from roughly K times V elements to roughly G times the sum of K and V. That is the source of the traffic reduction.",
+      "start": 136.84,
+      "end": 165.66
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How does the method choose useful query directions instead of just picking them at random?",
+      "start": 166.6,
+      "end": 170.72
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The basis is calibrated offline using WikiText two samples from each model. Importantly, the objective is not to approximate every query equally well. It minimizes the error in the resulting state output, so mistakes in directions that barely affect that output matter less. The authors use state-weighted effective queries to estimate which directions carry the most useful information. In held-out measurements, 4 basis vectors retained 88.4% to 97.5% of state-read output energy across evaluated model heads.",
+      "start": 171.74,
+      "end": 206.4
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "There is also a cost to preparing each new sketch. The method computes a coefficient map that translates a query into weights for combining the stored responses, and it refreshes that map at each flush. The paper reduces this preparation cost with a low-rank-plus-diagonal approximation. For G-D-N and K-D-A, it also derives a W-Y-style calculation that works directly in coefficient space, avoiding large intermediate query vectors for every buffered token.",
+      "start": 207.32,
+      "end": 236.76
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does that mean every head gets the same sketch rank, or can some heads use more capacity?",
+      "start": 237.78,
+      "end": 242.2
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Ranks can vary by head. The authors allocate them according to both reconstruction error and sensitivity of model loss to that error, subject to an average rank budget. This matters because heads do not contribute equally to the final output. In an ablation on Nemotron Nano v2, the combined allocation improved average accuracy by 16.17 percentage points over uniform allocation at the same mean rank. That is a specific result for that ablation, not a guarantee for every model.",
+      "start": 242.2,
+      "end": 275.6
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Across 4 evaluated models using Mamba two, G-D-N, and K-D-A, the paper reports about a tenfold reduction in state-access traffic while generally preserving average accuracy. For example, Qwen three point eight Flash-Next reached 90.72% average accuracy at a 9.50-fold reduction, compared with 90.94% for standard execution. At more aggressive reductions, performance declined, especially on mathematical reasoning and code generation, so rank remains a practical accuracy-control knob.",
+      "start": 276.46,
+      "end": 315.74
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does that compare with pruning or quantizing the state?",
+      "start": 316.6,
+      "end": 319.48
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The distinction is that pruning and quantization alter the state that later updates reuse, while SketchSSM keeps that state intact and approximates only its read output. In the reported comparisons, eight-bit quantization reduced average accuracy by 1.9 to 29.6 percentage points, depending on the model, at traffic reductions near fourfold. Those results support the authors’ concern about recurrent error propagation. Still, SketchSSM does not remove state-capacity requirements, and its basis depends on offline calibration data.",
+      "start": 320.32,
+      "end": 355.9
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The system results suggest practical value for serving workloads with large decoding batches. On one N-V-I-D-I-A B300 G-P-U, total linear-attention kernel speedups reached 7.78-fold for Nemotron 3 Super, 5.22-fold for Qwen three point eight Flash-Next, and 5.20-fold for G-L-M 5.3 Flash. For Nemotron 3 Super, end-to-end decoding throughput rose as much as 2.64-fold at a 2K input context. These numbers depend on the hardware and optimized implementation.",
+      "start": 355.9,
+      "end": 396.6
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could the offline basis become unreliable if deployment queries differ from the calibration data?",
+      "start": 397.74,
+      "end": 402.76
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Yes, that is an important limitation. A basis calibrated on WikiText two may not capture the state and query patterns of every domain, model, or deployment workload. The results show that four basis directions retain substantial output energy on the evaluated models, but that does not establish robustness under arbitrary distribution shifts. Future work could study online adaptation, calibration coverage, and ways to detect when a compact sketch is no longer adequate.",
+      "start": 403.72,
+      "end": 434.2
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Conceptually, SketchSSM complements methods such as ReplaySSM and KVBuffer, which reduce how often recurrent updates write the full state but still read it for each query. It also sits alongside attention-cache work such as xKV, though the objects being compressed differ: SketchSSM targets reads from a recurrent state rather than a Transformer key-value cache. The broader shift is toward optimizing the data movement of inference, not only the arithmetic or model architecture.",
+      "start": 435.22,
+      "end": 466.38
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "So the larger lesson is to ask which computation needs exact state access, rather than compressing everything uniformly?",
+      "start": 467.36,
+      "end": 473.92
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "That is a useful way to put it. SketchSSM separates the exact path needed for future recurrence from the approximate path used to produce frequent outputs. Its reported gains come with limits: the full state remains stored, flushes still require full-state access, and stronger compression can reduce accuracy. The memorable takeaway is that recurrent inference can save substantial read traffic by keeping the state exact while making its repeated readout compact. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 475.0,
+      "end": 511.164
+    }
+  ]
+}

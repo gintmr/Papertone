@@ -22,6 +22,26 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
     },
     {
+      "id": "2610.02140",
+      "title": "Finetuning with Sampling: SFT Learns Better Than You Think",
+      "authors": [
+        "Aayush Karan",
+        "Sitan Chen",
+        "Yilun Du"
+      ],
+      "duration": 419.447625,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "Machine Learning",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.02140",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac6-3980-74a8-8516-eb17968084b3/podcast.mp3"
+    },
+    {
       "id": "2609.40305",
       "title": "Looped Diffusion Transformer",
       "authors": [
@@ -132,6 +152,28 @@
       "path": "2609.37053",
       "published": "2026-09-29",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f075-7897-7252-bd15-f54e5b6ecb2a/podcast.mp3"
+    },
+    {
+      "id": "2609.36720",
+      "title": "T$^2$Mem: Learning Test-Time Memory for Robotics",
+      "authors": [
+        "Yize Liu",
+        "Huang Huang",
+        "Yining Hong",
+        "Zijian Du",
+        "Zhi Cao",
+        "Li Fei-Fei",
+        "Jiajun Wu"
+      ],
+      "duration": 480.495688,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2609.36720",
+      "published": "2026-09-29",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0efe0-db83-720f-b48c-97f3a907e260/podcast.mp3"
     },
     {
       "id": "2609.35748",
@@ -311,6 +353,29 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb24-cbf2-70a5-a3fb-44456de4b4e9/podcast.mp3"
     },
     {
+      "id": "2609.33051",
+      "title": "SketchSSM: Write to the Full State, Read from a Compact Sketch",
+      "authors": [
+        "Omin Kwon",
+        "JoongWon Shin",
+        "Minseo Kim",
+        "Kurt Keutzer",
+        "Sehoon Kim",
+        "Jae W. Lee"
+      ],
+      "duration": 511.163563,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Transformers",
+        "Hardware Aware Algorithms",
+        "Inference Optimization"
+      ],
+      "cover": "cover.png",
+      "path": "2609.33051",
+      "published": "2026-09-27",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebc1-182a-7c89-8370-9f54daf4b5c1/podcast.mp3"
+    },
+    {
       "id": "2609.endpoint-constrained-trajectory-optimization",
       "title": "Guiding End-to-End Driving Models with Endpoint-Constrained Trajectory Optimization",
       "authors": [
@@ -473,6 +538,32 @@
       "path": "2609.29769",
       "published": "2026-09-24",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d728-083f-7be1-b51b-263e8610ba80/podcast.mp3"
+    },
+    {
+      "id": "2609.29429",
+      "title": "Just Ask Jev: Reinforcement Learning for Calibrated Decisions as a Zero-Shot Detector of AI Alignment Failures",
+      "authors": [
+        "Ruoqi Guo",
+        "Yi Liu",
+        "Gelei Deng",
+        "Yuekang Li",
+        "Lida Zhao",
+        "Yutao Wu",
+        "Simin Chen",
+        "Ying Zhang",
+        "Leo Yu Zhang"
+      ],
+      "duration": 430.3145,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "Security",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.29429",
+      "published": "2026-09-24",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d652-4b9c-7347-8061-2401885a0049/podcast.mp3"
     },
     {
       "id": "2609.29171",

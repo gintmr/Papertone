@@ -1,0 +1,243 @@
+{
+  "id": "2609.29429",
+  "title": "Just Ask Jev: Reinforcement Learning for Calibrated Decisions as a Zero-Shot Detector of AI Alignment Failures",
+  "authors": [
+    "Ruoqi Guo",
+    "Yi Liu",
+    "Gelei Deng",
+    "Yuekang Li",
+    "Lida Zhao",
+    "Yutao Wu",
+    "Simin Chen",
+    "Ying Zhang",
+    "Leo Yu Zhang"
+  ],
+  "abstract": "Detectors of alignment failures screen deployed language models and score alignment benchmarks. Most are generative judges that spend a decoding pass on every criterion, and classifiers that read token probabilities, such as Llama Guard, still score one fixed label per call. Jev, a model trained with reinforcement learning for calibrated decisions (RLCD), answers many typed questions about one input with calibrated probabilities in a single call. Whether it detects alignment failures has not been measured. We present RLCDAlignBench, which benchmarks Jev on ten alignment failures: sycophancy, jailbreaks, deception, prompt injection, hallucination, privacy violation, social bias, reward hacking, concealing uncertainty, and power seeking. It spans 44 benchmarks and five target models, labelled by each benchmark's scorer and, on two, by humans. Many of these failures are relational, defined against a reference, such as the user's belief or an injected instruction, that the response alone does not reveal. Our key idea is therefore to vary what Jev is asked separately from what it sees: the question's wording and answer type on one side, the fields of the input on the other. A single generic question reaches a median AUROC of 0.886 zero-shot and beats supervised baselines on most benchmarks. Question wording matters little, while context matters more, mostly through fields that encode the label. Jev matches the reference scorer's agreement with human labels, surfaces label defects in existing benchmarks, and costs 63x less than LLM-judge scorers. Code and data: this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.29429",
+    "arxiv": "https://arxiv.org/abs/2609.29429"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0d652-4b9c-7347-8061-2401885a0049/podcast.mp3",
+  "duration": 430.315,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 40.98,
+      "en": "In a graduate course on Language Model Safety and Evaluation, today's lecture is on “Just Ask Jev: Reinforcement Learning for Calibrated Decisions as a Zero-Shot Detector of AI Alignment Failures.” Recent work such as “RewardBench: Evaluating Reward Models for Language Modeling” and “Checklists Are Better Than Reward Models For Aligning Language Models” reflects a growing focus on evaluating and improving model behavior. This paper asks whether one general-purpose decision model can help monitor many kinds of failures. The authors include researchers at Griffith University and Nanyang Technological University. I see a hand—yes, Noah?",
+      "zh": "在一门关于语言模型安全与评估的研究生课程中，今天的讲座是“直接问Jev：用强化学习实现校准决策，作为AI对齐失败的零样本检测器”。最近的工作，比如“RewardBench：评估语言建模的奖励模型”和“检查清单比奖励模型更适合对齐语言模型”，反映出人们越来越关注评估和改进模型行为。这篇论文问的是，一个通用决策模型能否帮助监测多种类型的失败。作者包括格里菲斯大学和南洋理工大学的研究人员。我看到有人举手——是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 41.96,
+      "end": 45.86,
+      "en": "Hi Professor, what does Jev do differently from a typical safety classifier?",
+      "zh": "教授您好，Jev和典型的安全分类器相比有什么不同？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.88,
+      "end": 76.92,
+      "en": "A typical classifier is often trained for a particular risk category and returns a score for that task. Jev is a commercial model trained with reinforcement learning for calibrated decisions, and it answers typed questions about a supplied interaction state. It can return probabilities for several questions in one call. The paper tests whether those probabilities can provide affordable, zero-shot scores across existing alignment benchmarks, rather than proposing a new detector-training method.",
+      "zh": "典型分类器通常针对某一特定风险类别训练，只输出该任务的分数。Jev则是一个商用模型，用强化学习训练来做校准决策，能针对给定的交互状态回答带类型的问题。一次调用就能返回多个问题的概率。这篇论文检验的是这些概率能否在现有对齐基准上提供低成本、零样本的评分，而不是提出一种新的检测器训练方法。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 77.9,
+      "end": 121.64,
+      "en": "The evaluation uses R-L-C-D-AlignBench, which combines 44 benchmarks and 7,193 detection instances across 10 failure categories, including jailbreaks, sycophancy, deception, privacy violations, and reward hacking. The target models range from 2 billion to 7 billion parameters. Each example receives a binary reference label, but those labels come from different sources: rule-based scorers, L-L-M judges, and multi-turn trajectory judges. That variation matters because the detector is evaluated against what each benchmark actually calls a failure.",
+      "zh": "评估用的是R-L-C-D-AlignBench，它整合了44个基准、7,193个检测实例，覆盖10类失败模式，包括越狱、谄媚、欺骗、隐私泄露和奖励黑客。目标模型的参数量从20亿到70亿不等。每个样本都有一个二元的参考标签，但这些标签来源不一：有的是基于规则的打分器，有的是大模型评委，还有的是多轮轨迹评委。这种差异很关键，因为检测器是拿每个基准自己认定的失败来评判的。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 122.58,
+      "end": 126.54,
+      "en": "Quick question: does Jev see the whole conversation, or just the model’s answer?",
+      "zh": "快速问一下：Jev看到的是整段对话，还是只有模型的回答？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 126.54,
+      "end": 155.42,
+      "en": "The researchers compare different input states. The canonical state contains the target model’s input and output, approximating what a response-level monitor might receive. Paired variants add or remove one field at a time, such as a gold answer, an injected instruction, or a list of secrets. This is a useful design choice: it helps separate whether a score changes because Jev was asked a better question or because it received information that clarifies the label.",
+      "zh": "研究者比较了不同的输入状态。标准状态包含目标模型的输入和输出，近似于一个回复级监控器可能收到的内容。成对的变体每次增加或删除一个字段，比如标准答案、注入的指令或一份秘密清单。这是一个有用的设计选择：它有助于区分分数变化是因为给Jev提了一个更好的问题，还是因为它收到了能澄清标签的信息。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 155.42,
+      "end": 193.14,
+      "en": "They also compare generic questions with targeted ones that spell out the behavior or benchmark rubric. Across 31 usable benchmarks, a generic yes-or-no probability question reaches a median A-U-R-O-C of 0.886 and beats the stronger simple baseline on 25. Targeted strategies reach 0.911 across 38 benchmarks, but their median gain over the best generic readout is only 0.006, with uncertainty spanning no gain. So elaborate wording is not a dependable advantage.",
+      "zh": "他们还将通用问题与明确写出行为或基准评分标准的有针对性问题进行了比较。在31个可用的基准上，一个通用的是或否概率问题达到了0.886的中位A-U-R-O-C，并在25个基准上击败了更强的简单基线。有针对性的策略在38个基准上达到了0.911，但它们相对于最佳通用读出方式的中位增益仅为0.006，且不确定性范围涵盖零增益。因此，精心设计的措辞并不是一种可靠的"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 194.18,
+      "end": 199.9,
+      "en": "So the probabilities are useful mainly for ranking examples, not automatically as trustworthy confidence estimates?",
+      "zh": "所以这些概率主要是用来给样本排名的，并不能自动当作可信的置信度估计来用？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 201.0,
+      "end": 230.42,
+      "en": "Exactly. Keeping Jev’s soft probabilities usually works better than forcing its categorical or ordinal answers into a single hard label. For real monitoring, the ranking can help prioritize interactions for review. But a score of 0.5 should not be treated as a universal decision boundary. Across benchmarks, a threshold fitted using 10 labeled examples can improve median F one, although it does not help consistently, especially when labels are validated.",
+      "zh": "确实如此。保留Jev的软概率通常比把它分类或有序的回答强行压成一个硬标签效果更好。在实际监控中，排名可以帮助优先安排需要审查的交互。但0.5这个分数不应被视为通用的决策边界。在不同基准上，用10个标注样本拟合出的阈值可以提高F1中位数，尽管效果并不稳定，尤其是在标签经过验证时。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 231.56,
+      "end": 263.42,
+      "en": "Context provides another practical lesson. Information a system-level monitor might normally possess improves the generic question in only one of seven relevant comparisons with a statistically positive paired interval. Label-defining information can have a much larger effect: adding a secret list to a privacy benchmark raises A-U-R-O-C from about 0.79 to 0.95. That may mean Jev can apply the benchmark’s specific criterion more effectively, not that it has become a better detector of privacy risk in general.",
+      "zh": "上下文还提供了另一个实际教训。系统级监控器通常掌握的信息，在七个相关对比中只有一个能改善那个通用问题，且配对区间在统计上为正。而定义标签的信息影响可能大得多：在隐私基准里加入一份秘密清单，能把A-U-R-O-C从大约0.79提升到0.95。这可能意味着Jev能更有效地套用该基准的具体标准，而不是说它整体上变成了更好的隐私风险检测器。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 264.28,
+      "end": 269.24,
+      "en": "Could those large context gains make a benchmark look easier than deployment would be?",
+      "zh": "这些大幅的上下文增益会不会让基准看起来比实际部署更容易？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 269.62,
+      "end": 295.62,
+      "en": "Yes, and that is why the distinction between ordinary context and label keys is important. A gold answer or secret list may define the benchmark’s label, but a deployed monitor may not have it. The study also compares Jev with human judgments: on StrongREJECT, its agreement is close to the reference judge’s agreement. Yet performance varies, and Jev agrees less well than that judge on some GPT-3.5-generated responses.",
+      "zh": "是的，这就是为什么区分普通上下文和标签键很重要。一个标准答案或秘密列表可能定义了基准的标签，但部署中的监控器可能并没有这些。研究还把Jev和人类判断做了比较：在StrongREJECT上，它的一致性接近参考评判者的一致性。但表现参差不齐，在一些GPT-3.5生成的回答上，Jev的一致性不如那个评判者。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 295.62,
+      "end": 328.14,
+      "en": "The cost analysis suggests a possible operational use. For 19 benchmarks scored by API-based L-L-M judges, the authors estimate a full Jev pass at $0.30 compared with $18.96 for the reference judges, using stated list prices. The ratio falls to about 12 to 1 under an alternative pricing comparison with Jev asked only the generic question. This is useful evidence, but the savings depend on pricing and how many questions the system asks.",
+      "zh": "成本分析显示它可能有实际用途。对于19个由基于API的大语言模型评审打分的基准，作者按公开标价估算，完整跑一遍Jev要0.30美元，而参考评审要18.96美元。如果换成另一种定价比较方式，只让Jev回答那个通用问题，这个比例会降到大约12比1。这是有用的证据，但能省多少钱取决于定价，以及系统会问多少个问题。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 329.08,
+      "end": 334.14,
+      "en": "How does the paper connect detector evaluation to benchmark quality, beyond just comparing scores?",
+      "zh": "这篇论文除了比较分数之外，是如何把检测器评估和基准质量联系起来的？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 335.1,
+      "end": 366.88,
+      "en": "The authors inspect confident disagreements and find cases where the benchmark label may not capture the intended behavior. For example, one prompt-injection benchmark labels whether the model answered the injected task correctly, rather than simply whether it followed the injection. That makes the score partly a test of task correctness. This concern connects to broader evaluation work, including RewardBench, where conclusions depend on whether a benchmark’s examples and criteria truly measure the capability of interest.",
+      "zh": "作者考察了模型高置信度下仍出现分歧的案例，发现有些情况下基准标签可能并没有捕捉到真正想要衡量的行为。举个例子，某个提示注入基准标注的是模型是否正确完成了被注入的任务，而不是它是否单纯地服从了注入指令。这就使得分数在某种程度上变成了对任务正确性的测试。这一担忧与更广泛的评估研究相关，包括RewardBench，其结论取决于基准中的样本和标准是否真正测量了所关注的能力。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 367.86,
+      "end": 400.92,
+      "en": "The study therefore shifts attention from asking only, “How accurate is the detector?” to also asking, “What information and construct does the label encode?” Its evidence has clear limits: it evaluates one version of one commercial model, English-language benchmarks, and mostly automated labels, many of them unvalidated. Jev’s probabilities need threshold checks for each application. Further work should test more models, settings, and human-validated labels before treating these results as general.",
+      "zh": "因此，这项研究把注意力从只问“检测器有多准？”转向同时追问“标签编码了什么信息和构念？”它的证据有明显局限：只评估了一个商用模型的一个版本、英文基准，以及大多是自动生成的标签，其中许多未经校验。Jev 的概率输出在每个应用场景中都需要做阈值检查。后续工作应测试更多模型、更多设置，以及经过人工校验的标签，然后才能把这些结果当作普遍结论。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 401.78,
+      "end": 430.315,
+      "en": "The main takeaway is that a single decision model can offer a low-cost way to rank many kinds of alignment failures, and its multi-question interface may fit screening pipelines. But the score is only as meaningful as the question, context, and reference label behind it. Use Jev to help find cases worth examining, not as a universal safety verdict. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，单个决策模型可以低成本地对多种对齐失败进行排序，它的多问题界面也许适合筛查流程。但分数有没有意义，取决于它背后的问题、上下文和参考标签。用 Jev 来帮你找出值得检查的案例，而不是把它当作通用的安全判定。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{guo2026justaskjevreinforcement,\n      title={Just Ask Jev: Reinforcement Learning for Calibrated Decisions as a Zero-Shot Detector of AI Alignment Failures}, \n      author={Ruoqi Guo and Yi Liu and Gelei Deng and Yuekang Li and Lida Zhao and Yutao Wu and Simin Chen and Ying Zhang and Leo Yu Zhang},\n      year={2026},\n      eprint={2609.29429},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2609.29429}, \n}",
+  "topics": [
+    "NLP",
+    "Security",
+    "AI"
+  ],
+  "peaks": [
+    0.467,
+    0.323,
+    0.353,
+    0.322,
+    0.337,
+    0.285,
+    0.2,
+    0.473,
+    0.586,
+    0.442,
+    0.288,
+    0.393,
+    0.29,
+    0.659,
+    0.295,
+    0.286,
+    0.406,
+    0.27,
+    0.336,
+    0.251,
+    0.387,
+    0.607,
+    0.467,
+    0.666,
+    0.432,
+    0.398,
+    0.68,
+    0.669,
+    0.573,
+    0.546,
+    0.54,
+    0.585,
+    0.515,
+    0.701,
+    0.467,
+    0.69,
+    0.471,
+    0.518,
+    0.517,
+    0.635,
+    0.47,
+    0.435,
+    0.48,
+    0.301,
+    0.563,
+    0.808,
+    0.77,
+    0.747,
+    0.595,
+    0.496,
+    0.416,
+    0.435,
+    0.359,
+    0.311,
+    0.25,
+    0.559,
+    0.464,
+    0.337,
+    0.289,
+    0.349,
+    0.303,
+    0.534,
+    0.586,
+    0.61,
+    0.52,
+    0.497,
+    0.531,
+    1.0,
+    0.44,
+    0.684,
+    0.626,
+    0.437
+  ],
+  "published": "2026-09-24",
+  "license": "CC BY"
+}

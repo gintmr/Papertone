@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 419.448,
+  "word_match_rate": 0.9436,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Language Model Posttraining, today's lecture is on Finetuning with Sampling: S-F-T Learns Better Than You Think. Recent work such as S-F-T Memorizes, R-L Generalizes and Self-Distillation Enables Continual Learning reflects a field searching for ways to combine useful expert guidance with stronger generalization. This paper, by researchers at Harvard, takes a different route: it changes the examples before training. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 31.22
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why does changing the examples matter if S-F-T already has expert answers?",
+      "start": 32.18,
+      "end": 37.52
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is the central tension. S-F-T can learn from a demonstration even when the model cannot produce it, but examples far from the model’s own behavior may encourage brittle learning or forgetting. Reinforcement learning usually trains on the model’s own outputs, which can help preserve existing behavior, yet it may offer little signal when successful answers are rare. This paper asks whether expert examples can be reshaped to retain their useful information while becoming more familiar to the model.",
+      "start": 38.62,
+      "end": 69.36
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the goal is to make expert solutions sound more like the model, without losing what makes them correct?",
+      "start": 70.26,
+      "end": 75.3
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The authors imagine many possible trajectories that preserve the essential information in an expert solution. Instead of training on the original wording alone, they aim to sample from that set of valid alternatives, favoring trajectories the base model considers more likely. Think of translating a technical explanation into a dialect a student already understands, while keeping the scientific claim intact. The contribution is a data-preparation method; the S-F-T objective itself stays unchanged.",
+      "start": 76.08,
+      "end": 107.28
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Quick question: how do they generate those alternative trajectories in practice?",
+      "start": 108.3,
+      "end": 111.74
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "They use projection sampling, based on the Metropolis–Hastings family of Markov chain Monte Carlo methods. Starting with an expert trace, the procedure proposes a replacement continuation using the base model, prompted to stay consistent with the expert solution and reach the same correct answer. Proposals are considered in blocks of 32 tokens rather than regenerating an entire long response at once. The experiments use up to 10 sampling steps and sequences up to 1,856 tokens.",
+      "start": 112.78,
+      "end": 144.24
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "There are two useful insights here. First, sampling is meant to preserve task-relevant content while shifting examples toward the base model’s distribution. Second, the transformed dataset is tailored to a particular base model: examples prepared for one model may not suit another. The method is tested on chemistry, math, and medical question answering, with expert trajectories drawn from generated or existing solutions. That makes the proposal relevant to settings where successful self-generated training examples are scarce.",
+      "start": 145.28,
+      "end": 176.94
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Hold on, is the implemented sampler exact Metropolis–Hastings, and does it always preserve the expert information?",
+      "start": 177.96,
+      "end": 183.74
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Not exactly, and that qualification matters. The appendix says the implementation approximates the usual acceptance test: rather than always calculating the full proposal-probability ratio, it accepts a candidate when its likelihood is higher than the current one. So the practical sampler is more aggressive than exact Metropolis–Hastings. Information preservation is high but imperfect; transformed-data accuracy ranges from 93.94% to 95.86%, depending on the task and model.",
+      "start": 184.82,
+      "end": 217.24
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify whether the results show a consistent improvement across all three domains?",
+      "start": 218.1,
+      "end": 222.44
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No, the pattern is mixed. On chemistry with a 7-billion-parameter Qwen model, sampling S-F-T reaches 66% accuracy, above vanilla S-F-T at 61.8%, while its average score on prior-capability benchmarks is 0.586 versus 0.520 for vanilla S-F-T. On math, it reaches 49.5% on held-out problems and performs well on MATH 500. But on medical questions, its 45.8% trails on-policy self-distillation at 46.6%, though retention is better than vanilla S-F-T.",
+      "start": 223.6,
+      "end": 265.06
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How does this relate to self-distillation, and what does the math result suggest about combining it with R-L?",
+      "start": 266.06,
+      "end": 271.52
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Self-Distillation Enables Continual Learning uses a demonstration-aware teacher to guide a model’s own generated answers; here, the central intervention happens earlier, when training data is constructed. The math experiments also test a sequence of methods: initializing reinforcement learning from the sampling-S-F-T checkpoint raises accuracy to 54.5% on held-out MATH levels 3 to 5. That suggests compatible expert data can provide a useful starting point for later R-L, though it does not establish that the combination will help every task.",
+      "start": 273.32,
+      "end": 309.26
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "What should we be cautious about before treating this as a general posttraining recipe?",
+      "start": 310.18,
+      "end": 314.2
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The evidence is limited to the tested tasks, models, and evaluation setups. Results vary, the sampler uses an approximate acceptance rule, and medical answers are judged by an automated grader. The authors also report single-shot benchmark performance, which cannot establish how the method behaves in broader deployment. Their analyses are still informative: more sampling steps coincide with lower divergence from the base model and higher chemistry accuracy, while transferring samples across models performs poorly.",
+      "start": 314.2,
+      "end": 346.54
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The broader shift is conceptual: sampling need not only improve answers at inference time; it can also prepare expert data for training. That complements work combining expert guidance and model-generated behavior, but changes the point of intervention from the learning objective to the dataset. The key question for future research is whether content-preserving transformations can be made reliable, affordable, and useful across more domains. For now, projection sampling is a promising but bounded way to make demonstrations more compatible with a model.",
+      "start": 347.5,
+      "end": 380.56
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The takeaway is that expert supervision and model compatibility need not be treated as opposites: carefully transformed examples may retain useful guidance while asking the model to learn from trajectories closer to its own distribution. Yet the gains depend on the task and implementation, so evaluation should measure both new skills and retained capabilities. Sampling S-F-T is best viewed as a practical research direction, not a universal replacement for vanilla S-F-T or reinforcement learning. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 381.48,
+      "end": 419.448
+    }
+  ]
+}
