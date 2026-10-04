@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 469.159,
+  "word_match_rate": 0.9399,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course on embodied agents and robot learning, today's lecture is on Reconstruct, Practice, Go Real: Guided Self-Improvement for Embodied Agents. Work such as CaP-X and ASPIRE reflects a growing interest in language-model-driven robots that write programs, reuse skills, and learn from execution. This paper, from researchers at UC Berkeley and Amazon FAR, asks whether a robot system can improve its shared code without changing its model weights. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 33.36
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes improving the shared system more useful than just fixing the task that failed?",
+      "start": 34.46,
+      "end": 39.48
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That distinction is central. A one-off fix may help one episode, but it does not necessarily help the next task that uses the same grasp or placement behavior. The authors instead revise a shared skill library and the system prompt that guides skill use. They practice in simulation, test changes across multiple tasks, and only then transfer the system to a physical robot. So the paper treats improvement as a property of the executable system, not just one successful run.",
+      "start": 40.36,
+      "end": 70.24
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: does the system learn by updating its neural network?",
+      "start": 71.16,
+      "end": 74.52
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "No. During practice, the model weights, task definitions, initial-state distributions, and success evaluators stay fixed. The system changes its code-based skills or its prompt. It begins with 9 low-level tools, such as perception and motion control, and builds an initial library of 15 entries, including higher-level manipulation skills. A multimodal Runtime Agent then uses robot observations to select and combine those skills, much like a planner choosing tools from a well-tested toolbox.",
+      "start": 75.4,
+      "end": 106.86
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "How does it get practice tasks from an existing dataset?",
+      "start": 107.8,
+      "end": 110.56
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "A Constructor studies trajectories, videos, and descriptions from the ABC manipulation dataset, which contains 193 tasks. It selects useful capabilities and proposes related tasks in MuJoCo using a YAM robot model. The simulated task can differ from the original demonstration: organizing sunglasses, for example, can inspire a task that starts with a loaded case and asks the robot to close it. Humans check each task's success evaluator, and the task set stays fixed during practice.",
+      "start": 111.54,
+      "end": 144.92
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the system does not simply replay the demonstrations; it creates new situations to test related skills?",
+      "start": 144.92,
+      "end": 152.18
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. Each practice round, the Runtime Agent attempts all 22 tasks on 5 fixed development initializations. A separate Privileged Agent repeats matched trials with simulator state, including object positions, dimensions, and velocities. Both agents use the same deployment-compatible skills; privileged information is not passed into those skills. This gives the system another view of what happened while preserving a boundary between diagnostic information and what the robot can actually use at deployment.",
+      "start": 153.26,
+      "end": 185.18
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Could privileged state make the diagnosis unrealistic, since the physical robot will not have that information?",
+      "start": 186.12,
+      "end": 191.4
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That is a reasonable concern, and the design uses privileged state for diagnosis rather than control. For failed executions, a Video Analyzer compares the robot-facing and privileged traces, along with available dataset videos. It examines images, skill outcomes, perception results, commanded and measured states, and simulator metrics, then recommends a concrete correction. An Implementor can revise a skill or prompt, but proposed changes are restricted to deployment-available information and checked for valid interfaces.",
+      "start": 192.34,
+      "end": 225.22
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How do they prevent a fix for one task from breaking another?",
+      "start": 225.22,
+      "end": 229.26
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "They use cross-task regression checks before accepting revisions. Each candidate is evaluated across all 22 practice tasks on the same 5 development initializations. It must improve mean success and cannot reduce any individual task's success by more than 20 percentage points. A Merger combines eligible revisions, and the integrated system is tested again; if it fails the criteria, the previous system is kept. The authors repeat this process for 15 rounds, so a local repair must demonstrate broader value.",
+      "start": 230.32,
+      "end": 263.32
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "What evidence suggests the diagnostic agents actually matter, rather than just more practice being responsible for the gains?",
+      "start": 264.18,
+      "end": 270.72
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "A five-round ablation offers evidence: full R-P-G reached 78.2% on held-out trials, while removing the Video Analyzer or Privileged Agent reduced success to 51.8% and 50.9%, respectively. Removing both also yielded 50.9%. Separately, with the runtime model and prompt held fixed, skill-library revisions raised results from 26 of 40 to 37 of 40 trials on 4 tasks. These comparisons support the components' contribution, though they do not establish that the same effects hold in every setting.",
+      "start": 270.72,
+      "end": 310.4
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "And what happened when they moved the frozen system onto the physical robot?",
+      "start": 311.3,
+      "end": 314.74
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "After calibration and hardware adjustments, the authors froze behavior and tested the system on a physical YAM robot. It completed all 10 trials for each of 3 tasks: placing a ball in a drawer and closing it, folding a towel, and transferring a bowl between hands. The reported comparison systems did substantially worse on some tasks, especially bowl transfer. Five additional tasks were shown qualitatively, but without quantitative baseline comparisons, so those demonstrations should not be treated as broad statistical evidence.",
+      "start": 315.74,
+      "end": 348.96
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does this approach relate to Aspire, and what remains uncertain about transfer?",
+      "start": 348.96,
+      "end": 353.8
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Aspire turns execution traces into reusable repair skills, while this paper emphasizes a repeated simulation practice loop, privileged diagnosis, and cross-task acceptance tests. Both treat reusable skills as a practical target for improvement. Here, simulation performance rose from 28.6% after the first round to 95% after 15 rounds on held-out trials. Yet transfer evidence is narrower: the physical benchmark covers 3 tasks and 30 trials, and the extra examples are qualitative. The results motivate further testing, not a claim of general transfer.",
+      "start": 355.2,
+      "end": 391.4
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "Could the process scale if the library keeps growing and skills depend on one another?",
+      "start": 392.36,
+      "end": 396.28
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "That remains open. The library grew from 15 to 38 entries, with 23 new skills and 66 modifications, creating potential integration and maintenance costs. Performance was also uneven: the system reached 10 of 10 successes on 17 tasks, but only 3 of 10 on towel folding, where cloth contact and changing geometry are difficult to manage. A useful next step is to measure compute and rollout costs, test larger task suites, and examine how revisions behave as skill dependencies become more complex.",
+      "start": 397.14,
+      "end": 431.72
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The paper's main lesson is that robot improvement need not mean retraining a neural policy: a system can also become more capable by refining reusable procedures and the instructions that coordinate them. The strongest evidence comes from simulation performance, ablations, and a focused physical evaluation; the limits are scaling and uncertain transfer beyond tested tasks. Keep that distinction in mind: a successful repair is valuable when it helps elsewhere and survives careful testing. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 431.72,
+      "end": 469.159
+    }
+  ]
+}

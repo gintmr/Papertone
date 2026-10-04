@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 372.95,
+  "word_match_rate": 0.9346,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on multimodal agents and interactive reasoning, we’re studying how systems perceive and act over time. Today’s lecture is on Vista: A Visual Harness for Reasoning in an Interactive World. Recent work such as Seeing, Listening, Remembering, and Reasoning and DeepEyes explores persistent multimodal memory and active image inspection. This paper, from researchers at M-I-T, shifts attention toward the software harness around a model. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.64
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does “harness” mean here?",
+      "start": 33.84,
+      "end": 36.02
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A harness is the surrounding system that supplies observations, manages memory, and lets a model take actions. Vista does not introduce a new model architecture or train a model specifically for these games. Instead, it asks whether a capable multimodal model can reason more effectively when the interface preserves visual evidence and makes it retrievable. That distinction matters: an agent may fail not because it cannot reason, but because useful information has disappeared from view or context.",
+      "start": 36.9,
+      "end": 67.72
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the key idea is to let the model revisit what it has already seen?",
+      "start": 68.76,
+      "end": 72.38
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. Vista gives the model rendered images, then stores every frame returned by the environment in lossless visual memory. The model can request frames from earlier turns, compare states, and crop and enlarge selected regions. It can also read exact pixel values. Think of this as a research notebook containing the original visual record, rather than a brief written summary that might omit a detail that later turns out to matter.",
+      "start": 73.1,
+      "end": 99.92
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The interaction is deliberately straightforward. The model reasons in natural language, predicts what it expects to happen, takes an action, and then describes the result. The play tool alone advances the game; inspection and note-taking do not consume actions. Two notes preserve different kinds of knowledge: GUIDE.md records durable mechanics, while WORKING.md holds level-specific state and plans. When context fills, a handoff summary starts a fresh conversation without erasing the visual archive.",
+      "start": 99.92,
+      "end": 135.82
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How did the authors test whether this setup actually helps, rather than just adding more tools?",
+      "start": 136.82,
+      "end": 141.46
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Their primary test covered all 25 public A-R-C A-G-I three games, where agents must discover unfamiliar rules through exploration. They report Relative Human Action Efficiency, or R-H-A-E, which accounts for level completion and action use compared with first-time human participants. They also tested other visual settings: browser games, games from A-I GameStore, and static BabyVision questions. Comparisons with official or minimal harnesses help separate interface effects from model capability.",
+      "start": 142.44,
+      "end": 177.5
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "What were the central results on the unfamiliar games?",
+      "start": 178.74,
+      "end": 181.18
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "With Vista, Claude Opus 5.0 completed all 25 games and scored 100 R-H-A-E, using 7,302 actions against a human reference of 17,135. G-P-T five point six Sol also completed all 25 and scored 99. The official baselines for those models were much lower. The authors’ staged tests suggest that several changes contributed: images, longer interactions, persistent notes, and, especially, visual memory and inspection.",
+      "start": 181.18,
+      "end": 219.48
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify how much came from visual inspection, and whether the images were simply more informative than text?",
+      "start": 220.56,
+      "end": 226.38
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "In the staged G-P-T comparison, the score rose from 70.05 with persistent notes to 94.10 after adding lossless visual memory and inspection, then to 99 with pixel readout. Images and text grids both worked well in the richer harness, but images were more token-efficient: average use was 30.7 million tokens per game, versus 71.9 million for text grids. The default 512-by-512 image size was not essential; 256-by-256 performed comparably.",
+      "start": 226.38,
+      "end": 263.66
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "There is evidence the approach reaches beyond one benchmark. On GameWorld, Vista improved success from 40% to 63.3%; on A-I GameStore, its human-normalized score was 140.3, compared with 47.3 for the official implementation. On static BabyVision questions, accuracy rose from 41% to 63.2%, though the human reference was 92.3%. These results suggest that retrieving selected evidence can help in both long interactions and single-image reasoning.",
+      "start": 265.34,
+      "end": 298.08
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does Vista fit with work like DeepEyes, and what limitations should we keep in mind?",
+      "start": 299.12,
+      "end": 303.3
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "DeepEyes trains models to interleave reasoning with chosen image crops; Vista instead provides inspection tools around an existing model. And unlike approaches that build symbolic game models or synthesize programs, Vista reasons from rendered images and natural language. Still, the results depend on capable models, and the leading tests use closed-weight systems at high reasoning effort. Public benchmark games may also have appeared in training data, so performance on genuinely novel environments remains an open question.",
+      "start": 304.8,
+      "end": 336.28
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader lesson is that memory is not only about how much an agent stores; it is also about whether the agent can retrieve the right evidence at the right moment. Vista shows a practical way to preserve visual history without placing every frame in the active context. That is relevant to game and interface agents, while transfer to physical environments remains unproven. For agent designers, a useful question is: what evidence might the model need to inspect again later? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 337.18,
+      "end": 372.95
+    }
+  ]
+}

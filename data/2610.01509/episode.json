@@ -1,0 +1,243 @@
+{
+  "id": "2610.01509",
+  "title": "Sharpening Tax in Post-Training",
+  "authors": [
+    "Changdae Oh",
+    "Qi Zeng",
+    "Qi Qi",
+    "Andrey Zhmoginov",
+    "Deren Lei",
+    "Yun He",
+    "Hoang Phan",
+    "Hangoo Kang",
+    "Azalia Mirhoseini",
+    "Sharon Li"
+  ],
+  "abstract": "An emerging hypothesis about reinforcement learning (RL) post-training of large language models (LLMs) is that it merely sharpens existing behaviors of a base model, improving single-shot accuracy at the cost of solution coverage. Although this trade-off has been observed in math and coding tasks, it need not extend to agentic tasks, where multi-turn tool use and interaction may require capabilities newly acquired during post-training. Our surprising finding is that pre-trained LLMs, equipped with a light inference harness, can serve as capable agents. Despite far lower accuracy (pass@1), they often surpass their post-trained counterparts in solution coverage (pass@K) given a sufficient test-time budget. We further analyze the underlying mechanism and show that post-training pushes tasks toward two extremes, always solved or never solved, and thereby improves sampling efficiency and consistency at the cost of solution coverage. To measure this cost, we propose Sharpening Tax, a diagnostic metric that quantifies the loss in test-time scalability after post-training. Across 14 base/post-trained model pairs from four families and three agentic benchmarks (42 cases in total), the tax is prevalent in most settings, can be estimated from a few rollouts, and correlates well with other metrics. Finally, we present posterior-tempered group sampling (PTGS), a simple plug-and-play Bayesian sampler that adapts the sampling temperature per prompt to its estimated difficulty. Applied during RL training in two agentic environments, PTGS pays a smaller tax than the fixed-temperature baseline, solving more tasks under repeated sampling while also improving single-shot accuracy.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.01509",
+    "arxiv": "https://arxiv.org/abs/2610.01509"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0fa76-85be-74e9-99b8-c19ff057bd0d/podcast.mp3",
+  "duration": 419.918,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.28,
+      "en": "In our graduate seminar on reinforcement learning for language-model agents, today’s lecture is on “Sharpening Tax in Post-Training.” The paper asks whether post-training expands what an agent can solve, or makes a narrower set of existing behaviors more dependable. Recent work such as “Echo Chamber: RL Post-training Amplifies Behaviors Learned in Pretraining” and “On the Interplay of Pre-Training, Mid-Training, and RL on Reasoning Language Models” reflects this broader debate. This study brings it to interactive agents. Go ahead, Noah.",
+      "zh": "在我们关于语言模型智能体强化学习的研究生讨论课上，今天的讲座主题是“后训练中的锐化税”。这篇论文要问的是，后训练到底扩展了智能体能解决的问题，还是只是让已有的一小部分行为变得更可靠。最近的一些工作，比如《回声室：强化学习后训练放大了预训练中学到的行为》和《预训练、中期训练和强化学习在推理语言模型中的相互作用》，都反映了这场更广泛的争论。这项研究把它带到了交互式智能体上。诺亚，你来说吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.4,
+      "end": 41.64,
+      "en": "Hi Professor, when you say “sharpening,” do you mean the model becomes more accurate but less varied?",
+      "zh": "教授您好，您说的“锐化”，是指模型变得更准确但多样性下降了吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.56,
+      "end": 72.06,
+      "en": "That is the central idea. A post-trained model may succeed more often on its first try, yet offer fewer different ways to succeed across repeated attempts. The authors, from institutions including Meta and Stanford, examine this possibility in agents that use tools and respond to changing environments. The question matters because deployments differ: a user may get one attempt, while an inference system may afford dozens of samples and select among them.",
+      "zh": "这就是核心观点。经过后训练的模型也许首次尝试成功率更高，但在反复尝试中能成功的不同路径却更少。来自Meta和斯坦福等机构的研究者，在那些使用工具并对环境变化做出响应的智能体中检验了这一可能性。这个问题之所以重要，是因为实际部署情况不同：用户可能只有一次尝试机会，而推理系统却可能采样几十次并从中挑选。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 72.38,
+      "end": 103.24,
+      "en": "The authors evaluate 14 base and post-trained checkpoint pairs, spanning Gemma, Ministral, and Qwen model families, on BFCL multi-turn tool use, WebShop, and ACEBench. These tasks reward reaching an appropriate environment state through a sequence of actions, not merely producing a plausible final answer. Across most settings, post-trained models have higher single-attempt success, while base models gain more as repeated sampling gives them chances to find a successful trajectory.",
+      "zh": "作者评估了14对基础模型和后训练检查点，涵盖Gemma、Ministral和Qwen模型系列，在BFCL多轮工具使用、WebShop和ACEBench上进行测试。这些任务奖励的是通过一系列动作达到合适的环境状态，而不仅仅是给出一个看似合理的最终答案。在大多数设置下，后训练模型的单次尝试成功率更高，而基础模型在重复采样给它们更多机会找到成功轨迹时，提升幅度更大。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 104.32,
+      "end": 109.04,
+      "en": "Quick question: does that mean the base model is better overall if we can afford many retries?",
+      "zh": "问个快问题：这是不是意味着，如果我们能承受很多次重试，基座模型整体上就更好？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 110.02,
+      "end": 140.7,
+      "en": "Not necessarily. The outcome depends on model size, task, and retry budget. The paper distinguishes pass at one, the chance of success on a single rollout, from pass at K, the chance of at least one success among K rollouts. It also measures the chance that every rollout succeeds, capturing consistency. Together, these views separate first-try reliability, solution coverage, and dependable repetition—qualities that a single accuracy score would blur.",
+      "zh": "不一定。结果取决于模型规模、任务和重试预算。论文区分了单次通过率，也就是一次轨迹中成功的概率，和K次通过率，也就是K次轨迹中至少成功一次的概率。它还衡量了每次轨迹都成功的概率，以此捕捉一致性。综合来看，这些视角区分了首次尝试的可靠性、解法的覆盖范围，以及可重复的稳定表现——这些特质是单一准确率分数所无法清晰体现的。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 141.5,
+      "end": 171.52,
+      "en": "The proposed Sharpening Tax summarizes how much retry value is lost after post-training. It compares how quickly base and post-trained models improve as the rollout budget grows, with a calibration for single-attempt failure. A positive tax means the base model benefits more from retries. In effect, it asks whether post-training has moved tasks toward near-certain success or repeated failure, leaving fewer tasks where another sample can change the outcome.",
+      "zh": "提出的锐化税总结了后训练之后损失了多少重试价值。它比较了基座模型和后训练模型随着轨迹预算增加而提升的速度，并对单次尝试失败做了校准。正税意味着基座模型从重试中获益更多。实际上，它问的是后训练是否把任务推向了几乎必然成功或反复失败，从而让另一次采样能改变结果的任务变少了。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 172.42,
+      "end": 178.36,
+      "en": "Can you clarify how they know these successes come from valid agent behavior rather than a lucky final answer?",
+      "zh": "你能说清楚他们是怎么知道这些成功来自有效的智能体行为，而不是靠运气蒙对了最终答案吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 179.3,
+      "end": 211.12,
+      "en": "That concern motivates the process-oriented benchmarks: success is tied to the resulting environment state after intermediate actions. The evaluation allows up to 128 rollouts per task. There is an important comparison caveat, though: base models receive a lightweight harness with tool descriptions and formatting support, while post-trained models use benchmark-default scaffolding. The authors aim to make each checkpoint usable, but this means the comparison is not purely about model weights.",
+      "zh": "这种担忧促成了面向过程的基准：成功与否取决于中间动作之后所产生的环境状态。评估允许每个任务最多进行128次轨迹。不过，有一个重要的比较注意事项：基础模型会获得一个轻量级的运行框架，包含工具描述和格式支持，而经过后训练的模型则使用基准默认的脚手架。作者的目标是让每个检查点都可用，但这意味着这种比较并不纯粹是关于模型权重的。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 212.1,
+      "end": 245.18,
+      "en": "The results show a pronounced scale effect. On WebShop, Gemma four 31B base reaches 87.6% pass at 128, compared with 56% for its post-trained counterpart. More tasks shift toward either near-certain success or repeated failure after post-training. For smaller models, however, post-training can repair basic weaknesses, such as producing valid tool calls, and may improve both accuracy and coverage. So sharpening is not a universal penalty.",
+      "zh": "结果显示出了明显的规模效应。在WebShop上，Gemma 4 31B基础模型在128次尝试中达到了87.6%的通过率，而经过后训练的对应模型只有56%。后训练之后，更多任务要么转向几乎必然成功，要么转向反复失败。不过对于较小的模型，后训练可以修复一些基本缺陷，比如生成有效的工具调用，并且可能同时提升准确率和覆盖率。所以锐化并不总是一种惩罚。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 246.24,
+      "end": 251.02,
+      "en": "How does their training method try to preserve exploration without making every prompt more random?",
+      "zh": "他们的训练方法如何在不让每个提示都变得更随机的情况下尽量保留探索？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 252.02,
+      "end": 283.54,
+      "en": "They introduce posterior-tempered group sampling, or P-T-G-S. The method tracks recent successes and failures for each prompt, then uses a Beta posterior and Thompson sampling to estimate its difficulty. Hard prompts receive higher sampling temperatures to encourage exploration; easier prompts receive lower temperatures to favor reliable behavior. This is a selective alternative to raising one global temperature, which could increase variety but also disrupt performance on prompts the model already handles well.",
+      "zh": "他们提出了后验温度调节的分组采样方法，简称P-T-G-S。这个方法会追踪每个提示词近期的成功和失败记录，然后用Beta后验和汤普森采样来估计它的难度。难度高的提示词会获得更高的采样温度以鼓励探索；较容易的提示词则用较低温度来偏向稳定的表现。这是一种有选择性的替代方案，不同于直接调高一个全局温度——那样虽然能增加多样性，但也会破坏模型本来已经处理得很好的提示词上的表现。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 284.36,
+      "end": 316.16,
+      "en": "In experiments fine-tuning a Qwen two point five seven billion parameter instruct model on Sokoban and FrozenLake, P-T-G-S improves both single-shot accuracy and coverage at 128 rollouts in the reported settings, while lowering the Sharpening Tax. Training analyses also show higher output entropy and fewer rollout groups with no successes. That matters for group-based reinforcement learning: if every sampled attempt fails, the algorithm has little useful contrast from which to learn.",
+      "zh": "在实验中，他们用Qwen 2.5 70亿参数指令模型在Sokoban和FrozenLake上做微调，P-T-G-S在报告设置下同时提升了单次准确率和128条轨迹时的覆盖率，还降低了锐化税。训练分析也显示输出熵更高，且没有任何成功尝试的轨迹组更少。这对基于组的强化学习很重要：如果每次采样尝试都失败，算法就几乎没有可用来学习的有效对比。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 317.18,
+      "end": 321.34,
+      "en": "So is the paper mainly extending the sharpening debate from reasoning tasks to agents?",
+      "zh": "那这篇论文主要是把锐化这个争论从推理任务扩展到智能体上吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 322.36,
+      "end": 351.2,
+      "en": "Yes, and it changes what we should ask when assessing post-training. Instead of treating higher first-try accuracy as proof of broader capability, we can examine how success rates evolve with repeated sampling. This connects to test-time compute research, where additional attempts are a resource. The paper’s contribution is to treat the shape of those scaling curves as diagnostic, while P-T-G-S explores whether training can preserve useful diversity without giving up reliability.",
+      "zh": "是的，而且这改变了我们在评估后训练时应该问的问题。与其把更高的首次尝试准确率当作更广泛能力的证明，我们可以考察成功率如何随着重复采样而变化。这与测试时计算的研究相关，在那里额外的尝试是一种资源。这篇论文的贡献在于把那些扩展曲线的形状当作诊断工具，而P-T-G-S则探索训练能否在保持可靠性的同时保留有用的多样性。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 352.28,
+      "end": 385.08,
+      "en": "The conclusions need qualification. The checkpoint analysis is observational, and the public training recipes are not fully documented, so effects cannot be attributed specifically to reinforcement learning. The tests cover text-based agents and three benchmarks, and the base-model harness differs from the default post-trained setup. P-T-G-S is tested in only two environments and one model family. Broader controlled studies, multimodal agents, and measures beyond binary success would test how far these findings generalize.",
+      "zh": "这些结论还需要加一些限定条件。检查点分析是观察性的，公开的训练配方也没有完整记录，所以这些效果不能具体归因于强化学习。测试只覆盖了基于文本的智能体和三个基准，而且基础模型测试环境跟默认的后训练设置不一样。P-T-G-S 只在两个环境和同一个模型家族里做了测试。更广泛的控制实验、多模态智能体，以及二元成功之外的衡量指标，才能检验这些发现到底能推广到什么程度。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 385.94,
+      "end": 419.918,
+      "en": "The practical takeaway is to match a model’s training profile to its use. If an agent gets one attempt, reliability may be the priority; if a system can search across many attempts, retained coverage may matter more. Sharpening Tax offers one way to make that trade-off visible, and prompt-specific exploration offers a possible way to manage it. A model can become more dependable without necessarily becoming able to solve a wider range of tasks. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "实际启示是，要让模型的训练特性匹配它的用途。如果智能体只有一次尝试机会，可靠性可能是首要考虑；如果系统能在多次尝试中搜索，保留的覆盖范围可能更重要。锐化税提供了一种让这种权衡变得可见的方法，而针对提示的探索则提供了一种可能的管理方式。一个模型可以变得更可靠，但不一定因此就能解决更广泛的任务。感谢收听。如果还有任何问题，可以询问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{oh2026sharpeningtaxposttraining,\n      title={Sharpening Tax in Post-Training}, \n      author={Changdae Oh and Qi Zeng and Qi Qi and Andrey Zhmoginov and Deren Lei and Yun He and Hoang Phan and Hangoo Kang and Azalia Mirhoseini and Sharon Li},\n      year={2026},\n      eprint={2610.01509},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.01509}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    1.0,
+    0.576,
+    0.482,
+    0.517,
+    0.636,
+    0.439,
+    0.765,
+    0.713,
+    0.74,
+    0.538,
+    0.366,
+    0.545,
+    0.798,
+    0.696,
+    0.509,
+    0.448,
+    0.484,
+    0.218,
+    0.788,
+    0.465,
+    0.223,
+    0.387,
+    0.326,
+    0.2,
+    0.715,
+    0.331,
+    0.364,
+    0.352,
+    0.276,
+    0.49,
+    0.601,
+    0.512,
+    0.621,
+    0.587,
+    0.24,
+    0.393,
+    0.601,
+    0.511,
+    0.236,
+    0.298,
+    0.218,
+    0.249,
+    0.658,
+    0.665,
+    0.618,
+    0.408,
+    0.52,
+    0.586,
+    0.681,
+    0.378,
+    0.424,
+    0.325,
+    0.294,
+    0.243,
+    0.534,
+    0.424,
+    0.591,
+    0.435,
+    0.45,
+    0.405,
+    0.73,
+    0.648,
+    0.55,
+    0.695,
+    0.849,
+    0.543,
+    0.51,
+    0.682,
+    0.38,
+    0.349,
+    0.446,
+    0.316
+  ],
+  "published": "2026-10-01",
+  "license": "CC BY"
+}

@@ -1,0 +1,230 @@
+{
+  "id": "2610.02200",
+  "title": "VISTA: A Visual Harness for Reasoning in an Interactive World",
+  "authors": [
+    "Qiushi Han",
+    "Keya Hu",
+    "Linlu Qiu",
+    "Cathy Wu",
+    "Kaiming He"
+  ],
+  "abstract": "We show that multimodal models possess strong reasoning abilities and that an appropriate harness can unlock their potential to solve tasks across diverse interactive environments. We introduce VISTA, a visual harness that gives a general-purpose multimodal model long-horizon vision. VISTA allows the model to directly perceive the environment through visual observations and maintains a lossless visual memory that preserves past observations in their original form. The model can actively retrieve these observations and reorganize its visual input as it reasons. On ARC-AGI-3, VISTA improves Claude Opus 5.0's Relative Human Action Efficiency score from 40.68 to a perfect 100.00, with the model completing all 25 public games using 57.4% fewer actions than first-time human participants. VISTA's simple design also allows it to extend naturally to diverse visual environments with minimal adaptation. Across three additional benchmarks covering a diverse range of visual games and puzzles, it substantially outperforms baselines using the same underlying model with minimal harnesses. Our results highlight VISTA's potential as a general-purpose visual harness for advancing multimodal agents in complex visual environments.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.02200",
+    "arxiv": "https://arxiv.org/abs/2610.02200"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0faa4-570a-7126-8d23-e59675871b79/podcast.mp3",
+  "duration": 372.95,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.64,
+      "en": "In our graduate seminar on multimodal agents and interactive reasoning, we’re studying how systems perceive and act over time. Today’s lecture is on Vista: A Visual Harness for Reasoning in an Interactive World. Recent work such as Seeing, Listening, Remembering, and Reasoning and DeepEyes explores persistent multimodal memory and active image inspection. This paper, from researchers at M-I-T, shifts attention toward the software harness around a model. Yes, Noah?",
+      "zh": "在我们关于多模态智能体和交互式推理的研究生研讨课上，我们正在研究系统如何随时间感知和行动。今天的讲座是关于Vista：一个在交互世界中用于推理的视觉工具。最近的工作，比如《看、听、记和推理》以及DeepEyes，探索了持久的多模态记忆和主动图像检查。这篇来自麻省理工学院研究人员的论文，把注意力转向了模型周围的软件工具。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.84,
+      "end": 36.02,
+      "en": "Hi Professor, what does “harness” mean here?",
+      "zh": "教授您好，这里的“harness”是什么意思？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 36.9,
+      "end": 67.72,
+      "en": "A harness is the surrounding system that supplies observations, manages memory, and lets a model take actions. Vista does not introduce a new model architecture or train a model specifically for these games. Instead, it asks whether a capable multimodal model can reason more effectively when the interface preserves visual evidence and makes it retrievable. That distinction matters: an agent may fail not because it cannot reason, but because useful information has disappeared from view or context.",
+      "zh": "harness 就是围绕模型的那套系统，负责提供观测、管理记忆，并让模型能够采取行动。Vista 并没有提出新的模型架构，也没有专门为这些游戏训练模型。它想验证的是：当界面能够保留视觉证据并让这些证据可以被随时调取时，一个能力足够强的多模态模型能不能更有效地推理。这个区别很重要：一个智能体失败，可能不是因为它不会推理，而是因为有用的信息已经从视野或上下文里消失了。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 68.76,
+      "end": 72.38,
+      "en": "So the key idea is to let the model revisit what it has already seen?",
+      "zh": "所以核心思路就是让模型能重新查看它已经看过的东西？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 73.1,
+      "end": 99.92,
+      "en": "Exactly. Vista gives the model rendered images, then stores every frame returned by the environment in lossless visual memory. The model can request frames from earlier turns, compare states, and crop and enlarge selected regions. It can also read exact pixel values. Think of this as a research notebook containing the original visual record, rather than a brief written summary that might omit a detail that later turns out to matter.",
+      "zh": "没错。Vista 把渲染后的图像交给模型，然后把环境返回的每一帧都存进无损视觉记忆里。模型可以调取之前轮次的帧，对比不同状态，还能裁剪并放大选定的区域。它也能读取精确的像素值。你可以把这想象成一本包含原始视觉记录的研究笔记，而不是一份简短的文字摘要——那种摘要可能会漏掉某个细节，而这个细节后来偏偏变得很关键。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 99.92,
+      "end": 135.82,
+      "en": "The interaction is deliberately straightforward. The model reasons in natural language, predicts what it expects to happen, takes an action, and then describes the result. The play tool alone advances the game; inspection and note-taking do not consume actions. Two notes preserve different kinds of knowledge: GUIDE.md records durable mechanics, while WORKING.md holds level-specific state and plans. When context fills, a handoff summary starts a fresh conversation without erasing the visual archive.",
+      "zh": "这种交互方式刻意设计得很直接。模型用自然语言推理，预测自己预期会发生什么，采取一个动作，然后描述结果。只有操作工具会推进游戏；查看和记笔记不消耗动作。两份笔记保存不同类型的知识：GUIDE.md记录长期有效的机制，而WORKING.md保存特定关卡的当前状态和计划。当上下文满了，一份交接摘要会开启一段新对话，同时不会清除视觉存档。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 136.82,
+      "end": 141.46,
+      "en": "How did the authors test whether this setup actually helps, rather than just adding more tools?",
+      "zh": "作者是怎么测试这套设置是否真的有用，而不只是加了更多工具的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 142.44,
+      "end": 177.5,
+      "en": "Their primary test covered all 25 public A-R-C A-G-I three games, where agents must discover unfamiliar rules through exploration. They report Relative Human Action Efficiency, or R-H-A-E, which accounts for level completion and action use compared with first-time human participants. They also tested other visual settings: browser games, games from A-I GameStore, and static BabyVision questions. Comparisons with official or minimal harnesses help separate interface effects from model capability.",
+      "zh": "他们主要的测试覆盖了全部25个公开的ARC-AGI-3游戏，在这些游戏里，智能体必须通过探索来发现不熟悉的规则。他们报告了相对人类动作效率，也就是RHAE，这个指标把通关情况和动作使用量跟首次参与的人类玩家做了对比。他们还测试了其他视觉场景：浏览器游戏、来自AI GameStore的游戏，以及静态的BabyVision问题。跟官方或最小化测试框架做对比，有助于把界面效应和模型能力区分开来。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 178.74,
+      "end": 181.18,
+      "en": "What were the central results on the unfamiliar games?",
+      "zh": "在那些不熟悉的游戏上，核心结果是什么？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 181.18,
+      "end": 219.48,
+      "en": "With Vista, Claude Opus 5.0 completed all 25 games and scored 100 R-H-A-E, using 7,302 actions against a human reference of 17,135. G-P-T five point six Sol also completed all 25 and scored 99. The official baselines for those models were much lower. The authors’ staged tests suggest that several changes contributed: images, longer interactions, persistent notes, and, especially, visual memory and inspection.",
+      "zh": "有了Vista，Claude Opus 5.0完成了全部25款游戏，拿下100分R-H-A-E，用了7302步操作，而人类参考值是17135步。G-P-T五点六Sol也完成了全部25款，得分99。这两个模型的官方基线要低得多。作者的阶段性测试表明，有几项改动都有贡献：图像、更长的交互、持久化笔记，尤其是视觉记忆和视觉检查。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 220.56,
+      "end": 226.38,
+      "en": "Can you clarify how much came from visual inspection, and whether the images were simply more informative than text?",
+      "zh": "你能说清楚视觉检查贡献了多少，以及图像是不是只是比文本信息量更大吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 226.38,
+      "end": 263.66,
+      "en": "In the staged G-P-T comparison, the score rose from 70.05 with persistent notes to 94.10 after adding lossless visual memory and inspection, then to 99 with pixel readout. Images and text grids both worked well in the richer harness, but images were more token-efficient: average use was 30.7 million tokens per game, versus 71.9 million for text grids. The default 512-by-512 image size was not essential; 256-by-256 performed comparably.",
+      "zh": "在分阶段的GPT对比中，分数从使用持久笔记时的70.05，提升到加入无损视觉记忆和检查后的94.10，再提升到使用像素读取时的99。在更丰富的测试框架下，图像和文本网格都表现良好，但图像在token效率上更高：平均每局使用3070万个token，而文本网格为7190万个。默认的512×512图像尺寸并非必需，256×256的表现也相当。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 265.34,
+      "end": 298.08,
+      "en": "There is evidence the approach reaches beyond one benchmark. On GameWorld, Vista improved success from 40% to 63.3%; on A-I GameStore, its human-normalized score was 140.3, compared with 47.3 for the official implementation. On static BabyVision questions, accuracy rose from 41% to 63.2%, though the human reference was 92.3%. These results suggest that retrieving selected evidence can help in both long interactions and single-image reasoning.",
+      "zh": "有证据表明，这种方法不止在一个基准上有效。在GameWorld上，Vista把成功率从40%提升到了63.3%；在AI GameStore上，它的人类归一化得分是140.3，而官方实现只有47.3。在静态的BabyVision问题上，准确率从41%升到了63.2%，不过人类参考水平是92.3%。这些结果表明，检索选定的证据在长程交互和单图推理中都能帮上忙。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 299.12,
+      "end": 303.3,
+      "en": "How does Vista fit with work like DeepEyes, and what limitations should we keep in mind?",
+      "zh": "Vista和DeepEyes这类工作是什么关系，又有哪些局限需要我们留意？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 304.8,
+      "end": 336.28,
+      "en": "DeepEyes trains models to interleave reasoning with chosen image crops; Vista instead provides inspection tools around an existing model. And unlike approaches that build symbolic game models or synthesize programs, Vista reasons from rendered images and natural language. Still, the results depend on capable models, and the leading tests use closed-weight systems at high reasoning effort. Public benchmark games may also have appeared in training data, so performance on genuinely novel environments remains an open question.",
+      "zh": "DeepEyes 训练模型把推理和选定的图像裁剪交替进行；Vista 则不同，它是在现有模型周围提供检查工具。而且，不同于那些构建符号化游戏模型或合成程序的方法，Vista 是从渲染图像和自然语言出发进行推理。不过，结果仍然依赖于能力足够强的模型，而且领先的测试用的是闭权重系统，并且推理投入很高。公开基准里的游戏也可能已经出现在训练数据中，所以它在真正全新的环境里表现如何，仍然是个未解的问题。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 337.18,
+      "end": 372.95,
+      "en": "The broader lesson is that memory is not only about how much an agent stores; it is also about whether the agent can retrieve the right evidence at the right moment. Vista shows a practical way to preserve visual history without placing every frame in the active context. That is relevant to game and interface agents, while transfer to physical environments remains unproven. For agent designers, a useful question is: what evidence might the model need to inspect again later? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的启示是，记忆不仅关乎智能体存储了多少内容，还关乎它能否在恰当的时刻检索到正确的证据。Vista 展示了一种实用的方法，既能保留视觉历史，又不必把每一帧都放进活跃上下文里。这对游戏和界面智能体很有意义，但能否迁移到物理环境仍未得到验证。对智能体设计者来说，一个有用的问题是：模型之后可能需要重新查看哪些证据？感谢收听。如果还有任何问题，可以询问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{han2026vistavisualharnessreasoning,\n      title={VISTA: A Visual Harness for Reasoning in an Interactive World}, \n      author={Qiushi Han and Keya Hu and Linlu Qiu and Cathy Wu and Kaiming He},\n      year={2026},\n      eprint={2610.02200},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.02200}, \n}",
+  "topics": [
+    "Computer Vision",
+    "AI"
+  ],
+  "peaks": [
+    0.673,
+    0.265,
+    0.266,
+    0.212,
+    0.25,
+    0.2,
+    0.308,
+    0.39,
+    0.402,
+    0.385,
+    0.477,
+    0.238,
+    0.274,
+    0.723,
+    0.485,
+    0.521,
+    0.29,
+    0.405,
+    0.393,
+    0.554,
+    0.525,
+    0.46,
+    0.531,
+    0.427,
+    0.279,
+    0.428,
+    0.554,
+    1.0,
+    0.718,
+    0.91,
+    0.598,
+    0.629,
+    0.565,
+    0.555,
+    0.589,
+    0.697,
+    0.471,
+    0.433,
+    0.388,
+    0.371,
+    0.267,
+    0.204,
+    0.566,
+    0.754,
+    0.722,
+    0.617,
+    0.506,
+    0.633,
+    0.516,
+    0.45,
+    0.42,
+    0.96,
+    0.705,
+    0.8,
+    0.333,
+    0.467,
+    0.494,
+    0.461,
+    0.647,
+    0.611,
+    0.48,
+    0.274,
+    0.448,
+    0.367,
+    0.319,
+    0.642,
+    0.427,
+    0.277,
+    0.245,
+    0.281,
+    0.216,
+    0.26
+  ],
+  "published": "2026-10-01",
+  "license": "CC BY"
+}

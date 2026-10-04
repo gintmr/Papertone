@@ -22,6 +22,53 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
     },
     {
+      "id": "2610.02204",
+      "title": "Reconstruct, Practice, Go Real: Guided Self-Improvement for Embodied Agents",
+      "authors": [
+        "Yen-Jen Wang",
+        "Haozhe Jiang",
+        "Shuying Deng",
+        "Haoru Xue",
+        "Weirui Ye",
+        "Rocky Duan",
+        "Nika Haghtalab",
+        "S. Shankar Sastry",
+        "Pieter Abbeel",
+        "Haozhi Qi"
+      ],
+      "duration": 469.158563,
+      "license": "CC BY",
+      "topics": [
+        "Eess.Sy",
+        "Electrical Engineering And Systems Science"
+      ],
+      "cover": "cover.png",
+      "path": "2610.02204",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa6b-17f1-75ea-9e45-cf77eb64e55e/podcast.mp3"
+    },
+    {
+      "id": "2610.02200",
+      "title": "VISTA: A Visual Harness for Reasoning in an Interactive World",
+      "authors": [
+        "Qiushi Han",
+        "Keya Hu",
+        "Linlu Qiu",
+        "Cathy Wu",
+        "Kaiming He"
+      ],
+      "duration": 372.949625,
+      "license": "CC BY",
+      "topics": [
+        "Computer Vision",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.02200",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0faa4-570a-7126-8d23-e59675871b79/podcast.mp3"
+    },
+    {
       "id": "2610.02140",
       "title": "Finetuning with Sampling: SFT Learns Better Than You Think",
       "authors": [
@@ -40,6 +87,32 @@
       "path": "2610.02140",
       "published": "2026-10-01",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac6-3980-74a8-8516-eb17968084b3/podcast.mp3"
+    },
+    {
+      "id": "2610.01509",
+      "title": "Sharpening Tax in Post-Training",
+      "authors": [
+        "Changdae Oh",
+        "Qi Zeng",
+        "Qi Qi",
+        "Andrey Zhmoginov",
+        "Deren Lei",
+        "Yun He",
+        "Hoang Phan",
+        "Hangoo Kang",
+        "Azalia Mirhoseini",
+        "Sharon Li"
+      ],
+      "duration": 419.917875,
+      "license": "CC BY",
+      "topics": [
+        "Machine Learning",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.01509",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa76-85be-74e9-99b8-c19ff057bd0d/podcast.mp3"
     },
     {
       "id": "2609.40305",
@@ -591,6 +664,53 @@
       "path": "2609.29171",
       "published": "2026-09-24",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d662-dd72-7e31-aa24-6afb8e9ffa67/podcast.mp3"
+    },
+    {
+      "id": "2609.28654",
+      "title": "Training Object Permanence in World Models",
+      "authors": [
+        "Haotian Zhang",
+        "Fengyuan Yu",
+        "Dezhi Luo",
+        "Haoran Sun",
+        "Zehong Zhao",
+        "Qingying Gao",
+        "Yihan Li",
+        "Siyuan An",
+        "Huayi Qin",
+        "Yilan Zhang",
+        "Zhengze Jiang",
+        "Pinyuan Feng",
+        "Renrui Zhang",
+        "Ziyu Guo",
+        "Letian Wang",
+        "Mengyue Yang",
+        "Kangfu Mei",
+        "Maijunxian Wang",
+        "Ran Ji",
+        "Vikash Kumar",
+        "Freda Shi",
+        "Chandra Sripada",
+        "Vincent C. Muller",
+        "Philip Torr",
+        "Alan Yuille",
+        "Nikolaus Kriegeskorte",
+        "Felix Juefei-Xu",
+        "Lvmin Zhang",
+        "Jieneng Chen",
+        "Yilun Du",
+        "Hokin Deng"
+      ],
+      "duration": 406.464813,
+      "license": "CC BY",
+      "topics": [
+        "Computer Vision",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.28654",
+      "published": "2026-09-23",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0d668-864a-7c5c-bc19-dc2519594fc9/podcast.mp3"
     },
     {
       "id": "2609.26891",

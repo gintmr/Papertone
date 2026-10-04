@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 419.918,
+  "word_match_rate": 0.9287,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on reinforcement learning for language-model agents, today’s lecture is on “Sharpening Tax in Post-Training.” The paper asks whether post-training expands what an agent can solve, or makes a narrower set of existing behaviors more dependable. Recent work such as “Echo Chamber: RL Post-training Amplifies Behaviors Learned in Pretraining” and “On the Interplay of Pre-Training, Mid-Training, and RL on Reasoning Language Models” reflects this broader debate. This study brings it to interactive agents. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 35.28
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say “sharpening,” do you mean the model becomes more accurate but less varied?",
+      "start": 36.4,
+      "end": 41.64
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is the central idea. A post-trained model may succeed more often on its first try, yet offer fewer different ways to succeed across repeated attempts. The authors, from institutions including Meta and Stanford, examine this possibility in agents that use tools and respond to changing environments. The question matters because deployments differ: a user may get one attempt, while an inference system may afford dozens of samples and select among them.",
+      "start": 42.56,
+      "end": 72.06
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors evaluate 14 base and post-trained checkpoint pairs, spanning Gemma, Ministral, and Qwen model families, on BFCL multi-turn tool use, WebShop, and ACEBench. These tasks reward reaching an appropriate environment state through a sequence of actions, not merely producing a plausible final answer. Across most settings, post-trained models have higher single-attempt success, while base models gain more as repeated sampling gives them chances to find a successful trajectory.",
+      "start": 72.38,
+      "end": 103.24
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does that mean the base model is better overall if we can afford many retries?",
+      "start": 104.32,
+      "end": 109.04
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Not necessarily. The outcome depends on model size, task, and retry budget. The paper distinguishes pass at one, the chance of success on a single rollout, from pass at K, the chance of at least one success among K rollouts. It also measures the chance that every rollout succeeds, capturing consistency. Together, these views separate first-try reliability, solution coverage, and dependable repetition—qualities that a single accuracy score would blur.",
+      "start": 110.02,
+      "end": 140.7
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The proposed Sharpening Tax summarizes how much retry value is lost after post-training. It compares how quickly base and post-trained models improve as the rollout budget grows, with a calibration for single-attempt failure. A positive tax means the base model benefits more from retries. In effect, it asks whether post-training has moved tasks toward near-certain success or repeated failure, leaving fewer tasks where another sample can change the outcome.",
+      "start": 141.5,
+      "end": 171.52
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how they know these successes come from valid agent behavior rather than a lucky final answer?",
+      "start": 172.42,
+      "end": 178.36
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That concern motivates the process-oriented benchmarks: success is tied to the resulting environment state after intermediate actions. The evaluation allows up to 128 rollouts per task. There is an important comparison caveat, though: base models receive a lightweight harness with tool descriptions and formatting support, while post-trained models use benchmark-default scaffolding. The authors aim to make each checkpoint usable, but this means the comparison is not purely about model weights.",
+      "start": 179.3,
+      "end": 211.12
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The results show a pronounced scale effect. On WebShop, Gemma four 31B base reaches 87.6% pass at 128, compared with 56% for its post-trained counterpart. More tasks shift toward either near-certain success or repeated failure after post-training. For smaller models, however, post-training can repair basic weaknesses, such as producing valid tool calls, and may improve both accuracy and coverage. So sharpening is not a universal penalty.",
+      "start": 212.1,
+      "end": 245.18
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How does their training method try to preserve exploration without making every prompt more random?",
+      "start": 246.24,
+      "end": 251.02
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "They introduce posterior-tempered group sampling, or P-T-G-S. The method tracks recent successes and failures for each prompt, then uses a Beta posterior and Thompson sampling to estimate its difficulty. Hard prompts receive higher sampling temperatures to encourage exploration; easier prompts receive lower temperatures to favor reliable behavior. This is a selective alternative to raising one global temperature, which could increase variety but also disrupt performance on prompts the model already handles well.",
+      "start": 252.02,
+      "end": 283.54
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "In experiments fine-tuning a Qwen two point five seven billion parameter instruct model on Sokoban and FrozenLake, P-T-G-S improves both single-shot accuracy and coverage at 128 rollouts in the reported settings, while lowering the Sharpening Tax. Training analyses also show higher output entropy and fewer rollout groups with no successes. That matters for group-based reinforcement learning: if every sampled attempt fails, the algorithm has little useful contrast from which to learn.",
+      "start": 284.36,
+      "end": 316.16
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So is the paper mainly extending the sharpening debate from reasoning tasks to agents?",
+      "start": 317.18,
+      "end": 321.34
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Yes, and it changes what we should ask when assessing post-training. Instead of treating higher first-try accuracy as proof of broader capability, we can examine how success rates evolve with repeated sampling. This connects to test-time compute research, where additional attempts are a resource. The paper’s contribution is to treat the shape of those scaling curves as diagnostic, while P-T-G-S explores whether training can preserve useful diversity without giving up reliability.",
+      "start": 322.36,
+      "end": 351.2
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The conclusions need qualification. The checkpoint analysis is observational, and the public training recipes are not fully documented, so effects cannot be attributed specifically to reinforcement learning. The tests cover text-based agents and three benchmarks, and the base-model harness differs from the default post-trained setup. P-T-G-S is tested in only two environments and one model family. Broader controlled studies, multimodal agents, and measures beyond binary success would test how far these findings generalize.",
+      "start": 352.28,
+      "end": 385.08
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The practical takeaway is to match a model’s training profile to its use. If an agent gets one attempt, reliability may be the priority; if a system can search across many attempts, retained coverage may matter more. Sharpening Tax offers one way to make that trade-off visible, and prompt-specific exploration offers a possible way to manage it. A model can become more dependable without necessarily becoming able to solve a wider range of tasks. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 385.94,
+      "end": 419.918
+    }
+  ]
+}
