@@ -1,0 +1,254 @@
+{
+  "id": "2609.39247",
+  "title": "Trust the Critic More",
+  "authors": [
+    "Kaiyue Wen",
+    "Luke Bailey",
+    "Arvind Mahankali",
+    "Tengyu Ma"
+  ],
+  "abstract": "Standard language model RL algorithms credit every token of a long rollout with the same advantage determined by the terminal reward. Actor-critic methods can provide finer-grained credit assignment, but learned critics are generally considered too inaccurate to trust when training LLMs with RL. In recent works, even when a critic is present, it is used only for baseline estimation, so every trajectory must be rolled out to its terminal reward. We introduce Actor-Critic with Action Chunking (AC2) that removes the need to roll every trajectory to completion. AC2 instead assigns credit to action chunks: short continuations of prefixes of past trajectories. A learned critic scores the state reached at the end of each action chunk, allowing the policy to update without observing a terminal reward. We make critic-based credit assignment reliable through three design choices. First, we introduce local readiness which uses critic-based updates on a problem only when the critic is sufficiently accurate on that particular problem. Second, when available, we provide the critic with a reference solution from a previous successful rollout. Third, we assign credit over action chunks of 10k tokens rather than individual tokens, giving the critic a more meaningful portion of the trajectory to evaluate. We train Qwen3-4B on FineProofs-RL using AC2 and evaluate on IMO-ProofBench. AC2 exceeds GRPO's peak validation score of 18.5% using 2.5x fewer decoding FLOPs. This gain comes from two sources, (1) AC2 requires 25% fewer training steps to reach this score, and (2) each step generates fewer tokens because the policy does not need to continue every trajectory to completion. Conceptually, we demonstrate that we can remove the need to roll out every trajectory to completion, opening up a large previously unexplored design space for LLM RL algorithms.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.39247",
+    "arxiv": "https://arxiv.org/abs/2609.39247"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f53c-f47f-7927-bd0b-028dc2a97dc9/podcast.mp3",
+  "duration": 443.977,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.36,
+      "en": "In Deep Reinforcement Learning Methods, today’s lecture is on “Trust the Critic More.” Recent work such as “Group-in-Group Policy Optimization for L-L-M Agent Training” and “G-R-P-O is Secretly a Process Reward Model” reflects a broader shift toward finer credit assignment for long reasoning tasks. This paper, by researchers at Stanford, takes another route: use a learned critic to score partial responses, but only when the critic seems trustworthy. Yes, Noah?",
+      "zh": "在深度强化学习方法这门课上，今天讲的是“更信任评论家”。最近的一些工作，比如“面向LLM智能体训练的组中组策略优化”和“GRPO其实是一个过程奖励模型”，反映出大家正普遍转向对长推理任务做更精细的信用分配。而斯坦福研究人员的这篇论文走了另一条路：用一个学习到的评论家来给部分回答打分，但只在评论家看起来可信的时候才这么做。好，诺亚？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.4,
+      "end": 37.04,
+      "en": "Hi Professor, why does assigning one score to an entire proof cause such a problem?",
+      "zh": "教授您好，为什么给整个证明打一个分数会带来这么大的问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 37.94,
+      "end": 69.16,
+      "en": "Because a verifier’s final score can hide where the reasoning succeeded or failed. Imagine a long proof that is sound until one mistaken step near the end: a single low terminal reward can penalize all the useful work before it. Standard G-R-P-O applies the same advantage across a response, which is simple but coarse. The paper asks whether a critic can estimate progress mid-response, so policy updates need not always wait for a complete proof.",
+      "zh": "因为验证器的最终分数会掩盖推理过程中哪些地方做对了、哪些地方做错了。想象一个很长的证明，前面一直没问题，直到快结束时错了一步：仅仅因为最终奖励低，前面所有有用的工作都被一起惩罚了。标准的G-R-P-O把同一个优势值应用到整个回答上，这样做简单但很粗糙。这篇论文问的是，评论家能不能在回答进行到一半时就估计出进展，这样策略更新就不必总是等到完整证明出来才做。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.02,
+      "end": 97.16,
+      "en": "The central proposal is Actor-Critic with Action Chunking, or A-C-two. Instead of treating the critic only as a baseline, the method can use its estimate of eventual verifier reward as the score for a partial continuation. That score becomes a learning signal for the generated chunk. The key qualification is in the title: the method does not assume the critic is reliable everywhere; it first checks whether each problem is ready for critic-based updates.",
+      "zh": "核心方案是带动作分块的演员-评论家方法，简称A-C-two。它不再只把评论家当作基线，而是用它对最终验证奖励的估计，作为对部分续写内容的打分。这个分数就成了生成片段的学信号。标题里点出了关键前提：这个方法并不假设评论家在哪儿都靠谱，而是先检查每道题是否已经适合用评论家来做更新。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 98.14,
+      "end": 103.16,
+      "en": "Quick question: what exactly does the method score, the replayed prefix or the new continuation?",
+      "zh": "快速问一下：这个方法到底给什么打分，是重放的prefix还是新生成的续写？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.18,
+      "end": 130.14,
+      "en": "It scores the new continuation. A prefix is sampled from an earlier trajectory, then the policy generates a group of continuations from that starting point. Each continuation receives an endpoint value: a verifier score if it finishes the proof, or a critic estimate if it stops partway through. The group’s mean endpoint value estimates the prefix’s value and also serves as a training target for the critic.",
+      "zh": "它给新的续写打分。系统会从之前的轨迹里采样一个前缀，然后策略从这个起点生成一组续写。每个续写都会得到一个终点值：如果完成了证明，就是验证器分数；如果中途停下，就是评论家的估计值。这一组续写的平均终点值既用来估计前缀的价值，也作为评论家的训练目标。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 131.14,
+      "end": 159.84,
+      "en": "For each continuation, A-C-two subtracts the group mean from that continuation’s endpoint value to form its advantage. That same advantage trains the generated tokens in the chunk, while the replayed prefix itself gets no policy loss. The actor and critic share model parameters but have separate optimization states and learning rates. The critic is prompted to predict a proof score on a discrete scale from 0 to 1, in steps of 0.1.",
+      "zh": "对于每条续写，A-C-two 会从该续写的终点值中减去组均值，得到它的优势值。同一个优势值用来训练这一块里生成的 token，而被回放的前缀本身不产生策略损失。演员和评论家共享模型参数，但各自有独立的优化状态和学习率。评论家被提示在一个从 0 到 1 的离散尺度上预测证明得分，步长为 0.1。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 161.88,
+      "end": 167.24,
+      "en": "So you’re saying the critic can replace the final verifier score, but only after it passes a readiness check?",
+      "zh": "所以你的意思是，critic可以替代最终的验证器分数，但前提是它得先通过一个就绪检查？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 168.38,
+      "end": 196.3,
+      "en": "That’s right, and readiness is problem-specific. Initially, every problem is unready, so continuations run to completion and their verifier outcomes help measure critic error. A problem becomes ready only after recent errors meet a global threshold, its latest error meets a stricter local threshold, and the policy has produced at least one correct solution. Once ready, it stays ready. This cautious gate is one of the method’s central design choices.",
+      "zh": "没错，而且是否就绪是因问题而异的。一开始，每个问题都是未就绪状态，所以轨迹会一直跑到结束，其验证器结果有助于衡量评论家的误差。只有当近期误差达到一个全局阈值、最新误差达到更严格的局部阈值，并且策略至少产出了一个正确解之后，一个问题才会变为就绪。一旦就绪，就保持就绪。这道谨慎的门槛是该方法的几个核心设计选择之一。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 196.3,
+      "end": 228.22,
+      "en": "For ready problems, most continuations can stop at action chunks of up to 10,000 new tokens, even though the overall response budget is 50,000. The main setup still runs full responses on one quarter of ready problems; the authors call this auditing. Those outcomes let them continue checking critic accuracy. When available, a previous strong solution is also shown to the critic, helping it judge the potential of a partial proof without giving that solution to the policy.",
+      "zh": "对于已就绪的问题，大多数续写可以在最多10000个新token的动作块处停止，尽管整体回复预算是50000。主设置仍会对四分之一已就绪的问题运行完整回复；作者称之为审计。这些结果让他们能持续检查评论器的准确性。如果有的话，还会向评论器展示之前的一个强解，帮助它判断部分证明的潜力，而不会把该解交给策略。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 229.14,
+      "end": 234.06,
+      "en": "How much computation does chunking save, and what do the reported numbers actually include?",
+      "zh": "分块能省下多少计算量，报告出来的数字又到底包含了哪些开销？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 235.06,
+      "end": 272.12,
+      "en": "On mean validation score, A-C-two reached G-R-P-O’s peak of 18.5% using about 0.79 times 10 to the 20 decoding flops, compared with 1.99 times 10 to the 20 for G-R-P-O. That is a 2.5-fold reduction in the reported decoding measure. A-C-two also reached that score in about 90 training steps, rather than 120, and peaked at 20.57%. Decoding flops exclude training, critic inference, judging, and validation costs.",
+      "zh": "在平均验证分数上，AC2 达到 GRPO 峰值 18.5% 时用了大约 0.79 乘以 10 的 20 次方解码浮点运算，而 GRPO 用了 1.99 乘以 10 的 20 次方。也就是说，在报告的解码指标上减少了 2.5 倍。AC2 还在大约 90 个训练步内达到了这一分数，而不是 120 步，并且峰值达到了 20.57%。解码浮点运算不包括训练、评论家推理、评判和验证成本。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 273.16,
+      "end": 305.3,
+      "en": "The comparison with Prefix G-R-P-O matters because it also starts from replayed prefixes, but uses full continuations and terminal rewards. It performed worse than A-C-two, suggesting replay alone does not explain the gain. The authors also found that group-mean endpoint values were more accurate targets than the critic’s predictions at the prefix in one diagnostic. Still, critic-based and terminal-reward advantages were only partly aligned, so estimated progress is not identical to observed outcome.",
+      "zh": "与Prefix G-R-P-O的对比之所以重要，是因为它同样从重放的prefix出发，但使用的是完整续写和终端奖励。它的表现不如A-C-two，说明仅靠重放并不能解释性能提升。作者还在一项诊断中发现，组均值端点值比critic在prefix处的预测更准确。不过，基于critic的优势和终端奖励的优势只是部分一致，因此估计的进展与实际观察到的结果并不完全相同。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 305.3,
+      "end": 311.42,
+      "en": "Could the readiness procedure itself make the approach difficult to use in a new or data-limited setting?",
+      "zh": "这个就绪度评估流程本身，会不会让这种方法很难用在一个新的或者数据有限的环境里？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 312.42,
+      "end": 340.66,
+      "en": "Yes. Readiness depends on repeated full rollouts to compare critic estimates with terminal rewards, and the experiments repeatedly revisit training problems. That makes the current procedure harder to apply when data or repeated feedback is scarce. Results also come from one model, mathematical proof training, and a 60-problem benchmark scored by a separate model judge. So the evidence supports this setting, but does not establish transfer to other tasks or reward systems.",
+      "zh": "是的。准备度依赖于反复进行完整的轨迹来比较评论家估计与最终奖励，而实验也反复回到训练问题上。这使得当前流程在数据或重复反馈稀缺时更难应用。结果还只来自一个模型、数学证明训练，以及一个由独立模型评审打分的60题基准。因此，这些证据支持这一设定，但并不能证明可以迁移到其他任务或奖励系统。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 341.72,
+      "end": 371.78,
+      "en": "The broader contribution is a change in how we think about critic use: not simply trust or distrust it globally, but decide where it is calibrated enough to influence policy learning. That complements credit-assignment work such as G-R-P-O’s prefix-based signal, while A-C-two explicitly estimates values for partial continuations. The practical question for future research is how to maintain that local calibration without requiring so many terminal outcomes.",
+      "zh": "更广泛的贡献在于改变了我们对评论家使用的思考方式：不是简单地全局信任或不信任它，而是判断它在哪些地方校准得足够好，可以影响策略学习。这与G-R-P-O基于前缀的信号等信用分配工作形成互补，而A-C-two则显式地为部分延续估计价值。未来研究面临的现实问题是，如何在不依赖那么多终端结果的情况下维持这种局部校准。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 372.76,
+      "end": 378.2,
+      "en": "How should researchers interpret the compute advantage if the reported metric leaves out critic and training costs?",
+      "zh": "如果报告的指标没有把评论家成本和训练成本算进去，研究人员该如何理解这种计算优势？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 379.18,
+      "end": 411.22,
+      "en": "As a meaningful but incomplete result. Decoding cost is important for long generations, and the paper reports that it tracks G-P-U hours in its main run, but it is not a full end-to-end accounting. Nor is the best-of-16 ceiling clearly higher: that evaluation plateaus at roughly similar levels for A-C-two and G-R-P-O. The strongest claim is narrower: selective critic-based updates can reach a given mean score with fewer decoding resources in this mathematical setting.",
+      "zh": "这是一个有意义但不完整的结果。解码成本对长文本生成很重要，论文报告说在主要实验中它跟GPU小时数相关，但这并不是完整的端到端核算。最优16选1的上限也没有明显更高：在这个评估中，A-C-two和G-R-P-O大致停留在相近的水平。最强的结论其实更窄：在这个数学场景下，基于评论器的选择性更新可以用更少的解码资源达到给定的平均分。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 412.14,
+      "end": 443.977,
+      "en": "The takeaway is that a critic can do more than subtract a baseline when its reliability is tested problem by problem. A-C-two uses partial continuations, replayed reasoning states, and ongoing audits to turn that possibility into a training method, while its limitations keep the claim appropriately bounded. For long proofs, the useful question may be not whether to trust a critic everywhere, but when its estimate is good enough to act on. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，当评论器的可靠性被逐题检验时，它能做的远不止减去一个基线。AC2利用部分续写、重放的推理状态和持续审计，把这种可能性变成了一种训练方法，同时其局限也让结论保持在恰当的范围内。对于长证明来说，有用的问题或许不是要不要在所有地方都信任评论器，而是它的估计什么时候足够好、可以据此行动。感谢收听。如果还有问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wen2026trustcritic,\n      title={Trust the Critic More}, \n      author={Kaiyue Wen and Luke Bailey and Arvind Mahankali and Tengyu Ma},\n      year={2026},\n      eprint={2609.39247},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.39247}, \n}",
+  "topics": [
+    "Agents",
+    "Transformers",
+    "Fine Tuning"
+  ],
+  "peaks": [
+    0.404,
+    0.345,
+    0.358,
+    0.254,
+    0.254,
+    0.59,
+    0.61,
+    0.641,
+    0.642,
+    0.369,
+    0.483,
+    0.458,
+    0.543,
+    0.543,
+    0.449,
+    0.329,
+    0.665,
+    0.726,
+    0.424,
+    0.491,
+    0.426,
+    0.635,
+    0.56,
+    0.421,
+    0.376,
+    0.419,
+    0.623,
+    0.401,
+    0.474,
+    0.491,
+    0.29,
+    0.224,
+    0.502,
+    0.551,
+    0.482,
+    0.347,
+    0.2,
+    0.354,
+    1.0,
+    0.626,
+    0.544,
+    0.604,
+    0.512,
+    0.485,
+    0.688,
+    0.66,
+    0.717,
+    0.521,
+    0.601,
+    0.544,
+    0.665,
+    0.637,
+    0.421,
+    0.53,
+    0.523,
+    0.608,
+    0.588,
+    0.461,
+    0.321,
+    0.526,
+    0.464,
+    0.445,
+    0.449,
+    0.364,
+    0.357,
+    0.334,
+    0.348,
+    0.711,
+    0.603,
+    0.323,
+    0.398,
+    0.277
+  ],
+  "published": "2026-09-30",
+  "license": "CC BY"
+}

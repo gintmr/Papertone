@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 406.752,
+  "word_match_rate": 0.9129,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our Transformer Architectures course, today’s lecture is on “A Smaller Transformer in Your Transformer.” Recent work such as “Block-Recurrent Dynamics in Vision Transformers” and “Déjà View: Looping Transformers for Multi-View 3D Reconstruction” explores reusing shared layers. This paper takes a different route: it identifies similar neighboring layers and replaces groups of them with single attention layers. Researchers from the University of Oslo and Oslo University Hospital ask whether that can cut actual computation. Yes, Noah?",
+      "start": 0.0,
+      "end": 35.06
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if those layers are similar, why not just reuse one layer repeatedly?",
+      "start": 36.1,
+      "end": 40.72
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is a natural approach, and methods such as Raptor do reuse a shared layer. It can reduce parameter storage, but the layer still runs repeatedly, so inference computation may remain high. This paper instead tries to skip redundant intermediate steps. Its central claim is that similar representations can reflect a stable phase of computation, not necessarily a recurrent process. The goal is to replace that phase with one learned transformer layer.",
+      "start": 41.78,
+      "end": 67.48
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors first define redundancy in terms of how different layer representations are across data. They estimate similarity using activations from a calibration set, then seek contiguous groups of layers whose boundary representations stay sufficiently close. Think of a long route with stretches where the scenery barely changes: the method looks for those stretches and substitutes a shorter path, while preserving the model’s attention-based token mixing.",
+      "start": 68.34,
+      "end": 95.0
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does the method decide where one redundant group ends and another begins?",
+      "start": 95.96,
+      "end": 101.18
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It builds a similarity matrix across the model’s layers and uses dynamic programming to partition the depth. A threshold controls the maximum permitted discrepancy within a group. The algorithm first seeks the fewest groups that satisfy that limit, then favors the partition with the lowest worst-case discrepancy. A stricter threshold creates more groups and less compression; a looser threshold allows more layers to be collapsed.",
+      "start": 102.12,
+      "end": 127.84
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "For each group, the method auditions possible replacement layers. Candidates include the group’s original layers and an averaged layer, with normalization parameters treated separately. The candidate that best approximates the original group’s final representation initializes the smaller student model. The authors then distill from a frozen teacher, matching intermediate boundary representations and the final output. They introduce those training targets progressively to stabilize optimization.",
+      "start": 128.78,
+      "end": 158.1
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the student learns to match selected checkpoints, rather than reproduce every teacher layer?",
+      "start": 159.14,
+      "end": 164.02
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. That distinction helps explain the computation savings: the student bypasses the intermediate transformations instead of executing a shared layer repeatedly. In natural-image classification, six-layer models often retain accuracy near their 12-layer baselines while using about half the flops. For example, DINOv2’s six-layer version uses 11.71 flops units, rather than 23.42, and reaches 84.2% top-1 accuracy, close to the baseline’s 84.6%.",
+      "start": 164.02,
+      "end": 196.74
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Why does the same compression seem less successful for segmentation?",
+      "start": 199.46,
+      "end": 203.24
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Segmentation depends on spatial detail at many stages, not only on a compact image-level representation. On ADE20k, compressing DINOv2 roughly halves computation, but mean intersection over union falls from 47.3 to 42.9. DINOv3 shows a similar decline. Even Raptor loses segmentation accuracy while retaining repeated computation. These results suggest that intermediate spatial refinements can matter, so a layer group that is redundant for classification may not be redundant for dense prediction.",
+      "start": 204.32,
+      "end": 238.12
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The strongest results appear in histopathology, where a foundation model processes many tiles from each whole-slide image. With H0-mini, a five-layer student cuts active parameters from 85.74 million to 36.11 million and reduces flops from 23.56 to 9.36. On PANDA prostate grading, its quadratic weighted kappa with an attention-based multiple-instance-learning head is 93.79, essentially matching the baseline’s 93.77.",
+      "start": 239.14,
+      "end": 266.06
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Could the histopathology gains come from removing variation that is irrelevant to the target domain?",
+      "start": 268.5,
+      "end": 273.86
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "That is the authors’ interpretation, and their geometry analysis offers supporting evidence. In H0-mini, compressed representations have lower variance across stochastic augmentations; for flattened patch tokens, standard-deviation reductions range from 37.8% to 49.6% at measured boundaries. The student broadly follows the teacher’s intrinsic-dimension trajectory, but this variance pattern is less clear in natural-image models. The evidence is suggestive, not proof that all removed variation is harmful.",
+      "start": 273.86,
+      "end": 306.86
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "This places T-W-T between two broad compression strategies: recurrent sharing, which can save parameters without reducing executed depth, and simpler single-step approximations, which may discard attention’s dynamic token mixing. The paper’s standard attention layers aim to preserve that mixing while cutting computation. Still, compression depends on the calibration data and threshold, and results vary across tasks and datasets. Future work could make block discovery task-aware, especially for spatial prediction.",
+      "start": 307.78,
+      "end": 338.12
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How should researchers test whether a discovered block is truly redundant for a new task?",
+      "start": 339.12,
+      "end": 343.8
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "They should evaluate the compressed model on the intended task, rather than infer usefulness from layer similarity alone. A promising block boundary in one dataset may not transfer to another, and downstream performance can reveal lost information that activation comparisons miss. The larger implication is methodological: depthwise similarity can guide compression, but it does not by itself explain why redundancy emerges during pretraining or establish that a phase is dispensable everywhere.",
+      "start": 344.76,
+      "end": 373.16
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The key takeaway is that a transformer can sometimes become shallower without abandoning attention: identify stable stretches, replace each with a learned layer, and distill the result. That tradeoff looks especially useful for image-level transfer and costly histopathology pipelines, while dense prediction calls for caution. The right question is not simply how similar adjacent layers look, but whether removing their intermediate work preserves what the target task needs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 374.04,
+      "end": 406.752
+    }
+  ]
+}

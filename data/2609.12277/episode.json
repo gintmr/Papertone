@@ -1,0 +1,241 @@
+{
+  "id": "2609.12277",
+  "title": "Reinforcement Learning over Patient Trajectories for Clinical Reasoning in EHR Foundation Models",
+  "authors": [
+    "Yuxin Xiao",
+    "Sheng Zhang",
+    "Chandan Singh",
+    "Tristan Naumann",
+    "Hoifung Poon",
+    "Jianfeng Gao",
+    "Xiaodong Liu"
+  ],
+  "abstract": "Electronic health record (EHR) foundation models trained on longitudinal patient trajectories have demonstrated strong performance across diverse clinical prediction tasks. However, their clinical reasoning capabilities remain constrained by next-token prediction on limited and incomplete EHR data. To address this, we propose a reinforcement learning (RL) fine-tuning framework that treats EHR foundation models as generative policies over patient trajectories. We formulate common clinical prediction problems (e.g., hospital readmission) as event-conditioned, time-windowed reasoning tasks. We then design time-aware, rollout-sensitive rewards to account for finite rollout lengths and temporally inconclusive outcomes. We find that RL fine-tuning consistently improves over pre-trained backbones and strong baselines. Notably, it enables smaller models to surpass larger pre-trained models in data-limited regimes and induces positive transfer across tasks. Further analysis shows that RL fine-tuned models generate trajectories with stronger structural and semantic alignment to ground truth and greater downstream utility.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.12277",
+    "arxiv": "https://arxiv.org/abs/2609.12277"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a09db6-4aa0-7f0f-9991-c9a5534fb1a5/podcast.mp3",
+  "duration": 381.388,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.54,
+      "en": "Welcome to Advanced Topics in Medical AI. Today's lecture is on a paper from researchers at MIT and Microsoft Research titled 'Reinforcement Learning over Patient Trajectories for Clinical Reasoning in EHR Foundation Models'. We've seen a lot of work recently on EHR foundation models, with papers like 'EHRWorld' and 'MedRep' focusing on building powerful representations from these complex datasets. This work pushes in a slightly different direction. Instead of just learning to predict the next medical event, it asks if we can teach a model to reason about long-term outcomes. Yes, Noah?",
+      "zh": "欢迎来到《医学AI进阶专题》。今天的课我们讲一篇来自MIT和微软研究院的论文，题目是《在患者轨迹上做强化学习，用于EHR基础模型中的临床推理》。最近我们看到了很多关于EHR基础模型的工作，比如EHRWorld和MedRep这些论文，重点都是从这些复杂数据集中构建强大的表征。而这项工作走了一个稍微不同的方向。它不只是学习预测下一个医疗事件，而是问我们能不能教模型对长期结果进行推理。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.36,
+      "end": 42.02,
+      "en": "Hi Professor. So, is the core idea that standard autoregressive pre-training, just predicting the next token, isn't aligned with complex clinical prediction tasks?",
+      "zh": "教授您好。所以核心观点是不是说，标准的自回归预训练，也就是单纯预测下一个token，跟复杂的临床预测任务其实并不对齐？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.82,
+      "end": 75.58,
+      "en": "Exactly. A model can get very good at predicting that a cough is followed by a diagnosis code for a respiratory infection, but that's different from predicting hospital readmission within thirty days. The authors argue that next-token prediction learns local statistical patterns, not trajectory-level reasoning. So, they reframe the problem. They treat a pre-trained EHR foundation model, in this case ETHOS, as a policy in a reinforcement learning setup. The model doesn't just predict a single next event; it generates, or 'rolls out', an entire future patient trajectory.",
+      "zh": "没错。一个模型可以非常擅长预测咳嗽之后跟着一个呼吸道感染的诊断代码，但这和预测三十天内再入院是两回事。作者认为，下一token预测学到的是局部的统计模式，而不是轨迹层面的推理。所以他们重新定义了这个问题。他们把预训练的电子健康记录基础模型，在这个例子里是ETHOS，当作强化学习框架里的一个策略。模型不只是预测下一个单一事件，而是生成，或者说“展开”，一整个未来的患者轨迹。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 76.06,
+      "end": 78.42,
+      "en": "And it gets rewarded based on that generated trajectory?",
+      "zh": "那它是根据生成的轨迹来获得奖励的吗？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 78.9,
+      "end": 114.68,
+      "en": "Correct. They focus on three specific tasks: 30-day hospital readmission, 2-year ICU readmission, and 2-year inpatient mortality. The model is given a patient's history up to an 'anchor event,' like a hospital discharge. It then generates a possible future. If that generated future correctly predicts the real-world outcome—for example, if it generates a new admission event within the 30-day window and the patient was actually readmitted—it receives a positive reward. If it correctly predicts no readmission, it also gets a positive reward. If it's wrong, it gets zero reward.",
+      "zh": "没错。他们聚焦三个具体任务：30天再入院、2年ICU再入院，以及2年住院死亡率。模型会拿到患者截至某个“锚点事件”（比如出院）的病史，然后生成一个可能的未来。如果生成的未来正确预测了真实世界的结果——比如它在30天窗口内生成了一个新入院事件，而患者确实再入院了——就会得到正向奖励。如果它正确预测了没有再入院，也会得到正向奖励。如果预测错了，奖励为零。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 115.12,
+      "end": 119.96,
+      "en": "Why not just use supervised fine-tuning on the true future trajectories? Wouldn't that be simpler than RL?",
+      "zh": "那为什么不直接拿真实的未来轨迹做监督微调呢？那样不是比强化学习更简单吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 120.2,
+      "end": 149.86,
+      "en": "That's an important question, and they tested that. The supervised fine-tuning approach actually performed worse than the original pre-trained model. The likely reason is that simply forcing the model to imitate a single ground-truth future isn't the same as teaching it to weigh possibilities and reason about outcomes. An observed trajectory is just one path taken; the model needs to understand the space of potential futures to make a robust prediction. The RL setup encourages this kind of probabilistic exploration.",
+      "zh": "这是个很重要的问题，他们也做了测试。结果发现，监督微调的效果反而比原始预训练模型还差。原因很可能是，单纯强迫模型去模仿某一个真实的未来轨迹，并不等于教它去权衡各种可能性、对结果进行推理。观察到的轨迹只是实际发生的一条路径，模型需要理解潜在未来的整个空间，才能做出稳健的预测。而强化学习的设定正好能鼓励这种概率性的探索。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 150.28,
+      "end": 179.72,
+      "en": "The most critical part of their method is how they handle the reward. A clinical time window, like 30 days or two years, is very long. The model has a fixed token budget for generation—say, 2048 tokens. It might run out of tokens before it can generate enough events to cover the full time period. For example, it might generate 15 days of uneventful follow-up and then stop. Did the patient get readmitted on day 20? The model's output doesn't say. The authors call these 'inconclusive rollouts'.",
+      "zh": "他们方法里最关键的部分就是怎么处理奖励。临床时间窗口，比如30天或者两年，是非常长的。模型生成时有固定的token预算——比如2048个token。它可能在生成足够多的事件覆盖整个时间段之前就把token用完了。举个例子，它可能生成了15天平安无事的随访记录然后就停了。那患者第20天有没有再入院呢？模型的输出里没说。作者把这些叫做“无定论的轨迹”。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 181.5,
+      "end": 186.62,
+      "en": "So what do they do with them? Penalizing them seems wrong, because the model didn't necessarily make a mistake.",
+      "zh": "那他们怎么处理这些轨迹呢？惩罚它们似乎不对，因为模型不一定犯了错。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 187.08,
+      "end": 225.62,
+      "en": "Precisely. Penalizing inconclusive rollouts would teach the model bad habits, like generating very few events to quickly run out of tokens and avoid making a decision. Instead, they assign these rollouts a neutral value. They are completely excluded from the policy update. A reward is only given if the generated trajectory is 'qualified'—meaning it either explicitly generates the target event, like a readmission, or it generates enough time-elapse tokens to prove the time window has passed without the event occurring. This is the key insight: rewarding conclusive reasoning, not just token-level accuracy.",
+      "zh": "正是如此。惩罚那些没有得出结论的轨迹会让模型养成坏习惯，比如只生成很少的事件，好赶紧把token用完，从而避免做出判断。所以他们给这些轨迹分配一个中性的值，把它们完全排除在策略更新之外。只有当生成的轨迹“合格”时才会给奖励——也就是说，要么它明确生成了目标事件，比如再入院，要么它生成了足够多的时间流逝token，足以证明时间窗口已经过去而事件并未发生。这就是关键的洞见：奖励的是有结论的推理，而不只是token级别的准确率。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 226.12,
+      "end": 234.04,
+      "en": "And they use Group Relative Policy Optimization, or GRPO, for the RL algorithm. Is there a specific reason for that choice over something more standard like PPO?",
+      "zh": "他们用的是组相对策略优化，也就是GRPO，作为强化学习算法。为什么选它而不是PPO这种更标准的算法，有什么特别的原因吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 234.42,
+      "end": 255.4,
+      "en": "GRPO is well-suited for this context because it normalizes rewards across multiple rollouts generated from the same starting patient history. This helps stabilize training by focusing on the relative advantage of one trajectory over another for the same patient, rather than comparing rewards across different patients, which can be much noisier. It helps the model learn a more consistent policy.",
+      "zh": "GRPO很适合这个场景，因为它会在同一位患者病史生成的多条轨迹之间对奖励做归一化。这样做有助于稳定训练，因为它关注的是同一位患者不同轨迹之间的相对优势，而不是拿不同患者之间的奖励来比较，后者噪声会大得多。这能帮助模型学到更一致的策略。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 255.86,
+      "end": 287.16,
+      "en": "The most significant result is the efficiency of this approach. The 9-million parameter ETHOS model, after being fine-tuned with their RL method, outperformed the much larger 56-million parameter pre-trained model on the hospital readmission task. This suggests that for a fixed dataset, a smarter, task-aligned training objective can be more beneficial than simply scaling up the model's size. It's a direct challenge to the idea that more parameters are always the answer, especially in data-constrained medical domains.",
+      "zh": "最值得关注的结果是这种方法的高效性。这个900万参数的ETHOS模型，在用他们的强化学习方法微调之后，在医院再入院预测任务上超过了参数量大得多的5600万参数的预训练模型。这说明在数据集固定的情况下，一个更聪明的、与任务对齐的训练目标，可能比单纯把模型做大更有用。这直接挑战了“参数越多越好”这个观念，尤其是在数据有限的医疗领域。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 287.58,
+      "end": 305.6,
+      "en": "That's interesting. It connects to that paper on transferability, 'Foundation models for electronic health records', which showed performance degrades when models are moved to new systems. Maybe task-specific alignment like this RL approach is a way to make models more robust or efficient without needing massive, multi-institutional datasets for pre-training.",
+      "zh": "这很有意思。这跟那篇关于可迁移性的论文《电子健康记录的基础模型》有关联，那篇论文表明，模型迁移到新系统时性能会下降。也许像这种强化学习方法的任务特定对齐，是一种让模型更稳健或更高效的方式，而不需要大规模、多机构的数据集来做预训练。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 306.58,
+      "end": 337.86,
+      "en": "It could be. The authors also show positive multi-task transfer; training on one task, like hospital readmission, provides a small but real boost to performance on other tasks like mortality prediction. This hints that the model isn't just memorizing task-specific patterns but is developing a more generalizable clinical reasoning capability. Furthermore, the trajectories it generates are not just better for prediction; they are also structurally more similar to real patient data and more useful for downstream tasks.",
+      "zh": "有可能。作者还展示了正向的多任务迁移：在一个任务上训练，比如再入院预测，能给死亡率预测等其他任务带来虽小但真实的性能提升。这暗示模型不只是在记住任务特定的模式，而是在发展一种更具泛化性的临床推理能力。此外，它生成的轨迹不仅对预测更有帮助，在结构上也更接近真实患者数据，对下游任务也更有用。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 338.34,
+      "end": 376.26,
+      "en": "So to wrap up, this paper introduces a reinforcement learning framework that is carefully tailored to the realities of longitudinal EHR data. The core contribution is the design of a reward mechanism that handles finite generation budgets and long clinical time horizons by explicitly ignoring inconclusive outputs. This trajectory-level optimization improves not just predictive accuracy but also model calibration and the fidelity of the generated patient histories. The key takeaway is that aligning the model's objective with the clinical reasoning task can be a more efficient path to better performance than scaling alone.",
+      "zh": "总结一下，这篇论文提出了一个强化学习框架，专门针对纵向电子健康记录数据的实际情况做了精心设计。核心贡献在于设计了一种奖励机制，通过显式忽略那些没有结论的输出，来处理有限的生成预算和漫长的临床时间跨度。这种轨迹级别的优化不仅提升了预测准确率，还改善了模型校准和生成患者病史的保真度。关键结论是，让模型的目标与临床推理任务对齐，可能比单纯扩大规模更高效地带来性能提升。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 376.26,
+      "end": 381.388,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{xiao2026reinforcementlearningpatienttrajectories,\n      title={Reinforcement Learning over Patient Trajectories for Clinical Reasoning in EHR Foundation Models}, \n      author={Yuxin Xiao and Sheng Zhang and Chandan Singh and Tristan Naumann and Hoifung Poon and Jianfeng Gao and Xiaodong Liu},\n      year={2026},\n      eprint={2609.12277},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.12277}, \n}",
+  "topics": [
+    "AI for Health",
+    "Fine Tuning",
+    "Generative Models"
+  ],
+  "peaks": [
+    1.0,
+    0.393,
+    0.27,
+    0.243,
+    0.306,
+    0.453,
+    0.392,
+    0.264,
+    0.589,
+    0.2,
+    0.596,
+    0.419,
+    0.204,
+    0.522,
+    0.285,
+    0.652,
+    0.519,
+    0.302,
+    0.435,
+    0.352,
+    0.258,
+    0.358,
+    0.452,
+    0.407,
+    0.434,
+    0.232,
+    0.568,
+    0.693,
+    0.371,
+    0.304,
+    0.327,
+    0.301,
+    0.345,
+    0.207,
+    0.418,
+    0.391,
+    0.32,
+    0.435,
+    0.606,
+    0.354,
+    0.511,
+    0.299,
+    0.337,
+    0.424,
+    0.575,
+    0.413,
+    0.383,
+    0.568,
+    0.514,
+    0.428,
+    0.268,
+    0.3,
+    0.219,
+    0.307,
+    0.266,
+    0.271,
+    0.492,
+    0.28,
+    0.551,
+    0.518,
+    0.335,
+    0.355,
+    0.389,
+    0.357,
+    0.38,
+    0.332,
+    0.452,
+    0.345,
+    0.401,
+    0.304,
+    0.333,
+    0.666
+  ],
+  "published": "2026-09-10",
+  "license": "arXiv 默认许可"
+}

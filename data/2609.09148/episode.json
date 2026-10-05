@@ -1,0 +1,276 @@
+{
+  "id": "2609.09148",
+  "title": "Proxy Policy Steering",
+  "authors": [
+    "Chuanruo Ning",
+    "Tianrui Wang",
+    "Wei-Chiu Ma",
+    "Kuan Fang"
+  ],
+  "abstract": "Generalist robot policies carry broad manipulation priors from large-scale data, but specializing them to a new task remains the deployment bottleneck. This requires eliciting task-specific behavior from limited demonstrations without degrading their broad capabilities. We introduce Proxy Policy Steering (PPS), an inference-time adaptation method that resolves this challenge by training two lightweight proxy policies whose calibrated velocity-space difference steers the frozen base sampler. A reference proxy models the frozen base's behavior on target-task observations, and a task proxy, initialized from the reference, captures how this behavior changes under task supervision. Their difference forms a calibrated velocity-space residual that steers the frozen base sampler at every denoising step. We identify the conditions under which this residual isolates the change induced by task supervision, and validate them empirically. Because the base is never directly modified, its broad capabilities remain available at inference, including behaviors such as recovery from failure that the demonstrations themselves do not exercise. Adaptation requires only forward velocity predictions from the base, making PPS lightweight to train and applicable even without access to the base's parameters. On 8 real-world and 4 simulation manipulation tasks, PPS lifts the state-of-the-art pi 0.5 base policy by 53% absolute success rate on average, with zero-to-one gains on tasks the base never solves, while preserving the base's broad capabilities. PPS outperforms LoRA fine-tuning, from-scratch specialists, residual policies, and prior inference-time steering methods.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.09148",
+    "arxiv": "https://arxiv.org/abs/2609.09148"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0846a-6919-7301-91ae-4fbb180ecbcc/podcast.mp3",
+  "duration": 392.647,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 29.4,
+      "en": "Welcome to Advanced Topics in Robot Learning. Today's lecture is on Proxy Policy Steering, a recent paper from researchers at Cornell. We've seen a surge of interest in adapting large, generalist robot policies, with methods like FLaRe from Google DeepMind using reinforcement learning, or RETAIN exploring parameter merging. This paper tackles a core problem in this space: how to specialize a generalist model for a new task using just a few demonstrations, without destroying its broad, pre-trained capabilities.",
+      "zh": "欢迎来到机器人学习进阶专题。今天的讲座讲的是代理策略引导，这是康奈尔大学的研究人员最近发表的一篇论文。我们注意到，大家对如何适配大型通用机器人策略的兴趣越来越浓，比如谷歌DeepMind的FLaRe用强化学习来做，还有RETAIN在探索参数合并。这篇论文要解决的是这个领域的一个核心问题：怎么只用少量示范就把一个通用模型专门化到新任务上，同时又不破坏它原本广泛的预训练能力。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 29.4,
+      "end": 30.4,
+      "en": "Yes, Noah?",
+      "zh": "好的，诺亚？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 30.74,
+      "end": 35.68,
+      "en": "Hi Professor. Could you elaborate on that tension? Why is it so hard to specialize these models without breaking them?",
+      "zh": "教授您好。您能详细讲讲这种矛盾吗？为什么让这些模型专门化同时又不出问题这么难？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 35.86,
+      "end": 59.9,
+      "en": "That's the central question. The issue is that methods which modify the model's parameters, like fine-tuning or even more efficient techniques like LoRA, tend to overfit when data is scarce. They might learn the new task, but in the process, they can overwrite the vast knowledge encoded in the base model—things like how to recover from a failed grasp or handle unexpected object positions. This is often called prior forgetting.",
+      "zh": "这是核心问题。关键在于，那些修改模型参数的方法，比如微调，或者像LoRA这样更高效的技术，在数据稀缺时往往会过拟合。它们可能学会了新任务，但在这个过程中，可能会覆盖掉基础模型里编码的大量知识——比如如何从失败的抓取中恢复，或者如何处理意料之外的物体位置。这通常被称为先验遗忘。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 60.4,
+      "end": 62.48,
+      "en": "And the alternative methods have their own problems?",
+      "zh": "那替代方法也有它们自己的问题吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 62.92,
+      "end": 92.52,
+      "en": "Correct. Other approaches keep the base model frozen and instead try to steer the action sampling process. Think of methods like DSRL. The limitation there is that they can generally only re-weight behaviors the base model already knows how to produce. They struggle to guide the policy towards a completely new type of action that the base model considers highly improbable. So you have this trade-off: change the model and risk breaking it, or guide the model and be limited by its existing action distribution.",
+      "zh": "没错。其他方法会保持基础模型冻结，转而尝试引导动作采样过程。比如DSRL这类方法。它们的局限在于，通常只能对基础模型已经会生成的行为重新加权。它们很难引导策略去采取一种基础模型认为极不可能的全新动作类型。所以就存在这样一个权衡：要么改动模型、冒着把它弄坏的风险，要么引导模型、但受限于它现有的动作分布。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 92.94,
+      "end": 95.44,
+      "en": "So where does Proxy Policy Steering, or PPS, fit in?",
+      "zh": "那么，代理策略引导（Proxy Policy Steering，简称PPS）在其中扮演什么角色呢？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 95.78,
+      "end": 127.08,
+      "en": "PPS aims to get the best of both worlds. It's an inference-time adaptation method that keeps the large base model completely frozen. The core idea is to learn two very small, lightweight 'proxy' models. One is a 'reference proxy,' trained to mimic the base model's behavior on the new task's data. The other is a 'task proxy,' which is fine-tuned on the new task's demonstrations. At inference, the difference between these two proxies creates a correction signal that guides, or steers, the frozen base model.",
+      "zh": "PPS的目标是两全其美。它是一种推理时的自适应方法，让庞大的基础模型完全保持冻结。核心思路是学习两个非常小、非常轻量的“代理”模型。一个是“参考代理”，训练它去模仿基础模型在新任务数据上的行为。另一个是“任务代理”，在新任务的演示样本上做微调。推理时，这两个代理之间的差异会产生一个修正信号，用来引导或者说操控那个冻结的基础模型。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 127.38,
+      "end": 134.9,
+      "en": "Wait, I'm a bit confused about the reference proxy. Why not just use the task proxy to guide the base model directly? Why do you need this intermediate reference model?",
+      "zh": "等等，我有点搞不清楚这个参考代理模型。为什么不直接用任务代理模型来引导基础模型呢？为什么还需要这个中间的参考模型？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 135.1,
+      "end": 167.56,
+      "en": "That's a critical detail of their method. If you just used a task proxy, the correction signal would be muddled. The difference between a small, independently trained proxy and the massive base model would include not just the task-specific information, but also all sorts of noise from differences in architecture, initialization, and approximation errors. By training both a reference and a task proxy from a shared starting point, their difference cleanly isolates the change induced by the task demonstrations. It's a much more pure signal.",
+      "zh": "这是他们方法的一个关键细节。如果直接用一个任务代理，那修正信号就会变得很混乱。一个独立训练的小代理和一个庞大的基础模型之间的差异，不仅包含任务相关的信息，还会混入各种噪声——来自架构不同、初始化不同、近似误差等等。而如果让参考代理和任务代理从同一个起点出发分别训练，它们之间的差异就能干净地分离出由任务示范所引起的变化。这是一个纯净得多的信号。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 167.94,
+      "end": 175.04,
+      "en": "Okay, that makes sense. It's about creating a controlled comparison. How is this 'steering' actually implemented? The paper focuses on flow-matching models.",
+      "zh": "好，这就说得通了。关键在于做一个受控的对比。那这个“引导”具体是怎么实现的呢？这篇论文关注的是流匹配模型。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 175.62,
+      "end": 207.88,
+      "en": "Yes, and that's where the formulation becomes quite elegant. For flow-matching VLAs, which learn a velocity field to transform noise into an action, they show that this density-ratio correction is equivalent to a simple additive residual in the velocity space. So, the final guided velocity is just the base model's velocity plus a guidance term, which is the difference between the task and reference proxies' velocities, scaled by a strength parameter. It allows the proxies to directly push the action generation process in a new direction.",
+      "zh": "是的，而这正是这个公式变得非常优雅的地方。对于流匹配VLA来说，它们学习一个速度场，把噪声转换成动作，而他们证明了这种密度比校正等价于速度空间中的一个简单加性残差。所以最终引导后的速度就是基础模型的速度加上一个引导项，这个引导项是任务代理和参考代理速度之间的差，再乘以一个强度参数。它让这些代理能够直接推动动作生成过程朝一个新的方向走。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 208.26,
+      "end": 212.3,
+      "en": "That sounds a lot like classifier-free guidance in diffusion models. Is that a fair comparison?",
+      "zh": "这听起来很像扩散模型里的无分类器引导。这个类比恰当吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 212.78,
+      "end": 244.58,
+      "en": "It's an excellent analogy. The principle of steering in the score or velocity space is very similar. The novelty in PPS is the specific way they generate that guidance term using the two-proxy setup. Their two-stage training process is key. First, they distill the reference proxy from the base model. Then, importantly, they initialize the task proxy from the trained reference proxy before fine-tuning it on demonstrations. This ensures the two proxies are as similar as possible, except for the effect of the task data.",
+      "zh": "这个类比非常好。在分数空间或速度空间里做引导，原理确实很相似。PPS 的新颖之处在于，它用双代理这套设置来生成引导项的具体方式。他们的两阶段训练过程是关键。首先，他们从基础模型里蒸馏出参考代理。然后，很重要的一点是，他们用训练好的参考代理来初始化任务代理，再拿演示数据去微调。这样就能保证两个代理尽可能相似，唯一的差别就是任务数据带来的影响。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 244.58,
+      "end": 249.66,
+      "en": "What about the practicalities? Does running three models at inference time introduce significant latency?",
+      "zh": "那实际应用方面呢？推理时同时跑三个模型会不会带来明显的延迟？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 250.18,
+      "end": 272.56,
+      "en": "That's a valid concern, but the proxies are very small—about 32 million parameters, which is roughly one percent of the base model's size. They found it added only about 6 milliseconds of latency and was about five times faster to train than a LoRA adaptation, since they never have to backpropagate through the massive base VLA. It's computationally efficient.",
+      "zh": "这个担心很合理，但这些代理模型非常小，大约3200万参数，差不多只有基础模型规模的百分之一。他们发现它只增加了大约6毫秒的延迟，而且训练速度比LoRA适配快了大约五倍，因为他们完全不需要通过庞大的基础VLA进行反向传播。计算上很高效。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 272.56,
+      "end": 278.46,
+      "en": "And this approach actually preserves the base model's general skills? The paper mentioned recovery behaviors.",
+      "zh": "那这种方法真的能保留基础模型的通用能力吗？论文里提到了恢复行为。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 278.92,
+      "end": 309.38,
+      "en": "It does, and that was one of their most significant findings. In experiments where they perturbed the robot mid-task, like unfolding jeans it was trying to fold, the PPS-guided policy successfully recovered and completed the task. The LoRA-finetuned model, in contrast, had overfit to the clean demonstration trajectories and failed. This is because when the proxies agree—which happens in states that are far from the specific task demonstrations—their guidance term cancels out, and control defaults back to the robust, frozen base model.",
+      "zh": "确实如此，这是他们最重要的发现之一。在实验中，他们会在机器人执行任务中途进行干扰，比如它正在叠牛仔裤，却把裤子弄乱，PPS引导的策略能够成功恢复并完成任务。相比之下，LoRA微调的模型则因为过拟合于干净的演示轨迹而失败了。这是因为当代理们意见一致时——这种情况发生在远离特定任务演示的状态下——它们的引导项会相互抵消，控制权便回退到那个鲁棒的、冻结的基础模型上。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 309.74,
+      "end": 322.66,
+      "en": "So it's like the proxies only intervene when they have high confidence about the specific task, and otherwise they let the generalist handle it. This seems to align with the goals of other works like PriorVLA, which also focus on preventing prior forgetting.",
+      "zh": "所以这就好比，只有当代理对具体任务有很高把握时它们才会介入，否则就交给通用模型来处理。这似乎和PriorVLA等其他工作的目标是一致的，它们同样关注如何防止先验遗忘。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 323.44,
+      "end": 350.84,
+      "en": "Exactly. While the goals are similar, the mechanism is quite different. PPS accomplishes this preservation purely at inference time, without any regularization or architectural changes to the base model. This makes it applicable even to closed-source, API-only models. It also allows for interesting extensions, like using proxies that take in different modalities. They showed they could steer an RGB-only base policy using point cloud data, which is a powerful capability.",
+      "zh": "完全正确。虽然目标相似，但机制却大不相同。PPS完全是在推理阶段实现这种保留的，不需要对基础模型做任何正则化或架构上的改动。这使得它甚至能应用于闭源的、仅提供API的模型。它还带来了有趣的扩展可能，比如使用接收不同模态的代理模型。他们展示了可以用点云数据来引导一个仅基于RGB的基础策略，这是一项非常强大的能力。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 351.56,
+      "end": 374.02,
+      "en": "So to wrap up, Proxy Policy Steering provides an effective and efficient solution to the adaptation problem. It allows a generalist policy to learn a new task from a few demonstrations without compromising the broad, robust priors it was trained on. It achieves this by using lightweight proxy models to compute a precise correction signal in the velocity space, steering the frozen base model at inference time.",
+      "zh": "总结一下，代理策略引导为适配问题提供了一个高效且有效的解决方案。它能让一个通用策略仅凭少量演示就学会新任务，同时不破坏它在训练中获得的广泛而鲁棒的先验。具体做法是用轻量级的代理模型在速度空间里计算出一个精确的修正信号，在推理时引导冻结的基座模型。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 374.32,
+      "end": 392.647,
+      "en": "The main takeaway here is that adapting massive foundation models doesn't always require changing their weights. A principled, inference-time guidance mechanism can be more robust and efficient, especially when data is limited. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这里最核心的结论是，想让庞大的基础模型适应新任务，并不一定非得改它的权重。一个有原则的、在推理阶段做引导的机制，反而可能更稳健、更高效，尤其是在数据有限的时候。感谢收听。如果还有别的问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{ning2026proxypolicysteering,\n      title={Proxy Policy Steering}, \n      author={Chuanruo Ning and Tianrui Wang and Wei-Chiu Ma and Kuan Fang},\n      year={2026},\n      eprint={2609.09148},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.09148}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    0.709,
+    0.581,
+    0.573,
+    0.414,
+    0.442,
+    0.419,
+    0.309,
+    0.718,
+    0.619,
+    0.82,
+    0.471,
+    0.655,
+    0.447,
+    0.602,
+    0.528,
+    0.346,
+    0.303,
+    0.675,
+    0.606,
+    0.796,
+    0.64,
+    0.502,
+    0.584,
+    0.477,
+    0.369,
+    0.603,
+    0.996,
+    0.916,
+    0.746,
+    0.704,
+    0.338,
+    0.475,
+    0.559,
+    0.476,
+    0.2,
+    0.326,
+    0.251,
+    0.348,
+    0.569,
+    0.686,
+    0.569,
+    0.328,
+    0.443,
+    0.393,
+    0.412,
+    0.565,
+    0.972,
+    0.633,
+    0.886,
+    0.311,
+    0.493,
+    0.735,
+    0.429,
+    0.568,
+    0.386,
+    0.389,
+    0.612,
+    0.614,
+    0.556,
+    0.346,
+    0.485,
+    0.372,
+    0.405,
+    0.558,
+    0.396,
+    1.0,
+    0.751,
+    0.797,
+    0.937,
+    0.506,
+    0.317,
+    0.412
+  ],
+  "published": "2026-09-08",
+  "license": "arXiv 默认许可"
+}

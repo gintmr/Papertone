@@ -1,0 +1,245 @@
+{
+  "id": "2609.07557",
+  "title": "Heat Kernel Textures: the Geodesic Gaussians That Do Not Splat",
+  "authors": [
+    "Simone Foti",
+    "Caner Korkmaz",
+    "Stefanos Zafeiriou",
+    "Tolga Birdal"
+  ],
+  "abstract": "3D Gaussian Splatting has recently revolutionised novel view synthesis as well as many other 3D vision methods and applications. Drawing inspiration from this representation, we now rethink textures to overcome the main issues of UV mapping while considerably lowering their memory footprint. Heat Kernel Textures (HKTex) eliminate UV unwrapping as well as their persistent issues of wasted UV space, seams, distortions, vertex-duplication, and varying resolution. Grounded in discrete Riemannian geometry and intrinsically defined on any manifold surface discretised as a triangular mesh, HKTex uses anisotropic heat kernels as geodesic equivalents to Gaussians. Like our kernels, also the optimisation of their position and the adaptive densification strategies were redefined to operate on the surface of the object to be textureised. Our novel representation is also fully integrated with a physically based renderer and can be optimised either from existing textures or multi-view images. Our project page and code are available at this http URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.07557",
+    "arxiv": "https://arxiv.org/abs/2609.07557"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a083e6-5818-700c-951d-7a217864d65f/podcast.mp3",
+  "duration": 420.807,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.28,
+      "en": "Welcome to Advanced Topics in 3D Computer Graphics. Today's lecture is on \"Heat Kernel Textures: the Geodesic Gaussians That Do Not Splat,\" a paper from researchers at Imperial College London. We've seen a recent surge in explicit, primitive-based representations, with 3D Gaussian Splatting becoming dominant. Works like \"MeshSplat\" have tried to better connect splatting to surfaces. This paper, however, tackles a much older problem: the fundamental flaws of UV-mapping for textures. It proposes an entirely UV-free, intrinsic approach.",
+      "zh": "欢迎来到3D计算机图形学进阶专题。今天的讲座是关于“热核纹理：不喷溅的测地高斯”，这是伦敦帝国理工学院研究人员的论文。我们最近看到显式的、基于图元的表示大量涌现，其中3D高斯喷溅已经成为主流。像“MeshSplat”这样的工作试图更好地把喷溅和表面联系起来。然而，这篇论文处理的是一个古老得多的问题：UV映射用于纹理时的根本缺陷。它提出了一种完全无需UV的、内蕴的方法。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 33.66,
+      "end": 34.2,
+      "en": "Yes, Noah?",
+      "zh": "是的，诺亚？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 34.6,
+      "end": 42.34,
+      "en": "Hi Professor. So is the main idea here to create something like 3D Gaussian Splatting, but force it to live directly on the mesh surface instead of in ambient 3D space?",
+      "zh": "教授您好。所以这里的核心思路是不是类似于创建3D高斯泼溅，但强制它直接存在于网格表面上，而不是在周围的3D空间中？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 42.74,
+      "end": 71.22,
+      "en": "That's a great way to frame it. While 3DGS is primarily for novel view synthesis, this work focuses squarely on texture representation. But you're right about the core concept. Instead of letting primitives float in space where they might detach from the surface, this method ensures they are always intrinsically part of the surface geometry. It achieves this by replacing the standard Euclidean Gaussians with a mathematical equivalent that's native to curved surfaces: the heat kernel.",
+      "zh": "这个类比很好。虽然3DGS主要用于新视角合成，但这项工作聚焦的是纹理表示。不过你说的核心概念是对的。这个方法不是让图元漂浮在空间中、可能脱离表面，而是确保它们始终内在地属于表面几何的一部分。它通过把标准欧几里得高斯替换成一种天然适用于曲面的数学等价物来实现这一点：热核。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 71.62,
+      "end": 115.34,
+      "en": "The central idea of Heat Kernel Textures, or HKTex, is to represent a surface's appearance as a collection of these optimizable primitives. Think of it like a vector graphics file, but instead of 2D shapes on a canvas, you have these heat kernels painted directly onto the 3D mesh. Each kernel is defined by parameters like its position on the surface, its color, its scale, and its shape. The shape can be anisotropic, meaning it can be stretched into an ellipse, which is useful for representing directional patterns. To determine the color at any point on the mesh, the system simply blends the contributions of the most influential nearby kernels. This completely sidesteps the need for UV coordinates, and with them, the problems of seams, distortion, and wasted memory.",
+      "zh": "热核纹理，也就是HKTex，核心思路是把一个表面的外观表示成一组可优化的基元。你可以把它想象成一个矢量图形文件，只不过画布上的2D形状换成了直接画在3D网格上的热核。每个核由几个参数定义，比如它在表面上的位置、颜色、尺度和形状。形状可以是非各向同性的，也就是说可以拉伸成椭圆，这对表示有方向性的图案很有用。要确定网格上任意一点的颜色，系统只需把附近最有影响力的几个核的贡献混合起来。这样就完全绕开了UV坐标，也就顺带避开了接缝、畸变和内存浪费这些问题。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 115.62,
+      "end": 119.56,
+      "en": "I'm a bit lost on the heat kernel concept. Why heat? What does diffusion have to do with texture?",
+      "zh": "我对热核这个概念有点懵。为什么要用热？扩散和纹理又有什么关系？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 119.92,
+      "end": 152.28,
+      "en": "It's an analogy for how a value spreads across a surface. Imagine placing a single, tiny hot poker at a point on a metal mesh. The heat will diffuse outwards, but it's constrained to travel along the metal, not through the air. The temperature distribution at a given moment in time forms a smooth, bell-like curve centered at that point. That distribution is the heat kernel. It's the manifold's natural equivalent of a Gaussian. By controlling the 'diffusion time' and other parameters, you can control the size and falloff of this primitive, just like you would with a Gaussian splat.",
+      "zh": "这是个类比，用来描述某个值如何在表面上扩散。想象你把一根又小又烫的拨火棍放在金属网上的某一点。热量会向外扩散，但它只能沿着金属传播，不能穿过空气。在某一时刻，温度分布会形成一条以那个点为中心的平滑钟形曲线。这个分布就是热核。它是流形上天然对应高斯分布的东西。通过控制“扩散时间”和其他参数，你就能控制这个基元的尺寸和衰减，就像控制高斯泼溅一样。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 152.72,
+      "end": 161.54,
+      "en": "Okay, that makes sense. But the paper mentions anisotropic heat kernels. Is that like making the heat spread faster in one direction than another, creating an oval shape instead of a circle?",
+      "zh": "好，这就说得通了。但论文里提到了各向异性热核。这是不是就像让热量在某个方向上扩散得比另一个方向快，从而形成椭圆形而不是圆形？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 161.98,
+      "end": 199.68,
+      "en": "Exactly right. Anisotropy is critical for representing textures with directional details, like wood grain or brushed metal. This brings us to the methodology, which involves several key components. First is optimization. You can't just use standard gradient descent to move the kernels around, because that would move them off the surface. Instead, they employ Riemannian gradient descent. This projects the gradient onto the local tangent plane of the mesh, and the update step moves the kernel along a geodesic, which is the shortest path on the surface. It's like forcing the kernels to slide along the mesh without ever lifting off.",
+      "zh": "完全正确。各向异性对于表示具有方向性细节的纹理至关重要，比如木纹或拉丝金属。这就引出了方法论，其中包含几个关键部分。首先是优化。你不能直接用标准梯度下降来移动这些核，因为那样会把它们移出表面。所以他们用的是黎曼梯度下降。它把梯度投影到网格的局部切平面上，更新步骤则让核沿着测地线移动，也就是表面上最短的路径。这就像是强迫这些核沿着网格滑动，但永远不能脱离表面。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 199.96,
+      "end": 237.9,
+      "en": "The second component is adaptive density control. During training, if the model finds an area with high reconstruction error, it densifies that region by adding more kernels. If a kernel is small, it gets cloned. If it's large, it gets split into two smaller kernels, which are then pushed apart along the surface. Conversely, kernels that contribute very little are pruned away. This allows the representation to allocate detail efficiently, using more primitives for complex areas and fewer for simple ones. Finally, to make this all computationally tractable, they use several optimizations, like pre-computing and interpolating spectral properties of the mesh to speed up kernel evaluation.",
+      "zh": "第二个组件是自适应密度控制。训练过程中，如果模型发现某个区域重建误差很高，就会通过增加更多核来加密那个区域。如果某个核很小，就把它克隆一份。如果它很大，就把它拆成两个更小的核，然后沿着表面把它们推开。反过来，贡献很小的核会被剪掉。这样一来，表示就能高效地分配细节，复杂区域用更多图元，简单区域用更少。最后，为了让整个计算可行，他们用了几种优化手段，比如预计算并插值网格的频谱属性，来加速核的求值。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 238.38,
+      "end": 250.4,
+      "en": "Hold on, pre-computing properties for a grid of anisotropy parameters sounds like a potential bottleneck. How do they ensure the interpolation between grid points is valid? Don't the eigenvectors used to compute the kernels get scrambled?",
+      "zh": "等一下，为一个各向异性参数网格预计算属性听起来可能是个瓶颈。他们怎么保证网格点之间的插值是有效的？用来计算核的特征向量不会乱掉吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 250.94,
+      "end": 285.38,
+      "en": "That's an excellent technical question, and the authors address it directly. You're right, the eigenvectors can switch order or flip signs between adjacent grid points, which would make naive interpolation meaningless. They implement an alignment procedure using the Hungarian algorithm and Singular Value Decomposition to make the eigenvector bases consistent across the grid before interpolation. It's a necessary pre-computation step that enables the efficient, continuous evaluation of anisotropic kernels during optimization. It is a classic trade-off between upfront cost and runtime performance.",
+      "zh": "这是个很好的技术问题，作者也直接回应了。你说得对，特征向量在相邻网格点之间可能会交换顺序或者翻转符号，这会让朴素的插值变得毫无意义。他们用匈牙利算法和奇异值分解做了一步对齐，让特征向量基在整个网格上保持一致，然后再插值。这是一个必要的前置计算步骤，使得优化过程中能够高效、连续地评估各向异性核。这就是典型的 upfront 成本和运行时性能之间的权衡。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 285.8,
+      "end": 291.64,
+      "en": "So what were the results? How does it stack up against neural approaches like those in UniTEX or other intrinsic neural fields?",
+      "zh": "那结果怎么样呢？跟UniTEX或者别的内在神经场这类神经方法比起来，它表现如何？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 292.0,
+      "end": 333.64,
+      "en": "The results are quite strong, particularly regarding efficiency. In their experiments, both for compressing existing UV-textures and for reconstructing textures from multi-view images, HKTex achieved visual quality that was competitive with or superior to state-of-the-art neural baselines. It performed very well on perceptual metrics like SSIM and LPIPS, suggesting it preserves fine details and structural information effectively. The most significant finding, however, was the memory footprint. HKTex produced these high-quality results using only around 100 kilobytes of storage, which was substantially less than the nearly one megabyte required by the MLP-based neural fields to achieve comparable quality.",
+      "zh": "结果相当不错，尤其是在效率方面。在他们的实验中，无论是压缩现有的UV纹理，还是从多视角图像重建纹理，HKTex 都达到了与最先进神经基线相当甚至更优的视觉质量。它在 SSIM 和 LPIPS 这类感知指标上表现很好，说明它能有效保留细节和结构信息。不过最关键的发现是内存占用。HKTex 只用大约 100 KB 的存储就产出了这些高质量结果，远低于基于 MLP 的神经场要达到 comparable 质量所需的近 1 MB。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 334.12,
+      "end": 380.52,
+      "en": "The significance of this work is that it provides a robust alternative to two dominant paradigms. It moves beyond the discrete, artifact-prone world of UV-mapping, but it also avoids the 'black box,' memory-intensive nature of many implicit neural representations. It's an explicit, primitive-based method, but one whose primitives are designed from the ground up to respect the intrinsic geometry of the domain. This connects back to our discussion on 3DGS. While methods like GeoSplatting try to impose geometric guidance on Euclidean Gaussians, HKTex builds the geometric constraints directly into the primitive itself. The authors even suggest this is a step towards 'manifold vector graphics,' where textures can be edited with the precision of vector tools directly on the 3D surface.",
+      "zh": "这项工作的重要意义在于，它为两大主流范式提供了一个稳健的替代方案。它既超越了UV映射那种离散且容易产生伪影的方式，也避开了许多隐式神经表示那种黑箱式、内存密集的特性。它是一种显式的、基于图元的方法，但这些图元从一开始就是为尊重该领域的内在几何结构而设计的。这就和我们之前讨论3DGS联系起来了。像GeoSplatting这类方法试图对欧几里得高斯施加几何引导，而HKTex则直接把几何约束构建在图元本身之中。作者甚至提出，这是朝着“流形矢量图形”迈出的一步，在这种范式下，纹理可以像矢量工具那样，直接在3D表面上进行精确编辑。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 380.96,
+      "end": 392.62,
+      "en": "So, the main takeaway is that by reformulating the problem geodesically, we get a representation that is both memory-efficient and avoids the classic artifacts of UV maps and the geometric disconnect of ambient-space methods?",
+      "zh": "所以，主要的结论就是，通过从测地几何的角度重新表述这个问题，我们得到的表示既节省内存，又避免了UV映射的经典伪影和环境空间方法的几何脱节？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 393.16,
+      "end": 415.76,
+      "en": "Precisely. It's a compelling argument for building representations with the right geometric priors. Instead of fighting the surface geometry, it embraces it. The core lesson is that by choosing primitives that are native to the domain—in this case, heat kernels on a manifold—you can often develop a more elegant, efficient, and robust solution. It's a return to first principles for a classic graphics problem.",
+      "zh": "正是如此。这有力地说明了，构建表示时应当引入正确的几何先验。与其对抗表面几何，不如顺应它。核心经验在于，选择与问题域天然契合的基本构件——在这个例子里就是流形上的热核——往往能带来更优雅、更高效、更稳健的解决方案。这是对一个经典图形学问题回归第一性原理的思考。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 415.76,
+      "end": 420.807,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有别的问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{foti2026heatkerneltexturesgeodesic,\n      title={Heat Kernel Textures: the Geodesic Gaussians That Do Not Splat}, \n      author={Simone Foti and Caner Korkmaz and Stefanos Zafeiriou and Tolga Birdal},\n      year={2026},\n      eprint={2609.07557},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.07557}, \n}",
+  "topics": [
+    "Computer Vision",
+    "Machine Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.259,
+    0.483,
+    0.228,
+    0.223,
+    0.4,
+    0.616,
+    0.547,
+    0.312,
+    0.398,
+    0.379,
+    0.458,
+    0.402,
+    0.405,
+    0.478,
+    0.402,
+    0.417,
+    0.37,
+    0.371,
+    0.363,
+    0.544,
+    0.561,
+    0.455,
+    0.43,
+    0.536,
+    0.363,
+    0.433,
+    0.398,
+    0.2,
+    0.294,
+    0.43,
+    0.305,
+    0.393,
+    0.24,
+    0.609,
+    0.857,
+    0.633,
+    0.688,
+    0.331,
+    0.396,
+    0.323,
+    0.509,
+    0.459,
+    0.591,
+    0.444,
+    0.699,
+    0.47,
+    0.362,
+    0.309,
+    0.598,
+    0.447,
+    0.259,
+    0.34,
+    0.25,
+    0.294,
+    0.416,
+    0.345,
+    0.557,
+    0.674,
+    0.423,
+    0.45,
+    0.259,
+    0.384,
+    0.452,
+    0.287,
+    0.636,
+    0.361,
+    0.43,
+    0.471,
+    0.478,
+    0.348,
+    0.374
+  ],
+  "published": "2026-09-07",
+  "license": "CC BY"
+}

@@ -1,0 +1,244 @@
+{
+  "id": "2609.25845",
+  "title": "Visual Jev: Accurate and Efficient Decisions from Shared Visual Context",
+  "authors": [
+    "Guanxu Yu",
+    "Yuhang Yao"
+  ],
+  "abstract": "Many vision applications ask several independent, forced-choice questions about the same image. Visual Jev encodes the image and public context once, executes isolated question suffixes as a batch, and reads candidate probabilities from the backbone's language-model head. Across four benchmarks, answer-supervised post-training raises equal-weight macro accuracy from 70.6% to 76.1%, with the gain concentrated on the two task families represented in training. At N=32 questions per image, shared batched execution is 8.9x faster in warm amortized time than independent serial execution and remains 3.4x faster than an already-batched baseline that recomputes the prefix, at the cost of higher peak memory. A matched typed-head control offers no consistent accuracy advantage over the language-model-head readout. The supported design is therefore simple: adapt the backbone for quality, retain the existing readout, and share execution for efficiency.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.25845",
+    "arxiv": "https://arxiv.org/abs/2609.25845"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0cc1b-bd29-78ce-b072-29b560970a04/podcast.mp3",
+  "duration": 456.411,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 41.0,
+      "en": "In Transformer Architectures, today’s lecture is on Visual Jev: Accurate and Efficient Decisions from Shared Visual Context. Recent work such as NVILA: Efficient Frontier Visual Language Models and ViSpec: Accelerating Vision-Language Models with Vision-Aware Speculative Decoding explores efficiency in vision-language systems. Visual Jev takes a different angle: when several questions concern the same image, can we share computation rather than repeatedly process that image? The authors, affiliated with Independent Research at Carnegie Mellon University, study both decision quality and serving efficiency. Noah, I see your hand—go ahead.",
+      "zh": "在Transformer架构这节课上，今天要讲的是Visual Jev：从共享视觉上下文中做出准确又高效的决策。最近的一些工作，比如NVILA：高效前沿视觉语言模型，以及ViSpec：用视觉感知的推测解码加速视觉语言模型，都在探索视觉语言系统的效率问题。Visual Jev换了个角度：当好几个问题都针对同一张图时，我们能不能共享计算，而不是反复处理那张图？作者来自卡内基梅隆大学的独立研究团队，他们同时研究了决策质量和服务效率。Noah，我看到你举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 42.12,
+      "end": 48.22,
+      "en": "Hi Professor, is this mainly about making one answer faster, or handling a group of questions about the same image?",
+      "zh": "教授您好，这主要是让单个回答更快，还是处理关于同一张图的一组问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 49.06,
+      "end": 79.06,
+      "en": "The group is the key. Imagine inspecting a screen and asking which button cancels, whether a notice reports success, and how many icons appear. A conventional system may handle each request separately, repeating much of the visual work. Visual Jev treats the image and shared context as a common starting point, then branches into isolated questions. This matters because many practical workflows naturally create groups of questions, even though standard evaluation often treats each question as a separate example.",
+      "zh": "关键在于这一组问题。想象一下，你在检查一个屏幕，问哪个按钮是取消，通知是不是在报告成功，以及出现了多少个图标。传统系统可能会把每个请求分开处理，重复大量视觉工作。Visual Jev把图像和共享上下文当作一个共同的起点，然后分叉出各个独立的问题。这很重要，因为许多实际工作流天然就会产生一组组问题，尽管标准评估往往把每个问题当作单独的样本来处理。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 79.06,
+      "end": 111.48,
+      "en": "The first contribution is a fixed-choice decision interface. At request time, the system receives candidate answers and returns a probability distribution only across those valid choices. Each choice maps to a verified single-token letter, and the model scores those letters at a fixed answer position. This avoids generating a full sentence when the task asks only for selection. Candidate sets can be supplied at runtime, with up to 16 choices, rather than requiring one permanently fixed label set.",
+      "zh": "第一个贡献是一个固定选项的决策接口。在请求时，系统接收候选答案，并只在这些有效选项上返回一个概率分布。每个选项都映射到一个经过验证的单token字母，模型在固定的答案位置对这些字母打分。这样，当任务只要求做选择时，就避免了生成一整句话。候选集可以在运行时提供，最多支持16个选项，而不需要永久固定一套标签。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 112.42,
+      "end": 118.64,
+      "en": "Quick question: if the model only scores option letters, does it still use its normal language-model output layer?",
+      "zh": "快速问一下：如果模型只对选项字母打分，它还会用正常的语言模型输出层吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 119.52,
+      "end": 145.98,
+      "en": "Yes. The main system keeps the pretrained language-model head and trains the model to predict the correct option letter. At inference, it normalizes scores over the currently valid choices, not over every possible word. The backbone is quen three V-L four B instruct, with its vision tower frozen and lora adapters on the language tower. That design tests whether task adaptation can improve decisions without adding a separate, task-specific classification layer.",
+      "zh": "是的。主系统保留了预训练的语言模型输出头，训练模型预测正确的选项字母。推理时，它只在当前有效选项上归一化分数，而不是在所有可能的词上。主干模型是Qwen3-VL-4B-Instruct，视觉塔冻结，语言塔上加了LoRA适配器。这个设计检验的是：不额外加一个任务专用的分类层，仅靠任务适配能不能提升决策质量。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 146.9,
+      "end": 178.5,
+      "en": "The second contribution is shared execution. The system processes the image, system message, and public context once, then reuses that cached state for each question branch. Each branch contains its own question and candidate list; separate batch rows and attention masks keep questions from seeing one another. The model reinjects visual features only at image-token positions in its first three text layers, so caching that shared prefix avoids repeating the visual computation for every suffix.",
+      "zh": "第二个贡献是共享执行。系统只处理一次图像、系统消息和公共上下文，然后把缓存的这个状态复用到每个问题分支上。每个分支包含自己的问题和候选列表；独立的批次行和注意力掩码确保问题之间互相看不到。模型只在前三个文本层的图像token位置上重新注入视觉特征，所以缓存这个共享前缀就避免了为每个后缀重复进行视觉计算。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 179.58,
+      "end": 184.46,
+      "en": "So you’re saying the questions can run together without sharing answers or contaminating one another?",
+      "zh": "所以你的意思是，这些问题可以一起跑，但不会共享答案，也不会互相污染？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 184.46,
+      "end": 218.04,
+      "en": "Exactly. The branches share only what is explicitly common: the image and public context. In the reported serving test, at 32 questions per image, independent serial execution takes 50.7 milliseconds per question when group time is divided by group size. Batching alone brings that to 19.3 milliseconds; shared-prefix execution with batching reaches 5.7 milliseconds per question, or 176 questions per second. These are amortized throughput figures, not individual-request latency.",
+      "zh": "没错。各个分支只共享明确共通的部分：图像和公开上下文。在报告的线上服务测试中，每张图32个问题时，如果按组大小分摊组时间，独立串行执行每题需要50.7毫秒。仅靠批处理就能降到19.3毫秒；带批处理的共享前缀执行则达到每题5.7毫秒，也就是每秒176个问题。这些是摊销后的吞吐量数字，不是单个请求的延迟。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 218.98,
+      "end": 256.6,
+      "en": "The accuracy results show why the system separates adaptation from execution. Answer-supervised training raises equal-weight macro accuracy across G-Q-A, S-N-L-I V-E, Text V-Q-A, and Tally Q-A from 0.706 to 0.761. Most improvement comes from the two trained task families: G-Q-A rises from 0.879 to 0.916, and S-N-L-I V-E from 0.629 to 0.808. Held-out Text V-Q-A and Tally Q-A change very little, so broad transfer is not established.",
+      "zh": "准确率结果说明了系统为什么要把适配和执行分开。答案监督训练把 G-Q-A、S-N-L-I V-E、Text V-Q-A 和 Tally Q-A 上的等权宏平均准确率从 0.706 提升到了 0.761。大部分提升来自两个经过训练的任务族：G-Q-A 从 0.879 升到 0.916，S-N-L-I V-E 从 0.629 升到 0.808。留出的 Text V-Q-A 和 Tally Q-A 几乎没变，所以还不能说存在广泛的迁移。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 257.64,
+      "end": 263.62,
+      "en": "Could a custom classification head improve accuracy, or does the existing language-model head limit the choices?",
+      "zh": "自定义分类头能否提升准确率，还是现有的语言模型头限制了选择？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 264.6,
+      "end": 297.48,
+      "en": "In this study, a matched typed decision head reaches approximately the same 0.761 macro accuracy, so it offers no consistent advantage. A fixed-slot head also has a coverage problem: trained only on sets of up to four choices, it scores just 0.639 on eight-choice Text V-Q-A, while the language-model-head system reaches 0.973. The existing head is therefore a practical fit for variable candidate sets, though that conclusion is limited to the tested model, training budget, and datasets.",
+      "zh": "在这项研究中，一个匹配的类型化决策头达到了大致相同的0.761宏平均准确率，因此并没有带来一致的优势。固定槽位头还存在覆盖范围的问题：它只在最多四个选项的集合上训练过，所以在八选项的Text V-Q-A上只拿到0.639分，而语言模型头系统达到了0.973。因此，现有的头更适合处理可变候选集，不过这一结论仅限于所测试的模型、训练预算和数据集。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 299.16,
+      "end": 334.56,
+      "en": "For deployment, workload shape matters as much as model quality. At one question, prefix sharing is slower: 82.9 milliseconds versus 48.1 milliseconds for independent execution, because cache construction cannot be amortized. At 32 questions, the whole shared group completes in about 182 milliseconds. Memory also rises from 8.40 to 10.10 GiB. So this approach best fits batch-oriented inspection, interface understanding, or document workflows where several questions are ready together.",
+      "zh": "部署时，工作负载的形态和模型质量同样重要。只有一个问题时，前缀共享反而更慢：82.9毫秒，而独立执行只要48.1毫秒，因为缓存构建的成本无法被摊薄。到了32个问题，整个共享组大约182毫秒就能跑完。内存占用也从8.40 GiB涨到10.10 GiB。所以这套方案最适合批量式的检查、界面理解，或者文档工作流——也就是多个问题能一起准备好的场景。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 335.32,
+      "end": 340.62,
+      "en": "Hold on, do the grey-image tests suggest the model sometimes answers from the wording rather than the image?",
+      "zh": "等等，那些灰图测试是不是说明模型有时候是根据文字表述而不是图像来作答的？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 341.56,
+      "end": 375.8,
+      "en": "They do. On converted G-Q-A, chance accuracy is 0.365, while replacing the image with a uniform grey field still gives 0.585. That points to language and candidate-set priors. The authors shuffle option positions and build distractors from answers of the same type, but the diagnostic shows that visual grounding remains a concern. They also find that an evidence-sufficiency head detects degraded evidence well, yet lowers overall accuracy and does not improve selective prediction.",
+      "zh": "确实如此。在转换后的G-Q-A上，随机准确率是0.365，而把图像换成纯灰场后仍能达到0.585。这说明语言和候选集先验在起作用。作者打乱了选项位置，并用同类型答案构建干扰项，但这一诊断表明视觉 grounding 仍然是个问题。他们还发现，证据充分性检测头能很好地识别退化证据，却会拉低整体准确率，也无法改善选择性预测。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 376.74,
+      "end": 414.54,
+      "en": "The broader lesson is that model adaptation and inference optimization answer different questions. Adaptation improves the trained decision families; shared prefix execution and batching make grouped requests cheaper. This complements efficiency work such as NVILA and ViSpec, but focuses on sharing visual context across independent decisions rather than changing the visual encoder or accelerating token generation. The evidence is still bounded: one model family, two scales, English data, converted forced-choice tasks, and probabilities that are not calibrated correctness estimates.",
+      "zh": "更广泛的启示是，模型适配和推理优化回答的是不同问题。适配改进的是训练出来的决策族；共享前缀执行和批处理则让成组的请求更便宜。这与NVILA和ViSpec等效率工作互补，但重点是在独立决策之间共享视觉上下文，而不是改变视觉编码器或加速token生成。证据仍然有限：只有一个模型家族、两种规模、英文数据、转换后的强制选择题，而且这些概率并不是经过校准的正确性估计。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 414.54,
+      "end": 421.96,
+      "en": "Could future work test whether the same shared execution helps when questions arrive over time instead of as a ready-made batch?",
+      "zh": "未来的工作能否测试一下，当问题不是一次性打包好、而是随时间陆续到来时，同样的共享执行是否仍然有帮助？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 422.88,
+      "end": 456.411,
+      "en": "That is an important next step, because waiting to form a batch can add queueing delay and erase throughput gains for interactive users. Future evaluations could measure that tradeoff, test more model families and languages, and strengthen diagnostics for candidate-set bias. The memorable takeaway is simple: when many decisions share one image, reuse the visual work—but measure quality, latency, and memory separately. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这是重要的下一步，因为等待凑成一个批次会带来排队延迟，抵消交互式用户的吞吐收益。未来的评估可以衡量这种权衡，测试更多模型家族和语言，并加强对候选集偏差的诊断。最值得记住的结论很简单：当许多决策共享同一张图像时，复用视觉计算——但要分别衡量质量、延迟和内存。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yu2026visualjevaccurateefficient,\n      title={Visual Jev: Accurate and Efficient Decisions from Shared Visual Context}, \n      author={Guanxu Yu and Yuhang Yao},\n      year={2026},\n      eprint={2609.25845},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.25845}, \n}",
+  "topics": [
+    "Transformers",
+    "Fine Tuning",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    1.0,
+    0.713,
+    0.596,
+    0.611,
+    0.333,
+    0.393,
+    0.535,
+    0.498,
+    0.325,
+    0.251,
+    0.347,
+    0.245,
+    0.427,
+    0.548,
+    0.531,
+    0.507,
+    0.367,
+    0.38,
+    0.629,
+    0.308,
+    0.487,
+    0.345,
+    0.245,
+    0.65,
+    0.491,
+    0.415,
+    0.51,
+    0.461,
+    0.591,
+    0.76,
+    0.91,
+    0.484,
+    0.666,
+    0.633,
+    0.517,
+    0.281,
+    0.249,
+    0.2,
+    0.229,
+    0.208,
+    0.347,
+    0.591,
+    0.473,
+    0.447,
+    0.306,
+    0.366,
+    0.237,
+    0.736,
+    0.681,
+    0.393,
+    0.597,
+    0.518,
+    0.536,
+    0.476,
+    0.795,
+    0.567,
+    0.441,
+    0.473,
+    0.62,
+    0.562,
+    0.308,
+    0.295,
+    0.356,
+    0.331,
+    0.273,
+    0.448,
+    0.589,
+    0.614,
+    0.684,
+    0.485,
+    0.422,
+    0.378
+  ],
+  "published": "2026-09-22",
+  "license": "CC BY-NC-ND"
+}

@@ -1,0 +1,243 @@
+{
+  "id": "2609.20744",
+  "title": "Video DeltaNet: A Video-Native Hybrid Attention for Livestream Video Generation",
+  "authors": [
+    "Haocheng Xi",
+    "Yiming Xie",
+    "Hexu Zhao",
+    "Yiwen Zhang",
+    "Michael Liu",
+    "Thomas Creavin",
+    "Kurt Keutzer",
+    "Xiuyu Li",
+    "Zhaoyang Lv",
+    "Chenfeng Xu",
+    "Haiwen Feng"
+  ],
+  "abstract": "Video diffusion models repeatedly process long spatiotemporal token sequences during denoising, making attention a major computational bottleneck. Linear attention offers an appealing alternative and has been widely adopted in recent large language models, but directly applying it to video models often fails to preserve the fine-grained interactions required for high-quality generation. We present Video DeltaNet (VDN), which combines local Softmax attention with bidirectional linear memory for long-range video context. Its linear branch introduces Video Delta Attention (VDA), which updates memory once per frame by jointly incorporating its spatial tokens. Separate output projections and learnable gates calibrate the two branches, while a staged teacher-alignment recipe progressively introduces the new pathway into pretrained models. We instantiate VDN on MiniMax H3, applying the hybrid to video-to-video interactions while retaining Softmax for interactions involving text or audio. With eight-step distillation and an optimized SGLang serving stack, VDN-H3 completes DiT denoising for a 14.3-second, 768p video in 6.70 seconds on eight NVIDIA B200 GPUs, corresponding to a 14.5x speedup over the 50-step dense H3 baseline on the same GPU count. GitHub code available at: this https URL. Weights available at: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.20744",
+    "arxiv": "https://arxiv.org/abs/2609.20744"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0b25e-6c42-749c-b0bf-3e19a31cd867/podcast.mp3",
+  "duration": 432.744,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 40.78,
+      "en": "Welcome to Advanced Topics in Generative Models. Today's lecture is on 'Video DeltaNet: A Video-Native Hybrid Attention for Livestream Video Generation,' a paper from researchers at UC Berkeley and Impossible, Inc. We've seen a surge of work on efficient attention for video, with papers like NVIDIA's 'SANA-Video' and 'SLA' exploring hybrid sparse-linear approaches. This research continues that trend, focusing on the immense computational cost of standard Softmax attention as video duration increases. It aims to adapt a pretrained model rather than training a new one from scratch. Yes, Noah?",
+      "zh": "欢迎来到生成模型进阶课。今天要讲的这篇论文是《Video DeltaNet：一种面向直播视频生成的视频原生混合注意力机制》，来自加州大学伯克利分校和Impossible公司的研究人员。我们最近看到大量关于视频高效注意力的工作涌现，比如英伟达的SANA-Video和SLA，都在探索稀疏-线性混合的方法。这项研究延续了这一趋势，聚焦于随着视频时长增加，标准Softmax注意力带来的巨大计算开销。它的目标是对预训练模型进行适配，而不是从头训练一个新模型。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 41.18,
+      "end": 47.62,
+      "en": "Hi Professor. You mentioned other hybrid attention models. What's the core difference here? Is it just another way of mixing local and global attention?",
+      "zh": "教授您好。您提到了其他混合注意力模型。这篇论文的核心区别在哪？是不是只是另一种混合局部和全局注意力的方式？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 47.9,
+      "end": 97.5,
+      "en": "That's the right question to start with. The key difference lies in how it handles the global component. While many models mix attention types, Video DeltaNet's main contribution is an update mechanism designed specifically for video frames. It addresses what the authors call three technical mismatches when you try to apply standard linear attention, which is often designed for sequential text, directly to video. First, a simple fixed-size recurrent state might not retain the detailed visual information needed over many frames. Second, video diffusion models process all spatial patches of a frame at once, so updating a recurrent state patch-by-patch doesn't make much sense and can lead to conflicting updates. Third, simply adding a new linear attention branch to a pretrained model can disrupt its internal dynamics before it's properly trained.",
+      "zh": "这个问题问得好。关键区别在于它怎么处理全局那部分。很多模型确实都在混搭不同类型的注意力，但Video DeltaNet的主要贡献是一个专门为视频帧设计的更新机制。它解决了作者所说的三个技术不匹配问题——就是当你试图把原本为序列文本设计的标准线性注意力直接用到视频上时会遇到的。第一，简单的固定大小循环状态可能留不住多帧所需的详细视觉信息。第二，视频扩散模型是一次性处理一帧的所有空间patch，所以逐个patch去更新循环状态不太合理，还可能导致更新冲突。第三，直接给预训练模型加一个新的线性注意力分支，会在它还没训练好的时候就扰乱内部动态。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 97.92,
+      "end": 103.34,
+      "en": "So the main idea is to make the recurrent memory update 'video-aware' instead of just treating a frame as a sequence of patches?",
+      "zh": "所以核心思路就是让循环记忆的更新变得“懂视频”，而不是简单地把一帧当成一串patch来处理？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 103.86,
+      "end": 142.56,
+      "en": "Exactly. The core of their model is this hybrid architecture. For any given frame, it uses standard, exact Softmax attention for a local window of nearby frames—about 15 in their setup. This preserves fine-grained local motion and detail. It also adds what they call boundary anchors, allowing every frame to attend to the very first and last frames of the video, which is useful for maintaining global consistency. For everything outside that local window, it uses a bidirectional linear memory scan. A forward scan summarizes the past, and a reverse scan summarizes the future. The outputs of the local Softmax path and the global linear path are then combined.",
+      "zh": "没错。他们模型的核心就是这个混合架构。对于任意一帧，它会在一个局部窗口内使用标准的、精确的Softmax注意力，窗口覆盖附近的大约15帧。这样能保留细粒度的局部运动和细节。他们还加入了所谓的边界锚点，让每一帧都能关注到视频的第一帧和最后一帧，这对保持全局一致性很有帮助。而在局部窗口之外的部分，它使用双向线性记忆扫描。前向扫描总结过去，反向扫描总结未来。然后，局部Softmax路径和全局线性路径的输出会被合并在一起。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 143.08,
+      "end": 148.04,
+      "en": "Okay, that makes sense. But you said the update mechanism was the main contribution. How does that part work?",
+      "zh": "好，这就说得通了。但你刚才说更新机制才是主要贡献，那部分是怎么运作的？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 148.32,
+      "end": 187.42,
+      "en": "This is their central mechanism, which they call Video Delta Attention, or VDA. Instead of updating the linear memory state one patch at a time, VDA computes a single, joint update for all spatial tokens in an entire frame. It calculates two statistics across the frame: a key-correlation matrix and a value-key write matrix. It then uses these to solve a regularized least-squares problem, finding a new memory state that best fits all the key-value associations in the current frame while staying close to the state inherited from the previous frame. This joint update prevents the issue of correlated patches making conflicting writes to memory.",
+      "zh": "这是他们的核心机制，叫做视频增量注意力，简称VDA。VDA不是逐个patch地更新线性记忆状态，而是对整个帧里所有空间token计算一次联合更新。它会在整帧范围内计算两个统计量：一个键相关性矩阵和一个值-键写入矩阵。然后用这些来求解一个带正则化的最小二乘问题，找到一个新的记忆状态，使其既能最好地拟合当前帧中所有的键值关联，又能尽量接近从上一帧继承来的状态。这种联合更新避免了相关patch对记忆产生冲突写入的问题。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 187.8,
+      "end": 196.58,
+      "en": "Hold on, solving a least-squares problem with a matrix inverse for every frame sounds computationally expensive itself. Does that not defeat the purpose of using linear attention to save compute?",
+      "zh": "等等，每个帧都要用矩阵求逆来解最小二乘问题，这本身听起来计算量就很大吧。那这样岂不是违背了用线性注意力来节省计算的初衷？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 196.58,
+      "end": 234.78,
+      "en": "A very sharp observation. The matrix inverse is indeed a costly operation. However, it's performed on a much smaller matrix representing the feature dimension, not the full sequence length of tokens. They also developed custom fused Triton kernels to heavily optimize this step, along with other parts of the VDA process. Their ablations show this custom inverse kernel is about 4 to 5 times faster than a standard implementation. So while it introduces an overhead compared to a simple additive update, it's a manageable one that they argue is justified by the stability and quality it provides, and it's still far cheaper than full Softmax attention over the entire video.",
+      "zh": "这个观察非常敏锐。矩阵求逆确实是个开销很大的操作。不过，它是在一个代表特征维度的、小得多的矩阵上进行的，而不是在完整的token序列长度上。他们还开发了自定义的融合Triton内核，对这个步骤以及VDA流程中的其他部分做了大量优化。他们的消融实验表明，这个自定义求逆内核比标准实现快了大约4到5倍。所以，虽然相比简单的加法更新会带来一些额外开销，但这是可控的，他们认为它带来的稳定性和质量足以证明这一开销是合理的，而且它仍然比在整个视频上做完整的Softmax注意力要便宜得多。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 235.14,
+      "end": 241.28,
+      "en": "And this was adapted onto an existing model, MiniMax H3? How did they integrate it without disrupting the pretrained weights?",
+      "zh": "这是在一个已有的模型MiniMax H3上做的适配吗？他们是怎么在不破坏预训练权重的情况下完成集成的？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 241.6,
+      "end": 277.02,
+      "en": "Right, this is another practical part of the methodology. They used a multi-stage adaptation process. They start by freezing the original H3 backbone and just training the new linear attention branches. Then they jointly optimize all the hybrid layers. Finally, they unfreeze parts of the original model and fine-tune it with low-rank adapters. This gradual introduction allows the new components to learn their role without catastrophically interfering with the powerful pretrained representations. After the architecture is adapted, they use diffusion distillation to reduce the number of inference steps from 50 down to just eight, which provides another major speedup.",
+      "zh": "对，这也是这个方法很实用的一点。他们用了一个多阶段的适配流程。先冻结原来的H3主干，只训练新的线性注意力分支。然后联合优化所有混合层。最后解冻原模型的一部分，用低秩适配器做微调。这种渐进式的引入让新组件能学会自己的角色，又不会灾难性地破坏已经预训练好的强大表征。架构适配完之后，他们用扩散蒸馏把推理步数从50步降到只要8步，这又带来了另一大块加速。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 277.86,
+      "end": 285.7,
+      "en": "So the massive 119-fold speedup they report isn't just from the new attention mechanism, but a combination of architecture, distillation, and distributed inference?",
+      "zh": "所以他们报告的那个119倍的巨大加速，不只是来自新的注意力机制，而是架构、蒸馏和分布式推理共同作用的结果？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 286.06,
+      "end": 310.04,
+      "en": "Correct. It's a full-stack optimization. The new attention mechanism itself provides a 2.6-fold speedup on a single GPU for the backbone. Distillation adds another significant reduction, and finally, head-sharded inference across eight GPUs gets them to that headline number. It's a good example of how practical system-building involves more than just a single architectural innovation.",
+      "zh": "没错，这是一个全栈式的优化。新的注意力机制本身在单GPU上就为骨干网络带来了2.6倍的加速。蒸馏进一步显著降低了计算量，最后通过八块GPU上的多头分片推理，才达到了那个 headline 数字。这很好地说明了一个问题：实际的系统构建远不止是单一的架构创新。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 310.56,
+      "end": 352.16,
+      "en": "The primary implication here is that we have a clear strategy for adapting recurrent memory to the specific structure of video. Instead of treating video as an arbitrary sequence, the frame-wise update acknowledges that all spatial tokens within a frame are processed in parallel and are highly correlated. This insight is likely generalizable. If this approach works on other backbones, it could significantly lower the barrier for generating long-duration, high-resolution video. However, we should note the limitations. The work is demonstrated on one backbone and evaluated primarily with automated metrics on a fixed set of prompts. The real-world performance across diverse content is still an open question.",
+      "zh": "这里的主要意义在于，我们有了一个清晰的策略，能把循环记忆适配到视频的特定结构上。它不是把视频当成一个任意序列，而是通过逐帧更新承认了一帧之内所有空间token是并行处理的，而且高度相关。这个洞见很可能具有通用性。如果这套方法在其他骨干网络上也能奏效，那就能大幅降低生成长时间、高分辨率视频的门槛。不过也要看到局限。这项工作只在一个骨干网络上做了验证，评估也主要是在一组固定提示上用自动指标完成的。面对各种不同内容时的真实表现，仍然是个未解的问题。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 352.16,
+      "end": 361.2,
+      "en": "Do you think this frame-wise update could be combined with other efficiency methods? For example, the trainable sparsity from 'VSA' or the dynamic token carving from 'Jenga'?",
+      "zh": "你觉得这种逐帧更新能不能和其他效率方法结合起来？比如VSA里那种可训练的稀疏性，或者Jenga里那种动态token裁剪？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 362.04,
+      "end": 388.32,
+      "en": "That's a great direction for future work. It's plausible. One could imagine using VDA for the long-range context while applying something like dynamic sparsity within the local Softmax attention window. Combining architectural changes with training-free inference methods like token carving is also interesting, as they tackle different sources of inefficiency. This paper solidifies the idea that a hybrid, system-level approach is currently the most effective path forward for efficient video generation.",
+      "zh": "这是未来研究的一个很好的方向，也很有可能实现。可以想象，用VDA来处理长距离上下文，同时在局部Softmax注意力窗口内应用动态稀疏性之类的方法。把架构层面的改动和token裁剪这类免训练推理方法结合起来也很有意思，因为它们解决的是不同来源的低效问题。这篇论文进一步印证了一个观点：目前来看，混合的、系统级的方案是高效视频生成最有效的路径。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 388.74,
+      "end": 432.744,
+      "en": "To wrap up, Video DeltaNet demonstrates a thoughtful adaptation of linear attention to the unique properties of video diffusion. Its main contribution is the frame-wise joint update mechanism, which solves a key mismatch between sequence-oriented memory models and frame-parallel video processing. This, combined with distillation and inference optimization, presents a compelling system for reducing the latency of long-video generation. The key takeaway is that designing mechanisms native to the data modality, in this case video, can be more effective than directly importing solutions from other domains like language. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "总结一下，Video DeltaNet 展示了如何把线性注意力巧妙地适配到视频扩散的独特特性上。它的主要贡献是逐帧联合更新机制，解决了面向序列的记忆模型和帧并行视频处理之间的关键错配。再结合蒸馏和推理优化，构成了一个很有说服力的系统，能有效降低长视频生成的延迟。关键结论是，针对数据模态本身设计机制——在这里就是视频——往往比直接照搬语言等其他领域的方案更有效。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{xi2026videodeltanetvideonativehybrid,\n      title={Video DeltaNet: A Video-Native Hybrid Attention for Livestream Video Generation}, \n      author={Haocheng Xi and Yiming Xie and Hexu Zhao and Yiwen Zhang and Michael Liu and Thomas Creavin and Kurt Keutzer and Xiuyu Li and Zhaoyang Lv and Chenfeng Xu and Haiwen Feng},\n      year={2026},\n      eprint={2609.20744},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.20744}, \n}",
+  "topics": [
+    "Machine Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.728,
+    0.451,
+    0.454,
+    0.514,
+    0.393,
+    0.565,
+    0.687,
+    0.703,
+    0.74,
+    0.447,
+    0.267,
+    0.516,
+    0.44,
+    0.2,
+    0.708,
+    0.728,
+    0.672,
+    0.655,
+    0.731,
+    0.668,
+    0.468,
+    0.465,
+    0.484,
+    0.506,
+    0.543,
+    0.477,
+    0.436,
+    0.677,
+    0.743,
+    0.494,
+    0.729,
+    0.725,
+    0.803,
+    0.698,
+    0.681,
+    0.638,
+    0.817,
+    0.487,
+    0.758,
+    0.925,
+    0.533,
+    0.608,
+    0.527,
+    0.401,
+    0.536,
+    0.804,
+    0.52,
+    0.745,
+    0.535,
+    0.388,
+    0.703,
+    0.67,
+    0.849,
+    0.497,
+    0.777,
+    0.735,
+    0.65,
+    0.659,
+    0.544,
+    0.768,
+    0.245,
+    0.57,
+    0.586,
+    0.861,
+    0.56,
+    0.514,
+    0.538,
+    0.393,
+    0.277,
+    0.263,
+    0.256
+  ],
+  "published": "2026-09-17",
+  "license": "CC BY"
+}

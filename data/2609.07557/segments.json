@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 420.807,
+  "word_match_rate": 0.9564,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in 3D Computer Graphics. Today's lecture is on \"Heat Kernel Textures: the Geodesic Gaussians That Do Not Splat,\" a paper from researchers at Imperial College London. We've seen a recent surge in explicit, primitive-based representations, with 3D Gaussian Splatting becoming dominant. Works like \"MeshSplat\" have tried to better connect splatting to surfaces. This paper, however, tackles a much older problem: the fundamental flaws of UV-mapping for textures. It proposes an entirely UV-free, intrinsic approach.",
+      "start": 0.0,
+      "end": 33.28
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Yes, Noah?",
+      "start": 33.66,
+      "end": 34.2
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor. So is the main idea here to create something like 3D Gaussian Splatting, but force it to live directly on the mesh surface instead of in ambient 3D space?",
+      "start": 34.6,
+      "end": 42.34
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That's a great way to frame it. While 3DGS is primarily for novel view synthesis, this work focuses squarely on texture representation. But you're right about the core concept. Instead of letting primitives float in space where they might detach from the surface, this method ensures they are always intrinsically part of the surface geometry. It achieves this by replacing the standard Euclidean Gaussians with a mathematical equivalent that's native to curved surfaces: the heat kernel.",
+      "start": 42.74,
+      "end": 71.22
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The central idea of Heat Kernel Textures, or HKTex, is to represent a surface's appearance as a collection of these optimizable primitives. Think of it like a vector graphics file, but instead of 2D shapes on a canvas, you have these heat kernels painted directly onto the 3D mesh. Each kernel is defined by parameters like its position on the surface, its color, its scale, and its shape. The shape can be anisotropic, meaning it can be stretched into an ellipse, which is useful for representing directional patterns. To determine the color at any point on the mesh, the system simply blends the contributions of the most influential nearby kernels. This completely sidesteps the need for UV coordinates, and with them, the problems of seams, distortion, and wasted memory.",
+      "start": 71.62,
+      "end": 115.34
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "I'm a bit lost on the heat kernel concept. Why heat? What does diffusion have to do with texture?",
+      "start": 115.62,
+      "end": 119.56
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "It's an analogy for how a value spreads across a surface. Imagine placing a single, tiny hot poker at a point on a metal mesh. The heat will diffuse outwards, but it's constrained to travel along the metal, not through the air. The temperature distribution at a given moment in time forms a smooth, bell-like curve centered at that point. That distribution is the heat kernel. It's the manifold's natural equivalent of a Gaussian. By controlling the 'diffusion time' and other parameters, you can control the size and falloff of this primitive, just like you would with a Gaussian splat.",
+      "start": 119.92,
+      "end": 152.28
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Okay, that makes sense. But the paper mentions anisotropic heat kernels. Is that like making the heat spread faster in one direction than another, creating an oval shape instead of a circle?",
+      "start": 152.72,
+      "end": 161.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly right. Anisotropy is critical for representing textures with directional details, like wood grain or brushed metal. This brings us to the methodology, which involves several key components. First is optimization. You can't just use standard gradient descent to move the kernels around, because that would move them off the surface. Instead, they employ Riemannian gradient descent. This projects the gradient onto the local tangent plane of the mesh, and the update step moves the kernel along a geodesic, which is the shortest path on the surface. It's like forcing the kernels to slide along the mesh without ever lifting off.",
+      "start": 161.98,
+      "end": 199.68
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The second component is adaptive density control. During training, if the model finds an area with high reconstruction error, it densifies that region by adding more kernels. If a kernel is small, it gets cloned. If it's large, it gets split into two smaller kernels, which are then pushed apart along the surface. Conversely, kernels that contribute very little are pruned away. This allows the representation to allocate detail efficiently, using more primitives for complex areas and fewer for simple ones. Finally, to make this all computationally tractable, they use several optimizations, like pre-computing and interpolating spectral properties of the mesh to speed up kernel evaluation.",
+      "start": 199.96,
+      "end": 237.9
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Hold on, pre-computing properties for a grid of anisotropy parameters sounds like a potential bottleneck. How do they ensure the interpolation between grid points is valid? Don't the eigenvectors used to compute the kernels get scrambled?",
+      "start": 238.38,
+      "end": 250.4
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "That's an excellent technical question, and the authors address it directly. You're right, the eigenvectors can switch order or flip signs between adjacent grid points, which would make naive interpolation meaningless. They implement an alignment procedure using the Hungarian algorithm and Singular Value Decomposition to make the eigenvector bases consistent across the grid before interpolation. It's a necessary pre-computation step that enables the efficient, continuous evaluation of anisotropic kernels during optimization. It is a classic trade-off between upfront cost and runtime performance.",
+      "start": 250.94,
+      "end": 285.38
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "So what were the results? How does it stack up against neural approaches like those in UniTEX or other intrinsic neural fields?",
+      "start": 285.8,
+      "end": 291.64
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The results are quite strong, particularly regarding efficiency. In their experiments, both for compressing existing UV-textures and for reconstructing textures from multi-view images, HKTex achieved visual quality that was competitive with or superior to state-of-the-art neural baselines. It performed very well on perceptual metrics like SSIM and LPIPS, suggesting it preserves fine details and structural information effectively. The most significant finding, however, was the memory footprint. HKTex produced these high-quality results using only around 100 kilobytes of storage, which was substantially less than the nearly one megabyte required by the MLP-based neural fields to achieve comparable quality.",
+      "start": 292.0,
+      "end": 333.64
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The significance of this work is that it provides a robust alternative to two dominant paradigms. It moves beyond the discrete, artifact-prone world of UV-mapping, but it also avoids the 'black box,' memory-intensive nature of many implicit neural representations. It's an explicit, primitive-based method, but one whose primitives are designed from the ground up to respect the intrinsic geometry of the domain. This connects back to our discussion on 3DGS. While methods like GeoSplatting try to impose geometric guidance on Euclidean Gaussians, HKTex builds the geometric constraints directly into the primitive itself. The authors even suggest this is a step towards 'manifold vector graphics,' where textures can be edited with the precision of vector tools directly on the 3D surface.",
+      "start": 334.12,
+      "end": 380.52
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So, the main takeaway is that by reformulating the problem geodesically, we get a representation that is both memory-efficient and avoids the classic artifacts of UV maps and the geometric disconnect of ambient-space methods?",
+      "start": 380.96,
+      "end": 392.62
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Precisely. It's a compelling argument for building representations with the right geometric priors. Instead of fighting the surface geometry, it embraces it. The core lesson is that by choosing primitives that are native to the domain—in this case, heat kernels on a manifold—you can often develop a more elegant, efficient, and robust solution. It's a return to first principles for a classic graphics problem.",
+      "start": 393.16,
+      "end": 415.76
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 415.76,
+      "end": 420.807
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 392.647,
+  "word_match_rate": 0.95,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Robot Learning. Today's lecture is on Proxy Policy Steering, a recent paper from researchers at Cornell. We've seen a surge of interest in adapting large, generalist robot policies, with methods like FLaRe from Google DeepMind using reinforcement learning, or RETAIN exploring parameter merging. This paper tackles a core problem in this space: how to specialize a generalist model for a new task using just a few demonstrations, without destroying its broad, pre-trained capabilities.",
+      "start": 0.0,
+      "end": 29.4
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Yes, Noah?",
+      "start": 29.4,
+      "end": 30.4
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor. Could you elaborate on that tension? Why is it so hard to specialize these models without breaking them?",
+      "start": 30.74,
+      "end": 35.68
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That's the central question. The issue is that methods which modify the model's parameters, like fine-tuning or even more efficient techniques like LoRA, tend to overfit when data is scarce. They might learn the new task, but in the process, they can overwrite the vast knowledge encoded in the base model—things like how to recover from a failed grasp or handle unexpected object positions. This is often called prior forgetting.",
+      "start": 35.86,
+      "end": 59.9
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "And the alternative methods have their own problems?",
+      "start": 60.4,
+      "end": 62.48
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Correct. Other approaches keep the base model frozen and instead try to steer the action sampling process. Think of methods like DSRL. The limitation there is that they can generally only re-weight behaviors the base model already knows how to produce. They struggle to guide the policy towards a completely new type of action that the base model considers highly improbable. So you have this trade-off: change the model and risk breaking it, or guide the model and be limited by its existing action distribution.",
+      "start": 62.92,
+      "end": 92.52
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So where does Proxy Policy Steering, or PPS, fit in?",
+      "start": 92.94,
+      "end": 95.44
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "PPS aims to get the best of both worlds. It's an inference-time adaptation method that keeps the large base model completely frozen. The core idea is to learn two very small, lightweight 'proxy' models. One is a 'reference proxy,' trained to mimic the base model's behavior on the new task's data. The other is a 'task proxy,' which is fine-tuned on the new task's demonstrations. At inference, the difference between these two proxies creates a correction signal that guides, or steers, the frozen base model.",
+      "start": 95.78,
+      "end": 127.08
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Wait, I'm a bit confused about the reference proxy. Why not just use the task proxy to guide the base model directly? Why do you need this intermediate reference model?",
+      "start": 127.38,
+      "end": 134.9
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "That's a critical detail of their method. If you just used a task proxy, the correction signal would be muddled. The difference between a small, independently trained proxy and the massive base model would include not just the task-specific information, but also all sorts of noise from differences in architecture, initialization, and approximation errors. By training both a reference and a task proxy from a shared starting point, their difference cleanly isolates the change induced by the task demonstrations. It's a much more pure signal.",
+      "start": 135.1,
+      "end": 167.56
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Okay, that makes sense. It's about creating a controlled comparison. How is this 'steering' actually implemented? The paper focuses on flow-matching models.",
+      "start": 167.94,
+      "end": 175.04
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Yes, and that's where the formulation becomes quite elegant. For flow-matching VLAs, which learn a velocity field to transform noise into an action, they show that this density-ratio correction is equivalent to a simple additive residual in the velocity space. So, the final guided velocity is just the base model's velocity plus a guidance term, which is the difference between the task and reference proxies' velocities, scaled by a strength parameter. It allows the proxies to directly push the action generation process in a new direction.",
+      "start": 175.62,
+      "end": 207.88
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "That sounds a lot like classifier-free guidance in diffusion models. Is that a fair comparison?",
+      "start": 208.26,
+      "end": 212.3
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "It's an excellent analogy. The principle of steering in the score or velocity space is very similar. The novelty in PPS is the specific way they generate that guidance term using the two-proxy setup. Their two-stage training process is key. First, they distill the reference proxy from the base model. Then, importantly, they initialize the task proxy from the trained reference proxy before fine-tuning it on demonstrations. This ensures the two proxies are as similar as possible, except for the effect of the task data.",
+      "start": 212.78,
+      "end": 244.58
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "What about the practicalities? Does running three models at inference time introduce significant latency?",
+      "start": 244.58,
+      "end": 249.66
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "That's a valid concern, but the proxies are very small—about 32 million parameters, which is roughly one percent of the base model's size. They found it added only about 6 milliseconds of latency and was about five times faster to train than a LoRA adaptation, since they never have to backpropagate through the massive base VLA. It's computationally efficient.",
+      "start": 250.18,
+      "end": 272.56
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "And this approach actually preserves the base model's general skills? The paper mentioned recovery behaviors.",
+      "start": 272.56,
+      "end": 278.46
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "It does, and that was one of their most significant findings. In experiments where they perturbed the robot mid-task, like unfolding jeans it was trying to fold, the PPS-guided policy successfully recovered and completed the task. The LoRA-finetuned model, in contrast, had overfit to the clean demonstration trajectories and failed. This is because when the proxies agree—which happens in states that are far from the specific task demonstrations—their guidance term cancels out, and control defaults back to the robust, frozen base model.",
+      "start": 278.92,
+      "end": 309.38
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "So it's like the proxies only intervene when they have high confidence about the specific task, and otherwise they let the generalist handle it. This seems to align with the goals of other works like PriorVLA, which also focus on preventing prior forgetting.",
+      "start": 309.74,
+      "end": 322.66
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Exactly. While the goals are similar, the mechanism is quite different. PPS accomplishes this preservation purely at inference time, without any regularization or architectural changes to the base model. This makes it applicable even to closed-source, API-only models. It also allows for interesting extensions, like using proxies that take in different modalities. They showed they could steer an RGB-only base policy using point cloud data, which is a powerful capability.",
+      "start": 323.44,
+      "end": 350.84
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "So to wrap up, Proxy Policy Steering provides an effective and efficient solution to the adaptation problem. It allows a generalist policy to learn a new task from a few demonstrations without compromising the broad, robust priors it was trained on. It achieves this by using lightweight proxy models to compute a precise correction signal in the velocity space, steering the frozen base model at inference time.",
+      "start": 351.56,
+      "end": 374.02
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The main takeaway here is that adapting massive foundation models doesn't always require changing their weights. A principled, inference-time guidance mechanism can be more robust and efficient, especially when data is limited. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 374.32,
+      "end": 392.647
+    }
+  ]
+}

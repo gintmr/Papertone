@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 373.63,
+  "word_match_rate": 0.9537,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in AI Agents. Today's lecture is on EvoOntology: A Self-Evolving Ontology Layer for Data Agents, from researchers at Renmin University of China. We've seen a surge of papers on self-evolving agents recently, like AgentEvolver and SkillOS, which focus on improving agent reasoning or tool creation. This work takes a different, very interesting direction. It argues that a key bottleneck isn't just the agent's logic, but its fundamental understanding of the data it operates on. It tackles what the authors call the 'agent-data gap'.",
+      "start": 0.0,
+      "end": 30.36
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Yes, Noah?",
+      "start": 32.0,
+      "end": 32.54
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. So if those other papers are about evolving the agent's skills, is this one about evolving the agent's world model, specifically for data?",
+      "start": 32.9,
+      "end": 40.02
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That's a precise way to put it. Instead of just giving an agent a Python interpreter and a database schema, EvoOntology tries to build and refine a semantic layer that connects high-level concepts, like 'revenue', to the messy reality of physical data scattered across tables and files. The core problem is that agents reason conceptually, but data is stored physically. An agent might need to join a database table with a CSV file to calculate profit, but the column names could be 'rev_usd' in one and 'sales_total' in the other. Existing systems either force the agent to figure this out from scratch every time, which is inefficient, or they use a static semantic layer.",
+      "start": 40.3,
+      "end": 85.34
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "And what's the issue with a static layer? It sounds like a good solution.",
+      "start": 85.34,
+      "end": 88.32
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The issue is two-fold. First, they are often manually designed and become outdated. Second, for large data environments, you can't just stuff the entire semantic dictionary into the agent's prompt; you run into context length limits. The agent gets overwhelmed with irrelevant information. The main contribution of EvoOntology is to reframe the ontology not as static prompt metadata, but as an interactive runtime service. The agent uses tools to query this service for just the information it needs, when it needs it. And critically, the ontology itself improves over time by observing the agent's successes and failures.",
+      "start": 88.68,
+      "end": 123.64
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So the ontology is a tool the agent learns to use, and the tool itself also learns. How does that work in practice? What does this ontology actually look like?",
+      "start": 124.1,
+      "end": 131.28
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The system has a three-layer architecture. At the core is the Content Layer, which is a semantic graph. It has nodes for 'Terms' like customer or revenue, 'Mappings' that link those terms to specific database columns or file paths, 'Constraints' that add business rules like 'exclude returns', and 'Evidence' which grounds these claims in observations from the data itself, like sample values. The second layer is the Schema Layer, which defines the rules for this graph. And the third is the Tool Layer, which is how the agent interacts with it. The agent gets tools like 'browse' to search for concepts and 'resolve' to get the full details.",
+      "start": 131.5,
+      "end": 170.42
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "How is the initial version built? Does a human have to create it?",
+      "start": 170.96,
+      "end": 173.76
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The initial construction is automated by what they call a 'builder agent'. It takes a training workload of tasks and identifies candidate concepts. For each concept, it runs 'probe queries' against the actual data sources to verify its understanding. For example, if it hypothesizes a 'revenue' concept, it might query the database to check value distributions and ensure the mapping to a specific column makes sense. A concept is only added to the ontology if it's backed by this direct evidence from the data. This prevents the ontology from being just a set of plausible but unverified descriptions.",
+      "start": 173.92,
+      "end": 206.7
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "And the evolution part? How does it identify a problem and fix it?",
+      "start": 207.26,
+      "end": 210.14
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "After initialization, an 'evolution agent' analyzes agent trajectories. It looks for patterns of failure or inefficiency. It then attributes the problem to one of the three layers. For instance, a missing concept is a Content-level issue. An agent repeatedly failing to find a useful term might be a Tool-level issue with the search function. It then proposes a specific, typed patch. This candidate ontology is tested on a validation set, and the change is only kept if it improves performance beyond a certain threshold. It's a very methodical, gated process of improvement.",
+      "start": 210.42,
+      "end": 245.38
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The architectural implication here is significant. By decoupling the semantic knowledge from the prompt and making it an external, queryable, and adaptive service, the system can scale more effectively. It's a move away from prompt engineering and towards building more structured, dynamic knowledge components for agents. It has clear connections to the broader trend of self-improving systems, like Dr. Zero or Agent0, but applies the principle of evolution directly to the agent's data-centric world model. The paper shows this improves performance on benchmarks like DDR-Bench and BIRD significantly more than both a raw exploration approach and a static semantic layer.",
+      "start": 245.82,
+      "end": 285.46
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "One result that stood out to me was the backbone-specificity. The evolved ontologies didn't transfer well between different models like GPT and Claude. Doesn't that suggest the ontology is learning the quirks of a specific model's reasoning process, rather than the pure semantics of the data?",
+      "start": 285.84,
+      "end": 300.3
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That's an excellent and critical observation. The authors acknowledge this. The ontology appears to be co-adapting to both the data's semantics and the specific model's behavior—its tendencies for tool use, retrieval, and interpretation. From a practical standpoint, it means you'd need to maintain separate evolved ontologies for each backbone you deploy. But from a research perspective, it's a fascinating finding. It suggests that a truly effective semantic layer might not be model-agnostic. It has to be tuned to how a particular intelligence accesses and reasons with information.",
+      "start": 300.68,
+      "end": 335.08
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "So to wrap up, the key takeaway from EvoOntology is its architectural shift. It treats the semantic understanding of data not as a static preamble to a prompt, but as a living, interactive service that the agent queries and helps improve. The system grounds its knowledge in evidence from the data and uses a structured, gated evolution loop to refine that knowledge based on agent behavior. This approach of building adaptive, externalized knowledge components that co-evolve with the agent seems like a promising direction for creating more capable and efficient data agents.",
+      "start": 335.54,
+      "end": 368.36
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 368.72,
+      "end": 373.63
+    }
+  ]
+}

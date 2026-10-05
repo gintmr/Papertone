@@ -1,0 +1,244 @@
+{
+  "id": "2609.20100",
+  "title": "A Smaller Transformer in Your Transformer",
+  "authors": [
+    "Dhananjay Tomar",
+    "Marius Aasan",
+    "Andreas Kleppe",
+    "Adín Ramírez Rivera"
+  ],
+  "abstract": "Recent findings indicate that Vision Transformers settle into locally similar computational phases, implying a level of depthwise computational redundancy. However, existing methods to exploit this redundancy either fail to reduce inference compute or severely degrade model expressivity. In this work, we formalise a unified view of block redundancy that decouples the geometry from specific surrogate interventions. We then introduce Transformer-Within-Transformer (TWT), a post-hoc method that fuses contiguous groups of redundant layers into a single learned surrogate layer. TWT reduces parameter count and inference compute while remaining competitive with original models using half the depth on natural images, and in several downstream histopathology settings, TWT matches or even improves on the original baseline.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.20100",
+    "arxiv": "https://arxiv.org/abs/2609.20100"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0b272-83c7-72fb-a94d-7a53ad74df60/podcast.mp3",
+  "duration": 406.752,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.06,
+      "en": "In our Transformer Architectures course, today’s lecture is on “A Smaller Transformer in Your Transformer.” Recent work such as “Block-Recurrent Dynamics in Vision Transformers” and “Déjà View: Looping Transformers for Multi-View 3D Reconstruction” explores reusing shared layers. This paper takes a different route: it identifies similar neighboring layers and replaces groups of them with single attention layers. Researchers from the University of Oslo and Oslo University Hospital ask whether that can cut actual computation. Yes, Noah?",
+      "zh": "在我们的Transformer架构课上，今天的讲座主题是“你Transformer里的小Transformer”。最近的一些工作，比如“视觉Transformer中的块循环动力学”和“既视感：用于多视角三维重建的循环Transformer”，都在探索复用共享层。这篇论文走了一条不同的路：它找出相似的相邻层，然后用单个注意力层替换掉一组这样的层。来自奥斯陆大学和奥斯陆大学医院的研究人员想知道，这样做能不能真正减少计算量。可以，诺亚？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.1,
+      "end": 40.72,
+      "en": "Hi Professor, if those layers are similar, why not just reuse one layer repeatedly?",
+      "zh": "教授您好，如果那些层很相似，为什么不直接反复复用同一层呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.78,
+      "end": 67.48,
+      "en": "That is a natural approach, and methods such as Raptor do reuse a shared layer. It can reduce parameter storage, but the layer still runs repeatedly, so inference computation may remain high. This paper instead tries to skip redundant intermediate steps. Its central claim is that similar representations can reflect a stable phase of computation, not necessarily a recurrent process. The goal is to replace that phase with one learned transformer layer.",
+      "zh": "这是一种自然的思路，像Raptor这样的方法确实会复用同一个共享层。它能减少参数存储，但这一层仍然要反复运行，所以推理计算量可能依然很高。这篇论文则试图跳过冗余的中间步骤。它的核心主张是，相似的表示可能反映的是计算中的一个稳定阶段，而不一定是一个循环过程。目标是用一个学习到的Transformer层来替代这个阶段。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 68.34,
+      "end": 95.0,
+      "en": "The authors first define redundancy in terms of how different layer representations are across data. They estimate similarity using activations from a calibration set, then seek contiguous groups of layers whose boundary representations stay sufficiently close. Think of a long route with stretches where the scenery barely changes: the method looks for those stretches and substitutes a shorter path, while preserving the model’s attention-based token mixing.",
+      "zh": "作者首先从不同层表示在数据上的差异来定义冗余。他们用校准集上的激活值来估计相似度，然后寻找那些边界表示足够接近的连续层组。可以想象成一条很长的路线，中间有几段风景几乎不变：这个方法就是找出这些路段，用一条更短的路径替代，同时保留模型基于注意力的token混合。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 95.96,
+      "end": 101.18,
+      "en": "Quick question: how does the method decide where one redundant group ends and another begins?",
+      "zh": "快速问一下：这个方法怎么判断一个冗余组在哪里结束、下一个又从哪里开始？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 102.12,
+      "end": 127.84,
+      "en": "It builds a similarity matrix across the model’s layers and uses dynamic programming to partition the depth. A threshold controls the maximum permitted discrepancy within a group. The algorithm first seeks the fewest groups that satisfy that limit, then favors the partition with the lowest worst-case discrepancy. A stricter threshold creates more groups and less compression; a looser threshold allows more layers to be collapsed.",
+      "zh": "它会在模型的各层之间构建一个相似度矩阵，并用动态规划来划分深度。一个阈值控制着一个组内允许的最大差异。算法首先寻找满足该限制的最少分组数，然后倾向于选择最坏情况差异最低的划分。阈值越严格，分组越多，压缩越少；阈值越宽松，就能合并更多层。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 128.78,
+      "end": 158.1,
+      "en": "For each group, the method auditions possible replacement layers. Candidates include the group’s original layers and an averaged layer, with normalization parameters treated separately. The candidate that best approximates the original group’s final representation initializes the smaller student model. The authors then distill from a frozen teacher, matching intermediate boundary representations and the final output. They introduce those training targets progressively to stabilize optimization.",
+      "zh": "对于每个分组，该方法会试听可能的替换层。候选包括该组的原始层和一个平均层，归一化参数则单独处理。最能逼近原始分组最终表示的候选层，用来初始化更小的学生模型。接着，作者从冻结的教师模型中蒸馏，对齐中间边界表示和最终输出。他们逐步引入这些训练目标，以稳定优化过程。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 159.14,
+      "end": 164.02,
+      "en": "So the student learns to match selected checkpoints, rather than reproduce every teacher layer?",
+      "zh": "所以学生模型学的是对齐选定的检查点，而不是复现老师的每一层？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 164.02,
+      "end": 196.74,
+      "en": "Exactly. That distinction helps explain the computation savings: the student bypasses the intermediate transformations instead of executing a shared layer repeatedly. In natural-image classification, six-layer models often retain accuracy near their 12-layer baselines while using about half the flops. For example, DINOv2’s six-layer version uses 11.71 flops units, rather than 23.42, and reaches 84.2% top-1 accuracy, close to the baseline’s 84.6%.",
+      "zh": "正是如此。这个区别有助于解释计算量的节省：学生模型绕过了中间变换，而不是反复执行同一个共享层。在自然图像分类中，六层模型通常能保持接近其十二层基线的准确率，而浮点运算量大约只有一半。例如，DINOv2的六层版本使用11.71个浮点运算单位，而不是23.42个，并达到84.2%的top-1准确率，接近基线的84.6%。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 199.46,
+      "end": 203.24,
+      "en": "Why does the same compression seem less successful for segmentation?",
+      "zh": "为什么同样的压缩方法在分割任务上就没那么奏效了呢？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 204.32,
+      "end": 238.12,
+      "en": "Segmentation depends on spatial detail at many stages, not only on a compact image-level representation. On ADE20k, compressing DINOv2 roughly halves computation, but mean intersection over union falls from 47.3 to 42.9. DINOv3 shows a similar decline. Even Raptor loses segmentation accuracy while retaining repeated computation. These results suggest that intermediate spatial refinements can matter, so a layer group that is redundant for classification may not be redundant for dense prediction.",
+      "zh": "分割任务在多个阶段都依赖空间细节，而不只是依赖一个紧凑的图像级表示。在 ADE20k 上，压缩 DINOv2 大致能把计算量减半，但平均交并比从 47.3 掉到 42.9。DINOv3 也表现出类似的下降。即便是 Raptor，在保留重复计算的情况下，分割精度依然会损失。这些结果表明，中间阶段的空间细化可能很重要，所以对分类来说冗余的层组，对稠密预测来说未必冗余。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 239.14,
+      "end": 266.06,
+      "en": "The strongest results appear in histopathology, where a foundation model processes many tiles from each whole-slide image. With H0-mini, a five-layer student cuts active parameters from 85.74 million to 36.11 million and reduces flops from 23.56 to 9.36. On PANDA prostate grading, its quadratic weighted kappa with an attention-based multiple-instance-learning head is 93.79, essentially matching the baseline’s 93.77.",
+      "zh": "最强的结果出现在组织病理学领域，这里一个基础模型要处理每张全切片图像中的许多图块。用 H0-mini 时，一个五层的学生模型把活跃参数从 8574 万降到 3611 万，flops 从 23.56 降到 9.36。在 PANDA 前列腺分级任务上，它接一个基于注意力的多实例学习头，二次加权 kappa 达到 93.79，基本追平基线的 93.77。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 268.5,
+      "end": 273.86,
+      "en": "Could the histopathology gains come from removing variation that is irrelevant to the target domain?",
+      "zh": "组织病理学上的提升，会不会来自去掉了与目标领域无关的变异？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 273.86,
+      "end": 306.86,
+      "en": "That is the authors’ interpretation, and their geometry analysis offers supporting evidence. In H0-mini, compressed representations have lower variance across stochastic augmentations; for flattened patch tokens, standard-deviation reductions range from 37.8% to 49.6% at measured boundaries. The student broadly follows the teacher’s intrinsic-dimension trajectory, but this variance pattern is less clear in natural-image models. The evidence is suggestive, not proof that all removed variation is harmful.",
+      "zh": "这是作者的解释，他们的几何分析也提供了支持证据。在 H0-mini 中，压缩后的表示在随机数据增强下的方差更低；对于展平后的图像块 token，在测量边界处，标准差降低了 37.8% 到 49.6%。学生模型总体上跟随教师模型的内在维度轨迹，但这种方差模式在自然图像模型中不太明显。这些证据具有提示性，但并不能证明所有被去除的变化都是有害的。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 307.78,
+      "end": 338.12,
+      "en": "This places T-W-T between two broad compression strategies: recurrent sharing, which can save parameters without reducing executed depth, and simpler single-step approximations, which may discard attention’s dynamic token mixing. The paper’s standard attention layers aim to preserve that mixing while cutting computation. Still, compression depends on the calibration data and threshold, and results vary across tasks and datasets. Future work could make block discovery task-aware, especially for spatial prediction.",
+      "zh": "这让 T-W-T 处于两种压缩策略之间：一种是循环共享，它能节省参数但不减少实际执行的深度；另一种是更简单的单步近似，它可能丢弃注意力对 token 的动态混合。论文中的标准注意力层旨在保留这种混合，同时削减计算量。不过，压缩效果取决于校准数据和阈值，不同任务和数据集上的结果也会有所不同。未来的工作可以让模块发现具备任务感知能力，尤其是针对空间预测任务。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 339.12,
+      "end": 343.8,
+      "en": "How should researchers test whether a discovered block is truly redundant for a new task?",
+      "zh": "研究人员应该怎样检验一个已发现的块对新任务是否真的冗余？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 344.76,
+      "end": 373.16,
+      "en": "They should evaluate the compressed model on the intended task, rather than infer usefulness from layer similarity alone. A promising block boundary in one dataset may not transfer to another, and downstream performance can reveal lost information that activation comparisons miss. The larger implication is methodological: depthwise similarity can guide compression, but it does not by itself explain why redundancy emerges during pretraining or establish that a phase is dispensable everywhere.",
+      "zh": "他们应该在目标任务上评估压缩后的模型，而不是仅凭层与层之间的相似度就推断它有没有用。在一个数据集上看起来有希望的块边界，换到另一个数据集未必成立，而下游性能可以揭示激活值比较所遗漏的信息损失。更大的启示在于方法论层面：逐层相似度可以指导压缩，但它本身既不能解释预训练过程中冗余为何会出现，也不能证明某个阶段在所有情况下都是可有可无的。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 374.04,
+      "end": 406.752,
+      "en": "The key takeaway is that a transformer can sometimes become shallower without abandoning attention: identify stable stretches, replace each with a learned layer, and distill the result. That tradeoff looks especially useful for image-level transfer and costly histopathology pipelines, while dense prediction calls for caution. The right question is not simply how similar adjacent layers look, but whether removing their intermediate work preserves what the target task needs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键在于，Transformer有时可以在不放弃注意力机制的情况下变得更浅：找出稳定的连续层段，用学习到的单层替换每一段，再对结果做蒸馏。这种取舍对图像级迁移和成本高昂的组织病理学流程尤其有用，而密集预测则需谨慎对待。真正该问的不只是相邻层看起来有多相似，而是去掉它们之间的中间计算后，目标任务所需的信息是否还能保留。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{tomar2026smallertransformertransformer,\n      title={A Smaller Transformer in Your Transformer}, \n      author={Dhananjay Tomar and Marius Aasan and Andreas Kleppe and Adín Ramírez Rivera},\n      year={2026},\n      eprint={2609.20100},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.20100}, \n}",
+  "topics": [
+    "Computer Vision"
+  ],
+  "peaks": [
+    1.0,
+    0.671,
+    0.452,
+    0.802,
+    0.558,
+    0.442,
+    0.289,
+    0.697,
+    0.646,
+    0.373,
+    0.32,
+    0.471,
+    0.578,
+    0.244,
+    0.23,
+    0.345,
+    0.2,
+    0.528,
+    0.47,
+    0.258,
+    0.31,
+    0.213,
+    0.241,
+    0.532,
+    0.419,
+    0.33,
+    0.467,
+    0.334,
+    0.446,
+    0.378,
+    0.551,
+    0.493,
+    0.591,
+    0.583,
+    0.55,
+    0.353,
+    0.698,
+    0.545,
+    0.441,
+    0.497,
+    0.416,
+    0.45,
+    0.657,
+    0.447,
+    0.316,
+    0.347,
+    0.362,
+    0.561,
+    0.551,
+    0.716,
+    0.515,
+    0.335,
+    0.4,
+    0.347,
+    0.67,
+    0.309,
+    0.322,
+    0.389,
+    0.484,
+    0.324,
+    0.647,
+    0.702,
+    0.453,
+    0.394,
+    0.377,
+    0.322,
+    0.579,
+    0.457,
+    0.377,
+    0.442,
+    0.384,
+    0.381
+  ],
+  "published": "2026-09-17",
+  "license": "CC BY"
+}

@@ -1,0 +1,242 @@
+{
+  "id": "2609.13814",
+  "title": "Realtime-Venus: A full-duplex interaction system with asynchronous delegation",
+  "authors": [
+    "Venus Team",
+    "Tsinghua University"
+  ],
+  "abstract": "Natural interaction in digital and physical environments requires continuous perception and timely responses. Spoken dialogue relies on acoustic and linguistic cues, while video interaction also requires grounding the conversation in evolving visual context. We present Realtime-Venus, a proactive full-duplex interaction system with two separately trained 9B models: Realtime-Venus-Omni for audio-visual interaction and Realtime-Venus-Audio for spoken interaction. Each model serves as a complete conversational frontend, integrating continuous perception, conversational control, and native speech generation through a shared causal timeline for user inputs, model outputs, and delegation events. A dual-loop runtime coordinates live interaction with background reasoning and tool execution. Foreground interaction continues while Realtime-Venus-Harness executes tasks asynchronously and returns results for integration into the ongoing dialogue. Both models follow a common post-training recipe combining offline understanding, proactive full-duplex trajectories, and delegation workflows. Among the evaluated online models, Realtime-Venus-Omni achieves the highest scores on six of eight video benchmarks, including StreamingBench (70.2%), OVO-Bench (64.7%), and Daily-Omni (81.3%). Across eight audio understanding and spoken question answering benchmarks, Realtime-Venus-Audio leads the compared models on MMAU (78.0%), MMAU-Pro (63.2%), Llama Questions (83.8%), and Speech CMMLU (67.8%), while matching the best VoiceBench AlpacaEval score of 4.81. On Full-Duplex-Bench v1.5, Realtime-Venus-Audio responds to 75% of user interruptions and achieves continuation rates of 97%, 88%, and 86% under backchannels, other-directed speech, and background speech, respectively, exceeding Gemini 3.1 Live and GPT-4o on all three continuation metrics.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.13814",
+    "arxiv": "https://arxiv.org/abs/2609.13814"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0a349-e310-77c5-84ac-b9e4e3c68ff0/podcast.mp3",
+  "duration": 464.483,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.78,
+      "en": "Welcome to Advanced Topics in Multimodal AI. Today's lecture is on “Realtime-Venus: A Full-Duplex Interaction System with Asynchronous Delegation,” a new paper from researchers at Ant Group and Tsinghua University. We've seen a lot of recent work pushing towards more natural interaction, like the models behind MiniCPM-o 4.5 and VITA-1.5, which aim for real-time, continuous perception and response. This paper fits right into that trend but introduces an interesting architectural distinction. It argues that for a truly useful assistant, we need to separate latency-sensitive foreground interaction from longer-running background tasks. Yes, Noah?",
+      "zh": "欢迎来到多模态AI进阶专题。今天这堂课讲的是“Realtime-Venus：一个带异步委托的全双工交互系统”，这是蚂蚁集团和清华大学的研究人员发表的一篇新论文。最近我们看到很多工作都在朝着更自然的交互方向推进，比如MiniCPM-o 4.5和VITA-1.5背后的那些模型，它们的目标是实时、连续的感知和响应。这篇论文正好契合这个趋势，但引入了一个很有意思的架构上的区分。它提出，要做一个真正有用的助手，我们需要把对延迟敏感的前台交互和运行时间更长的后台任务分开。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.2,
+      "end": 46.3,
+      "en": "Hi Professor. How is that separation different from just having a modular system where a frontend model calls an external API? It seems like a common pattern.",
+      "zh": "教授您好。这种分离跟那种模块化系统——前端模型调用外部API——有什么不同呢？这好像是个挺常见的模式。"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.62,
+      "end": 73.98,
+      "en": "That's a great question. The key difference lies in how these two processes are coordinated. Instead of a simple request-response cycle that might freeze the conversation, Realtime-Venus proposes a unified framework where both streams operate on a shared, continuous timeline. The model can continue a full-duplex conversation with the user while a delegated task runs completely asynchronously in the background. The main contribution is managing the causal consistency of that entire process.",
+      "zh": "这是个很好的问题。关键区别在于这两个过程是如何协调的。Realtime-Venus 不是采用那种可能让对话卡住的简单请求-响应循环，而是提出了一个统一的框架，让两条流在共享的、连续的时间线上运行。模型可以在与用户进行全双工对话的同时，让委派的任务完全异步地在后台运行。主要贡献在于管理整个过程的因果一致性。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 74.6,
+      "end": 125.88,
+      "en": "So, let's break down the main concepts. The system's primary goal is to support continuous, natural interaction. This means it needs to keep listening while it's speaking, allowing it to handle user interruptions. But not all overlapping speech is an interruption. A user might say 'uh-huh' or 'right' just to signal they're following along. A simple voice activity detector would just stop the assistant's speech. Realtime-Venus is trained to distinguish these backchannels from genuine interruptions that require it to stop and change course. The second major objective is to connect this real-time frontend to more complex, time-intensive capabilities. This could be anything from a web search to multi-step reasoning or executing a tool. The system offloads these tasks to what it calls an asynchronous delegation harness.",
+      "zh": "那我们来拆解一下几个核心概念。这个系统的首要目标是支持连续、自然的交互。也就是说，它需要在说话的同时继续听，这样才能处理用户的打断。但并不是所有重叠的语音都是打断。用户可能只是说“嗯嗯”或者“对”，表示自己在跟着听。一个简单的语音活动检测器会直接让助手停止说话。而Realtime-Venus经过训练，能够区分这些附和性反馈和真正需要它停下来改变方向的打断。第二个主要目标是把这套实时前端和更复杂、更耗时的能力连接起来。这可以是网页搜索，也可以是多步推理或者执行某个工具。系统会把这些任务卸载到它所谓的异步委托执行框架上。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 126.32,
+      "end": 132.32,
+      "en": "So you're saying the model is making a semantic distinction about the user's overlapping speech, not just an acoustic one?",
+      "zh": "所以你是说，模型对用户重叠语音做的是语义上的区分，而不只是声学上的判断？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 132.32,
+      "end": 169.24,
+      "en": "Precisely. And this is all managed through a unified stream serialization. Imagine a single timeline. On this timeline, you have the user's incoming audio and video, the assistant's own speech output, and a third, hidden stream: messages from the background system. The model autoregressively predicts what to do next based on everything that's happened on this shared timeline. It might decide to keep listening, to speak, or to privately delegate a task. When the result of a delegated task returns, it appears on this timeline, and the model then decides if, when, and how to present that information to the user in the context of the current conversation.",
+      "zh": "正是如此。而这一切都是通过统一的流序列化来管理的。想象一条单一的时间线。在这条时间线上，有用户传来的音频和视频、助手自己的语音输出，还有第三条隐藏的流：来自后台系统的消息。模型基于这条共享时间线上发生的一切，自回归地预测下一步该做什么。它可能决定继续听、开口说话，或者私下委派一个任务。当被委派任务的结果返回时，它会出现在这条时间线上，然后模型再决定是否、何时以及如何结合当前对话的上下文，把这条信息呈现给用户。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 169.82,
+      "end": 176.44,
+      "en": "Wait, what happens if the user changes the topic after a task has been delegated? The result might be irrelevant by the time it comes back.",
+      "zh": "等等，如果用户在任务被委派之后换了话题怎么办？等结果回来的时候可能已经无关了。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 176.74,
+      "end": 203.76,
+      "en": "That's the causal consistency problem I mentioned. The system handles this by creating a frozen snapshot of the conversational evidence at the moment the task is delegated. The background task runs based on that snapshot. When the result is returned, the frontend model evaluates its relevance against the new, updated conversational state. It can then choose to discard the result, summarize it, or wait for a more appropriate moment to introduce it. The decision is made in real-time.",
+      "zh": "这就是我刚才提到的因果一致性问题。系统是这样处理的：在任务被委派出去的那一刻，对当时的对话证据做一个冻结快照。后台任务就基于这个快照来运行。等结果返回时，前端模型会拿它跟已经更新过的对话状态做比对，判断还相不相关。然后它可以选择丢弃这个结果、做个总结，或者等一个更合适的时机再抛出来。这个判断是实时做出的。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 204.7,
+      "end": 255.42,
+      "en": "Now let's look at the technical approach. Both the audio-only and the omni-modal versions of Realtime-Venus are built on the MiniCPM-o 4.5 architecture. The core language model, which they call the 'Thinker', is trained to generate not just response text but also special control tokens. In each one-second chunk of time, it predicts tokens like `<|listen|>` to stay quiet, or `<|speak|>` to start talking. This is how it manages turn-taking. For delegation, it generates a private `<delegate>` tag containing the task description in natural language. This tag is hidden from the user, and the harness picks it up, dispatches it to the right capability, and returns the result in another private tag, `<backend>`. The frontend model then sees this `<backend>` message and decides how to verbalize it.",
+      "zh": "现在来看技术方案。Realtime-Venus 的纯音频版和全模态版都建立在 MiniCPM-o 4.5 架构之上。核心语言模型，他们称之为“Thinker”，训练目标不仅是生成回复文本，还要生成特殊的控制 token。在每一个一秒的时间块里，它会预测像 `<|listen|>` 这样的 token 来保持安静，或者 `<|speak|>` 来开始说话。这就是它管理轮流发言的方式。对于委派任务，它会生成一个私有的 `<delegate>` 标签，里面用自然语言描述任务内容。这个标签对用户不可见，由调度层接收后分发给对应的能力模块，再通过另一个私有标签 `<backend>` 返回结果。前端模型随后看到这条 `<backend>` 消息，决定如何把它说出来。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 255.64,
+      "end": 264.02,
+      "en": "Can you clarify the training data for this? The model's ability to differentiate a backchannel from an interruption seems critical. Is that something that can be learned from existing datasets?",
+      "zh": "能具体说说训练数据吗？模型区分附和和真正打断的能力似乎很关键。这是能从现有数据集里学到的吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 264.92,
+      "end": 298.46,
+      "en": "They had to create a large-scale corpus for this. The paper mentions over a million samples specifically for proactive or full-duplex interaction. The pipeline involved planning scenarios, adding paralinguistic effects and overlapping speakers, and then carefully aligning all the audio, video, text, and system action labels on that common timeline. So a scenario might have a label indicating that the user's overlapping speech is a backchannel, and the correct model behavior is to continue speaking. Another might be labeled as a true interruption, where the correct behavior is to stop and listen.",
+      "zh": "他们为此专门构建了一个大规模语料库。论文提到，针对主动交互或全双工交互，样本量超过一百万。整个流程包括规划场景、加入副语言效果和说话人重叠，然后在那条统一的时间线上，把音频、视频、文本和系统动作标签仔细对齐。所以一个场景可能带有标签，标明用户的重叠语音是附和，而模型的正确行为是继续说话。另一个场景可能被标为真正的打断，这时正确的行为是停下来倾听。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 298.74,
+      "end": 303.86,
+      "en": "And what about for long videos? The context window can't hold everything. The report mentioned a memory module.",
+      "zh": "那长视频怎么办？上下文窗口装不下所有内容。报告里提到了一个记忆模块。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 304.7,
+      "end": 335.14,
+      "en": "Right, for the omni-modal version, they use a training-free external memory. Instead of storing every frame, it uses a motion-compensated prediction mechanism to decide if a new frame contains a meaningful visual change. If not, the frame is dropped. If it is, the frame's visual representation and timestamp are archived. This allows the model to query a summarized history of a long video session without overloading its context window, which is a practical solution to a common problem in continuous video processing.",
+      "zh": "对，在全模态版本里，他们用的是一个免训练的外部记忆模块。它不会把每一帧都存下来，而是通过一种运动补偿的预测机制来判断新的一帧里有没有值得注意的视觉变化。如果没有，这一帧就直接丢掉。如果有，就把这一帧的视觉表示和时间戳归档起来。这样模型就能查询一段长视频会话的摘要历史，而不会把上下文窗口撑爆，这对连续视频处理中一个常见问题来说是个很实用的解法。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 335.64,
+      "end": 372.2,
+      "en": "In terms of implications, this work provides a strong architectural pattern for integrating real-time interaction with asynchronous computation. The results are competitive. On Full-Duplex-Bench, for instance, Realtime-Venus showed a high continuation rate for backchannels, correctly ignoring non-interruptive speech over 85% of the time, which was better than the reported figures for some proprietary models. However, this came with a trade-off. Its response rate to genuine interruptions was slightly lower than models like GPT-4o. This suggests a classic design tension between conversational continuity and immediate reactivity.",
+      "zh": "从意义上看，这项工作提供了一个强有力的架构模式，把实时交互和异步计算整合在一起。结果也很有竞争力。比如在全双工基准上，Realtime-Venus 在附和语上表现出很高的延续率，超过 85% 的情况下能正确忽略非打断性语音，这比一些闭源模型报告的数字还要好。但这也是有代价的。它对真正打断的响应率略低于 GPT-4o 这类模型。这说明在对话连贯性和即时反应之间，存在一种经典的设计张力。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 372.2,
+      "end": 384.54,
+      "en": "The results on tool use also seemed mixed. The paper notes that GPT-Realtime performed better on argument accuracy and overall pass rate. Does this suggest the natural language delegation interface is less reliable than more structured approaches?",
+      "zh": "工具使用方面的结果似乎也参差不齐。论文指出GPT-Realtime在参数准确率和整体通过率上表现更好。这是否说明自然语言委托接口不如更结构化的方法可靠？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 385.18,
+      "end": 423.6,
+      "en": "It's a possibility. The lower accuracy on argument extraction could point to challenges in parsing the natural language delegation request, or it could be an issue with the underlying reasoning capabilities of the router or the external tools themselves. The paper doesn't provide a full ablation study to isolate the cause. But it does highlight that building a robust bridge between a fluid conversational frontend and a structured, reliable backend is still a significant challenge. This is a recurring theme we see in related work like Gander's 'Multimodal Duplex Interaction Agent' as well; making the two sides work together seamlessly is non-trivial.",
+      "zh": "这是有可能的。参数提取准确率偏低，可能说明解析自然语言委派请求本身就有难度，也可能是路由器底层的推理能力有问题，或者出在外部工具本身。论文没有提供完整的消融实验来单独定位原因。但它确实凸显了一点：在流畅的对话前端和结构化、可靠的后端之间搭建一座稳健的桥梁，仍然是个不小的挑战。这也是我们在Gander的“多模态双工交互智能体”等相关工作中反复看到的一个主题——让两边无缝协作，绝非易事。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 424.66,
+      "end": 459.12,
+      "en": "So, to wrap up, the main takeaway from Realtime-Venus isn't any single new component, but rather the coherent architectural vision it presents. It treats real-time conversation and complex, asynchronous work as two coordinated processes running on a shared, causal timeline. This private delegation and result-return loop allows an assistant to remain interactive and responsive while complex tasks are handled in the background. It's a concrete design for making our conversational agents not just better listeners, but more capable doers.",
+      "zh": "总结一下，Realtime-Venus 最核心的贡献不是某个单独的新组件，而是它提出了一套连贯的架构思路。它把实时对话和复杂的异步工作看作两个协调运行的流程，共享同一条因果时间线。这种私密的委派与结果回传循环，让助手在处理后台复杂任务的同时，依然保持交互性和响应速度。这是一个具体的设计方案，让我们的对话智能体不仅能更好地倾听，还能更高效地做事。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 459.42,
+      "end": 464.483,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有别的问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhao2026realtimevenusfullduplexinteractionasynchronous,\n      title={Realtime-Venus: A full-duplex interaction system with asynchronous delegation}, \n      author={Ruixiang Zhao and Hualei Wang and Renhe Sun and Enzhi Zhou and Jincenzi Wu and Xujie Song and Kexin Shi and Zihang Liu and Pengcheng Zhu and Jiayi Zhou and Baoyue Zhang and Changhao Zhang and Zitong Wang and Jinhong Wang and Tong Niu and Jingjing Liu and Junan Lin and Haolin He and Hengshuo Chu and Yuhui Chen and Jian Liu and Yuge Huang and Junliang Xing and Yuntao Wang and Weiqiang Wang and Chun Yu and Yuanchun Shi},\n      year={2026},\n      eprint={2609.13814},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.13814}, \n}",
+  "topics": [
+    "Electrical Engineering And Systems Science"
+  ],
+  "peaks": [
+    0.824,
+    0.368,
+    0.652,
+    0.334,
+    0.489,
+    0.545,
+    0.412,
+    0.626,
+    0.651,
+    0.715,
+    0.62,
+    0.479,
+    0.476,
+    0.486,
+    0.564,
+    0.401,
+    0.313,
+    0.417,
+    0.422,
+    0.664,
+    0.66,
+    0.575,
+    0.365,
+    0.489,
+    0.553,
+    0.599,
+    0.411,
+    0.638,
+    0.382,
+    0.514,
+    0.449,
+    0.59,
+    1.0,
+    0.609,
+    0.553,
+    0.2,
+    0.446,
+    0.424,
+    0.347,
+    0.743,
+    0.464,
+    0.632,
+    0.487,
+    0.563,
+    0.516,
+    0.585,
+    0.58,
+    0.682,
+    0.475,
+    0.404,
+    0.556,
+    0.446,
+    0.701,
+    0.416,
+    0.438,
+    0.533,
+    0.499,
+    0.647,
+    0.451,
+    0.593,
+    0.655,
+    0.626,
+    0.663,
+    0.512,
+    0.808,
+    0.647,
+    0.788,
+    0.246,
+    0.355,
+    0.299,
+    0.317,
+    0.45
+  ],
+  "published": "2026-09-12",
+  "license": "CC BY-NC-SA"
+}

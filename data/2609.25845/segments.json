@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 456.411,
+  "word_match_rate": 0.912,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Transformer Architectures, today’s lecture is on Visual Jev: Accurate and Efficient Decisions from Shared Visual Context. Recent work such as NVILA: Efficient Frontier Visual Language Models and ViSpec: Accelerating Vision-Language Models with Vision-Aware Speculative Decoding explores efficiency in vision-language systems. Visual Jev takes a different angle: when several questions concern the same image, can we share computation rather than repeatedly process that image? The authors, affiliated with Independent Research at Carnegie Mellon University, study both decision quality and serving efficiency. Noah, I see your hand—go ahead.",
+      "start": 0.0,
+      "end": 41.0
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is this mainly about making one answer faster, or handling a group of questions about the same image?",
+      "start": 42.12,
+      "end": 48.22
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The group is the key. Imagine inspecting a screen and asking which button cancels, whether a notice reports success, and how many icons appear. A conventional system may handle each request separately, repeating much of the visual work. Visual Jev treats the image and shared context as a common starting point, then branches into isolated questions. This matters because many practical workflows naturally create groups of questions, even though standard evaluation often treats each question as a separate example.",
+      "start": 49.06,
+      "end": 79.06
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The first contribution is a fixed-choice decision interface. At request time, the system receives candidate answers and returns a probability distribution only across those valid choices. Each choice maps to a verified single-token letter, and the model scores those letters at a fixed answer position. This avoids generating a full sentence when the task asks only for selection. Candidate sets can be supplied at runtime, with up to 16 choices, rather than requiring one permanently fixed label set.",
+      "start": 79.06,
+      "end": 111.48
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if the model only scores option letters, does it still use its normal language-model output layer?",
+      "start": 112.42,
+      "end": 118.64
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Yes. The main system keeps the pretrained language-model head and trains the model to predict the correct option letter. At inference, it normalizes scores over the currently valid choices, not over every possible word. The backbone is quen three V-L four B instruct, with its vision tower frozen and lora adapters on the language tower. That design tests whether task adaptation can improve decisions without adding a separate, task-specific classification layer.",
+      "start": 119.52,
+      "end": 145.98
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The second contribution is shared execution. The system processes the image, system message, and public context once, then reuses that cached state for each question branch. Each branch contains its own question and candidate list; separate batch rows and attention masks keep questions from seeing one another. The model reinjects visual features only at image-token positions in its first three text layers, so caching that shared prefix avoids repeating the visual computation for every suffix.",
+      "start": 146.9,
+      "end": 178.5
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So you’re saying the questions can run together without sharing answers or contaminating one another?",
+      "start": 179.58,
+      "end": 184.46
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. The branches share only what is explicitly common: the image and public context. In the reported serving test, at 32 questions per image, independent serial execution takes 50.7 milliseconds per question when group time is divided by group size. Batching alone brings that to 19.3 milliseconds; shared-prefix execution with batching reaches 5.7 milliseconds per question, or 176 questions per second. These are amortized throughput figures, not individual-request latency.",
+      "start": 184.46,
+      "end": 218.04
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The accuracy results show why the system separates adaptation from execution. Answer-supervised training raises equal-weight macro accuracy across G-Q-A, S-N-L-I V-E, Text V-Q-A, and Tally Q-A from 0.706 to 0.761. Most improvement comes from the two trained task families: G-Q-A rises from 0.879 to 0.916, and S-N-L-I V-E from 0.629 to 0.808. Held-out Text V-Q-A and Tally Q-A change very little, so broad transfer is not established.",
+      "start": 218.98,
+      "end": 256.6
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Could a custom classification head improve accuracy, or does the existing language-model head limit the choices?",
+      "start": 257.64,
+      "end": 263.62
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "In this study, a matched typed decision head reaches approximately the same 0.761 macro accuracy, so it offers no consistent advantage. A fixed-slot head also has a coverage problem: trained only on sets of up to four choices, it scores just 0.639 on eight-choice Text V-Q-A, while the language-model-head system reaches 0.973. The existing head is therefore a practical fit for variable candidate sets, though that conclusion is limited to the tested model, training budget, and datasets.",
+      "start": 264.6,
+      "end": 297.48
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "For deployment, workload shape matters as much as model quality. At one question, prefix sharing is slower: 82.9 milliseconds versus 48.1 milliseconds for independent execution, because cache construction cannot be amortized. At 32 questions, the whole shared group completes in about 182 milliseconds. Memory also rises from 8.40 to 10.10 GiB. So this approach best fits batch-oriented inspection, interface understanding, or document workflows where several questions are ready together.",
+      "start": 299.16,
+      "end": 334.56
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, do the grey-image tests suggest the model sometimes answers from the wording rather than the image?",
+      "start": 335.32,
+      "end": 340.62
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "They do. On converted G-Q-A, chance accuracy is 0.365, while replacing the image with a uniform grey field still gives 0.585. That points to language and candidate-set priors. The authors shuffle option positions and build distractors from answers of the same type, but the diagnostic shows that visual grounding remains a concern. They also find that an evidence-sufficiency head detects degraded evidence well, yet lowers overall accuracy and does not improve selective prediction.",
+      "start": 341.56,
+      "end": 375.8
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader lesson is that model adaptation and inference optimization answer different questions. Adaptation improves the trained decision families; shared prefix execution and batching make grouped requests cheaper. This complements efficiency work such as NVILA and ViSpec, but focuses on sharing visual context across independent decisions rather than changing the visual encoder or accelerating token generation. The evidence is still bounded: one model family, two scales, English data, converted forced-choice tasks, and probabilities that are not calibrated correctness estimates.",
+      "start": 376.74,
+      "end": 414.54
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could future work test whether the same shared execution helps when questions arrive over time instead of as a ready-made batch?",
+      "start": 414.54,
+      "end": 421.96
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That is an important next step, because waiting to form a batch can add queueing delay and erase throughput gains for interactive users. Future evaluations could measure that tradeoff, test more model families and languages, and strengthen diagnostics for candidate-set bias. The memorable takeaway is simple: when many decisions share one image, reuse the visual work—but measure quality, latency, and memory separately. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 422.88,
+      "end": 456.411
+    }
+  ]
+}

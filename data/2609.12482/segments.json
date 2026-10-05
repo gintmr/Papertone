@@ -1,0 +1,116 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 378.854,
+  "word_match_rate": 0.9474,
+  "line_count": 15,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to our seminar on Human-AI Collaboration Systems. Today's lecture is on “When Does AI Augment Work? A Workflow-Level Framework for Human-Agent Collaboration.” We've seen a lot of recent work trying to create frameworks for this, like in “Evaluating Human-AI Collaboration” or Stanford's work on auditing in “Future of Work with AI Agents.” This paper, from a team at the National University of Singapore and Stanford, challenges the common way we measure AI's impact. Instead of focusing on discrete tasks, it argues we need to analyze the entire workflow. It's a conceptual shift that tries to capture the hidden costs and benefits of AI integration. Yes, Noah?",
+      "start": 0.0,
+      "end": 39.18
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor. Can you clarify what you mean by 'workflow level' versus 'task level'? Aren't workflows just collections of tasks?",
+      "start": 39.58,
+      "end": 46.22
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A fair question. In this context, a 'task' might be 'write a summary of a report.' We could measure how fast an AI helps a human do that. A 'workflow,' however, includes everything around that task: who assigns it, how the AI's output is verified, what happens if the AI makes an error, who corrects it, how that correction is documented, and how the junior analyst who used to write those summaries now learns that skill. The paper argues that focusing only on task speed hides all this other 'hidden work,' which might actually make the whole process less efficient or resilient.",
+      "start": 46.68,
+      "end": 81.14
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So it’s about the connective tissue between tasks, and the long-term effects.",
+      "start": 81.14,
+      "end": 84.92
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Precisely. The main contribution here is a six-condition framework to define what they call 'genuine augmentation.' It's organized into two layers. The first layer addresses workflow integrity right now. It has three conditions: one, durable net value, meaning the benefits outweigh all costs, including verification and rework. Two, meaningful human control, where humans have the actual capacity—time, information, authority—to override the system, not just a ceremonial sign-off. And three, clear accountability and recovery, so you know who is responsible for failures and how to fix them.",
+      "start": 85.66,
+      "end": 123.14
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "That first condition, durable net value, seems difficult to measure. Productivity is straightforward, but how do you quantify the cognitive burden of constantly having to second-guess an AI?",
+      "start": 123.4,
+      "end": 133.08
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "It is difficult, and they propose triangulating data to get at it—things like employee surveys, interviews, and detailed workflow records that log time spent on verification and correction. This leads to the second layer, which is about human development over time. It also has three conditions: deepening learning, ensuring the workflow still provides opportunities to build expertise. Five, career pathways, so automation doesn't eliminate the entry-level roles necessary to train future experts. And six, job purpose, ensuring humans aren't just left with the tedious remainder tasks that the AI can't do.",
+      "start": 133.32,
+      "end": 166.96
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "To make this practical, the authors propose criteria for deciding which tasks to delegate to an AI: verifiability, reversibility, and stakes. A task is more suitable for an AI if a human can easily verify the output is correct, if an error can be undone before it causes harm, and if the consequences of a failure are low. They apply this to a case study of an AI-mediated social survey, like the SparkMe system they cite. The AI, an adaptive interviewer, handles the bounded tasks of asking questions and performing initial coding of responses.",
+      "start": 167.08,
+      "end": 200.82
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Wait, if the AI is 'adaptive,' doesn't that mean it's changing the survey instrument on the fly? How does that affect construct validity? The questions being asked might differ between participants in ways the researchers can't control, which seems to violate the 'verifiability' criterion.",
+      "start": 201.42,
+      "end": 215.38
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "An excellent point, and the paper addresses this directly. This is where meaningful human control and workflow records become critical. The researchers would still define the core purpose, seed questions, and valid constructs. The AI's adaptations would operate within those constraints. Most importantly, the framework demands that the agent's actual interview paths are recorded. This allows researchers to audit what questions were asked and analyze whether the AI's adaptations introduced systemic bias or drifted away from the intended construct. The human researcher retains authority over interpretation and final analysis.",
+      "start": 215.82,
+      "end": 253.32
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So the 'output' to be verified isn't just the final coded data, but the entire interaction log. That makes sense. It sounds like a much higher documentation burden than a standard survey.",
+      "start": 253.94,
+      "end": 262.72
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "It is. But the authors argue this is a necessary cost for maintaining accountability and control, especially with adaptive systems. The real impact of this paper is shifting the evaluation of AI from a simple tool-based productivity metric to a systemic, socio-technical process analysis. It forces organizations to consider second-order effects on the workforce. This connects to concerns raised in other papers, like 'The Paradox of Professional Input,' which discusses how AI can de-skill experts over time if not implemented carefully. This framework provides a vocabulary and a structure for preventing that.",
+      "start": 263.08,
+      "end": 300.08
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Is the ultimate goal, then, to create a kind of 'AI-readiness' score for a given workflow?",
+      "start": 300.28,
+      "end": 304.56
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "That could be one application. More broadly, it provides a structured way for organizations, researchers, and policymakers to have a more nuanced conversation. Instead of just asking 'did AI make us faster?', they can ask 'did the new workflow create durable value, is it controllable and accountable, and does it support our people's growth?' It reframes augmentation as a property of the entire system, not just the technology. The paper itself is a whitepaper, so it's a proposal, not a finished empirical study, but it lays out a clear and testable research agenda.",
+      "start": 304.98,
+      "end": 339.8
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "So, to wrap up, this paper makes a strong case for moving our unit of analysis from the task to the workflow. The six conditions—durable value, human control, accountability, learning, career paths, and purpose—provide a comprehensive checklist for what true human-AI augmentation should look like. The key takeaway is that sustainable AI integration is about designing resilient and developmental work systems, not just optimizing isolated efficiencies. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 340.26,
+      "end": 378.854
+    }
+  ]
+}
