@@ -22,6 +22,29 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
     },
     {
+      "id": "2610.02208",
+      "title": "Sphere Encoder 2",
+      "authors": [
+        "Kaiyu Yue",
+        "Sean McLeish",
+        "Ruchit Rawal",
+        "Brian Bartoldson",
+        "Menglin Jia",
+        "Tom Goldstein"
+      ],
+      "duration": 446.641125,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Generative Models",
+        "Image Generation",
+        "Representation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.02208",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac4-0ae8-74bf-8572-31108e8b0fe0/podcast.mp3"
+    },
+    {
       "id": "2610.02204",
       "title": "Reconstruct, Practice, Go Real: Guided Self-Improvement for Embodied Agents",
       "authors": [
@@ -113,6 +136,30 @@
       "path": "2610.01509",
       "published": "2026-10-01",
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa76-85be-74e9-99b8-c19ff057bd0d/podcast.mp3"
+    },
+    {
+      "id": "2610.01016",
+      "title": "Scaling and Distilling Text Embeddings for Better Diffusibility",
+      "authors": [
+        "Zekai Zhang",
+        "Yunjie Tian",
+        "Yanjin He",
+        "Xiaoyan Zhang",
+        "Dongdi Zhao",
+        "Qing Qu",
+        "Di Fu"
+      ],
+      "duration": 540.05475,
+      "license": "CC BY",
+      "topics": [
+        "Embedding Methods",
+        "Generative Models",
+        "Knowledge Distillation"
+      ],
+      "cover": "cover.png",
+      "path": "2610.01016",
+      "published": "2026-10-01",
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa51-8cdb-7af5-a96b-e301224c77b3/podcast.mp3"
     },
     {
       "id": "2609.40305",

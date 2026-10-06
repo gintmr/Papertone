@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 540.055,
+  "word_match_rate": 0.9243,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on generative language models, today’s lecture is on “Scaling and Distilling Text Embeddings for Better Diffusibility.” Recent work such as “E-L-F: Embedded Language Flows” and “LangFlow: Continuous Diffusion Rivals Discrete in Language Modeling” reflects growing interest in generating language through continuous representations. This paper, by researchers at the University of Michigan, asks a focused question: what makes an embedding space workable for diffusion? Yes, Noah?",
+      "start": 0.0,
+      "end": 33.0
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say “diffusibility,” do you mean how well the model can generate text from embeddings?",
+      "start": 34.08,
+      "end": 39.84
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly: diffusibility means how readily a continuous diffusion model can generate embeddings that decode into valid, readable text. The field is moving toward using pretrained representations to improve language generation, but this paper challenges the assumption that a stronger encoder automatically helps. Its central insight is that representations must be not only informative, but also reachable by the denoising process. That distinction matters if parallel generation is to become a practical alternative to predicting each token in sequence.",
+      "start": 40.64,
+      "end": 75.38
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors compare encoders while keeping the diffusion framework and training recipe largely fixed. Text is encoded into vectors, noise is added, and a denoiser learns to recover the clean sequence. A decoder then maps the resulting vectors back to tokens. This controlled setup helps isolate the embedding space as a variable, instead of changing the encoder and diffusion model together and then struggling to identify what caused an improvement.",
+      "start": 76.36,
+      "end": 102.94
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: why might a better representation be harder to generate?",
+      "start": 103.94,
+      "end": 107.4
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Think of plausible words as nearby destinations on a map. A discriminative encoder may deliberately place alternatives far apart, which helps distinguish them. But a denoiser can land between those destinations while resolving uncertainty. That intermediate vector may be far from every word the decoder recognizes confidently. So a representation can preserve useful distinctions yet still be awkward for a gradual generative process. The paper calls these problematic outputs invalid or uncertain embeddings.",
+      "start": 108.52,
+      "end": 138.12
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The authors first find that scaling the pretrained encoder generally improves generation. Within the T-five family, T-five Gemma two performs best in their comparison, lowering generated-text perplexity by about 40% relative to T-five small at matched entropy. But its raw embeddings still produce many errors: at 32 denoiser evaluations, a 1,024-token sample averages 142 uncertain positions, including 109 classified as invalid. Stronger embeddings help, but do not solve the geometry problem.",
+      "start": 138.12,
+      "end": 174.0
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how they decide whether a generated vector is invalid?",
+      "start": 174.92,
+      "end": 178.52
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They compare a generated vector with embeddings for the decoder’s top candidate words in context. Distances are normalized using typical nearest-neighbor distances among real embeddings. A position counts as invalid if it lies more than 0.91 normalized distance units from every candidate, and as uncertain if the decoder’s top-token probability is below 0.6. The thresholds are calibrated on real-text embeddings and decoder outputs, so these are operational measurements, not universal definitions.",
+      "start": 179.5,
+      "end": 211.86
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The main intervention is soft-label distillation. The team freezes the T-five Gemma two encoder, decoder, and vocabulary table, then trains a smaller student encoder to match the teacher decoder’s probability distribution over words. They retain the teacher’s top 256 predictions at each position and renormalize their probabilities. This gives the student information about plausible alternatives, rather than insisting that only the observed token matters.",
+      "start": 213.16,
+      "end": 241.48
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So the student is learning a more flexible target than the exact word in the training text?",
+      "start": 242.66,
+      "end": 247.0
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Right. The student’s embeddings pass through the frozen teacher decoder, and training minimizes K-L divergence from the teacher’s soft predictions. The student starts from nine evenly spaced layers of the teacher’s 18-layer encoder and is distilled on O-W-T for 50,000 steps. Then the researchers train a diffusion model on those student embeddings with the same setup used for the teacher. That separation makes the diffusibility comparison more interpretable.",
+      "start": 248.04,
+      "end": 275.32
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The student reduces the average uncertain positions from 142 to 42 per sequence, and invalid positions from 109 to 12. Uncertain vectors also move closer to candidate embeddings: their mean normalized distance drops from 1.39 to 0.82. Round-trip tests, where real text is noised and denoised, point in the same direction. These results support the idea that the student space is easier to revisit and decode, not merely easier to reconstruct during training.",
+      "start": 275.32,
+      "end": 309.48
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "What evidence shows that soft labels, rather than just a smaller encoder, drive the gains?",
+      "start": 310.94,
+      "end": 315.3
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The ablations are useful here. A student trained to copy teacher vectors with mean-squared error does not reach real-text entropy in the reported comparison. Training through the decoder with one-hot token labels performs worse still. The soft-label student reaches that entropy and improves generation metrics. This suggests that preserving graded alternatives matters. It is not proof that soft labels are the only possible solution, but it distinguishes the proposed objective from simple compression or token-level imitation.",
+      "start": 316.24,
+      "end": 347.26
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "On O-W-T, the medium E-L-F model using teacher embeddings reaches generated-text perplexity 19.3 at entropy 5.44; the student version reaches 17.8 at nearly the same entropy. G-P-T two medium scores 20.8 in the reported setup. With the smaller model, the teacher-to-student comparison improves from 38.5 to 31.2. Similar gains appear on L-M one B, though the authors treat that benchmark as a supplementary check.",
+      "start": 347.26,
+      "end": 383.06
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should we interpret the speed comparison, given that quality changes with sampling steps?",
+      "start": 383.98,
+      "end": 388.52
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The reported medium E-L-F model generates 1,024 tokens in 1.5 seconds at 64 denoiser evaluations, compared with 11.8 seconds at 512 evaluations. G-P-T two medium takes 10.7 seconds for 1,024 serial decoding steps in that setup. This suggests a possible speed advantage at lower evaluation counts, not a blanket efficiency win: output quality and stability vary with sampling effort, and the student may still need substantial denoising.",
+      "start": 389.44,
+      "end": 424.68
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "A broader implication is that continuous language models may need representation spaces designed for generation, rather than simply borrowed from strong encoders. That complements work such as “E-L-F: Embedded Language Flows,” which establishes a continuous denoising-and-decoding framework, while this paper puts the embedding geometry itself under scrutiny. Its distillation method offers one way to adapt a pretrained representation without rebuilding the diffusion architecture, but the trade-off is that generation-oriented geometry may weaken some discriminative capabilities.",
+      "start": 425.66,
+      "end": 461.26
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "Does the student preserve the teacher’s usefulness beyond the generation benchmarks?",
+      "start": 462.42,
+      "end": 466.1
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "It preserves token reconstruction well on the reported transfer data: both teacher and student reach 99.3% accuracy on WikiText-103, and the student reaches 99.4% on held-out arXiv text. However, some linear-probe results fall; on S-S-T two, for example, accuracy drops from 89.4% to 78.1%. The evaluation also centers on perplexity, entropy, and mauve, rather than factuality or practical tasks like question answering. So the trade-off and scope both deserve further study.",
+      "start": 467.26,
+      "end": 504.5
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The takeaway is that better generation may depend not only on what a representation knows, but on whether a denoising trajectory can reach vectors that a decoder understands. Soft-label distillation provides evidence for that design principle, while leaving open questions about larger models, broader domains, and efficient sampling. For researchers, the useful shift is from treating embeddings as fixed inputs to treating their geometry as part of the generative system. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 505.42,
+      "end": 540.055
+    }
+  ]
+}

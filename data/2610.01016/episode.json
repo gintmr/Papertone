@@ -1,0 +1,281 @@
+{
+  "id": "2610.01016",
+  "title": "Scaling and Distilling Text Embeddings for Better Diffusibility",
+  "authors": [
+    "Zekai Zhang",
+    "Yunjie Tian",
+    "Yanjin He",
+    "Xiaoyan Zhang",
+    "Dongdi Zhao",
+    "Qing Qu",
+    "Di Fu"
+  ],
+  "abstract": "Diffusion language models (DLMs) offer a promising alternative to autoregressive (AR) language generation. Recent advances in continuous DLMs, which apply latent diffusion to continuous text embeddings, raise a practical question: which embedding makes the best latent space, i.e., the most diffusible? To answer this, we search through different embeddings and find that scaling the embedding model to stronger ones within the same family (T5 to T5Gemma-1 to T5Gemma-2) greatly improves generative performance. But the raw T5Gemma-2 embeddings are still not optimal. They are so discriminative that even the embeddings of plausible alternative words are separated, which makes the generation vulnerable to imperfect sampling. Consequently, continuous diffusion often fails to reach any of them and ends up at an invalid embedding instead. To address this, we distill T5Gemma-2 into a student encoder that learns the teacher's decoded probabilities as soft labels. Learning from such soft labels makes the student pull the alternative embeddings closer while maintaining the encoding-decoding mechanism. The distilled embeddings form a more connected and diffusible latent space, improving over the vanilla T5Gemma-2 embeddings. As a result, our medium-sized DLM achieves Gen. PPL 17.8 (against real-text PPL 15.4) at real-text entropy on OpenWebText, outperforming GPT-2-M on Gen. PPL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.01016",
+    "arxiv": "https://arxiv.org/abs/2610.01016"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0fa51-8cdb-7af5-a96b-e301224c77b3/podcast.mp3",
+  "duration": 540.055,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.0,
+      "en": "In our graduate seminar on generative language models, today’s lecture is on “Scaling and Distilling Text Embeddings for Better Diffusibility.” Recent work such as “E-L-F: Embedded Language Flows” and “LangFlow: Continuous Diffusion Rivals Discrete in Language Modeling” reflects growing interest in generating language through continuous representations. This paper, by researchers at the University of Michigan, asks a focused question: what makes an embedding space workable for diffusion? Yes, Noah?",
+      "zh": "在我们关于生成式语言模型的研究生讨论课上，今天的讲座主题是“扩展与蒸馏文本嵌入以提升可扩散性”。近期的一些工作，比如“ELF：嵌入式语言流”和“LangFlow：连续扩散在语言建模中媲美离散方法”，反映出大家对通过连续表示来生成语言的兴趣日益增长。这篇论文由密歇根大学的研究人员撰写，聚焦于一个问题：什么样的嵌入空间才适合做扩散？是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.08,
+      "end": 39.84,
+      "en": "Hi Professor, when you say “diffusibility,” do you mean how well the model can generate text from embeddings?",
+      "zh": "教授，您说的“可扩散性”，是指模型从嵌入生成文本的能力有多强吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.64,
+      "end": 75.38,
+      "en": "Exactly: diffusibility means how readily a continuous diffusion model can generate embeddings that decode into valid, readable text. The field is moving toward using pretrained representations to improve language generation, but this paper challenges the assumption that a stronger encoder automatically helps. Its central insight is that representations must be not only informative, but also reachable by the denoising process. That distinction matters if parallel generation is to become a practical alternative to predicting each token in sequence.",
+      "zh": "正是如此：可扩散性指的是一个连续扩散模型能多容易地生成嵌入，而这些嵌入又能解码成有效、可读的文本。这个领域正朝着用预训练表示来改进语言生成的方向发展，但这篇论文挑战了一个假设，即更强的编码器会自动带来帮助。它的核心洞见在于，表示不仅要信息丰富，还必须能被去噪过程所触及。如果并行生成要成为逐token序列预测的实际替代方案，这一区分就很重要。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 76.36,
+      "end": 102.94,
+      "en": "The authors compare encoders while keeping the diffusion framework and training recipe largely fixed. Text is encoded into vectors, noise is added, and a denoiser learns to recover the clean sequence. A decoder then maps the resulting vectors back to tokens. This controlled setup helps isolate the embedding space as a variable, instead of changing the encoder and diffusion model together and then struggling to identify what caused an improvement.",
+      "zh": "作者在基本固定扩散框架和训练配方的情况下比较了不同编码器。文本先被编码成向量，加入噪声，然后训练一个去噪器学会恢复干净的序列。接着，解码器再把得到的向量映射回token。这种受控设置有助于把嵌入空间单独作为变量来研究，而不是同时改动编码器和扩散模型，最后却难以判断改进到底来自哪里。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.94,
+      "end": 107.4,
+      "en": "Quick question: why might a better representation be harder to generate?",
+      "zh": "快速问一下：为什么更好的表示反而可能更难生成？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 108.52,
+      "end": 138.12,
+      "en": "Think of plausible words as nearby destinations on a map. A discriminative encoder may deliberately place alternatives far apart, which helps distinguish them. But a denoiser can land between those destinations while resolving uncertainty. That intermediate vector may be far from every word the decoder recognizes confidently. So a representation can preserve useful distinctions yet still be awkward for a gradual generative process. The paper calls these problematic outputs invalid or uncertain embeddings.",
+      "zh": "把可能的词想象成地图上彼此相邻的目的地。判别式编码器可能会刻意把候选词放得很远，这有助于区分它们。但去噪器在消除不确定性时，可能会落在这些目的地之间。那个中间向量可能离解码器能自信识别的每一个词都很远。所以，一种表示可以保留有用的区分，却仍然对渐进的生成过程很不友好。论文把这类有问题的输出称为无效或不确定的嵌入。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.12,
+      "end": 174.0,
+      "en": "The authors first find that scaling the pretrained encoder generally improves generation. Within the T-five family, T-five Gemma two performs best in their comparison, lowering generated-text perplexity by about 40% relative to T-five small at matched entropy. But its raw embeddings still produce many errors: at 32 denoiser evaluations, a 1,024-token sample averages 142 uncertain positions, including 109 classified as invalid. Stronger embeddings help, but do not solve the geometry problem.",
+      "zh": "作者首先发现，扩大预训练编码器的规模通常能改善生成效果。在T-five系列中，T-five Gemma two在他们的对比中表现最好，在匹配熵的情况下，将生成文本的困惑度相比T-five small降低了约40%。但它的原始嵌入仍然会产生很多错误：在32次去噪器评估中，一个1024个token的样本平均有142个不确定位置，其中109个被归类为无效。更强的嵌入有帮助，但并不能解决几何问题。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 174.92,
+      "end": 178.52,
+      "en": "Can you clarify how they decide whether a generated vector is invalid?",
+      "zh": "你能说明一下他们是怎么判断一个生成向量是否无效的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 179.5,
+      "end": 211.86,
+      "en": "They compare a generated vector with embeddings for the decoder’s top candidate words in context. Distances are normalized using typical nearest-neighbor distances among real embeddings. A position counts as invalid if it lies more than 0.91 normalized distance units from every candidate, and as uncertain if the decoder’s top-token probability is below 0.6. The thresholds are calibrated on real-text embeddings and decoder outputs, so these are operational measurements, not universal definitions.",
+      "zh": "他们把生成的向量和上下文中解码器排名靠前的候选词的嵌入做比较。距离用真实嵌入之间典型的最近邻距离来归一化。如果某个位置与所有候选词的归一化距离都超过0.91个单位，就算作无效；如果解码器最高token的概率低于0.6，就算作不确定。这些阈值是在真实文本嵌入和解码器输出上校准出来的，所以它们是操作层面的度量，而不是普适的定义。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 213.16,
+      "end": 241.48,
+      "en": "The main intervention is soft-label distillation. The team freezes the T-five Gemma two encoder, decoder, and vocabulary table, then trains a smaller student encoder to match the teacher decoder’s probability distribution over words. They retain the teacher’s top 256 predictions at each position and renormalize their probabilities. This gives the student information about plausible alternatives, rather than insisting that only the observed token matters.",
+      "zh": "主要的干预手段是软标签蒸馏。团队冻结了T5-Gemma2的编码器、解码器和词表，然后训练一个更小的学生编码器去匹配教师解码器在词上的概率分布。他们在每个位置保留教师预测的前256个token，并重新归一化这些概率。这样学生就能了解到哪些替代选项是合理的，而不是只盯着实际出现的那个token。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 242.66,
+      "end": 247.0,
+      "en": "So the student is learning a more flexible target than the exact word in the training text?",
+      "zh": "所以学生模型学到的目标比训练文本里的那个确切单词更灵活，对吧？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 248.04,
+      "end": 275.32,
+      "en": "Right. The student’s embeddings pass through the frozen teacher decoder, and training minimizes K-L divergence from the teacher’s soft predictions. The student starts from nine evenly spaced layers of the teacher’s 18-layer encoder and is distilled on O-W-T for 50,000 steps. Then the researchers train a diffusion model on those student embeddings with the same setup used for the teacher. That separation makes the diffusibility comparison more interpretable.",
+      "zh": "对。学生的嵌入会通过冻结的教师解码器，训练目标是最小化与教师软预测之间的K-L散度。学生模型从教师18层编码器中均匀间隔的9层初始化，并在O-W-T上蒸馏5万步。接着，研究者用与教师相同的设置，在这些学生嵌入上训练一个扩散模型。这种分离让扩散难易度的比较更具可解释性。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 275.32,
+      "end": 309.48,
+      "en": "The student reduces the average uncertain positions from 142 to 42 per sequence, and invalid positions from 109 to 12. Uncertain vectors also move closer to candidate embeddings: their mean normalized distance drops from 1.39 to 0.82. Round-trip tests, where real text is noised and denoised, point in the same direction. These results support the idea that the student space is easier to revisit and decode, not merely easier to reconstruct during training.",
+      "zh": "学生把每条序列的平均不确定位置从142个降到42个，无效位置从109个降到12个。不确定向量也更靠近候选嵌入：平均归一化距离从1.39降到0.82。往返测试——把真实文本加噪再去噪——也指向同一方向。这些结果支持一个观点：学生空间更容易重新访问和解码，而不只是在训练时更容易重建。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 310.94,
+      "end": 315.3,
+      "en": "What evidence shows that soft labels, rather than just a smaller encoder, drive the gains?",
+      "zh": "有什么证据表明，带来这些提升的是软标签，而不只是更小的编码器？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 316.24,
+      "end": 347.26,
+      "en": "The ablations are useful here. A student trained to copy teacher vectors with mean-squared error does not reach real-text entropy in the reported comparison. Training through the decoder with one-hot token labels performs worse still. The soft-label student reaches that entropy and improves generation metrics. This suggests that preserving graded alternatives matters. It is not proof that soft labels are the only possible solution, but it distinguishes the proposed objective from simple compression or token-level imitation.",
+      "zh": "这里的消融实验很有帮助。一个用均方误差去复制教师向量的学生模型，在报告中的对比里达不到真实文本的熵。通过解码器用独热 token 标签训练的表现更差。而软标签学生模型能达到那个熵，并改善生成指标。这说明保留分级备选项很重要。这并不能证明软标签是唯一可行的方案，但它把所提出的目标与简单压缩或 token 级模仿区分开了。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 347.26,
+      "end": 383.06,
+      "en": "On O-W-T, the medium E-L-F model using teacher embeddings reaches generated-text perplexity 19.3 at entropy 5.44; the student version reaches 17.8 at nearly the same entropy. G-P-T two medium scores 20.8 in the reported setup. With the smaller model, the teacher-to-student comparison improves from 38.5 to 31.2. Similar gains appear on L-M one B, though the authors treat that benchmark as a supplementary check.",
+      "zh": "在O-W-T上，使用教师嵌入的中等E-L-F模型在熵为5.44时生成的文本困惑度为19.3；学生版本在几乎相同的熵下达到17.8。在报告的设置中，G-P-T two medium得分为20.8。使用较小的模型时，教师到学生的对比从38.5改善到31.2。在L-M one B上也出现了类似的提升，不过作者将该基准视为补充性检查。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 383.98,
+      "end": 388.52,
+      "en": "How should we interpret the speed comparison, given that quality changes with sampling steps?",
+      "zh": "既然质量会随采样步数变化，我们该怎么理解这个速度对比呢？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 389.44,
+      "end": 424.68,
+      "en": "The reported medium E-L-F model generates 1,024 tokens in 1.5 seconds at 64 denoiser evaluations, compared with 11.8 seconds at 512 evaluations. G-P-T two medium takes 10.7 seconds for 1,024 serial decoding steps in that setup. This suggests a possible speed advantage at lower evaluation counts, not a blanket efficiency win: output quality and stability vary with sampling effort, and the student may still need substantial denoising.",
+      "zh": "所报告的中等规模E-L-F模型在64次去噪器评估下用1.5秒生成1,024个token，而在512次评估下则需要11.8秒。在该设置中，GPT-2 medium进行1,024步串行解码需要10.7秒。这表明在较低评估次数下可能存在速度优势，但并非全面的效率胜出：输出质量和稳定性会随采样投入而变化，而且学生模型可能仍需要大量去噪。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 425.66,
+      "end": 461.26,
+      "en": "A broader implication is that continuous language models may need representation spaces designed for generation, rather than simply borrowed from strong encoders. That complements work such as “E-L-F: Embedded Language Flows,” which establishes a continuous denoising-and-decoding framework, while this paper puts the embedding geometry itself under scrutiny. Its distillation method offers one way to adapt a pretrained representation without rebuilding the diffusion architecture, but the trade-off is that generation-oriented geometry may weaken some discriminative capabilities.",
+      "zh": "更广泛的意义在于，连续语言模型可能需要专为生成设计的表示空间，而不是简单地从强大的编码器那里借用。这与“E-L-F：嵌入式语言流”等工作形成互补，后者建立了一个连续的去噪与解码框架，而这篇论文则把嵌入几何本身放到了审视之下。它的蒸馏方法提供了一种无需重建扩散架构就能适配预训练表示的方式，但代价是，面向生成的几何结构可能会削弱某些判别能力。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 462.42,
+      "end": 466.1,
+      "en": "Does the student preserve the teacher’s usefulness beyond the generation benchmarks?",
+      "zh": "学生在生成基准之外是否保留了教师模型的有用性？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 467.26,
+      "end": 504.5,
+      "en": "It preserves token reconstruction well on the reported transfer data: both teacher and student reach 99.3% accuracy on WikiText-103, and the student reaches 99.4% on held-out arXiv text. However, some linear-probe results fall; on S-S-T two, for example, accuracy drops from 89.4% to 78.1%. The evaluation also centers on perplexity, entropy, and mauve, rather than factuality or practical tasks like question answering. So the trade-off and scope both deserve further study.",
+      "zh": "它在所报告的迁移数据上很好地保留了token重建能力：教师和学生都在WikiText-103上达到99.3%的准确率，学生在留出的arXiv文本上达到99.4%。然而，一些线性探测结果下降了；例如在S-S-T two上，准确率从89.4%降到78.1%。评估也主要集中在困惑度、熵和mauve上，而不是事实性或问答这类实际任务。因此，这种权衡和适用范围都值得进一步研究。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 505.42,
+      "end": 540.055,
+      "en": "The takeaway is that better generation may depend not only on what a representation knows, but on whether a denoising trajectory can reach vectors that a decoder understands. Soft-label distillation provides evidence for that design principle, while leaving open questions about larger models, broader domains, and efficient sampling. For researchers, the useful shift is from treating embeddings as fixed inputs to treating their geometry as part of the generative system. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，更好的生成可能不仅取决于一个表示知道什么，还取决于去噪轨迹能否到达解码器能理解的向量。软标签蒸馏为这一设计原则提供了证据，同时留下了关于更大模型、更广领域和高效采样的问题。对研究者来说，有用的转变是从把嵌入当作固定输入，转向把它们的几何结构当作生成系统的一部分。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026scalingdistillingtextembeddings,\n      title={Scaling and Distilling Text Embeddings for Better Diffusibility}, \n      author={Zekai Zhang and Yunjie Tian and Yanjin He and Xiaoyan Zhang and Dongdi Zhao and Qing Qu and Di Fu},\n      year={2026},\n      eprint={2610.01016},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.01016}, \n}",
+  "topics": [
+    "Embedding Methods",
+    "Generative Models",
+    "Knowledge Distillation"
+  ],
+  "peaks": [
+    0.83,
+    0.513,
+    0.504,
+    0.502,
+    0.615,
+    0.648,
+    0.701,
+    0.471,
+    0.51,
+    0.274,
+    0.457,
+    0.462,
+    0.304,
+    0.272,
+    0.827,
+    0.683,
+    0.516,
+    0.621,
+    0.606,
+    0.435,
+    0.417,
+    0.319,
+    0.207,
+    0.623,
+    1.0,
+    0.779,
+    0.455,
+    0.502,
+    0.531,
+    0.494,
+    0.295,
+    0.596,
+    0.577,
+    0.654,
+    0.371,
+    0.331,
+    0.335,
+    0.515,
+    0.558,
+    0.626,
+    0.371,
+    0.434,
+    0.716,
+    0.372,
+    0.486,
+    0.249,
+    0.324,
+    0.235,
+    0.246,
+    0.241,
+    0.295,
+    0.458,
+    0.329,
+    0.2,
+    0.201,
+    0.237,
+    0.516,
+    0.677,
+    0.527,
+    0.521,
+    0.643,
+    0.514,
+    0.351,
+    0.323,
+    0.303,
+    0.275,
+    0.22,
+    0.462,
+    0.469,
+    0.274,
+    0.241,
+    0.218
+  ],
+  "published": "2026-10-01",
+  "license": "CC BY"
+}
