@@ -101,6 +101,11 @@ jobs:
             $(cat _work/ids.txt) --model tiny --no-index \
             --net-workers 6 --align-workers 2
 
+      - name: 刷新浏览量
+        # alphaXiv 的浏览量会随时间涨，每次都整库刷一遍，卡片上的热度才是当前值。
+        # 每篇只有一个约 50 字节的 /metrics 请求，8 个并发，百来篇十几秒就跑完。
+        run: python3 scripts/add_episode.py --backfill-views --force
+
       - name: 生成中文译文
         if: steps.discover.outputs.count != '0' && (inputs.translate != 'no')
         env:
