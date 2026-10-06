@@ -7,6 +7,10 @@ const PROGRESS_KEY = 'podcast-progress';
 const THEME_KEY = 'podcast-theme';
 const SERVICE_KEY = 'podcast-service';
 const PLAYMODE_KEY = 'podcast-playmode';
+const SORT_KEY = 'podcast-sort';
+
+/* 列表排序：new = 按公开日期（默认），hot = 按 alphaXiv 浏览量 */
+const SORT_LABEL = { new: 'Newest', hot: 'Most viewed' };
 
 /* 放完一集之后干什么。
    in-order 按列表顺序往下走（走到末尾回到第一集）；
@@ -197,7 +201,8 @@ function toast(text) {
 /* ── 菜单 ───────────────────────────────────────────── */
 function closeMenus(except) {
   [['#mode-menu', '#mode-btn'], ['#playmode-menu', '#playmode-btn'],
-   ['#sleep-menu', '#sleep-btn'], ['#more-menu', '#more-toggle']]
+   ['#sleep-menu', '#sleep-btn'], ['#more-menu', '#more-toggle'],
+   ['#sort-menu', '#sort-btn']]
     .forEach(([menuSel, btnSel]) => {
       if (menuSel === except) return;
       $(menuSel).hidden = true;
@@ -299,6 +304,13 @@ function daysAgo(e) {
   const now = new Date();
   const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
   return Math.round((today - t) / 86400000);
+}
+
+/** 浏览量：四位数以上压成 2.2k，卡上更好扫 */
+function fmtViews(n) {
+  if (!Number.isFinite(n)) return '';
+  if (n < 1000) return String(n);
+  return `${(n / 1000).toFixed(n < 10000 ? 1 : 0)}k`;
 }
 
 /** 卡片/播放器上的日期：当年只写「Sep 17」，跨年才补年份 */
@@ -434,6 +446,17 @@ function renderCards(query) {
     });
   }
 
+  // 排序放在筛选之后，保证「按什么排」对结果始终成立。
+  // 注意 status 视图（在听 / 已听完）在 Newest 下保留「按最近收听排」，
+  // 那个顺序在历史回看时更有用，不该被日期覆盖。
+  if (sortMode === 'hot') {
+    rows.sort((a, b) => (b.views || 0) - (a.views || 0)
+      || String(b.id).localeCompare(String(a.id)));
+  } else if (activeFilter.type !== 'status') {
+    rows.sort((a, b) => (publishedTs(b) || 0) - (publishedTs(a) || 0)
+      || String(b.id).localeCompare(String(a.id)));
+  }
+
   box.innerHTML = '';
   $('#empty').hidden = rows.length > 0;
   // 记住这一版的顺序：放完一集要接着走的就是屏幕上这一串
@@ -486,6 +509,22 @@ function renderCards(query) {
     metaEl.className = 'card-meta';
     metaEl.textContent = meta;
 
+    // 浏览量：单独成一个元素而不是拼进 meta，否则窄屏上会先被省略号吃掉。
+    // ≥1000 压成 2.2k，省地方也更好扫。
+    const views = document.createElement('span');
+    views.className = 'card-views';
+    if (Number.isFinite(e.views)) {
+      views.title = `${e.views.toLocaleString('en-US')} views on alphaXiv`;
+      views.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+        + ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        + '<path d="M2.4 12S6 5.4 12 5.4 21.6 12 21.6 12 18 18.6 12 18.6 2.4 12 2.4 12Z"/>'
+        + '<circle cx="12" cy="12" r="2.9"/></svg>'
+        + `<span>${fmtViews(e.views)}</span>`;
+      views.setAttribute('aria-label', `${e.views.toLocaleString('en-US')} views on alphaXiv`);
+    } else {
+      views.hidden = true;
+    }
+
     const src = document.createElement('a');
     src.className = 'card-src';
     src.href = `https://www.alphaxiv.org/abs/${e.id}`;
@@ -495,7 +534,7 @@ function renderCards(query) {
     src.setAttribute('aria-label', `Open ${e.id} on alphaXiv`);
     src.innerHTML = `alphaXiv <span aria-hidden="true">↗</span>`;
 
-    foot.append(metaEl, src);
+    foot.append(metaEl, views, src);
     card.append(hit, foot);
     box.appendChild(card);
   }
@@ -744,6 +783,29 @@ let pendingAutoplay = false;  // 换集之后是否自动开播
 
 try { playMode = localStorage.getItem(PLAYMODE_KEY) || 'in-order'; } catch (e) { /* 忽略 */ }
 if (!PLAYMODE_LABEL[playMode]) playMode = 'in-order';
+
+/* ── 列表排序 ──────────────────────────────────────────
+   「Newest」按论文公开日期（列表默认顺序），
+   「Most viewed」按 alphaXiv 上的浏览量。选择记在 localStorage 里。
+   ────────────────────────────────────────────────────── */
+let sortMode = 'new';
+try { sortMode = localStorage.getItem(SORT_KEY) || 'new'; } catch (e) { /* 忽略 */ }
+if (!SORT_LABEL[sortMode]) sortMode = 'new';
+
+function renderSort() {
+  $('#sort-label').textContent = SORT_LABEL[sortMode];
+  $('#sort-menu').querySelectorAll('button').forEach((b) => {
+    b.classList.toggle('on', b.dataset.sort === sortMode);
+  });
+}
+
+function setSort(next) {
+  if (!SORT_LABEL[next] || next === sortMode) return;
+  sortMode = next;
+  try { localStorage.setItem(SORT_KEY, next); } catch (e) { /* 忽略 */ }
+  renderSort();
+  renderCards($('#search').value);
+}
 
 function renderPlayMode() {
   $('#playmode-label').textContent = PLAYMODE_LABEL[playMode];
@@ -1111,6 +1173,13 @@ $('#playmode-menu').addEventListener('click', (e) => {
   closeMenus();
 });
 
+$('#sort-menu').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-sort]');
+  if (!btn) return;
+  setSort(btn.dataset.sort);
+  closeMenus();
+});
+
 $('#sleep-menu').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-min]');
   if (btn) setSleep(btn.dataset.min);
@@ -1141,8 +1210,10 @@ wireMenu('#mode-btn', '#mode-menu');
 wireMenu('#playmode-btn', '#playmode-menu');
 wireMenu('#sleep-btn', '#sleep-menu');
 wireMenu('#more-toggle', '#more-menu');
+wireMenu('#sort-btn', '#sort-menu');
 wireMediaSession();
 renderPlayMode();
+renderSort();
 
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.menu-wrap')) closeMenus();

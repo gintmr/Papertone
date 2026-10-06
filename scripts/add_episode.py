@@ -168,6 +168,24 @@ def curl_text(url: str, timeout: int = 30) -> str:
     return r.stdout.strip()
 
 
+def fetch_metrics(arxiv_id: str) -> dict:
+    """alphaXiv 上的互动数据。浏览量在 /metrics 子路径上，和论文元数据分开：
+    {"commentsCount":0,"publicTotalVotes":143,"visitsAll":2186}
+    取不到就返回空字典——热度和「有没有播客」无关，不该因此让整篇失败。
+    """
+    body = curl_text(f"{META_API}/{arxiv_id}/metrics")
+    if not body:
+        return {}
+    try:
+        doc = json.loads(body)
+    except Exception:
+        return {}
+    out = {}
+    if isinstance(doc.get("visitsAll"), int):
+        out["views"] = doc["visitsAll"]
+    return out
+
+
 def fetch_first_published(arxiv_id: str, html: str | None = None) -> str | None:
     """论文的首次公开日期（YYYY-MM-DD）。
 
@@ -263,6 +281,8 @@ def fetch_meta(arxiv_id: str) -> dict:
         "raw_topics": raw_topics,
         # 论文首次公开日期，列表页展示与「按时间筛选」都用它
         "published": fetch_first_published(arxiv_id, html),
+        # 在 alphaXiv 上的浏览量，卡片上展示、也可以按热度排序
+        "views": fetch_metrics(arxiv_id).get("views"),
     }
 
 
@@ -381,6 +401,54 @@ def finish_episode(ctx: dict, model: str, force: bool, keep_audio: bool,
     return meta
 
 
+def backfill_views(force: bool = False) -> None:
+    """给早期入库、meta.json 里还没有 views 的论文补上浏览量。
+
+    每篇只发一个约 50 字节的 /metrics 请求；已经有值的默认跳过，
+    加 --force 可以整库刷新（浏览量会涨，偶尔想更新就用它）。
+    """
+    data_dir = os.path.join(ROOT, "data")
+    ids = []
+    for name in sorted(os.listdir(data_dir)):
+        if os.path.exists(os.path.join(data_dir, name, "meta.json")):
+            ids.append(name)
+
+    filled, skipped, failed = 0, 0, []
+    def worker(name: str) -> tuple[str, int | None]:
+        mp = os.path.join(data_dir, name, "meta.json")
+        with open(mp, encoding="utf-8") as fh:
+            meta = json.load(fh)
+        if meta.get("views") is not None and not force:
+            return name, None
+        views = fetch_metrics(meta.get("id") or name).get("views")
+        if views is None:
+            return name, "fail"
+        meta["views"] = views
+        with open(mp, "w", encoding="utf-8") as fh:
+            json.dump(meta, fh, ensure_ascii=False, indent=2)
+        ep_path = os.path.join(data_dir, name, "episode.json")
+        if os.path.exists(ep_path):
+            with open(ep_path, encoding="utf-8") as fh:
+                ep = json.load(fh)
+            ep["views"] = views
+            with open(ep_path, "w", encoding="utf-8") as fh:
+                json.dump(ep, fh, ensure_ascii=False, indent=2)
+        return name, views
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for name, result in pool.map(worker, ids):
+            if result is None:
+                skipped += 1
+            elif result == "fail":
+                failed.append(name)
+            else:
+                filled += 1
+                print(f"   {name} → {result} 浏览")
+    print(f"\n补齐 {filled} 篇，跳过 {skipped} 篇"
+          + (f"，失败 {len(failed)}: {failed}" if failed else ""))
+    rebuild_index()
+
+
 def backfill_dates() -> None:
     """给早期入库、meta.json 里还没有 published 的论文补上首次公开日期。
 
@@ -472,6 +540,7 @@ def rebuild_index() -> None:
             "topics": m.get("topics", []), "cover": m.get("cover"),
             "path": m["id"],
             "published": m.get("published"),
+            "views": m.get("views"),
             # 播放地址给前端用来「保存到本机」；仓库里不留音频
             "audio_url": m.get("audio_url"),
         })
@@ -492,6 +561,8 @@ def main() -> int:
     ap.add_argument("--reindex-only", action="store_true", help="只刷新 papers.json")
     ap.add_argument("--backfill-dates", action="store_true",
                     help="给库里没有首次公开日期的论文补上日期，然后刷新 papers.json")
+    ap.add_argument("--backfill-views", action="store_true",
+                    help="给库里没有浏览量的论文补上浏览量；配合 --force 可整库刷新")
     ap.add_argument("--renormalize-topics", action="store_true",
                     help="用当前标签规则重算全库 topics（离线，不重新抓取）")
     ap.add_argument("--keep-audio", action="store_true",
@@ -509,6 +580,9 @@ def main() -> int:
         return 0
     if args.backfill_dates:
         backfill_dates()
+        return 0
+    if args.backfill_views:
+        backfill_views(force=args.force)
         return 0
     if args.reindex_only:
         rebuild_index()

@@ -260,13 +260,26 @@ body[data-view='episode'] .brand { display: none; }
 
 .list-tools {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: .7rem;
   max-width: 54rem;
   margin-inline: auto;
   padding: .5rem 1rem 1.35rem;
 }
-.list-tools .search-wrap { flex: 1; min-width: 0; }
+/* 搜索框给出 16rem 的基准宽度：装得下就和右边并排，装不下
+   （窄屏）就自己占一行，第二行留给数量与排序，不硬挤。 */
+.list-tools .search-wrap { flex: 1 1 16rem; min-width: 0; }
+.list-tools .sort-wrap { margin-left: auto; }
+.sort-btn { min-height: 38px; color: var(--secondary); font-size: .78rem; }
+.sort-btn svg { width: 17px; height: 17px; }
+.sort-btn .caret { width: 14px; height: 14px; opacity: .75; }
+
+/* 窄屏：搜索占满第一行，数量与排序并排第二行（数量左、排序右），
+   比让排序单独飘在一行要整齐 */
+@media (max-width: 34rem) {
+  .list-tools .search-wrap { flex-basis: 100%; }
+}
 
 /* 资料库规模：一行小字，数字用强调色，不加边框 */
 .library-count {
@@ -553,6 +566,20 @@ body[data-view='episode'] .brand { display: none; }
   font-variant-numeric: tabular-nums;
 }
 .card-meta .sep { opacity: .45; }
+
+/* 卡片上的浏览量：带一只小眼睛，四位以上压成 2.2k */
+.card-views {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .22rem;
+  color: var(--secondary);
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.card-views[hidden] { display: none; }
+.card-views svg { width: 13px; height: 13px; flex: none; opacity: .85; }
 
 /* 手机上改成横向条目：小缩略图在左，文字在右 */
 @media (max-width: 34rem) {

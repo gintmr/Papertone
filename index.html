@@ -219,6 +219,21 @@
         <span id="library-count-num">—</span>
         <span class="library-count-unit">podcasts</span>
       </p>
+      <div class="menu-wrap sort-wrap">
+        <button id="sort-btn" class="plain-btn sort-btn" type="button"
+                aria-haspopup="menu" aria-expanded="false" aria-label="Sort the list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7 20V5"/><path d="M3.6 8.4 7 5l3.4 3.4"/>
+            <path d="M17 4v15"/><path d="M13.6 15.6 17 19l3.4-3.4"/>
+          </svg>
+          <span id="sort-label">Newest</span>
+        </button>
+        <div id="sort-menu" class="menu" hidden role="menu">
+          <button type="button" role="menuitemradio" data-sort="new">Newest first</button>
+          <button type="button" role="menuitemradio" data-sort="hot">Most viewed first</button>
+        </div>
+      </div>
     </div>
 
     <div id="continue" class="continue" hidden></div>
