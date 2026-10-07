@@ -1,0 +1,256 @@
+{
+  "id": "2609.31383",
+  "title": "Guiding End-to-End Driving Models with Endpoint-Constrained Trajectory Optimization",
+  "authors": [
+    "Brayden Zhang",
+    "Mahsa Golchoubian",
+    "Igor Gilitschenski",
+    "Boris Ivanovic",
+    "Kashyap Chitta"
+  ],
+  "abstract": "End-to-end driving policies are commonly trained through open-loop behavior cloning, yet they must ultimately operate in closed-loop when deployed on a vehicle, creating a fundamental mismatch between training and execution. Beyond the commonly studied effects of covariate shift and causal confusion, we identify a complementary factor for this open-loop/closed-loop gap: waypoint-based supervision and displacement metrics do not ensure that the intermediate trajectory is physically coherent or easy for the controller to track. We observe that these inconsistencies concentrate primarily at intermediate waypoints, while the predicted endpoint remains comparatively reliable. Based on this observation, we introduce Endpoint-Constrained Optimization (ECO), a lightweight postprocessing layer that anchors the trajectory to the vehicle's executed history, preserves the policy's predicted endpoint, and reshapes the intermediate waypoints to improve feasibility. ECO requires no map, privileged simulator state, or additional training, and can be inserted between a broad range of waypoint-emitting policies and their controllers. Across two closed-loop simulators, it improves the aggregate closed-loop score of all six evaluated generative and regression-based driving policies, and the gains tend to increase with how often the base plans violate motion limits. On HUGSIM, ECO improves VaVAM from 18.1 to 31.0 HD-Score (+71%), achieving 1st place on the HUGSIM Closed-Loop Driving Challenge. Similarly, on AlpaSim, ECO increases the scene scores of VaVAM and DiffusionDrive by 123% and 22%, respectively. These results show that for a broad collection of end-to-end driving models, repairing the intermediate geometry of predicted trajectories without changing the policy's predicted endpoint can substantially improve closed-loop performance.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.31383",
+    "arxiv": "https://arxiv.org/abs/2609.31383"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0e69a-983f-7788-a168-0f2b594a5abb/podcast.mp3",
+  "duration": 476.969,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.12,
+      "en": "In a graduate course on autonomous driving and motion planning, today's lecture is on Guiding End-to-End Autonomous Driving with Endpoint-Constrained Optimization. Recent work such as GuideFlow and Model-Based Policy Adaptation reflects a field trying to close the gap between learned plans and reliable closed-loop driving. This paper takes a different route: it repairs a policy’s predicted path after inference, without retraining the policy. That matters because a plausible destination does not ensure a vehicle can follow the route smoothly. I see your hand, Noah.",
+      "zh": "在一门关于自动驾驶与运动规划的研究生课程中，今天的讲座主题是《用终点约束优化引导端到端自动驾驶》。GuideFlow和基于模型的策略自适应等近期工作，反映出这个领域正试图弥合学习到的规划与可靠的闭环驾驶之间的差距。这篇论文走了一条不同的路：它在推理之后修复策略预测的路径，而不重新训练策略。这一点很重要，因为一个看似合理的目的地，并不能保证车辆能平稳地沿着路线行驶。我看到你举手了，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.22,
+      "end": 42.34,
+      "en": "Hi Professor, if the policy predicts a reasonable path, why would the car still fail to follow it?",
+      "zh": "教授您好，如果策略预测出了一条合理的路径，为什么车还是没法沿着它走呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.04,
+      "end": 74.28,
+      "en": "The authors illustrate that problem with the same H-U-G-S-I-M scene driven from the same start. The base VaVAM plan has lateral inconsistencies and later collides; VaVAM with E-C-O adjusts the waypoints between the vehicle’s current state and the plan’s endpoint, then completes the route. The point is not that keeping the endpoint fixed guarantees safety. It is that the path in between can be difficult to execute even when open-loop waypoint scores look good.",
+      "zh": "作者用同一个HUGSIM场景、同一个起点来说明这个问题。基线VaVAM的规划在横向不一致，后来还撞了；加了ECO的VaVAM会调整车辆当前状态和规划终点之间的路点，然后跑完全程。重点不是说固定终点就能保证安全，而是说即使开环路点分数看着不错，中间这段路也可能很难执行。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 75.74,
+      "end": 103.64,
+      "en": "Open-loop metrics such as average waypoint distance and endpoint distance compare predicted points with a demonstration. They do not directly measure whether a controller can track the sequence between those points. Imagine judging a road trip only by its start and destination: the score could miss a series of abrupt bends along the way. E-C-O is placed after a frozen policy predicts its waypoints and before the controller turns those waypoints into actions.",
+      "zh": "像平均路点距离和终点距离这类开环指标，只是把预测的点和示范轨迹做比较。它们并不直接衡量控制器能否跟踪这些点之间的序列。想象一下，只凭起点和终点来评价一次公路旅行：这种打分可能会漏掉沿途一连串急转弯。E-C-O 被放在一个冻结的策略预测出路点之后、控制器把这些路点变成动作之前。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 104.82,
+      "end": 109.6,
+      "en": "So E-C-O changes the middle of the path, but not where the policy intends to end?",
+      "zh": "所以E-C-O改变的是路径中间的部分，而不是策略想要到达的终点？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 110.58,
+      "end": 138.88,
+      "en": "Exactly. It adds the recently executed vehicle poses and current pose to the plan, then holds those history poses and the policy’s final predicted waypoint fixed. E-C-O optimizes only the intermediate waypoints. If the vehicle has not yet accumulated enough history, it anchors the poses that are available. This gives the adjustment a connection to what the car actually did, rather than treating the predicted plan as an isolated curve.",
+      "zh": "没错。它会把最近执行过的车辆位姿和当前位姿加入规划中，然后把那些历史位姿和策略预测的最终路点固定住。E-C-O只优化中间的路点。如果车辆还没有积累足够的历史，它就把已有的位姿作为锚点。这样一来，调整就与车辆实际走过的路径产生了关联，而不是把预测的规划当成一条孤立的曲线来处理。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 139.78,
+      "end": 172.88,
+      "en": "The objective balances three aims. It discourages abrupt changes in position and heading, penalizes sharp turns, and limits how far the adjusted path strays from the policy’s original prediction. The evaluated motion limits are not hard constraints in this objective, even though the resulting plans often have fewer measured violations. The optimization uses L-B-F-G-S; its median solve time was 20.7 milliseconds on a Xeon Gold 6238R CPU, with 31 median iterations.",
+      "zh": "这个目标函数平衡三个诉求：一是抑制位置和朝向的突变，二是惩罚急转弯，三是限制调整后的路径偏离策略原始预测的程度。评估中涉及的运动限制在这个目标里并不是硬约束，尽管最终生成的规划往往实测违规更少。优化用的是 L-BFGS，在 Xeon Gold 6238R CPU 上求解时间中位数为 20.7 毫秒，迭代次数中位数为 31 次。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 174.12,
+      "end": 178.54,
+      "en": "Quick question: does that mean the method can repair a plan that points toward the wrong destination?",
+      "zh": "快速问一下：这是不是意味着该方法能修复一个指向错误目的地的规划？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 179.64,
+      "end": 214.26,
+      "en": "No. The fixed endpoint is an important boundary, and it is also a limitation: E-C-O cannot change a bad endpoint or reason about other agents. In H-U-G-S-I-M, the main reported result is a mean H-D-Score increase for VaVAM from 18.1 to 31.0, a gain of 12.9 points or 71%, averaged over 3 evaluation seeds on 185 test scenes. The score combines route completion with per-step measures, including collision and drivable-area gates.",
+      "zh": "不能。固定终点是一个重要的边界，也是一个局限：ECO 无法改变一个糟糕的终点，也无法对其他智能体进行推理。在 HUGSIM 中，主要报告的结果是 VaVAM 的平均 HDS 分数从 18.1 提升到 31.0，提高了 12.9 分，也就是 71%，这是在 185 个测试场景上、3 个评估种子下的平均值。这个分数综合了路线完成度和逐步指标，包括碰撞和可行驶区域的门槛。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 215.1,
+      "end": 220.46,
+      "en": "Can you clarify whether the gain reflects safer driving alone, or whether the cars also made more progress?",
+      "zh": "你能澄清一下，这个提升是仅仅反映了驾驶更安全，还是说车辆也取得了更多进展？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 221.5,
+      "end": 252.04,
+      "en": "It was not only a comfort-related change: VaVAM’s route completion also rose from 40.9 to 45.2. The H-D-Score uses no-collision and drivable-area compliance as gates, then includes time-to-collision and comfort in the remaining score. These are closed-loop simulator results, not proof of real-world performance or guaranteed collision avoidance. A separate safety layer may still be necessary, particularly because E-C-O does not reason about other agents.",
+      "zh": "这不仅仅是舒适性方面的变化：VaVAM的路线完成率也从40.9上升到了45.2。H-D-Score以无碰撞和可行驶区域合规作为门槛，然后在剩余评分中纳入碰撞时间和舒适度。这些是闭环模拟器结果，并不能证明真实世界表现，也不保证避免碰撞。可能仍然需要单独的安全层，尤其是因为E-C-O不会对其他智能体进行推理。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 253.04,
+      "end": 292.5,
+      "en": "The authors also tested whether E-C-O’s particular shaping approach mattered relative to simpler repairs, under the same boundary conditions. On the nuScenes H-U-G-S-I-M ablation, E-C-O scored 39.6 H-D-Score. The strongest named alternative, a constrained bicycle-model optimizer, scored 34.8; a Savitzky–Golay filter scored 31.9, a moving average 31.7, a cubic smoothing spline 28.9, and temporal ensembling 27.8. This favors E-C-O among the tested options, not every imaginable alternative.",
+      "zh": "作者还在相同边界条件下测试了E-C-O这种特定的整形方法，相比更简单的修复手段是否真的重要。在nuScenes H-U-G-S-I-M消融实验里，E-C-O拿到了39.6的H-D-Score。表现最好的具名替代方案，一个带约束的自行车模型优化器，得分34.8；Savitzky–Golay滤波器31.9，移动平均31.7，三次平滑样条28.9，时序集成27.8。这说明在测试过的选项里E-C-O更占优，但并不是说所有能想到的替代方案都比不过它。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 293.5,
+      "end": 298.94,
+      "en": "Hold on, were those results just a smoother-looking path, or did they test whether a controller could track it?",
+      "zh": "等等，这些结果只是看起来路径更平滑，还是他们测试了控制器能不能跟踪它？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 299.64,
+      "end": 338.54,
+      "en": "They tested tracking as well. In 1,500 paired base and E-C-O trajectories replayed from the same vehicle state, the H-U-G-S-I-M i-L-Q-R controller cost fell from 101.2 to 92.6, and was lower for 83% of pairs. Steps at the steering-rate limit dropped from 20.1% to 12.9%, while first-waypoint tracking error barely changed, from 0.45 meters to 0.44 meters. The authors interpret this as improved trackability over the horizon, not proof of the sole cause of the score gains.",
+      "zh": "他们也测试了跟踪性能。在1500对从同一车辆状态回放的基线和E-C-O轨迹中，H-U-G-S-I-M i-L-Q-R控制器的代价从101.2降到了92.6，并且在83%的配对中更低。转向速率达到上限的步数占比从20.1%降到了12.9%，而第一个路点的跟踪误差几乎没有变化，从0.45米变为0.44米。作者将此解读为在整个预测时域内可跟踪性的提升，而非得分增益唯一原因的证明。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 339.58,
+      "end": 375.6,
+      "en": "There is supporting evidence from a second simulator, AlpaSim, which uses a different vehicle-dynamics setup and an M-P-C controller. It has no comfort score, yet aggregate scores for the evaluated policies also improved there. The paper also compares boundary choices: history anchoring plus a pinned endpoint scored 39.6; without history anchoring, the score was 36.9; with history anchoring but a free endpoint, it was 34.4. Those tests compare combinations of boundaries rather than isolating one as the only cause.",
+      "zh": "还有来自第二个模拟器AlpaSim的佐证，它采用不同的车辆动力学设置和M-P-C控制器。它没有舒适度评分，但被评估策略的综合得分在那里也有提升。论文还比较了边界选择：历史锚定加固定端点得分39.6；不用历史锚定，得分36.9；用历史锚定但端点自由，得分34.4。这些测试比较的是边界组合，而不是把某一个单独当作唯一原因。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 376.5,
+      "end": 381.76,
+      "en": "How does this differ from learned refiners such as Hydra-NeXt or test-time methods like TOAD?",
+      "zh": "这和Hydra-NeXt这类学习式细化器或TOAD这类测试时方法有什么不同？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 382.74,
+      "end": 416.14,
+      "en": "The distinction is in the design, not a reported head-to-head win. Hydra-NeXt learns a trajectory-refinement module jointly with trajectory and control prediction, while TOAD searches trajectories at test time using a learned scorer. E-C-O instead optimizes the policy’s waypoints and executed vehicle history without additional training or a learned scorer. It needs no map or privileged simulator state. This makes it a modular way to address executability, while leaving the policy’s high-level goal unchanged.",
+      "zh": "区别在于设计，而不是报告中的正面交锋胜出。Hydra-NeXt 将轨迹细化模块与轨迹和控制预测联合学习，而 TOAD 在测试时使用学习到的评分器搜索轨迹。E-C-O 则不同，它优化策略的航点以及已执行的车辆历史，无需额外训练，也不需要学习到的评分器。它不需要地图，也不需要仿真器的特权状态。这使它成为一种模块化的方式来解决可执行性问题，同时保持策略的高层目标不变。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 417.52,
+      "end": 447.82,
+      "en": "Taken together, the results suggest that closed-loop evaluation should ask more than whether predicted points resemble demonstrations. It should also ask whether the whole path is trackable and whether that trackability translates into route progress. E-C-O provides evidence that a training-free adjustment can help on the evaluated simulator tests, but its fixed endpoint and lack of reasoning about other agents bound what it can solve. Future work can examine how such repairs interact with explicit safety systems and changing traffic.",
+      "zh": "综合来看，这些结果表明，闭环评估不应只问预测点是否像演示轨迹，还应问整条路径是否可跟踪，以及这种可跟踪性能否转化为路线推进。E-C-O提供了证据，说明无需训练即可做出的调整能在所评估的模拟器测试中起作用，但它固定的终点以及缺乏对其他智能体的推理，限制了它能解决的问题范围。未来的工作可以研究这类修复如何与显式安全系统和不断变化的交通流相互作用。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 448.78,
+      "end": 476.969,
+      "en": "A waypoint plan can have a plausible destination and still be difficult to execute. E-C-O’s demonstrated role is to repair the path the controller must follow while preserving the policy’s endpoint. That distinction gives us a practical takeaway: evaluating a driving plan requires looking at the route between its beginning and its goal. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "一个路点规划即便目的地看起来合理，执行起来也可能很困难。E-C-O 所展示的作用，是在保留策略终点的同时，修复控制器必须遵循的路径。这一区别给了我们一个实用的启示：评估一个驾驶规划，需要看它从起点到目标之间的整条路线。感谢收听。如果还有任何问题，可以询问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026guidingendtoenddrivingmodels,\n      title={Guiding End-to-End Driving Models with Endpoint-Constrained Trajectory Optimization}, \n      author={Brayden Zhang and Mahsa Golchoubian and Igor Gilitschenski and Boris Ivanovic and Kashyap Chitta},\n      year={2026},\n      eprint={2609.31383},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.31383}, \n}",
+  "topics": [
+    "Autonomous Vehicles",
+    "Reinforcement Learning",
+    "Imitation Learning"
+  ],
+  "peaks": [
+    0.645,
+    0.319,
+    0.3,
+    0.228,
+    0.356,
+    0.302,
+    0.85,
+    0.593,
+    0.46,
+    0.329,
+    0.332,
+    0.275,
+    0.326,
+    0.265,
+    0.2,
+    0.265,
+    0.568,
+    0.691,
+    0.344,
+    0.458,
+    0.263,
+    1.0,
+    0.752,
+    0.921,
+    0.658,
+    0.51,
+    0.624,
+    0.351,
+    0.31,
+    0.333,
+    0.404,
+    0.208,
+    0.546,
+    0.71,
+    0.552,
+    0.379,
+    0.556,
+    0.391,
+    0.516,
+    0.224,
+    0.292,
+    0.454,
+    0.246,
+    0.273,
+    0.781,
+    0.621,
+    0.381,
+    0.386,
+    0.248,
+    0.417,
+    0.335,
+    0.424,
+    0.339,
+    0.566,
+    0.24,
+    0.37,
+    0.375,
+    0.462,
+    0.482,
+    0.322,
+    0.443,
+    0.403,
+    0.279,
+    0.797,
+    0.648,
+    0.433,
+    0.421,
+    0.524,
+    0.622,
+    0.469,
+    0.405,
+    0.369
+  ],
+  "published": "2026-09-25",
+  "views": 351,
+  "license": "arXiv 默认许可"
+}

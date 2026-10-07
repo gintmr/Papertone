@@ -1,0 +1,235 @@
+{
+  "id": "2610.kolibri-sovereign-european-model",
+  "title": "Kolibri: A Sovereign European Model on the Pareto Frontier",
+  "authors": [
+    "Aleph Alpha"
+  ],
+  "abstract": "This report introduces Kolibri, an English–German Mixture-of-Experts transformer with 78.1B total parameters and 3.46B active parameters per token, released as open weights under the Apache 2.0 licence. We built Kolibri for sovereign and specialised deployment, with a particular focus on German and on regulated domains such as public administration, industry, and aerospace. To support these settings, we control the full model-development process, including data, architecture, training infrastructure, post-training, and evaluation.\nWe train Kolibri on 24T tokens across pre-training, mid-training, and long-context extension, with German accounting for more than 20 % of the data mix. To reach this share, we complement German datasets with more than 2T German tokens that we curate from the web with our own pipeline and generate synthetically. Post-training combines supervised fine-tuning on curated German and English data with reinforcement learning on more than 1.2M internally curated tasks, which cover reasoning, tool use, instruction following, code, and retrieval. The model activates 4.4 % of its parameters per token, and among the open models evaluated in this report, it lies on the Pareto frontier of quality and serving cost in English and German.\nKolibri builds on Kolibri Origin, an earlier iteration that validated our full pipeline at scale. Both models come from our Model Factory, which connects data, experimentation, training, evaluation, and deployment through version-controlled workflows.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.kolibri-sovereign-european-model",
+    "arxiv": "https://arxiv.org/abs/2610.kolibri-sovereign-european-model"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10d86-5e08-73d8-bf61-e6a373368d64/podcast.mp3",
+  "duration": 437.42,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.94,
+      "en": "In our hypothetical course, European Foundation Models and Efficient Deployment, today’s lecture is on Kolibri: A Sovereign European Model on the Pareto Frontier. Recent work such as Command A: An Enterprise-Ready Large Language Model and OLMoE: Open Mixture-of-Experts Language Models reflects a field moving toward efficient, capable systems that can be adapted or operated by organisations. Aleph Alpha’s Kolibri fits that trend, while foregrounding German-language development and controlled European deployment. I see a hand—yes, Noah?",
+      "zh": "在我们假设的课程“欧洲基础模型与高效部署”中，今天的讲座是关于Kolibri：一个位于帕累托前沿的主权欧洲模型。近期的工作，比如Command A：一个企业级大语言模型，以及OLMoE：开放混合专家语言模型，反映出这个领域正朝着高效、能力强、能被组织适配或运营的系统发展。Aleph Alpha的Kolibri符合这一趋势，同时突出德语开发和受控的欧洲部署。我看到有人举手——好的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.0,
+      "end": 41.58,
+      "en": "Hi Professor, is the main goal simply to make a smaller model that performs well in German?",
+      "zh": "教授您好，主要目标是不是就是做一个更小的模型，在德语上表现好就行？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.56,
+      "end": 72.68,
+      "en": "That is part of it, but “smaller” needs a qualification. Kolibri has 78.1 billion total parameters, yet activates 3.46 billion per token through a mixture-of-experts design. The goal is to pair broad model capacity with lower per-token computation, while supporting English and German. The authors also target organisations that need to run systems on infrastructure they control, such as public-sector and industrial teams handling sensitive documents.",
+      "zh": "这是其中一部分，但“更小”这个说法需要加个限定。Kolibri 总参数量有 781 亿，但通过混合专家设计，每个 token 只激活 34.6 亿参数。目标是把广泛的模型容量和更低的单 token 计算量结合起来，同时支持英语和德语。作者还瞄准了那些需要在自有基础设施上运行系统的机构，比如处理敏感文件的公共部门和工业团队。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.7,
+      "end": 103.14,
+      "en": "The architecture is a 50-block decoder-only Transformer. Forty blocks use sliding-window attention over the preceding 512 tokens, while 10 use full attention. This hybrid is like reading a nearby passage closely while occasionally consulting the whole document. In each expert layer, a token is routed to 6 of 384 routed experts, alongside a shared expert. The authors use load-balancing methods to encourage experts to be used effectively.",
+      "zh": "这个架构是一个50层的纯解码器Transformer。其中40层对前512个token使用滑动窗口注意力，另外10层使用全注意力。这种混合设计就像读一段附近的文字时仔细看，偶尔再翻一翻整份文档。在每个专家层里，一个token会被路由到384个路由专家中的6个，外加一个共享专家。作者还用了负载均衡方法来让专家得到有效利用。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 104.18,
+      "end": 109.78,
+      "en": "Quick question: how does the model build stronger German capability than an English model translated after training?",
+      "zh": "问个快问题：这个模型是怎么做到德语能力比一个训练完再翻译过去的英语模型更强的？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 113.26,
+      "end": 143.92,
+      "en": "The paper treats German as a training priority, not a translation layer. More than 20% of pre-training data is German, and the team expands its supply with curated web material, rephrased text, and selected translations. They also train German reasoning traces and answers. A 128,000-token vocabulary is designed to better match German word structure; on the evaluated German web text, it uses 11.2% fewer tokens than the reported G-P-T five tokenizer.",
+      "zh": "这篇论文把德语当作训练中的优先项，而不是一个翻译层。超过20%的预训练数据是德语，团队还通过精选网络材料、改写文本和筛选过的翻译来扩充数据来源。他们还训练了德语的推理轨迹和答案。一个12.8万token的词表被设计来更好地匹配德语的构词方式；在评估用的德语网络文本上，它比报告中GPT-5的分词器少用了11.2%的token。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 143.92,
+      "end": 180.0,
+      "en": "Training unfolds in three stages: 20 trillion tokens at a 16,000-token context, 3.4 trillion at 64,000, and 200 billion at 256,000. The corpus includes web text, code, scientific material, instructions, and specialised sources. Filtering, deduplication, privacy redaction, and removal of harmful or pirated material shape the data. Later stages shift toward mathematics, code, reasoning, and long documents, balancing broad knowledge with tasks relevant to deployment.",
+      "zh": "训练分三个阶段展开：先是16000 token上下文、20万亿token，接着是64000上下文、3.4万亿token，最后是256000上下文、2000亿token。语料涵盖网页文本、代码、科学材料、指令以及专业来源。数据经过过滤、去重、隐私脱敏，并移除有害或盗版内容。后期阶段转向数学、代码、推理和长文档，在广泛知识与部署相关任务之间取得平衡。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 181.14,
+      "end": 186.3,
+      "en": "So the long context comes mainly from the final training stage, rather than the architecture alone?",
+      "zh": "所以长上下文主要来自最后的训练阶段，而不只是架构本身？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 187.0,
+      "end": 216.48,
+      "en": "Both matter. The attention pattern reduces the cost of processing long inputs, while staged training exposes the model to progressively longer contexts. After pre-training, supervised fine-tuning uses English and German conversations and synthetic examples for reasoning, tools, coding, science, safety, and long-context tasks. Users can select no, low, medium, or high reasoning effort, trading response depth against latency and token use.",
+      "zh": "两者都重要。注意力模式降低了处理长输入的成本，而分阶段训练让模型逐步接触更长的上下文。预训练之后，监督微调使用英语和德语对话以及合成样本，覆盖推理、工具、编程、科学、安全和长上下文任务。用户可以选择无、低、中、高四档推理强度，在回答深度与延迟和token消耗之间做权衡。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 217.42,
+      "end": 249.62,
+      "en": "The model is then trained with reinforcement learning across 38 environments and more than 1.2 million tasks. These include mathematics, software engineering, retrieval, tool use, and German variants. Rewards can come from verifiable outcomes, such as passing code tests or making correct tool calls. For document-grounded answers, the Merlin–Arthur protocol sometimes masks supporting sentences; the model is rewarded for answering when evidence remains and abstaining when it has been removed.",
+      "zh": "随后，模型在38个环境和超过120万个任务上通过强化学习进行训练。这些任务涵盖数学、软件工程、检索、工具使用以及德语变体。奖励可以来自可验证的结果，比如通过代码测试或正确调用工具。对于基于文档的答案，Merlin–Arthur协议有时会遮蔽支撑句；当证据仍然存在时，模型因作答而获得奖励，当证据被移除时，模型因弃答而获得奖励。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 249.62,
+      "end": 255.12,
+      "en": "Could the reported retrieval results transfer to an organisation’s documents, or are they mostly benchmark-specific?",
+      "zh": "报告的检索结果能否迁移到某个组织的文档上，还是说它们大多只针对特定基准？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 257.18,
+      "end": 289.22,
+      "en": "The report includes industry retrieval proxies and unseen customer-proxy corpora, which offer some evidence of transfer beyond familiar training examples. Kolibri leads evaluated MoE baselines on the English retrieval aggregate and most German comparisons, though one German baseline scores higher. The released model also improves on the earlier Kolibri Origin in reported abstention and grounding measures. These findings are promising evidence, not proof of reliability across every company’s documents or workflows.",
+      "zh": "报告里包含了行业检索代理和未见过的客户代理语料，这为模型能否迁移到训练样本之外提供了一些证据。在英语检索综合指标和大多数德语对比中，Kolibri 领先于所评估的 MoE 基线，不过有一个德语基线得分更高。发布的模型在报告的拒答和接地指标上也优于早先的 Kolibri Origin。这些发现是有希望的证据，但并不能证明它在每家公司的文档或工作流中都可靠。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 289.22,
+      "end": 322.68,
+      "en": "The broader contribution is an integrated development pipeline: data curation, pre-training, post-training, evaluation, deployment, and reproducibility tooling are treated as connected work. That resembles the practical focus of enterprise models such as Command A, while Kolibri places particular weight on German capability and European operational control. Its open weights under the Apache 2.0 licence may give organisations more freedom to deploy it on infrastructure they manage.",
+      "zh": "更广泛的贡献在于一套整合式的开发流程：数据整理、预训练、后训练、评估、部署和可复现工具被视为相互关联的工作。这与 Command A 等企业级模型的务实取向相似，而 Kolibri 尤其看重德语能力和欧洲的运营控制权。它在 Apache 2.0 许可下开放权重，可能让各组织有更多自由，把它部署在自己管理的基础设施上。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 323.66,
+      "end": 328.16,
+      "en": "How should we interpret the claim that Kolibri sits on a quality-and-cost Pareto frontier?",
+      "zh": "我们该如何理解Kolibri处于质量与成本帕累托前沿这一说法？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 329.04,
+      "end": 360.1,
+      "en": "As a claim tied to the paper’s chosen benchmarks and serving setup, not a universal ranking. Kolibri performs strongly among evaluated models with similar active-parameter counts, but Nemotron 3 Super scores higher overall while using more than three times the active parameters. The dense Qwen3.8 27B also exceeds Kolibri on the reported overall aggregates while activating substantially more parameters. Throughput, workload, and hardware can change the comparison.",
+      "zh": "这是与论文所选基准和部署设置绑定的说法，并非通用排名。在活跃参数量相近的受评估模型中，Kolibri表现强劲，但Nemotron 3 Super总体得分更高，同时使用的活跃参数超过其三倍。稠密版Qwen3.8 27B在报告的总体聚合指标上也超过Kolibri，同时激活的参数多得多。吞吐量、工作负载和硬件都可能改变比较结果。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 360.1,
+      "end": 397.08,
+      "en": "The limitations matter alongside the results. Kolibri trails several models through 256,000 tokens on R-U-L-E-R, and its reported one-million-token performance is extrapolated beyond its 256,000-token training context. The authors also note weak routed-expert use in the first two MoE layers, benchmark contamination affecting HumanEval, and small internal application benchmarks. Independent testing will be important for checking reproducibility, real-world reliability, and the strength of the sovereignty claims.",
+      "zh": "这些局限和结果同样重要。在RULER上，Kolibri在256,000个token以内落后于好几个模型，而它报告的一百万token表现是从256,000 token的训练上下文外推出来的。作者还指出前两个MoE层中路由专家使用不足、基准污染影响了HumanEval，以及内部应用基准规模偏小。独立测试对于检验可复现性、真实场景可靠性以及主权主张的说服力将非常重要。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 398.06,
+      "end": 437.42,
+      "en": "The takeaway is that Kolibri shows how model capacity, active computation, language-specific data, and deployment constraints can be designed together rather than treated as separate concerns. Its results suggest a credible option for organisations seeking open-weight English–German systems, while leaving meaningful questions about external validation and performance across workloads. For PhD researchers, the useful lesson is to evaluate not only what a model can do, but also where, at what cost, and under whose control. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，Kolibri 展示了如何把模型容量、活跃计算量、特定语言数据和部署限制放在一起设计，而不是把它们当成彼此独立的问题。它的结果表明，对于想要开放权重英德系统的机构来说，这是一个可信的选择，但在外部验证和跨工作负载性能方面仍留下了值得关注的问题。对博士生研究者来说，有用的经验是，不仅要评估一个模型能做什么，还要评估它在哪做、成本多少、由谁控制。感谢收听。如果还有问题，可以问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{aleph-alpha-kolibri,\n  author = {{Aleph Alpha}},\n  keywords = {Machine Learning (cs.LG), Computation and Language (cs.CL), Mixture-of-Experts, Large Language Models, German Language Models, Sovereign AI, Model Evaluation},\n  title = {Kolibri: A Sovereign European Model on the Pareto Frontier}\n}",
+  "topics": [
+    "NLP",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.677,
+    0.534,
+    0.658,
+    0.343,
+    0.394,
+    0.238,
+    0.672,
+    0.824,
+    0.578,
+    0.661,
+    0.497,
+    0.211,
+    0.697,
+    0.42,
+    0.446,
+    0.414,
+    0.35,
+    1.0,
+    0.583,
+    0.568,
+    0.533,
+    0.413,
+    0.525,
+    0.614,
+    0.437,
+    0.409,
+    0.281,
+    0.403,
+    0.294,
+    0.437,
+    0.821,
+    0.458,
+    0.501,
+    0.232,
+    0.378,
+    0.504,
+    0.781,
+    0.682,
+    0.578,
+    0.422,
+    0.307,
+    0.727,
+    0.753,
+    0.474,
+    0.599,
+    0.651,
+    0.391,
+    0.432,
+    0.318,
+    0.289,
+    0.35,
+    0.257,
+    0.208,
+    0.649,
+    0.54,
+    0.385,
+    0.357,
+    0.239,
+    0.245,
+    0.465,
+    0.459,
+    0.315,
+    0.313,
+    0.2,
+    0.289,
+    0.557,
+    0.364,
+    0.367,
+    0.346,
+    0.266,
+    0.35,
+    0.301
+  ],
+  "published": "2026-10-05",
+  "views": 1235,
+  "license": "User Uploaded"
+}

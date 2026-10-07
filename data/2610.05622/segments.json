@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 466.233,
+  "word_match_rate": 0.9321,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate seminar on reliable AI agents, today’s lecture is on UndoBench. Recent work such as Claw-Eval and Towards a Science of AI Agent Reliability broadens evaluation beyond final answers, toward complete execution and operational behavior. UndoBench focuses on a specific blind spot: an agent may complete a task when everything works, yet behave unsafely when a remote action succeeds and its acknowledgment disappears. That distinction matters whenever an agent can change external systems. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.14
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why isn’t ordinary task success enough to tell us whether an agent is reliable?",
+      "start": 35.12,
+      "end": 40.14
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because a timeout leaves the agent uncertain about what happened. Imagine a payment renewal: the service commits the charge, but the confirmation never reaches the agent. If it retries blindly, the customer may be charged twice. UndoBench compares a clean run with a faulted run under the same seed. That lets researchers ask whether the agent recovered when it had already shown it could perform the task. High ordinary success, the paper finds, does not guarantee safe recovery.",
+      "start": 41.1,
+      "end": 68.96
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what exactly counts as a recovery in this benchmark?",
+      "start": 69.92,
+      "end": 73.16
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The benchmark uses paired executions. In one, the workflow runs without an injected fault; in the other, the same workflow and seed encounter a fault. A lost acknowledgment happens after a remote change commits but before the agent receives confirmation. The paired design separates two cases that a single score would mix together: failure to perform the original task, and failure to handle uncertainty after an external effect may already have occurred.",
+      "start": 74.2,
+      "end": 103.18
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Can you clarify how the benchmark distinguishes those cases in its reported scores?",
+      "start": 104.08,
+      "end": 108.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "It reports both an unconditional recovery rate, R-S-R, and a conditional recovery success rate, C-R-S-R. R-S-R counts successful faulted trials across all trials. C-R-S-R counts faulted successes only when the matching clean run succeeded. Across 12 held-out workflows and 2,880 paired trials, clean-run success was 83.54%, but faulted end-to-end success was 39.03%, and C-R-S-R was 46.72%. Conditioning makes the recovery question clearer, without hiding the overall operational failure rate.",
+      "start": 108.42,
+      "end": 149.5
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So a final answer saying “done” isn’t enough to prove the external actions were safe?",
+      "start": 150.4,
+      "end": 155.08
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. UndoBench checks both final task invariants and the history of committed external effects. The second check can catch a duplicate charge even if the agent eventually reports success. Its exactly-once effect rate requires the goal state to be correct with no missing or duplicated effects. In the frozen test results, that rate matches C-R-S-R numerically because the strict success check already includes those conditions. Duplicate effect rate, by contrast, counts duplicates across all trials.",
+      "start": 155.94,
+      "end": 188.48
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "How did the benchmark compare the recovery strategies, and how strong is that comparison?",
+      "start": 188.48,
+      "end": 193.62
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The confirmatory study crossed two open-weight models, two tool-use frameworks, three methods, and 20 seeds across the 12 held-out workflows. Naive retry produced duplicate effects in 53.33% of its trials. Client-side idempotency reduced that to 45.42%, and its C-R-S-R was 53.49%, compared with 42.77% for naive retry. That difference is descriptive, not a demonstrated overall advantage: the task-clustered uncertainty interval included no improvement, and the adjusted significance test did not establish a difference.",
+      "start": 194.6,
+      "end": 235.84
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Why didn’t client-side idempotency prevent every duplicate?",
+      "start": 235.84,
+      "end": 240.0
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A client key helps only when the remote endpoint recognizes and tracks that key. In the held-out workflows, just three endpoints supported key tracking, and a database uniqueness constraint also protected one migration. A separate extension added server-side deduplication to every test workflow. There, C-R-S-R reached 97.24%, with no duplicates in 960 trials. Still, 21 otherwise capable trials failed because of provider responses or malformed later model outputs, so deduplication was important here but not a cure-all.",
+      "start": 241.18,
+      "end": 279.12
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does recovery also depend on when the fault occurs in the workflow?",
+      "start": 280.36,
+      "end": 283.4
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Yes, and that is one of the paper’s most useful practical distinctions. The authors examined failures before any remote change, during a multi-step change when some effects may already have happened, and after commit but before acknowledgment. In a post-freeze extension limited to four workflows and commercial models, methods performed similarly before mutation. During partial mutation, three methods had zero C-R-S-R, while a verify-before-retry method reached 25.89%.",
+      "start": 284.5,
+      "end": 312.74
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What made verification help in that partial-mutation case, and why didn’t it generalize?",
+      "start": 315.34,
+      "end": 320.44
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The verify-before-retry method recovered one cloud workflow by checking that a service entity existed, then avoiding a redundant deployment before shifting traffic. It failed on the other three workflows, where hidden upload state, a leftover Git lockfile, or a mismatch between database and catalog state made a safe repair harder. Seeing part of the state is not the same as knowing how to restore the whole invariant. The authors therefore treat recovery as sensitive to the mutation boundary.",
+      "start": 321.2,
+      "end": 352.1
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How should we interpret these results alongside earlier reliability work?",
+      "start": 353.08,
+      "end": 356.84
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Claw-Eval and broader agent-reliability studies make the case for evaluating execution, not just answers. UndoBench adds a focused counterfactual: compare an agent’s response to a fault with its own successful clean execution, and inspect external effects as well as final state. Earlier work called Verified Tool Calls also proposed checking a tool’s postcondition before retrying. UndoBench’s distinction is its wider workflow evaluation and its separation of competence from recovery, not a head-to-head victory over that method.",
+      "start": 358.28,
+      "end": 390.92
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "What should we take as the main limitation before applying this to deployed systems?",
+      "start": 391.86,
+      "end": 395.72
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The evidence is bounded. The confirmatory experiment injects a single lost acknowledgment in sandboxed environments. Results about other fault timings come from a secondary extension on four qualified workflows, and one partial-mutation success does not establish broad effectiveness. So the paper does not provide a production-safety guarantee. It does show why ordinary task completion is an incomplete proxy: real systems need evaluations that track whether external effects happened, and whether recovery matches the point at which execution failed.",
+      "start": 395.72,
+      "end": 429.1
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The practical lesson is to treat a timeout as uncertainty, not proof that an action failed. Before a remote change, retrying may be comparatively safe; after a committed change, it may duplicate an effect unless the endpoint deduplicates or the agent can verify what happened. During a partial multi-step change, neither simple retry nor per-call keys necessarily restores the intended state. Evaluate recovery around observable effects and mutation timing. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 430.02,
+      "end": 466.233
+    }
+  ]
+}

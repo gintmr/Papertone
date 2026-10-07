@@ -1,0 +1,257 @@
+{
+  "id": "2610.06851",
+  "title": "Base Models Can Reason By Taking a Cue From Training Data",
+  "authors": [
+    "Sophie L. Wang",
+    "Amil Dravid",
+    "Rulin Shao",
+    "Kevin Farhat",
+    "Sewon Min",
+    "Alexei A. Efros"
+  ],
+  "abstract": "In this paper, we study how training data creates associations between the tokens at the start of a base model's response and the reasoning behavior that follows. First, we demonstrate that fixing particular starting token cues makes a base model's performance competitive with that of its reinforcement learning (RL)-trained counterparts on math and coding. For instance, the cue \".\\n\\nOkay\" raises Olmo-3-7B's MATH-500 pass@1 accuracy from 42% to 78%, while \"Alright,\" raises Qwen3-14B's from 72% to 87%. Second, RL makes these cues more likely, while fixing them recovers much of its performance gain over the base model. Third, we trace the reasoning effects of token cues to the training data. We perform causal data interventions to turn an arbitrary word, such as \"chicken\", into an effective reasoning cue, or remove an existing cue's effect. A similar edit makes the prompt instruction \"Think duck duck goose\" as effective as \"Think step by step\" at eliciting reasoning. We also find that the hidden state representations induced by different cues correlate with different document types from the training set. Finally, we extend our study of token cues with a case study in language model safety, finding that different cues elicit distinct refusal and compliance behaviors that correspond to different types of training data.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.06851",
+    "arxiv": "https://arxiv.org/abs/2610.06851"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10f76-cd0d-71eb-826e-fd479a71a6bf/podcast.mp3",
+  "duration": 481.933,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 45.9,
+      "en": "In Deep Reinforcement Learning and Language Models, today’s lecture is on “Base Models Can Reason By Taking a Cue From Training Data.” Recent work such as “SimpleRL-Zoo: Investigating and Taming Zero Reinforcement Learning for Open Base Models in the Wild” and “Echo Chamber: RL Post-training Amplifies Behaviors Learned in Pretraining” asks whether reinforcement learning creates reasoning or amplifies patterns learned earlier. Researchers from MIT, Berkeley, Washington, and the Allen Institute for Artificial Intelligence take a focused route: they test whether tiny response openings can cue existing behaviors. That matters if capability and the likelihood of showing it are different things. Yes, Noah?",
+      "zh": "在深度强化学习与语言模型这门课上，今天的讲座主题是“基础模型可以靠训练数据的提示来推理”。最近的一些工作，比如“SimpleRL-Zoo：探索并驯服开放基础模型在野外的零强化学习”和“回声室：强化学习后训练放大了预训练中学到的行为”，都在问一个问题：强化学习到底是在创造推理能力，还是在放大之前已经学到的模式。来自MIT、伯克利、华盛顿大学和艾伦人工智能研究所的研究者走了一条更聚焦的路线：他们测试微小的回复开头能不能提示出已有的行为。如果能力和表现出这种能力的概率是两回事，那这一点就很重要。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 47.1,
+      "end": 52.48,
+      "en": "Hi Professor, if the model already knows how to reason, what exactly is reinforcement learning changing?",
+      "zh": "教授您好，如果模型已经知道怎么推理了，那强化学习到底在改变什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 53.4,
+      "end": 83.76,
+      "en": "That distinction is the paper’s starting point. The authors observe that a model’s first response tokens can predict what comes next, even when those tokens do not explain a solution. In one example, half of Olmo three, seven B’s correct uncued answers on a math benchmark began with a paragraph break, compared with 14% of incorrect answers. The opening may work like a learned switch: it changes which continuation becomes more likely, without adding a mathematical explanation.",
+      "zh": "这个区别正是论文的出发点。作者观察到，模型最初生成的几个token能预示接下来会发生什么，即便这些token本身并没有解释任何解题过程。举一个例子，在数学基准上，Olmo 3 7B在无提示情况下答对的题目中，有一半以段落换行开头，而答错的题目中这个比例只有14%。这个开头可能就像一个学到的开关：它改变了哪种续写更可能被选中，但并没有增加任何数学上的解释。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 83.76,
+      "end": 120.86,
+      "en": "The team tests this idea by prefilling a base model with one or two response tokens, then letting it answer normally. On the Math 500 benchmark, a paragraph break followed by “Okay” raises Olmo’s accuracy from 42% to 78%, close to its reinforcement-learning counterpart at 75%. For Qwen three, fourteen B, “Alright” followed by a comma raises accuracy from 72% to 87%, matching its reinforcement-learning model. The cue supplies no worked example or explicit reasoning instruction.",
+      "zh": "团队通过给基础模型预填一两个回复token来验证这个想法，然后让它正常作答。在Math 500基准上，一个段落换行后接“Okay”把Olmo的准确率从42%提升到78%，接近其强化学习版本的75%。对于Qwen three fourteen B，“Alright”后接逗号把准确率从72%提升到87%，与它的强化学习模型持平。这个提示并没有提供任何解题示例或明确的推理指令。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 121.86,
+      "end": 125.64,
+      "en": "Quick question: how did they choose those openings without using the correct answers?",
+      "zh": "问个快问题：他们没用正确答案，是怎么选出这些开头语的？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 126.62,
+      "end": 156.02,
+      "en": "They used a label-free search procedure. For candidate openings, they sampled multiple continuations on training problems and looked for openings whose final answers agreed most consistently. Agreement is not proof of correctness, but it offers a proxy without selecting cues against reference answers. They also excluded openings that caused too many responses to omit an answer. Then they evaluated the chosen cues on held-out benchmarks, including other math tests and code generation.",
+      "zh": "他们用了一种不需要标签的搜索方法。对于候选开头，他们在训练题上采样多条续写，然后找出那些最终答案最一致的开口。答案一致并不能证明就是对的，但它提供了一个替代信号，不用拿参考答案来筛选线索。他们还排除了那些导致太多回答直接不给答案的开头。之后，他们在留出的基准上评估选出的线索，包括其他数学测试和代码生成。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 156.02,
+      "end": 194.78,
+      "en": "The reinforcement-learning comparison helps explain why the cue can work. In the studied runs, reinforcement learning raised the probability of the effective opening substantially: for Olmo, the paragraph-break-and-Okay opening rose from 0.14 to 0.65. Later in a response, the base and trained models’ next-token distributions were more similar when given identical histories. Swapping openings also changed performance, suggesting that early response choices account for a substantial share of the gains in these experiments, though not necessarily all of them.",
+      "zh": "强化学习的对比有助于解释这个提示为什么有效。在受研究的训练运行中，强化学习大幅提高了有效开头的概率：对Olmo来说，以分段加“Okay”开头的概率从0.14升到了0.65。在回答的后半段，当给定相同的历史时，基础模型和训练后模型的下一个token分布更加相似。替换开头也会改变表现，这说明在这些实验中，回答开头的选择占了性能提升的很大一部分，尽管未必是全部。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 195.3,
+      "end": 199.3,
+      "en": "So are the cues just a way to make the model write longer, more detailed answers?",
+      "zh": "那这些提示词是不是只是让模型写出更长、更详细的回答？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 200.36,
+      "end": 229.4,
+      "en": "The authors tested that alternative. Some openings produced responses about twice as long as those prompted by the reasoning cue, yet their accuracy fell below the uncued baseline. The reasoning cue retained an advantage when token limits were matched, and Olmo reached reinforcement-learning-level accuracy with a lower token cap. The result supports a more specific explanation than verbosity alone: the opening appears to steer the model toward a useful response pattern, not merely give it room to generate more text.",
+      "zh": "作者测试了这个替代解释。有些开头产生的回答长度是推理提示词的两倍，但准确率却低于无提示的基线。在token上限相同的情况下，推理提示词依然保持优势，而Olmo在更低的token上限下就达到了强化学习级别的准确率。这一结果支持了一个比单纯冗长更具体的解释：开头似乎是把模型引导向一种有用的回答模式，而不只是给它更多生成文本的空间。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 230.4,
+      "end": 263.68,
+      "en": "A particularly informative experiment changes the training data itself. In a mid-training mixture, the researchers replaced whole-word “Okay” with “Chicken.” After retraining, a paragraph break followed by “Chicken” raised Math 500 accuracy from 2.4% to 37.2%, close to 38.3% with the original cue on that edited model. The effect also appeared in other evaluations. Yet “Chicken” still worked as an ordinary word about birds and food; the edit did not erase its usual meaning.",
+      "zh": "有一个特别有启发性的实验直接改动了训练数据本身。在中期训练的数据混合中，研究者把整词的“Okay”替换成了“Chicken”。重新训练之后，一个段落换行后面跟着“Chicken”，就能把 Math 500 的准确率从 2.4% 拉到 37.2%，接近那个编辑过的模型上用原始提示词得到的 38.3%。这个效果在其他评测里也出现了。但“Chicken”仍然能当普通的词用，指鸡和食物；这次改动并没有抹掉它通常的含义。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 264.5,
+      "end": 270.52,
+      "en": "Can that data intervention show that the association caused the cue effect, rather than just correlating with it?",
+      "zh": "这种数据干预能否证明是这种关联导致了提示词效应，而不只是与它相关？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 270.96,
+      "end": 303.74,
+      "en": "It provides causal evidence for the specific edits and training setups tested. In a redirect experiment, the team associated “Okay” with question-and-answer documents. The cue then shifted the model toward generating a question instead of solving the presented problem, and accuracy fell to 0.2% in that comparison. Related rename and redirect patterns appeared in another model. These interventions are more direct than simply measuring associations, but they do not establish that every cue or data source behaves the same way.",
+      "zh": "这为所测试的具体编辑和训练设置提供了因果证据。在一项重定向实验中，团队把“Okay”与问答文档关联起来。随后这个线索让模型转向生成一个问题，而不是去解决所给出的问题，在那项对比中准确率降到了0.2%。相关的重命名和重定向模式也在另一个模型中出现了。这些干预比单纯测量关联更直接，但它们并不能证明每一个线索或数据源都会以同样的方式表现。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 304.58,
+      "end": 338.08,
+      "en": "The findings also extend beyond math. The cue improved Olmo’s code-generation results on HumanEval, while Qwen’s coding performance stayed broadly similar to its already strong baseline. In a safety evaluation, punctuation and spacing around “Okay” mattered: one version reduced refusals and sometimes produced harmful responses, while the paragraph-break version made Olmo more selective. Harmful responses to unsafe prompts fell from 42.4% to 0.2% in the reported comparison, without a large rise in refusals of safe prompts.",
+      "zh": "这些发现还不止于数学领域。这个线索提升了Olmo在HumanEval上的代码生成结果，而Qwen的编码表现则基本与它本就很强的基线持平。在一项安全评估中，“Okay”周围的标点和空格很关键：有一种版本减少了拒绝回答，有时还会生成有害回复，而带段落换行的版本则让Olmo变得更挑剔。在报告中的对比里，面对不安全提示词的有害回复率从42.4%降到了0.2%，同时安全提示词被拒绝的比例也没有大幅上升。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 338.98,
+      "end": 343.84,
+      "en": "Does that selective safety effect hold across models, or should we treat it as specific to Olmo?",
+      "zh": "这种选择性的安全效果在其他模型上也成立吗，还是说应该把它看作Olmo特有的现象？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 343.84,
+      "end": 374.42,
+      "en": "Treat it as model-specific evidence, not a general safety control. The same refusal pattern did not consistently appear across the other tested model families. The paper also finds that cue position matters: an early cue can sustain a shift toward reasoning-related representations, while a later insertion tends to have a brief effect. Hidden-state similarity helps describe that shift, but it is correlational; it cannot by itself certify that a model is reasoning correctly.",
+      "zh": "把它当作特定模型上的证据，而不是通用的安全控制手段。同样的拒绝模式在其他被测试的模型家族中并没有一致出现。论文还发现，提示出现的位置很关键：较早出现的提示可以维持向推理相关表征的转变，而较晚插入的提示往往只有短暂效果。隐藏状态相似度有助于描述这种转变，但这只是相关性；它本身并不能证明模型在正确推理。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 375.4,
+      "end": 410.28,
+      "en": "For the broader field, the paper complements work such as “Echo Chamber,” which studies how reinforcement learning can amplify behaviors acquired during pretraining. Here, the authors identify a small, testable mechanism: reinforcement learning can make effective response openings more likely, and a base model can sometimes access similar performance when given those openings directly. That reframes some post-training gains as changes in behavioral accessibility, while leaving open how much new competence different training pipelines may also produce.",
+      "zh": "对整个领域来说，这篇论文补充了像“Echo Chamber”这样的工作，后者研究的是强化学习如何放大预训练阶段习得的行为。而在这里，作者识别出了一个小的、可检验的机制：强化学习可以让有效的回答开头更容易出现，而基座模型在直接获得这些开头时，有时也能达到类似的性能。这就把一些后训练带来的提升重新解释为行为可及性的变化，同时留下了一个开放问题：不同的训练流程本身究竟还能产生多少新能力。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 411.08,
+      "end": 415.74,
+      "en": "How should researchers use this idea without mistaking a good cue for a reliable capability?",
+      "zh": "研究者该如何运用这个思路，又不至于把一个好线索误当成一种可靠能力？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 416.86,
+      "end": 451.0,
+      "en": "They should evaluate cues across models, prompts, tasks, and safety conditions rather than relying on one benchmark. This study’s benefits vary, and some openings reduce accuracy. Its retraining tests focus on particular data mixtures and models, while its reinforcement-learning comparisons do not represent every post-training pipeline. A useful next step is to map how formatting conventions create these associations and to test whether deployment systems can detect fragile response-boundary effects before they influence important outputs.",
+      "zh": "研究者应该在多种模型、提示、任务和安全条件下评估这些线索，而不是只依赖一个基准。这项研究的收益因情况而异，有些开头还会降低准确率。它的重训练测试聚焦于特定的数据配比和模型，而它的强化学习对比也不能代表所有后训练流程。一个有用的下一步是梳理格式惯例如何形成这些关联，并测试部署系统能否在脆弱的响应边界效应影响重要输出之前将其检测出来。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 451.64,
+      "end": 481.933,
+      "en": "The central takeaway is that what a model can do and what it tends to do are not always the same. A few opening tokens may reveal a behavior already present, while reinforcement learning or training-data patterns can make that behavior easier to elicit. But a cue is not a guarantee: its effect depends on the model, context, and task, and the same sensitivity can affect safety. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "zh": "核心结论是，模型能做什么和它倾向于做什么并不总是一回事。开头几个token可能就暴露出一种已经存在的行为，而强化学习或训练数据中的模式则可能让这种行为更容易被激发出来。但线索并不等于保证：它的效果取决于模型、上下文和任务，而且同样的敏感性也会影响安全性。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wang2026basemodelsreasontaking,\n      title={Base Models Can Reason By Taking a Cue From Training Data}, \n      author={Sophie L. Wang and Amil Dravid and Rulin Shao and Kevin Farhat and Sewon Min and Alexei A. Efros},\n      year={2026},\n      eprint={2610.06851},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.06851}, \n}",
+  "topics": [
+    "Causal Inference",
+    "Chain Of Thought",
+    "Data Curation"
+  ],
+  "peaks": [
+    0.661,
+    0.629,
+    0.434,
+    0.427,
+    0.371,
+    0.307,
+    0.285,
+    0.563,
+    0.425,
+    0.424,
+    0.356,
+    0.301,
+    0.281,
+    0.454,
+    0.349,
+    0.219,
+    0.282,
+    0.24,
+    0.357,
+    0.55,
+    0.408,
+    0.482,
+    0.366,
+    0.576,
+    0.369,
+    0.389,
+    0.284,
+    0.284,
+    0.24,
+    0.619,
+    0.238,
+    0.285,
+    0.434,
+    0.263,
+    0.653,
+    0.973,
+    1.0,
+    0.598,
+    0.961,
+    0.563,
+    0.632,
+    0.274,
+    0.395,
+    0.442,
+    0.362,
+    0.807,
+    0.944,
+    0.693,
+    0.641,
+    0.71,
+    0.592,
+    0.594,
+    0.324,
+    0.423,
+    0.32,
+    0.266,
+    0.539,
+    0.504,
+    0.341,
+    0.222,
+    0.2,
+    0.348,
+    0.759,
+    0.552,
+    0.437,
+    0.416,
+    0.214,
+    0.623,
+    0.929,
+    0.859,
+    0.471,
+    0.697
+  ],
+  "published": "2026-10-05",
+  "views": 428,
+  "license": "CC BY"
+}

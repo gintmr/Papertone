@@ -1,0 +1,279 @@
+{
+  "id": "2610.05622",
+  "title": "UndoBench: Separating Task Competence from Recovery Capability in Tool-Using AI Agents",
+  "authors": [
+    "Dolly Sah",
+    "Tanmay Sah",
+    "Harshul Jain",
+    "Tanya Sah"
+  ],
+  "abstract": "Tool-using AI agents are increasingly deployed across enterprise software systems, yet widely used benchmarks primarily evaluate nominal task completion, conflating baseline planning competence with operational fault recovery. We introduce UndoBench, a benchmark spanning 36 base workflows and 36 fault scenarios across 8 enterprise domains, decoupling task competence from recovery capability via counterfactual paired trials under identical seeds alongside wire-level effect-history and environment-state oracles. On 12 held-out TEST workflows across two open-weight models, two frameworks, and three recovery paradigms (5,760 executions / 2,880 paired trials) in the frozen lost-acknowledgment study, nominal competence reached 83.54% while conditional recovery success rate (CRSR) fell to 46.72%, with naive retry producing duplicate external effects in 53.33% of trials. Extensions to commercial API models reproduced this competence-recovery separation. Evaluations across complementary execution boundaries show that recovery is phase-dependent: before mutation, methods perform similarly without duplicate effects among capable trials; during partial mutation, naive retry, per-call idempotency, and zero-privilege journaling collapse on the evaluated composite workflows; after commit but before acknowledgment, verification and server-side idempotency substantially improve safety. These findings demonstrate that evaluating nominal completion alone masks critical, phase-dependent recovery vulnerabilities in autonomous agents.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.05622",
+    "arxiv": "https://arxiv.org/abs/2610.05622"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10fce-9fdb-7d27-b142-1348dc322d3c/podcast.mp3",
+  "duration": 466.233,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.14,
+      "en": "In a graduate seminar on reliable AI agents, today’s lecture is on UndoBench. Recent work such as Claw-Eval and Towards a Science of AI Agent Reliability broadens evaluation beyond final answers, toward complete execution and operational behavior. UndoBench focuses on a specific blind spot: an agent may complete a task when everything works, yet behave unsafely when a remote action succeeds and its acknowledgment disappears. That distinction matters whenever an agent can change external systems. Yes, Noah?",
+      "zh": "在一场关于可靠AI智能体的研究生研讨课上，今天的讲座主题是UndoBench。最近的一些工作，比如Claw-Eval和Towards a Science of AI Agent Reliability，把评估从只看最终答案，扩展到了完整的执行过程和运行行为。UndoBench关注的则是一个特定的盲区：一个智能体可能在一切正常时能完成任务，但当某个远程操作已经成功、确认信息却丢失时，它的行为可能就不安全了。只要智能体能够改变外部系统，这种区别就很重要。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.12,
+      "end": 40.14,
+      "en": "Hi Professor, why isn’t ordinary task success enough to tell us whether an agent is reliable?",
+      "zh": "教授您好，为什么普通的任务成功率不足以说明一个智能体是否可靠呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.1,
+      "end": 68.96,
+      "en": "Because a timeout leaves the agent uncertain about what happened. Imagine a payment renewal: the service commits the charge, but the confirmation never reaches the agent. If it retries blindly, the customer may be charged twice. UndoBench compares a clean run with a faulted run under the same seed. That lets researchers ask whether the agent recovered when it had already shown it could perform the task. High ordinary success, the paper finds, does not guarantee safe recovery.",
+      "zh": "因为超时会让智能体无法确定到底发生了什么。想象一下自动续费扣款：服务端已经扣了钱，但确认信息始终没送到智能体手里。如果它盲目重试，客户就可能被扣两次。UndoBench 在相同随机种子下，把一次无故障运行和一次有故障运行做对比。这样研究者就能追问：智能体明明已经证明自己能完成这个任务，那它在出故障后到底有没有恢复？论文发现，普通任务成功率高，并不保证它能安全恢复。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 69.92,
+      "end": 73.16,
+      "en": "Quick question: what exactly counts as a recovery in this benchmark?",
+      "zh": "快速问一下：在这个基准里，到底什么才算恢复成功？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.2,
+      "end": 103.18,
+      "en": "The benchmark uses paired executions. In one, the workflow runs without an injected fault; in the other, the same workflow and seed encounter a fault. A lost acknowledgment happens after a remote change commits but before the agent receives confirmation. The paired design separates two cases that a single score would mix together: failure to perform the original task, and failure to handle uncertainty after an external effect may already have occurred.",
+      "zh": "这个基准用的是成对执行。一次是不注入故障跑工作流，另一次是同样的工作流和随机种子遇到故障。确认丢失发生在远程变更已经提交、但智能体还没收到确认的时候。这种成对设计把两种情况分开了，而单一分数会把它们混在一起：一种是没能完成原本的任务，另一种是在外部影响可能已经发生之后，没能处理好这种不确定性。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 104.08,
+      "end": 108.42,
+      "en": "Can you clarify how the benchmark distinguishes those cases in its reported scores?",
+      "zh": "你能说明一下这个基准在报告的分数里是怎么区分这些情况的吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 108.42,
+      "end": 149.5,
+      "en": "It reports both an unconditional recovery rate, R-S-R, and a conditional recovery success rate, C-R-S-R. R-S-R counts successful faulted trials across all trials. C-R-S-R counts faulted successes only when the matching clean run succeeded. Across 12 held-out workflows and 2,880 paired trials, clean-run success was 83.54%, but faulted end-to-end success was 39.03%, and C-R-S-R was 46.72%. Conditioning makes the recovery question clearer, without hiding the overall operational failure rate.",
+      "zh": "它同时报告了无条件恢复率 R-S-R 和有条件恢复成功率 C-R-S-R。R-S-R 统计的是所有试验中故障试验成功的比例。C-R-S-R 则只统计那些对应的干净运行也成功时的故障成功案例。在 12 个留出的工作流和 2,880 对配对试验中，干净运行的成功率是 83.54%，但故障情况下的端到端成功率只有 39.03%，C-R-S-R 为 46.72%。加上条件限定让恢复问题更清晰，同时也没有掩盖整体的运行失败率。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 150.4,
+      "end": 155.08,
+      "en": "So a final answer saying “done” isn’t enough to prove the external actions were safe?",
+      "zh": "所以光凭最后回一句“搞定了”，还不足以证明那些外部操作就是安全的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 155.94,
+      "end": 188.48,
+      "en": "Exactly. UndoBench checks both final task invariants and the history of committed external effects. The second check can catch a duplicate charge even if the agent eventually reports success. Its exactly-once effect rate requires the goal state to be correct with no missing or duplicated effects. In the frozen test results, that rate matches C-R-S-R numerically because the strict success check already includes those conditions. Duplicate effect rate, by contrast, counts duplicates across all trials.",
+      "zh": "没错。UndoBench 既检查最终任务不变量，也检查已提交外部效应的历史记录。第二项检查能发现重复扣款，即使智能体最终报告成功。它的恰好一次效应率要求目标状态正确，且没有缺失或重复的效应。在冻结的测试结果中，该比率在数值上与 C-R-S-R 一致，因为严格成功检查已经包含了这些条件。相比之下，重复效应率则统计所有试验中的重复情况。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 188.48,
+      "end": 193.62,
+      "en": "How did the benchmark compare the recovery strategies, and how strong is that comparison?",
+      "zh": "这个基准是如何比较这些恢复策略的，这种比较又有多强？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 194.6,
+      "end": 235.84,
+      "en": "The confirmatory study crossed two open-weight models, two tool-use frameworks, three methods, and 20 seeds across the 12 held-out workflows. Naive retry produced duplicate effects in 53.33% of its trials. Client-side idempotency reduced that to 45.42%, and its C-R-S-R was 53.49%, compared with 42.77% for naive retry. That difference is descriptive, not a demonstrated overall advantage: the task-clustered uncertainty interval included no improvement, and the adjusted significance test did not establish a difference.",
+      "zh": "验证性研究在12个留出工作流上交叉了两种开放权重模型、两种工具使用框架、三种方法和20个随机种子。朴素重试在其试验中有53.33%产生了重复效应。客户端幂等性将其降至45.42%，其C-R-S-R为53.49%，而朴素重试为42.77%。这一差异是描述性的，并非已证实的整体优势：按任务聚类的不确定性区间包含无改善的情况，且校正后的显著性检验未能确立差异。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 235.84,
+      "end": 240.0,
+      "en": "Why didn’t client-side idempotency prevent every duplicate?",
+      "zh": "为什么客户端幂等性没能防止所有重复呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 241.18,
+      "end": 279.12,
+      "en": "A client key helps only when the remote endpoint recognizes and tracks that key. In the held-out workflows, just three endpoints supported key tracking, and a database uniqueness constraint also protected one migration. A separate extension added server-side deduplication to every test workflow. There, C-R-S-R reached 97.24%, with no duplicates in 960 trials. Still, 21 otherwise capable trials failed because of provider responses or malformed later model outputs, so deduplication was important here but not a cure-all.",
+      "zh": "客户端密钥只有在远端接口能识别并跟踪这个密钥时才有用。在留出的工作流里，只有三个接口支持密钥跟踪，另外还有一个数据库唯一性约束保护了一次迁移。一个单独的扩展给每个测试工作流都加上了服务端去重。在那里，C-R-S-R 达到了 97.24%，960 次试验中没有重复。不过，仍有 21 次本来能成功的试验因为提供商响应或后续模型输出格式错误而失败，所以去重在这里很重要，但并不是万灵药。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 280.36,
+      "end": 283.4,
+      "en": "Does recovery also depend on when the fault occurs in the workflow?",
+      "zh": "恢复是否也取决于故障在工作流中出现的时机？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 284.5,
+      "end": 312.74,
+      "en": "Yes, and that is one of the paper’s most useful practical distinctions. The authors examined failures before any remote change, during a multi-step change when some effects may already have happened, and after commit but before acknowledgment. In a post-freeze extension limited to four workflows and commercial models, methods performed similarly before mutation. During partial mutation, three methods had zero C-R-S-R, while a verify-before-retry method reached 25.89%.",
+      "zh": "是的，这也是这篇论文最有用的实践区分之一。作者考察了几类失败：在任何远程变更之前发生的、在多步变更过程中部分效果可能已经产生时发生的，以及提交之后但确认之前发生的。在一项仅限于四个工作流和商用模型的后冻结扩展中，各方法在变更前表现相近。在部分变更期间，三种方法的C-R-S-R为零，而一种先验证再重试的方法达到了25.89%。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 315.34,
+      "end": 320.44,
+      "en": "What made verification help in that partial-mutation case, and why didn’t it generalize?",
+      "zh": "是什么让验证在那个部分变更的场景里起了作用，又为什么没能推广开来？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 321.2,
+      "end": 352.1,
+      "en": "The verify-before-retry method recovered one cloud workflow by checking that a service entity existed, then avoiding a redundant deployment before shifting traffic. It failed on the other three workflows, where hidden upload state, a leftover Git lockfile, or a mismatch between database and catalog state made a safe repair harder. Seeing part of the state is not the same as knowing how to restore the whole invariant. The authors therefore treat recovery as sensitive to the mutation boundary.",
+      "zh": "先验证再重试的方法通过检查某个服务实体是否存在，恢复了一个云工作流，然后在切换流量之前避免了一次冗余部署。但在另外三个工作流上它失败了，因为隐藏的上传状态、残留的 Git 锁文件，或者数据库与目录状态之间的不一致，让安全修复变得更困难。看到部分状态并不等于知道如何恢复整个不变量。因此，作者认为恢复对变更边界很敏感。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 353.08,
+      "end": 356.84,
+      "en": "How should we interpret these results alongside earlier reliability work?",
+      "zh": "我们该如何把这些结果和早先的可靠性研究放在一起解读呢？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 358.28,
+      "end": 390.92,
+      "en": "Claw-Eval and broader agent-reliability studies make the case for evaluating execution, not just answers. UndoBench adds a focused counterfactual: compare an agent’s response to a fault with its own successful clean execution, and inspect external effects as well as final state. Earlier work called Verified Tool Calls also proposed checking a tool’s postcondition before retrying. UndoBench’s distinction is its wider workflow evaluation and its separation of competence from recovery, not a head-to-head victory over that method.",
+      "zh": "Claw-Eval以及更广泛的智能体可靠性研究都主张，评估要针对执行过程，而不只是看最终答案。UndoBench在此基础上加了一个聚焦的反事实视角：把智能体面对故障时的反应，和它自己成功干净执行时的情况做对比，并且既要检查最终状态，也要检查外部影响。此前的Verified Tool Calls也提出过，在重试之前先检查工具的后置条件。UndoBench的不同之处在于它覆盖了更广的工作流评估，并且把能力本身和恢复能力分开来看，而不是说它在那套方法面前取得了正面胜利。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 391.86,
+      "end": 395.72,
+      "en": "What should we take as the main limitation before applying this to deployed systems?",
+      "zh": "在把这套方法应用到已部署系统之前，我们应当把什么视为主要局限？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 395.72,
+      "end": 429.1,
+      "en": "The evidence is bounded. The confirmatory experiment injects a single lost acknowledgment in sandboxed environments. Results about other fault timings come from a secondary extension on four qualified workflows, and one partial-mutation success does not establish broad effectiveness. So the paper does not provide a production-safety guarantee. It does show why ordinary task completion is an incomplete proxy: real systems need evaluations that track whether external effects happened, and whether recovery matches the point at which execution failed.",
+      "zh": "证据是有限的。验证性实验只是在沙箱环境中注入了一次丢失的确认。关于其他故障时机的结论来自对四个合格工作流的二次扩展，而一次部分变更成功并不能确立广泛的有效性。所以这篇论文并没有提供生产环境的安全性保证。它确实说明了为什么普通的任务完成度是一个不完整的替代指标：真实系统需要能够追踪外部效果是否发生、以及恢复是否与执行失败的时间点相匹配的评估。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 430.02,
+      "end": 466.233,
+      "en": "The practical lesson is to treat a timeout as uncertainty, not proof that an action failed. Before a remote change, retrying may be comparatively safe; after a committed change, it may duplicate an effect unless the endpoint deduplicates or the agent can verify what happened. During a partial multi-step change, neither simple retry nor per-call keys necessarily restores the intended state. Evaluate recovery around observable effects and mutation timing. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "实际的经验是，把超时当作一种不确定状态，而不是行动失败的证据。在远程变更之前，重试相对安全；但在变更已提交之后，重试可能会重复产生效果，除非端点能去重，或者智能体能核实实际发生了什么。在多步变更只完成了一部分的情况下，无论是简单重试还是按调用加键，都不一定能恢复到预期状态。要围绕可观察的效果和变更时机来评估恢复能力。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{sah2026undobenchseparatingtaskcompetence,\n      title={UndoBench: Separating Task Competence from Recovery Capability in Tool-Using AI Agents}, \n      author={Dolly Sah and Tanmay Sah and Harshul Jain and Tanya Sah},\n      year={2026},\n      eprint={2610.05622},\n      archivePrefix={arXiv},\n      primaryClass={cs.SE},\n      url={https://arxiv.org/abs/2610.05622}, \n}",
+  "topics": [
+    "Agent Based Systems",
+    "Agents",
+    "ML Systems"
+  ],
+  "peaks": [
+    1.0,
+    0.777,
+    0.342,
+    0.524,
+    0.2,
+    0.558,
+    0.618,
+    0.267,
+    0.267,
+    0.341,
+    0.311,
+    0.58,
+    0.73,
+    0.592,
+    0.724,
+    0.414,
+    0.981,
+    0.911,
+    0.849,
+    0.499,
+    0.25,
+    0.407,
+    0.452,
+    0.583,
+    0.85,
+    0.383,
+    0.595,
+    0.577,
+    0.382,
+    0.527,
+    0.672,
+    0.353,
+    0.272,
+    0.244,
+    0.28,
+    0.207,
+    0.321,
+    0.654,
+    0.858,
+    0.549,
+    0.334,
+    0.511,
+    0.428,
+    0.902,
+    0.971,
+    0.626,
+    0.506,
+    0.503,
+    0.663,
+    0.869,
+    0.39,
+    0.274,
+    0.239,
+    0.323,
+    0.703,
+    0.962,
+    0.633,
+    0.37,
+    0.532,
+    0.441,
+    0.466,
+    0.837,
+    0.414,
+    0.293,
+    0.364,
+    0.222,
+    0.438,
+    0.777,
+    0.619,
+    0.73,
+    0.422,
+    0.283
+  ],
+  "published": "2026-10-04",
+  "views": 356,
+  "license": "CC BY"
+}

@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 437.42,
+  "word_match_rate": 0.8908,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical course, European Foundation Models and Efficient Deployment, today’s lecture is on Kolibri: A Sovereign European Model on the Pareto Frontier. Recent work such as Command A: An Enterprise-Ready Large Language Model and OLMoE: Open Mixture-of-Experts Language Models reflects a field moving toward efficient, capable systems that can be adapted or operated by organisations. Aleph Alpha’s Kolibri fits that trend, while foregrounding German-language development and controlled European deployment. I see a hand—yes, Noah?",
+      "start": 0.0,
+      "end": 35.94
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the main goal simply to make a smaller model that performs well in German?",
+      "start": 37.0,
+      "end": 41.58
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is part of it, but “smaller” needs a qualification. Kolibri has 78.1 billion total parameters, yet activates 3.46 billion per token through a mixture-of-experts design. The goal is to pair broad model capacity with lower per-token computation, while supporting English and German. The authors also target organisations that need to run systems on infrastructure they control, such as public-sector and industrial teams handling sensitive documents.",
+      "start": 42.56,
+      "end": 72.68
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The architecture is a 50-block decoder-only Transformer. Forty blocks use sliding-window attention over the preceding 512 tokens, while 10 use full attention. This hybrid is like reading a nearby passage closely while occasionally consulting the whole document. In each expert layer, a token is routed to 6 of 384 routed experts, alongside a shared expert. The authors use load-balancing methods to encourage experts to be used effectively.",
+      "start": 73.7,
+      "end": 103.14
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does the model build stronger German capability than an English model translated after training?",
+      "start": 104.18,
+      "end": 109.78
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The paper treats German as a training priority, not a translation layer. More than 20% of pre-training data is German, and the team expands its supply with curated web material, rephrased text, and selected translations. They also train German reasoning traces and answers. A 128,000-token vocabulary is designed to better match German word structure; on the evaluated German web text, it uses 11.2% fewer tokens than the reported G-P-T five tokenizer.",
+      "start": 113.26,
+      "end": 143.92
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Training unfolds in three stages: 20 trillion tokens at a 16,000-token context, 3.4 trillion at 64,000, and 200 billion at 256,000. The corpus includes web text, code, scientific material, instructions, and specialised sources. Filtering, deduplication, privacy redaction, and removal of harmful or pirated material shape the data. Later stages shift toward mathematics, code, reasoning, and long documents, balancing broad knowledge with tasks relevant to deployment.",
+      "start": 143.92,
+      "end": 180.0
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the long context comes mainly from the final training stage, rather than the architecture alone?",
+      "start": 181.14,
+      "end": 186.3
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Both matter. The attention pattern reduces the cost of processing long inputs, while staged training exposes the model to progressively longer contexts. After pre-training, supervised fine-tuning uses English and German conversations and synthetic examples for reasoning, tools, coding, science, safety, and long-context tasks. Users can select no, low, medium, or high reasoning effort, trading response depth against latency and token use.",
+      "start": 187.0,
+      "end": 216.48
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The model is then trained with reinforcement learning across 38 environments and more than 1.2 million tasks. These include mathematics, software engineering, retrieval, tool use, and German variants. Rewards can come from verifiable outcomes, such as passing code tests or making correct tool calls. For document-grounded answers, the Merlin–Arthur protocol sometimes masks supporting sentences; the model is rewarded for answering when evidence remains and abstaining when it has been removed.",
+      "start": 217.42,
+      "end": 249.62
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Could the reported retrieval results transfer to an organisation’s documents, or are they mostly benchmark-specific?",
+      "start": 249.62,
+      "end": 255.12
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The report includes industry retrieval proxies and unseen customer-proxy corpora, which offer some evidence of transfer beyond familiar training examples. Kolibri leads evaluated MoE baselines on the English retrieval aggregate and most German comparisons, though one German baseline scores higher. The released model also improves on the earlier Kolibri Origin in reported abstention and grounding measures. These findings are promising evidence, not proof of reliability across every company’s documents or workflows.",
+      "start": 257.18,
+      "end": 289.22
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The broader contribution is an integrated development pipeline: data curation, pre-training, post-training, evaluation, deployment, and reproducibility tooling are treated as connected work. That resembles the practical focus of enterprise models such as Command A, while Kolibri places particular weight on German capability and European operational control. Its open weights under the Apache 2.0 licence may give organisations more freedom to deploy it on infrastructure they manage.",
+      "start": 289.22,
+      "end": 322.68
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we interpret the claim that Kolibri sits on a quality-and-cost Pareto frontier?",
+      "start": 323.66,
+      "end": 328.16
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "As a claim tied to the paper’s chosen benchmarks and serving setup, not a universal ranking. Kolibri performs strongly among evaluated models with similar active-parameter counts, but Nemotron 3 Super scores higher overall while using more than three times the active parameters. The dense Qwen3.8 27B also exceeds Kolibri on the reported overall aggregates while activating substantially more parameters. Throughput, workload, and hardware can change the comparison.",
+      "start": 329.04,
+      "end": 360.1
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The limitations matter alongside the results. Kolibri trails several models through 256,000 tokens on R-U-L-E-R, and its reported one-million-token performance is extrapolated beyond its 256,000-token training context. The authors also note weak routed-expert use in the first two MoE layers, benchmark contamination affecting HumanEval, and small internal application benchmarks. Independent testing will be important for checking reproducibility, real-world reliability, and the strength of the sovereignty claims.",
+      "start": 360.1,
+      "end": 397.08
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The takeaway is that Kolibri shows how model capacity, active computation, language-specific data, and deployment constraints can be designed together rather than treated as separate concerns. Its results suggest a credible option for organisations seeking open-weight English–German systems, while leaving meaningful questions about external validation and performance across workloads. For PhD researchers, the useful lesson is to evaluate not only what a model can do, but also where, at what cost, and under whose control. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 398.06,
+      "end": 437.42
+    }
+  ]
+}

@@ -2,6 +2,149 @@
   "generated_at": null,
   "episodes": [
     {
+      "id": "2610.kolibri-sovereign-european-model",
+      "title": "Kolibri: A Sovereign European Model on the Pareto Frontier",
+      "authors": [
+        "Aleph Alpha"
+      ],
+      "duration": 437.419875,
+      "license": "User Uploaded",
+      "topics": [
+        "NLP",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.kolibri-sovereign-european-model",
+      "published": "2026-10-05",
+      "views": 1235,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10d86-5e08-73d8-bf61-e6a373368d64/podcast.mp3"
+    },
+    {
+      "id": "2610.06851",
+      "title": "Base Models Can Reason By Taking a Cue From Training Data",
+      "authors": [
+        "Sophie L. Wang",
+        "Amil Dravid",
+        "Rulin Shao",
+        "Kevin Farhat",
+        "Sewon Min",
+        "Alexei A. Efros"
+      ],
+      "duration": 481.932563,
+      "license": "CC BY",
+      "topics": [
+        "Causal Inference",
+        "Chain Of Thought",
+        "Data Curation"
+      ],
+      "cover": "cover.png",
+      "path": "2610.06851",
+      "published": "2026-10-05",
+      "views": 428,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f76-cd0d-71eb-826e-fd479a71a6bf/podcast.mp3"
+    },
+    {
+      "id": "2610.06805",
+      "title": "H-JEPA: End-to-End Learning of Hierarchical World Models for Visual Planning",
+      "authors": [
+        "Wancong Zhang",
+        "Basile Terver",
+        "Michael Rabbat",
+        "Yann LeCun",
+        "Randall Balestriero"
+      ],
+      "duration": 537.129125,
+      "license": "CC BY",
+      "topics": [
+        "Reinforcement Learning",
+        "Representation Learning",
+        "Robotic Control"
+      ],
+      "cover": "cover.png",
+      "path": "2610.06805",
+      "published": "2026-10-05",
+      "views": 382,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fc1-2bb7-7dd1-a9eb-1cbf81ca8df9/podcast.mp3"
+    },
+    {
+      "id": "2610.05622",
+      "title": "UndoBench: Separating Task Competence from Recovery Capability in Tool-Using AI Agents",
+      "authors": [
+        "Dolly Sah",
+        "Tanmay Sah",
+        "Harshul Jain",
+        "Tanya Sah"
+      ],
+      "duration": 466.233,
+      "license": "CC BY",
+      "topics": [
+        "Agent Based Systems",
+        "Agents",
+        "ML Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2610.05622",
+      "published": "2026-10-04",
+      "views": 356,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fce-9fdb-7d27-b142-1348dc322d3c/podcast.mp3"
+    },
+    {
+      "id": "2610.03695",
+      "title": "Language Models that Play Chess and Explain Their Moves",
+      "authors": [
+        "Adithya Bhaskar",
+        "Jeffrey Cheng",
+        "Danqi Chen"
+      ],
+      "duration": 356.727875,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Chain Of Thought",
+        "Instruction Tuning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.03695",
+      "published": "2026-10-02",
+      "views": 332,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a109e2-27ff-73ed-985a-c4d4d1ffbe8d/podcast.mp3"
+    },
+    {
+      "id": "2610.02665",
+      "title": "Large Language Continuous Diffusion Models",
+      "authors": [
+        "Zhihan Yang",
+        "Wei Guo",
+        "Jean-Marie Lemercier",
+        "Simon Welker",
+        "Yonggan Fu",
+        "Mohammad Mahdi Kamani",
+        "Sajad Norouzi",
+        "Julius Berner",
+        "Tomas Geffner",
+        "Karsten Kreis",
+        "Yongxin Chen",
+        "Molei Tao",
+        "John Thickstun",
+        "Pavlo Molchanov",
+        "Ante Jukić",
+        "Arash Vahdat",
+        "Morteza Mardani"
+      ],
+      "duration": 487.601188,
+      "license": "CC BY",
+      "topics": [
+        "Fine Tuning",
+        "Generative Models",
+        "Inference Optimization"
+      ],
+      "cover": "cover.png",
+      "path": "2610.02665",
+      "published": "2026-10-02",
+      "views": 283,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a109f1-0165-7e7f-bd5c-5d2e66ea02a4/podcast.mp3"
+    },
+    {
       "id": "2610.skillrefiner-offline-skill-refinement",
       "title": "SkillRefiner: Offline Skill Refinement from Historical Agent Traces",
       "authors": [
@@ -19,7 +162,7 @@
       "cover": "cover.png",
       "path": "2610.skillrefiner-offline-skill-refinement",
       "published": "2026-10-01",
-      "views": 2312,
+      "views": 2574,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
     },
     {
@@ -43,7 +186,7 @@
       "cover": "cover.png",
       "path": "2610.02208",
       "published": "2026-10-01",
-      "views": 463,
+      "views": 530,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac4-0ae8-74bf-8572-31108e8b0fe0/podcast.mp3"
     },
     {
@@ -70,7 +213,7 @@
       "cover": "cover.png",
       "path": "2610.02204",
       "published": "2026-10-01",
-      "views": 290,
+      "views": 344,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa6b-17f1-75ea-9e45-cf77eb64e55e/podcast.mp3"
     },
     {
@@ -92,7 +235,7 @@
       "cover": "cover.png",
       "path": "2610.02200",
       "published": "2026-10-01",
-      "views": 757,
+      "views": 967,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0faa4-570a-7126-8d23-e59675871b79/podcast.mp3"
     },
     {
@@ -113,8 +256,30 @@
       "cover": "cover.png",
       "path": "2610.02140",
       "published": "2026-10-01",
-      "views": 1804,
+      "views": 2067,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac6-3980-74a8-8516-eb17968084b3/podcast.mp3"
+    },
+    {
+      "id": "2610.01742",
+      "title": "World Motion Models: Flexible Sequence Modeling of SE(3) Trajectories",
+      "authors": [
+        "Jiahui Lei",
+        "Qianqian Wang",
+        "Trevor Darrell",
+        "Angjoo Kanazawa"
+      ],
+      "duration": 451.290813,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Generative Models",
+        "Geometric Deep Learning",
+        "Multi Task Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.01742",
+      "published": "2026-10-01",
+      "views": 265,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa87-7c9b-7c8e-a668-69a6352ee755/podcast.mp3"
     },
     {
       "id": "2610.01509",
@@ -140,7 +305,7 @@
       "cover": "cover.png",
       "path": "2610.01509",
       "published": "2026-10-01",
-      "views": 1116,
+      "views": 1233,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa76-85be-74e9-99b8-c19ff057bd0d/podcast.mp3"
     },
     {
@@ -165,7 +330,7 @@
       "cover": "cover.png",
       "path": "2610.01016",
       "published": "2026-10-01",
-      "views": 329,
+      "views": 405,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa51-8cdb-7af5-a96b-e301224c77b3/podcast.mp3"
     },
     {
@@ -192,8 +357,34 @@
       "cover": "cover.png",
       "path": "2609.40305",
       "published": "2026-09-30",
-      "views": 1617,
+      "views": 1795,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f56b-1797-72bd-9269-50ebe7951093/podcast.mp3"
+    },
+    {
+      "id": "2609.40127",
+      "title": "Learning Functional Subspaces for Neural Network Compression",
+      "authors": [
+        "Massimo Bini",
+        "Anders Christensen",
+        "Stephan Alaniz",
+        "Judah Goldfeder",
+        "Ole Winther",
+        "Yann LeCun",
+        "Ravid Shwartz-Ziv",
+        "Zeynep Akata"
+      ],
+      "duration": 427.80675,
+      "license": "CC BY",
+      "topics": [
+        "Transformers",
+        "Inference Optimization",
+        "Lightweight Models"
+      ],
+      "cover": "cover.png",
+      "path": "2609.40127",
+      "published": "2026-09-30",
+      "views": 254,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f57a-3aa4-71ae-a0f8-64b273e58095/podcast.mp3"
     },
     {
       "id": "2609.39247",
@@ -214,7 +405,7 @@
       "cover": "cover.png",
       "path": "2609.39247",
       "published": "2026-09-30",
-      "views": 352,
+      "views": 392,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f53c-f47f-7927-bd0b-028dc2a97dc9/podcast.mp3"
     },
     {
@@ -247,7 +438,7 @@
       "cover": "cover.png",
       "path": "2609.38163",
       "published": "2026-09-29",
-      "views": 245,
+      "views": 258,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f05a-7a2a-7345-b1d4-b4472ee0d2c4/podcast.mp3"
     },
     {
@@ -278,7 +469,7 @@
       "cover": "cover.png",
       "path": "2609.37725",
       "published": "2026-09-29",
-      "views": 2186,
+      "views": 2375,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f021-099c-733f-926f-dcaf0fedf90f/podcast.mp3"
     },
     {
@@ -303,7 +494,7 @@
       "cover": "cover.png",
       "path": "2609.37053",
       "published": "2026-09-29",
-      "views": 581,
+      "views": 596,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f075-7897-7252-bd15-f54e5b6ecb2a/podcast.mp3"
     },
     {
@@ -326,7 +517,7 @@
       "cover": "cover.png",
       "path": "2609.36720",
       "published": "2026-09-29",
-      "views": 333,
+      "views": 402,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0efe0-db83-720f-b48c-97f3a907e260/podcast.mp3"
     },
     {
@@ -351,7 +542,7 @@
       "cover": "cover.png",
       "path": "2609.35748",
       "published": "2026-09-28",
-      "views": 285,
+      "views": 292,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb3d-c1b3-7bda-a308-e664be80d404/podcast.mp3"
     },
     {
@@ -378,7 +569,7 @@
       "cover": "cover.png",
       "path": "2609.35738",
       "published": "2026-09-28",
-      "views": 1248,
+      "views": 1316,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb86-b9e5-7275-ab78-7992e92dea18/podcast.mp3"
     },
     {
@@ -405,7 +596,7 @@
       "cover": "cover.png",
       "path": "2609.35457",
       "published": "2026-09-28",
-      "views": 303,
+      "views": 328,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb9f-c8ec-7f8f-9267-7e5315f7fd08/podcast.mp3"
     },
     {
@@ -426,7 +617,7 @@
       "cover": "cover.png",
       "path": "2609.35318",
       "published": "2026-09-28",
-      "views": 650,
+      "views": 659,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebdf-531d-781a-beae-adab43a13055/podcast.mp3"
     },
     {
@@ -454,7 +645,7 @@
       "cover": "cover.png",
       "path": "2609.34261",
       "published": "2026-09-28",
-      "views": 348,
+      "views": 372,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb13-a7ad-75be-b54d-e75086eda69b/podcast.mp3"
     },
     {
@@ -476,7 +667,7 @@
       "cover": "cover.png",
       "path": "2609.34085",
       "published": "2026-09-28",
-      "views": 699,
+      "views": 736,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb99-de6d-7aec-8bc6-289a98344fc3/podcast.mp3"
     },
     {
@@ -510,7 +701,7 @@
       "cover": "cover.png",
       "path": "2609.33803",
       "published": "2026-09-27",
-      "views": 242,
+      "views": 251,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb24-cbf2-70a5-a3fb-44456de4b4e9/podcast.mp3"
     },
     {
@@ -534,7 +725,7 @@
       "cover": "cover.png",
       "path": "2609.33051",
       "published": "2026-09-27",
-      "views": 483,
+      "views": 525,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebc1-182a-7c89-8370-9f54daf4b5c1/podcast.mp3"
     },
     {
@@ -641,6 +832,29 @@
       "published": "2026-09-25",
       "views": 290,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0e5c0-9cb1-78d0-ad82-f9c97f332980/podcast.mp3"
+    },
+    {
+      "id": "2609.31383",
+      "title": "Guiding End-to-End Driving Models with Endpoint-Constrained Trajectory Optimization",
+      "authors": [
+        "Brayden Zhang",
+        "Mahsa Golchoubian",
+        "Igor Gilitschenski",
+        "Boris Ivanovic",
+        "Kashyap Chitta"
+      ],
+      "duration": 476.96925,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Autonomous Vehicles",
+        "Reinforcement Learning",
+        "Imitation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.31383",
+      "published": "2026-09-25",
+      "views": 351,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0e69a-983f-7788-a168-0f2b594a5abb/podcast.mp3"
     },
     {
       "id": "2609.29845",
@@ -1182,6 +1396,95 @@
       "published": "2026-09-17",
       "views": 1001,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b31b-5185-7477-a048-6de11493d0a7/podcast.mp3"
+    },
+    {
+      "id": "2609.19142",
+      "title": "PointZero: 3D Point Track Completion for Learning Transferable 3D Dynamics",
+      "authors": [
+        "Bardienus P. Duisterhof",
+        "Kaifeng Zhang",
+        "Adam Hung",
+        "Bowen Wen",
+        "Stan Birchfield",
+        "Yunzhu Li",
+        "Deva Ramanan",
+        "Jeffrey Ichnowski"
+      ],
+      "duration": 343.196833,
+      "license": "CC BY-NC-ND",
+      "topics": [
+        "Imitation Learning",
+        "Representation Learning",
+        "Robotic Control"
+      ],
+      "cover": "cover.png",
+      "path": "2609.19142",
+      "published": "2026-09-16",
+      "views": 246,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0acfc-e49a-753d-bfda-8f1a30b8f890/podcast.mp3"
+    },
+    {
+      "id": "2609.19134",
+      "title": "ScienceIDE: Turning World's Scientific Codebase into Agent Learnable Environments",
+      "authors": [
+        "Hejia Geng",
+        "Zesen Huang",
+        "Haoyang Li",
+        "Wenbin Li",
+        "Koutian Wu",
+        "Zihan Zhou",
+        "Yuanbo Pang",
+        "Weihao Liu",
+        "Zigong Xu",
+        "Zhiping Li",
+        "Zongzheng Zhang",
+        "Chuanfei Dong",
+        "Jiankai Sun",
+        "Tianzhe Zheng",
+        "Fengyu Xie",
+        "Yue Ma",
+        "Yueheng Shi",
+        "Tong Xie",
+        "Zonglin Di",
+        "Xianrong Liu",
+        "Qucheng Gao",
+        "Yimin Liu",
+        "Jiaming Pan",
+        "Sheng Huang",
+        "Xiao-Han Ma",
+        "Lanqing Yuan",
+        "Zhenlin Zhu",
+        "Ziang Liu",
+        "Ziyang Xu",
+        "Junkai Wang",
+        "Kangkai Liang",
+        "Jiayi Xian",
+        "Zehong Zhao",
+        "Liuwei Xu",
+        "Jingxu Xie",
+        "Peijin Zhang",
+        "Qiang Gao",
+        "Chengyi Xing",
+        "Zhe Zhao",
+        "Xi Wang",
+        "Yaopeng Xing",
+        "Xing Meng",
+        "Zhenfei Yin",
+        "Yingcheng Wu",
+        "Ling Yang"
+      ],
+      "duration": 300.87825,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Fine Tuning",
+        "ML Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2609.19134",
+      "published": "2026-09-16",
+      "views": 507,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ad14-1aac-7a70-9a60-0fa184d48e0a/podcast.mp3"
     },
     {
       "id": "2609.18197",
@@ -2062,6 +2365,27 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0846e-bd31-7482-b836-bb31614745d5/podcast.mp3"
     },
     {
+      "id": "2609.08848",
+      "title": "FIRE3D: Feed-forward Interactive 3D Scene Reconstruction Within A Minute",
+      "authors": [
+        "Hongchi Xia",
+        "Tianhang Cheng",
+        "Wei-Chiu Ma",
+        "Shenlong Wang"
+      ],
+      "duration": 415.556,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Computer Vision",
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2609.08848",
+      "published": "2026-09-08",
+      "views": 178,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a08444-a1c2-73a3-9ebe-1e3b7d8620fa/podcast.mp3"
+    },
+    {
       "id": "2609.08798",
       "title": "Eliciting Weak-to-Strong Generalization with On-Policy Reverse Distillation",
       "authors": [
@@ -2113,6 +2437,39 @@
       "published": "2026-09-08",
       "views": 537,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a083f2-faf6-7572-8b69-672f126b70ea/podcast.mp3"
+    },
+    {
+      "id": "2609.07925",
+      "title": "FrogNano: Training a 4B Coding Agent via Online Task Synthesis",
+      "authors": [
+        "Minseon Kim",
+        "Zhengyan Shi",
+        "Emiliano Penaloza",
+        "Christopher Cui",
+        "Roger Creus Castanyer",
+        "Maryam Hashemzadeh",
+        "Isadora White",
+        "Jonathan Light",
+        "Jeonghye Kim",
+        "Matheus Pereira",
+        "Darya Moldavskaya",
+        "Chinmay Singh",
+        "Fabio Vera",
+        "Baolin Peng",
+        "Xingdi Yuan",
+        "Marc-Alexandre Côté",
+        "Alessandro Sordoni"
+      ],
+      "duration": 331.572333,
+      "license": "CC BY",
+      "topics": [
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.07925",
+      "published": "2026-09-07",
+      "views": 392,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a083ef-8638-7060-8467-e919198e92fc/podcast.mp3"
     },
     {
       "id": "2609.07747",

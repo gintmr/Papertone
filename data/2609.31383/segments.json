@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 476.969,
+  "word_match_rate": 0.9026,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on autonomous driving and motion planning, today's lecture is on Guiding End-to-End Autonomous Driving with Endpoint-Constrained Optimization. Recent work such as GuideFlow and Model-Based Policy Adaptation reflects a field trying to close the gap between learned plans and reliable closed-loop driving. This paper takes a different route: it repairs a policy’s predicted path after inference, without retraining the policy. That matters because a plausible destination does not ensure a vehicle can follow the route smoothly. I see your hand, Noah.",
+      "start": 0.0,
+      "end": 36.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the policy predicts a reasonable path, why would the car still fail to follow it?",
+      "start": 37.22,
+      "end": 42.34
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The authors illustrate that problem with the same H-U-G-S-I-M scene driven from the same start. The base VaVAM plan has lateral inconsistencies and later collides; VaVAM with E-C-O adjusts the waypoints between the vehicle’s current state and the plan’s endpoint, then completes the route. The point is not that keeping the endpoint fixed guarantees safety. It is that the path in between can be difficult to execute even when open-loop waypoint scores look good.",
+      "start": 43.04,
+      "end": 74.28
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Open-loop metrics such as average waypoint distance and endpoint distance compare predicted points with a demonstration. They do not directly measure whether a controller can track the sequence between those points. Imagine judging a road trip only by its start and destination: the score could miss a series of abrupt bends along the way. E-C-O is placed after a frozen policy predicts its waypoints and before the controller turns those waypoints into actions.",
+      "start": 75.74,
+      "end": 103.64
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So E-C-O changes the middle of the path, but not where the policy intends to end?",
+      "start": 104.82,
+      "end": 109.6
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. It adds the recently executed vehicle poses and current pose to the plan, then holds those history poses and the policy’s final predicted waypoint fixed. E-C-O optimizes only the intermediate waypoints. If the vehicle has not yet accumulated enough history, it anchors the poses that are available. This gives the adjustment a connection to what the car actually did, rather than treating the predicted plan as an isolated curve.",
+      "start": 110.58,
+      "end": 138.88
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The objective balances three aims. It discourages abrupt changes in position and heading, penalizes sharp turns, and limits how far the adjusted path strays from the policy’s original prediction. The evaluated motion limits are not hard constraints in this objective, even though the resulting plans often have fewer measured violations. The optimization uses L-B-F-G-S; its median solve time was 20.7 milliseconds on a Xeon Gold 6238R CPU, with 31 median iterations.",
+      "start": 139.78,
+      "end": 172.88
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does that mean the method can repair a plan that points toward the wrong destination?",
+      "start": 174.12,
+      "end": 178.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. The fixed endpoint is an important boundary, and it is also a limitation: E-C-O cannot change a bad endpoint or reason about other agents. In H-U-G-S-I-M, the main reported result is a mean H-D-Score increase for VaVAM from 18.1 to 31.0, a gain of 12.9 points or 71%, averaged over 3 evaluation seeds on 185 test scenes. The score combines route completion with per-step measures, including collision and drivable-area gates.",
+      "start": 179.64,
+      "end": 214.26
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify whether the gain reflects safer driving alone, or whether the cars also made more progress?",
+      "start": 215.1,
+      "end": 220.46
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "It was not only a comfort-related change: VaVAM’s route completion also rose from 40.9 to 45.2. The H-D-Score uses no-collision and drivable-area compliance as gates, then includes time-to-collision and comfort in the remaining score. These are closed-loop simulator results, not proof of real-world performance or guaranteed collision avoidance. A separate safety layer may still be necessary, particularly because E-C-O does not reason about other agents.",
+      "start": 221.5,
+      "end": 252.04
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The authors also tested whether E-C-O’s particular shaping approach mattered relative to simpler repairs, under the same boundary conditions. On the nuScenes H-U-G-S-I-M ablation, E-C-O scored 39.6 H-D-Score. The strongest named alternative, a constrained bicycle-model optimizer, scored 34.8; a Savitzky–Golay filter scored 31.9, a moving average 31.7, a cubic smoothing spline 28.9, and temporal ensembling 27.8. This favors E-C-O among the tested options, not every imaginable alternative.",
+      "start": 253.04,
+      "end": 292.5
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Hold on, were those results just a smoother-looking path, or did they test whether a controller could track it?",
+      "start": 293.5,
+      "end": 298.94
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "They tested tracking as well. In 1,500 paired base and E-C-O trajectories replayed from the same vehicle state, the H-U-G-S-I-M i-L-Q-R controller cost fell from 101.2 to 92.6, and was lower for 83% of pairs. Steps at the steering-rate limit dropped from 20.1% to 12.9%, while first-waypoint tracking error barely changed, from 0.45 meters to 0.44 meters. The authors interpret this as improved trackability over the horizon, not proof of the sole cause of the score gains.",
+      "start": 299.64,
+      "end": 338.54
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "There is supporting evidence from a second simulator, AlpaSim, which uses a different vehicle-dynamics setup and an M-P-C controller. It has no comfort score, yet aggregate scores for the evaluated policies also improved there. The paper also compares boundary choices: history anchoring plus a pinned endpoint scored 39.6; without history anchoring, the score was 36.9; with history anchoring but a free endpoint, it was 34.4. Those tests compare combinations of boundaries rather than isolating one as the only cause.",
+      "start": 339.58,
+      "end": 375.6
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How does this differ from learned refiners such as Hydra-NeXt or test-time methods like TOAD?",
+      "start": 376.5,
+      "end": 381.76
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The distinction is in the design, not a reported head-to-head win. Hydra-NeXt learns a trajectory-refinement module jointly with trajectory and control prediction, while TOAD searches trajectories at test time using a learned scorer. E-C-O instead optimizes the policy’s waypoints and executed vehicle history without additional training or a learned scorer. It needs no map or privileged simulator state. This makes it a modular way to address executability, while leaving the policy’s high-level goal unchanged.",
+      "start": 382.74,
+      "end": 416.14
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Taken together, the results suggest that closed-loop evaluation should ask more than whether predicted points resemble demonstrations. It should also ask whether the whole path is trackable and whether that trackability translates into route progress. E-C-O provides evidence that a training-free adjustment can help on the evaluated simulator tests, but its fixed endpoint and lack of reasoning about other agents bound what it can solve. Future work can examine how such repairs interact with explicit safety systems and changing traffic.",
+      "start": 417.52,
+      "end": 447.82
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "A waypoint plan can have a plausible destination and still be difficult to execute. E-C-O’s demonstrated role is to repair the path the controller must follow while preserving the policy’s endpoint. That distinction gives us a practical takeaway: evaluating a driving plan requires looking at the route between its beginning and its goal. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 448.78,
+      "end": 476.969
+    }
+  ]
+}

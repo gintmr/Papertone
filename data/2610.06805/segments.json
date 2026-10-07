@@ -1,0 +1,179 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 537.129,
+  "word_match_rate": 0.9314,
+  "line_count": 24,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course called Model-Based Planning and World Models, today’s lecture is on Aitch-jepa: End-to-End Learning of Hierarchical World Models for Visual Planning. Recent work such as Ada jepa: An Adaptive Latent World Model and Hierarchical Planning with Latent World Models reflects a growing interest in planning with learned visual dynamics. This paper, from researchers including New York University and Brown University, asks how those dynamics can be organized across time. Yes, Noah?",
+      "start": 0.0,
+      "end": 30.6
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why does planning need a hierarchy instead of one good predictive model?",
+      "start": 31.72,
+      "end": 36.18
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A flat model predicts one step at a time, so long plans require many predictions and many action choices. Errors can build up, and the planner’s work grows with the horizon. A single representation must also capture immediate motion details and support judging progress toward a more abstract goal. A hierarchy offers a way to distribute these demands: lower levels handle near-term changes, while upper levels predict farther ahead and can emphasize slower-changing information.",
+      "start": 37.04,
+      "end": 67.08
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the upper levels are meant to ignore details that do not matter for the goal?",
+      "start": 68.08,
+      "end": 71.92
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "That is the intended effect, but it is learned rather than imposed as a hand-designed abstraction. Aitch-jepa trains a stack of action-conditioned predictors from observation and action trajectories. Each level predicts future representations in its own latent space, rather than reconstructing image pixels. Higher levels summarize lower-level states and actions over longer intervals. The authors ask whether this structure yields useful temporal abstraction and whether it makes goal-directed planning more efficient.",
+      "start": 72.66,
+      "end": 103.9
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Quick question: does every level share the same representation, as in the hierarchical world model?",
+      "start": 104.92,
+      "end": 109.96
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "No. The distinction is central: the hierarchical world model decomposes planning over time while retaining a shared latent space, whereas aitch-jepa learns a separate space at each level. Each higher level has its own encoder and predictor, and its steps span a longer interval. In the simulated settings, adjacent levels typically double the prediction interval; the real-robot dataset uses a stride of 3 at its second level. This gives the hierarchy both temporal and representational structure.",
+      "start": 110.74,
+      "end": 141.08
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Training is end-to-end. A level compares its predicted future state with an encoded future state, and an isotropic-distribution regularizer helps prevent all embeddings from collapsing to the same value. Because upper-level losses can update lower-level encoders, the representations are not learned in isolation. The method uses action-labelled trajectories, but it does not need reward labels or an image-reconstruction objective. That distinction matters when learning from recorded behavior rather than task-specific feedback.",
+      "start": 141.08,
+      "end": 173.24
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "How does the hierarchy turn those predictions into actual plans?",
+      "start": 174.22,
+      "end": 177.42
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Planning starts at the top. The highest-level planner searches for macro-actions that move its predicted state toward the goal observation. Those predicted states become subgoals for the level below, which selects actions to reach them. This continues down to primitive actions. Each lower-level plan is assessed in the representation of the level above, allowing the planner to compare progress at different temporal resolutions. Candidate action sequences are optimized by gradient descent through the learned predictors.",
+      "start": 178.82,
+      "end": 209.1
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify why comparing progress in an upper-level space could help if the action rollout is unchanged?",
+      "start": 210.02,
+      "end": 215.72
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A high-level representation may measure task progress more appropriately than a detailed low-level one. Imagine navigating a maze: the agent’s location and the maze layout matter, while the exact position of each limb may not. The authors test this idea by keeping a flat rollout but scoring its predicted states in an upper-level representation. That isolates the goal-matching benefit of abstraction from the separate benefit of breaking a long plan into shorter subgoal problems.",
+      "start": 216.88,
+      "end": 245.18
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The experiments cover navigation in FourRoomDistractors and Visual AntMaze, and manipulation in Push-T and Cube. Probes measure which environmental variables can be recovered from frozen representations; planning evaluations measure task success and computation in flops. Three-level aitch-jepa reaches 73% success on Visual AntMaze, compared with 18% for the flat latent world model. The trend is not universal: deeper models do poorly on Push-T, where short episodes provide fewer valid training clips.",
+      "start": 246.2,
+      "end": 279.68
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the evidence show that higher levels consistently learn more abstract features?",
+      "start": 279.68,
+      "end": 284.86
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "No, and that qualification is important. In AntMaze, higher levels make body-state information less recoverable while preserving global position. In FourRoom, the agent’s location remains recoverable while a moving distractor becomes less so. But manipulation datasets show weaker selective abstraction. The authors relate this to the temporal-frequency gap between fast- and slow-changing features: when that gap is larger, the hierarchy more clearly separates them. More levels alone do not guarantee useful abstraction.",
+      "start": 286.12,
+      "end": 316.58
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How do the authors separate the benefit of abstraction from the benefit of temporal decomposition?",
+      "start": 317.66,
+      "end": 322.22
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "They use two complementary analyses. Scoring an unchanged flat rollout in an upper-level space improves goal matching in AntMaze and FourRoom, supporting a role for abstract goal costs; it does not consistently help in the manipulation tasks. Separately, along expert trajectories, the cost of tracking successive subgoals decreases more consistently than the cost of aiming directly at the final goal over the whole horizon. The latter pattern appears with both aitch-jepa and the shared-space hierarchical model, indicating that temporal decomposition helps on its own.",
+      "start": 323.24,
+      "end": 357.96
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The real-robot experiments add another practical insight. On diverse robot video, a purely predictive model can focus on stable scene identity rather than robot motion. Adding an inverse-dynamics objective, which predicts actions between consecutive latent states, helps ground the representation in movement. A second level then improves fidelity to recorded expert end-effector paths while reducing planner computation. Because these plans are evaluated offline, however, the result measures path fidelity, not whether a robot succeeds at a physical task.",
+      "start": 358.7,
+      "end": 393.18
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "So should we interpret the real-robot result as evidence of deployment readiness?",
+      "start": 394.14,
+      "end": 398.2
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Not yet. The offline fidelity score can reflect graded progress in a simulated drawer task, but the authors find that it is not sufficient to predict binary success in Cube. The work therefore supports the feasibility of learning hierarchical predictors from varied robot video, not reliable closed-loop control on a physical robot. Other limitations include fixed temporal strides, reliance on action labels for the real-robot grounding objective, and evaluation across a limited collection of environments.",
+      "start": 399.28,
+      "end": 429.28
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The broader contribution is to join two strands: reward-free visual prediction in the spirit of joint-embedding predictive architectures, and hierarchical planning over multiple timescales. Compared with Ada jepa, which adapts a predictive model for goal-reaching, aitch-jepa makes the temporal hierarchy explicit and gives each level its own representation. Compared with the hierarchical world model, it tests whether distinct latent spaces add value beyond temporal decomposition. The results suggest they sometimes do, especially when the data contain clear differences in temporal scale.",
+      "start": 430.54,
+      "end": 467.26
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "What would be the most important next step for this line of research?",
+      "start": 468.18,
+      "end": 471.18
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "A strong next step would test whether learned abstractions support closed-loop physical control across unfamiliar tasks, rather than only offline path comparison. Other promising directions include variable-duration temporal abstractions and high-level goals connected to language. The findings also encourage a careful design question: does the dataset contain predictable structure at multiple timescales, and does the evaluation measure the behavior we ultimately care about? Without those conditions, adding levels may add complexity without adding useful abstraction.",
+      "start": 472.08,
+      "end": 505.72
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "text": "The takeaway is that a planning hierarchy can help in two distinct ways: it can shorten long-horizon search through subgoals, and it can provide a different representation for judging progress. Aitch-jepa learns both from action-labelled trajectories, but the benefits depend on the temporal structure of the data and the task. Treat hierarchy as a testable modeling choice, not an automatic advantage. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 506.64,
+      "end": 537.129
+    }
+  ]
+}

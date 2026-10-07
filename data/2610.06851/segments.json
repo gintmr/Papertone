@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 481.933,
+  "word_match_rate": 0.9223,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning and Language Models, today’s lecture is on “Base Models Can Reason By Taking a Cue From Training Data.” Recent work such as “SimpleRL-Zoo: Investigating and Taming Zero Reinforcement Learning for Open Base Models in the Wild” and “Echo Chamber: RL Post-training Amplifies Behaviors Learned in Pretraining” asks whether reinforcement learning creates reasoning or amplifies patterns learned earlier. Researchers from MIT, Berkeley, Washington, and the Allen Institute for Artificial Intelligence take a focused route: they test whether tiny response openings can cue existing behaviors. That matters if capability and the likelihood of showing it are different things. Yes, Noah?",
+      "start": 0.0,
+      "end": 45.9
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the model already knows how to reason, what exactly is reinforcement learning changing?",
+      "start": 47.1,
+      "end": 52.48
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That distinction is the paper’s starting point. The authors observe that a model’s first response tokens can predict what comes next, even when those tokens do not explain a solution. In one example, half of Olmo three, seven B’s correct uncued answers on a math benchmark began with a paragraph break, compared with 14% of incorrect answers. The opening may work like a learned switch: it changes which continuation becomes more likely, without adding a mathematical explanation.",
+      "start": 53.4,
+      "end": 83.76
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The team tests this idea by prefilling a base model with one or two response tokens, then letting it answer normally. On the Math 500 benchmark, a paragraph break followed by “Okay” raises Olmo’s accuracy from 42% to 78%, close to its reinforcement-learning counterpart at 75%. For Qwen three, fourteen B, “Alright” followed by a comma raises accuracy from 72% to 87%, matching its reinforcement-learning model. The cue supplies no worked example or explicit reasoning instruction.",
+      "start": 83.76,
+      "end": 120.86
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how did they choose those openings without using the correct answers?",
+      "start": 121.86,
+      "end": 125.64
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "They used a label-free search procedure. For candidate openings, they sampled multiple continuations on training problems and looked for openings whose final answers agreed most consistently. Agreement is not proof of correctness, but it offers a proxy without selecting cues against reference answers. They also excluded openings that caused too many responses to omit an answer. Then they evaluated the chosen cues on held-out benchmarks, including other math tests and code generation.",
+      "start": 126.62,
+      "end": 156.02
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The reinforcement-learning comparison helps explain why the cue can work. In the studied runs, reinforcement learning raised the probability of the effective opening substantially: for Olmo, the paragraph-break-and-Okay opening rose from 0.14 to 0.65. Later in a response, the base and trained models’ next-token distributions were more similar when given identical histories. Swapping openings also changed performance, suggesting that early response choices account for a substantial share of the gains in these experiments, though not necessarily all of them.",
+      "start": 156.02,
+      "end": 194.78
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So are the cues just a way to make the model write longer, more detailed answers?",
+      "start": 195.3,
+      "end": 199.3
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The authors tested that alternative. Some openings produced responses about twice as long as those prompted by the reasoning cue, yet their accuracy fell below the uncued baseline. The reasoning cue retained an advantage when token limits were matched, and Olmo reached reinforcement-learning-level accuracy with a lower token cap. The result supports a more specific explanation than verbosity alone: the opening appears to steer the model toward a useful response pattern, not merely give it room to generate more text.",
+      "start": 200.36,
+      "end": 229.4
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "A particularly informative experiment changes the training data itself. In a mid-training mixture, the researchers replaced whole-word “Okay” with “Chicken.” After retraining, a paragraph break followed by “Chicken” raised Math 500 accuracy from 2.4% to 37.2%, close to 38.3% with the original cue on that edited model. The effect also appeared in other evaluations. Yet “Chicken” still worked as an ordinary word about birds and food; the edit did not erase its usual meaning.",
+      "start": 230.4,
+      "end": 263.68
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can that data intervention show that the association caused the cue effect, rather than just correlating with it?",
+      "start": 264.5,
+      "end": 270.52
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "It provides causal evidence for the specific edits and training setups tested. In a redirect experiment, the team associated “Okay” with question-and-answer documents. The cue then shifted the model toward generating a question instead of solving the presented problem, and accuracy fell to 0.2% in that comparison. Related rename and redirect patterns appeared in another model. These interventions are more direct than simply measuring associations, but they do not establish that every cue or data source behaves the same way.",
+      "start": 270.96,
+      "end": 303.74
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The findings also extend beyond math. The cue improved Olmo’s code-generation results on HumanEval, while Qwen’s coding performance stayed broadly similar to its already strong baseline. In a safety evaluation, punctuation and spacing around “Okay” mattered: one version reduced refusals and sometimes produced harmful responses, while the paragraph-break version made Olmo more selective. Harmful responses to unsafe prompts fell from 42.4% to 0.2% in the reported comparison, without a large rise in refusals of safe prompts.",
+      "start": 304.58,
+      "end": 338.08
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does that selective safety effect hold across models, or should we treat it as specific to Olmo?",
+      "start": 338.98,
+      "end": 343.84
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Treat it as model-specific evidence, not a general safety control. The same refusal pattern did not consistently appear across the other tested model families. The paper also finds that cue position matters: an early cue can sustain a shift toward reasoning-related representations, while a later insertion tends to have a brief effect. Hidden-state similarity helps describe that shift, but it is correlational; it cannot by itself certify that a model is reasoning correctly.",
+      "start": 343.84,
+      "end": 374.42
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "For the broader field, the paper complements work such as “Echo Chamber,” which studies how reinforcement learning can amplify behaviors acquired during pretraining. Here, the authors identify a small, testable mechanism: reinforcement learning can make effective response openings more likely, and a base model can sometimes access similar performance when given those openings directly. That reframes some post-training gains as changes in behavioral accessibility, while leaving open how much new competence different training pipelines may also produce.",
+      "start": 375.4,
+      "end": 410.28
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should researchers use this idea without mistaking a good cue for a reliable capability?",
+      "start": 411.08,
+      "end": 415.74
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "They should evaluate cues across models, prompts, tasks, and safety conditions rather than relying on one benchmark. This study’s benefits vary, and some openings reduce accuracy. Its retraining tests focus on particular data mixtures and models, while its reinforcement-learning comparisons do not represent every post-training pipeline. A useful next step is to map how formatting conventions create these associations and to test whether deployment systems can detect fragile response-boundary effects before they influence important outputs.",
+      "start": 416.86,
+      "end": 451.0
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The central takeaway is that what a model can do and what it tends to do are not always the same. A few opening tokens may reveal a behavior already present, while reinforcement learning or training-data patterns can make that behavior easier to elicit. But a cue is not a guarantee: its effect depends on the model, context, and task, and the same sensitivity can affect safety. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 451.64,
+      "end": 481.933
+    }
+  ]
+}

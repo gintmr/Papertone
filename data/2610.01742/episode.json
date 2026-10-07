@@ -1,0 +1,255 @@
+{
+  "id": "2610.01742",
+  "title": "World Motion Models: Flexible Sequence Modeling of SE(3) Trajectories",
+  "authors": [
+    "Jiahui Lei",
+    "Qianqian Wang",
+    "Trevor Darrell",
+    "Angjoo Kanazawa"
+  ],
+  "abstract": "Equipping artificial agents with spatial intelligence requires a comprehensive generative prior over the dynamic 3D world. We propose World Motion Models (WMMs) that capture \"what was, is, and will be where across time\" via sparse SE(3) pose trajectories. WMMs are built on the observation that elements of dynamic scenes can be well approximated by a set of rigid SE(3) trajectories, a minimal yet expressive primitive for 4D modeling. This representation unifies articulated objects, human bodies, hand-object interactions, piecewise-rigid scene dynamics, camera motion, and even robot states and actions into a single shared space. Given this representation, we cast the joint distribution of these entities as a flexible sequence modeling problem, utilizing flow-matching with per-token noise levels. Coupled with a context token mechanism for non-sequential conditioning, this formulation supports any-to-any marginal conditioning across an arbitrary number of entities and time steps. Tasks such as future prediction, motion infilling, model-predictive control, inverse kinematics, cross-embodiment retargeting, and policy learning all reduce to the application of different masks over the same network. Experiments on 6 diverse applications of 3D vision and robotics demonstrate the versatility and flexibility of WMMs with strong performance.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.01742",
+    "arxiv": "https://arxiv.org/abs/2610.01742"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0fa87-7c9b-7c8e-a668-69a6352ee755/podcast.mp3",
+  "duration": 451.291,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.48,
+      "en": "In a graduate course on generative models for robotics and 3D vision, today's lecture is on World Motion Models: Flexible Sequence Modeling of S-E-three Trajectories. Recent work such as TesserAct and PointWorld reflects a push toward world models that represent changing scenes over time. This paper, from researchers at the University of California, Berkeley, and Harvard, takes a different route: modeling motion through trajectories of rigid poses. The direction matters because a shared representation could connect prediction, generation, and planning. Yes, Noah?",
+      "zh": "在一门关于机器人学和三维视觉生成模型的研究生课程中，今天的讲座是关于世界运动模型：S-E-3轨迹的灵活序列建模。最近像TesserAct和PointWorld这样的工作反映了朝向表征随时间变化场景的世界模型的推进。这篇论文来自加州大学伯克利分校和哈佛大学的研究人员，走了一条不同的路线：通过刚性位姿的轨迹来建模运动。这个方向很重要，因为一种共享的表征可以连接预测、生成和规划。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.5,
+      "end": 45.0,
+      "en": "Hi Professor, why is a pose trajectory a useful common representation for such different things as people, robots, and objects?",
+      "zh": "教授您好，为什么姿态轨迹能作为一种有用的通用表示，把人物、机器人和物体这些差别很大的东西统一起来呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.08,
+      "end": 76.74,
+      "en": "The central idea is to describe each moving entity through its position and orientation over time, rather than requiring a separate output format for every body type. A camera, a rigid object, a robot link, or a human joint can all have a pose trajectory. The representation is more structured than pixels or dense point tracks, yet less tied to one body model. The authors propose this as a practical middle ground, not as proof that one trained model already works everywhere.",
+      "zh": "核心思路是用位置和朝向随时间的变化来描述每一个运动实体，而不是要求每种身体类型都用单独的输出格式。摄像头、刚性物体、机器人连杆或者人体关节，都可以有一条姿态轨迹。这种表示比像素或稠密点轨迹更有结构，但又不像某一种身体模型那样绑得那么死。作者提出这个，是把它当作一种实用的折中方案，而不是要证明一个训练好的模型已经能通用于所有情况。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 77.72,
+      "end": 82.52,
+      "en": "So does the model predict only the next moment, or can it handle other kinds of questions too?",
+      "zh": "那这个模型是只预测下一个时刻，还是也能处理其他类型的问题？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 82.52,
+      "end": 113.16,
+      "en": "It is designed for more than ordinary past-to-future forecasting. Each entity and time step becomes a token containing a pose and an entity feature. A feature can encode semantic or geometric information and is shared over that entity’s timeline. The model can then be given any mixture of known and unknown tokens, including observations that are separated in time. That flexibility lets the same modeling framework address prediction, motion completion, and goal-conditioned generation.",
+      "zh": "它的设计目标不只是普通的从过去预测未来。每个实体和每个时间步都会变成一个token，其中包含一个姿态和该实体的特征。这个特征可以编码语义或几何信息，并在该实体的整个时间线上共享。这样一来，模型就能接收任意混合的已知和未知token，包括在时间上彼此分隔的观测。这种灵活性让同一个建模框架可以同时处理预测、动作补全和目标条件生成。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 114.2,
+      "end": 118.96,
+      "en": "Can you clarify how the model learns to treat some tokens as evidence and others as unknown?",
+      "zh": "你能说明一下模型是怎么学会把一些token当作已知信息、把另一些当作未知的吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 119.96,
+      "end": 148.5,
+      "en": "During training, each pose token receives its own noise level. Some tokens remain nearly clean, while others are strongly corrupted, and the network learns how to move each noisy pose toward its clean or noise endpoint through flow matching. At inference, known poses can be kept fixed and unknown ones generated. This is like practicing with many different patterns of covered and uncovered information, rather than learning only one fixed past-to-future split.",
+      "zh": "训练时，每个姿态token会收到各自的噪声水平。有些token几乎保持干净，另一些则被严重破坏，网络通过流匹配学习如何把每个带噪姿态推向其干净端点或噪声端点。推理时，已知姿态可以固定不动，未知姿态则被生成出来。这就像用许多不同的信息遮盖与未遮盖模式来练习，而不是只学一种固定的从过去到未来的切分。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 149.46,
+      "end": 180.82,
+      "en": "A second design choice is the use of virtual context tokens. They can hold a goal pose, a demonstration, or another useful reference without pretending that it occurred at a physical time in the scene. The transformer conditions on token features and noise levels, while combining attention over time with attention across entities. Changing which tokens are supplied changes the task: future states can be predicted, missing keyframes filled, or actions generated while states provide context.",
+      "zh": "第二个设计选择是使用虚拟上下文token。这些token可以承载目标姿态、示范动作或其他有用的参考信息，而不必假装它们出现在场景中的某个真实时间点。Transformer会基于token特征和噪声水平进行条件建模，同时把时间维度上的注意力和实体之间的注意力结合起来。改变所提供的token，任务也会随之改变：可以预测未来状态、补全缺失的关键帧，或者在状态提供上下文的同时生成动作。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 181.86,
+      "end": 187.28,
+      "en": "Does reusing one network mean the authors train a single checkpoint across all those domains and tasks?",
+      "zh": "复用同一个网络，是不是意味着作者在所有那些领域和任务上只训练了一个检查点？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 188.2,
+      "end": 217.42,
+      "en": "Not across all the reported domains. The experiments train a separate checkpoint for each benchmark, then reuse that checkpoint across different inference modes where applicable. On Language Table, for example, the model can generate actions as a policy, or generate a goal state that supports model-predictive control. That distinction is important: the paper demonstrates flexible conditioning within task-specific training, rather than a universal model trained jointly on every benchmark.",
+      "zh": "并不是所有报告的领域都共用同一个。实验会为每个基准分别训练一个检查点，然后在适用的情况下，把这个检查点复用到不同的推理模式中。比如在 Language Table 上，模型既可以作为策略生成动作，也可以生成一个目标状态来支持模型预测控制。这个区别很重要：论文展示的是在特定任务训练中灵活的条件控制，而不是一个在所有基准上联合训练的通用模型。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 217.42,
+      "end": 250.92,
+      "en": "The results also test whether the representation transfers across entities within a task. On Language Table, the reported average success is 87.2%, compared with 80% for LCB and 76.8% for ActionVLA under the stated protocol. On TraceGen, the model predicts trajectories for 400 scene keypoints over 32 steps, even though training uses 128 trajectories at a time. Its per-dataset versions improve reported trajectory errors over the baseline on both Droid and EpicKitchen.",
+      "zh": "这些结果还检验了表示能否在任务内跨实体迁移。在 Language Table 上，按所述协议，报告的平均成功率为 87.2%，而 LCB 为 80%，ActionVLA 为 76.8%。在 TraceGen 上，模型对 400 个场景关键点预测 32 步的轨迹，尽管训练时每次只用 128 条轨迹。它的各数据集版本在 Droid 和 EpicKitchen 上都比基线降低了报告的轨迹误差。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 252.5,
+      "end": 257.66,
+      "en": "How should we interpret those results alongside the mixed human-object interaction and retargeting metrics?",
+      "zh": "我们该怎么把这些结果和那些参差不齐的人机交互、重定向指标放在一起解读呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 258.7,
+      "end": 296.18,
+      "en": "They suggest capability, but not uniform dominance. On human-object interaction, WMM improves several reported measures, including motion prediction error and foot skating, while other translation and object measures favor a comparison method. For human-to-Unitree G1 retargeting, it has higher sequence success in clean, sparse-keyframe, and noisy settings, and runs at 86.97 frames per second. Yet another method has lower global error in the clean setting, so success, accuracy, robustness, and speed need to be read together.",
+      "zh": "这些结果说明它有能力，但并不是全面占优。在人-物交互上，WMM 改善了多项报告的指标，包括运动预测误差和脚部滑动，而另一些平移和物体指标则更偏向某个对比方法。在人到 Unitree G1 的重定向任务上，它在干净、稀疏关键帧和噪声设置下都有更高的序列成功率，运行速度达到每秒 86.97 帧。但另一个方法在干净设置下全局误差更低，所以成功率、精度、鲁棒性和速度需要放在一起看。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 296.18,
+      "end": 301.06,
+      "en": "What assumptions could limit this approach when we move beyond the tested tasks?",
+      "zh": "当我们超出已测试的任务范围时，哪些假设可能会限制这种方法？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 302.0,
+      "end": 334.24,
+      "en": "The pose representation assumes motion can be described through rigid transforms, perhaps with interpolation or skinning for more complex deformation. That may not capture substantial non-rigid change. The system also depends on estimated geometry and states; it does not infer the full representation directly from image pixels. And although the representation is not tied to a specific morphology, the experiments do not establish generalization to robot bodies absent from training. These are substantive limits on claims of generality.",
+      "zh": "姿态表示假设运动可以通过刚性变换来描述，复杂形变或许可以用插值或蒙皮来补充。但这种方式可能捕捉不到大幅度的非刚性变化。系统还依赖估计出的几何和状态，并不能直接从图像像素推断出完整表示。另外，尽管这种表示不绑定特定形态，实验并没有证明它能泛化到训练中没见过的机器人身体上。这些都是对通用性主张的实质性限制。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 335.2,
+      "end": 368.88,
+      "en": "The broader contribution is therefore a modeling interface: represent motion in a common form, then use token-level conditioning to ask different questions of a generative model. This connects to video-centered approaches such as TesserAct, which predicts visual scene sequences, and point-based approaches such as PointWorld. WMM instead centers sparse pose trajectories. Its results suggest that this can be useful when geometric state is available, while leaving open how to scale across domains and learn from raw observations.",
+      "zh": "因此，更广泛的贡献在于一种建模接口：用统一的形式表示运动，然后用token级的条件化向生成模型提出不同的问题。这与以视频为中心的方法（如TesserAct，预测视觉场景序列）以及基于点的方法（如PointWorld）相通。而WMM则以稀疏的位姿轨迹为中心。其结果表明，当几何状态可用时，这种做法是有用的，但仍未解决如何跨领域扩展以及如何从原始观测中学习的问题。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 370.16,
+      "end": 374.82,
+      "en": "Could the per-token noise design itself be important beyond this particular pose representation?",
+      "zh": "这种逐token加噪的设计本身，会不会在特定的姿态表示之外也有重要意义？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 375.84,
+      "end": 409.6,
+      "en": "That is a reasonable direction to investigate. The ablations support the importance of per-token noise for the reported tasks: removing it eliminates successful Language Table B2B rollouts in the test, while removing adaptive normalization also lowers success. On TraceGen, replacing the factored attention design with plain transformer attention sharply increases error. Together, these findings suggest that flexible conditioning and architecture both matter, though they do not show that the same choices will be optimal for every motion domain.",
+      "zh": "这是一个值得研究的方向。消融实验支持了逐token噪声对所报告任务的重要性：去掉它会让测试中Language Table B2B的轨迹全部失败，而去掉自适应归一化也会降低成功率。在TraceGen上，把因子化注意力设计换成普通Transformer注意力会大幅增加误差。这些发现共同表明，灵活的conditioning和架构都很重要，尽管它们并不能说明同样的选择对每个运动领域都是最优的。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 410.56,
+      "end": 451.291,
+      "en": "The takeaway is that world modeling need not mean predicting pixels alone or committing to one specialized body representation. WMM shows how sparse pose trajectories and flexible conditioning can support several kinds of motion inference, including policy generation and planning. Its evidence is promising but bounded by task-specific training, geometric preprocessing, and rigid-pose assumptions. For future work, the key test is whether these ingredients can scale to shared training across embodiments and operate reliably from raw sensory input. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，世界建模不一定只意味着预测像素，也不一定要固定采用某一种专门的身体表示。WMM 展示了稀疏姿态轨迹和灵活条件化如何支持多种运动推理，包括策略生成和规划。它的证据很有前景，但受限于任务特定训练、几何预处理和刚性姿态假设。对于未来工作，关键考验在于这些要素能否扩展到跨具身的共享训练，并能否从原始感官输入中可靠运行。感谢收听。如果还有任何问题，可以询问我们的人工智能助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lei2026worldmotionmodelsflexible,\n      title={World Motion Models: Flexible Sequence Modeling of SE(3) Trajectories}, \n      author={Jiahui Lei and Qianqian Wang and Trevor Darrell and Angjoo Kanazawa},\n      year={2026},\n      eprint={2610.01742},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.01742}, \n}",
+  "topics": [
+    "Generative Models",
+    "Geometric Deep Learning",
+    "Multi Task Learning"
+  ],
+  "peaks": [
+    0.953,
+    0.526,
+    0.581,
+    0.495,
+    0.584,
+    0.449,
+    0.841,
+    0.603,
+    0.522,
+    0.544,
+    0.318,
+    0.394,
+    0.727,
+    0.791,
+    0.39,
+    0.486,
+    0.476,
+    0.361,
+    1.0,
+    0.973,
+    0.716,
+    0.772,
+    0.582,
+    0.584,
+    0.663,
+    0.705,
+    0.476,
+    0.33,
+    0.383,
+    0.684,
+    0.647,
+    0.318,
+    0.455,
+    0.384,
+    0.788,
+    0.664,
+    0.517,
+    0.564,
+    0.551,
+    0.585,
+    0.523,
+    0.628,
+    0.43,
+    0.332,
+    0.363,
+    0.357,
+    0.318,
+    0.739,
+    0.772,
+    0.607,
+    0.519,
+    0.576,
+    0.56,
+    0.826,
+    0.716,
+    0.545,
+    0.626,
+    0.604,
+    0.773,
+    0.73,
+    0.7,
+    0.521,
+    0.582,
+    0.344,
+    0.439,
+    0.419,
+    0.318,
+    0.248,
+    0.236,
+    0.2,
+    0.21,
+    0.248
+  ],
+  "published": "2026-10-01",
+  "views": 265,
+  "license": "arXiv 默认许可"
+}

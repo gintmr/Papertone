@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 487.601,
+  "word_match_rate": 0.9347,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on generative language models, today's lecture is on Large Language Continuous Diffusion Models. Recent work such as Scaling Diffusion Language Models via Adaptation from Autoregressive Models and Block Diffusion: Interpolating Between Autoregressive and Diffusion Language Models shows how researchers are scaling diffusion and organizing generation in blocks. This paper, by researchers affiliated with NVIDIA, Cornell, and Georgia Tech, explores a different direction: continuous rather than categorical token representations. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 36.14
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why consider continuous representations if language ultimately consists of discrete tokens?",
+      "start": 37.12,
+      "end": 43.0
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That tension is the central motivation. Discrete diffusion models typically mask tokens and predict replacements, working across a vocabulary of more than 131,000 choices. Sigma instead maps tokens into learned vectors, adds Gaussian noise, and gradually denoises them before decoding back to text. The authors ask whether those continuous paths can support large-scale reasoning and coding performance while enabling smoother control and useful generation with fewer denoising steps.",
+      "start": 44.06,
+      "end": 75.78
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Sigma comes in 3B- and 8B-parameter versions, with each token represented by a learned, unit-length vector in 16 dimensions. A transformer predicts a distribution over possible tokens; combining that distribution with the learned embedding table produces an estimate of the clean vector. The model is trained with a diffusion likelihood objective, including endpoint reconstruction and denoising terms, and can use a detached estimate from an earlier pass as self-conditioning.",
+      "start": 76.84,
+      "end": 107.04
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does Sigma generate an entire sequence at once, or does it still preserve some causal order?",
+      "start": 108.04,
+      "end": 114.44
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It generates in blocks, preserving causal order between blocks while allowing positions within the current block to attend to one another in both directions. Each new block also sees the clean prefix that came before it. This is a compromise between fully sequential generation and unconstrained parallel prediction. It also allows prefix key-value caching, although the paper notes that cache memory remains an engineering concern.",
+      "start": 115.3,
+      "end": 141.74
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "A second key ingredient is initialization and training stability. Sigma starts from pretrained autoregressive weights, while its smaller diffusion embedding table is initialized separately. An auxiliary autoregressive loss trains a separate prediction stream, but diffusion remains the generation method under study. The authors report that this auxiliary objective stabilizes training and improves diffusion validation performance. They also estimate different likelihood terms across randomly selected blocks to reduce the cost of evaluating them all.",
+      "start": 142.58,
+      "end": 172.68
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify why an autoregressive training objective helps if the goal is diffusion generation?",
+      "start": 173.46,
+      "end": 178.84
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Think of the auxiliary objective as a training signal that helps preserve useful language structure while the new denoising process is learning. The experiments suggest it improves optimization, not that Sigma relies on autoregressive decoding at inference. Training uses sequences of 4,096 tokens, a principal block size of 32, and 150,000 steps, covering more than 300 billion tokens. The reported compute is about 9,600 GPU-hours for the 3B model and 19,200 for the 8B model.",
+      "start": 179.9,
+      "end": 214.98
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "At inference, the paper tests stochastic D-D-P-M and deterministic D-D-I-M sampling. It also applies classifier-free guidance and score temperature directly to predicted embeddings. Guidance adjusts the trajectory using both conditioned and unconditional predictions; temperature sharpens the score. The authors report that combining these controls usually works better than either alone, and that embedding-space steering outperforms logit-space guidance in their tested settings.",
+      "start": 214.98,
+      "end": 247.82
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So does continuous sampling make generation faster, especially when the step count is low?",
+      "start": 248.96,
+      "end": 253.64
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Not automatically. Standard D-D-I-M quality falls sharply below 16 steps per block, so the paper investigates two ways to improve low-step sampling. Sketched Uniform Spherical Regularization encourages embeddings to use the unit sphere more evenly, addressing their concentration in a smaller effective space. Parallel Decoding Distillation trains a student to approximate multiple points on a teacher's denoising trajectory in parallel, aiming to replace several guided evaluations with one conditional call.",
+      "start": 254.54,
+      "end": 287.22
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The results show competitive performance, not consistent superiority. On six reasoning and coding tasks, Sigma's average is 64.34% at 3B, compared with 64.74% for N-L-D; at 8B, the averages are 69.67% and 70.22%. Sigma leads on some individual tasks, including GSM8K and HumanEval at 3B, while N-L-D leads on others. Regularization improves the six-task average at 16 steps from 55.17% to 58.5%, and at eight steps from 37.06% to 42.76%.",
+      "start": 287.98,
+      "end": 330.0
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, if distillation reduces denoising calls, why not conclude that Sigma is faster than an autoregressive model?",
+      "start": 332.6,
+      "end": 339.24
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Because fewer denoising steps do not by themselves establish lower end-to-end latency. Diffusion still requires repeated transformer evaluations, and the paper compares Sigma closely with a discrete diffusion model, not a comprehensive set of optimized autoregressive systems. Distillation improves four- and eight-step results, but quality remains below higher-step sampling on several tasks, especially coding. The evidence supports potential for faster sampling, not a general speed advantage.",
+      "start": 340.0,
+      "end": 369.8
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader connection is to a field exploring several ways to combine parallel generation with language-model scale. Block Diffusion uses discrete diffusion within sequential blocks, while Scaling Diffusion Language Models via Adaptation from Autoregressive Models demonstrates how pretrained weights can help scale diffusion. Sigma brings those scaling concerns into a continuous embedding space and tests guidance and trajectory distillation there. Together, these directions suggest that representation choice and generation structure are becoming central design questions.",
+      "start": 370.84,
+      "end": 404.72
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should we interpret the benchmark results when Sigma is close to N-L-D but wins some individual comparisons?",
+      "start": 405.66,
+      "end": 411.64
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Carefully, as evidence of feasibility rather than a blanket ranking. The paper aligns tokenizer, data, architecture, and compute with N-L-D, which makes the comparison more informative, but benchmark averages conceal task-level variation. After instruction fine-tuning, Sigma is again broadly comparable yet slightly behind N-L-D on the reported ten-task averages. Its A-I-M-E 2025 pass-at-k results favor Sigma in the best tested configurations, but the benchmark has only 30 problems, leaving most paired comparisons statistically unresolved.",
+      "start": 412.8,
+      "end": 448.96
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The key takeaway is that continuous diffusion can reach 3B and 8B scale and approach matched discrete diffusion models on reasoning and coding evaluations. Its continuous trajectories offer promising tools for steering and low-step distillation, but reliability, latency, embedding-to-token decoding, and memory use remain open problems. The useful question going forward is not simply whether diffusion can generate language, but which representations and inference methods make it practical. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 449.98,
+      "end": 487.601
+    }
+  ]
+}
