@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 521.012,
+  "word_match_rate": 0.9421,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical graduate seminar on embodied intelligence, today's lecture is on UniWAM: Unified World-Action Model. Recent work such as Qwen-VLA and Motus reflects a field moving toward models that connect perception, prediction, and robot control. UniWAM, developed by a team including researchers affiliated with Hong Kong University of Science and Technology in Guangzhou and OLA Dimensions, asks how to combine language reasoning with learned physical dynamics. That matters because robots need both to understand instructions and to anticipate what actions will do. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.84
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what is the central difference between UniWAM and a typical vision-language-action model?",
+      "start": 39.9,
+      "end": 45.3
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A typical vision-language-action model, or V-L-A, maps visual observations and instructions toward actions. UniWAM adds an explicit account of how the scene may change: it predicts future visual states while also reasoning in language and generating actions. The key idea is not simply to attach a video predictor to a policy. The model trains these capabilities together, letting their representations exchange information, while using different kinds of data to supervise different capabilities.",
+      "start": 46.26,
+      "end": 78.44
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what are the model's parts, and what does each one do?",
+      "start": 79.54,
+      "end": 83.18
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "UniWAM has three specialized components. A physical reasoner handles language and scene understanding; a world generator predicts future visual information; and an action predictor produces robot motion. They use joint multimodal attention, so information can flow across components. Think of them as three experts sharing a workspace: one interprets the situation, one sketches what might happen next, and one proposes a movement. Their separation also lets the training process assign the right learning task to each expert.",
+      "start": 83.9,
+      "end": 116.18
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The training mixture combines robot demonstrations, human egocentric videos, and visual question-answering examples. Robot data supplies embodiment-specific observations and action labels, so it trains all three components. Human videos provide varied examples of interactions and resulting state changes, but not precise robot commands; they train the reasoner and world generator. Question-answering examples support scene understanding and language reasoning. In this way, the model can learn from human experience without treating a person's movement as a calibrated robot trajectory.",
+      "start": 117.2,
+      "end": 154.18
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How does the paper represent human movement in a form the robot can use?",
+      "start": 155.2,
+      "end": 158.58
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The authors describe local end-effector motion in what they call physical language: structured text about direction, displacement, rotation, and gripper state. Shared templates give human and robot examples a common motion vocabulary. The physical reasoner learns to produce these descriptions as language, while the action predictor separately learns continuous trajectories. The analogy is a translation layer: movement becomes legible to the language model, but the robot still receives its control through a dedicated action output.",
+      "start": 159.42,
+      "end": 192.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The data pipelines matter too. Robot demonstrations are screened for abrupt trajectory anomalies, timing inconsistencies, numerical outliers, and some mismatches between joint states and end-effector poses. Invalid visual observations are removed, with care not to discard frames essential to an interaction. For lengthy human videos, the EgoANT pipeline proposes manipulation-event boundaries and refines them in local windows, then generates and selects descriptions. These steps aim to turn heterogeneous raw recordings into more consistent supervision.",
+      "start": 192.54,
+      "end": 229.9
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Could you clarify how the model avoids depending too much on perfect future predictions?",
+      "start": 231.08,
+      "end": 235.36
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "During post-training, future-frame noise augmentation sometimes perturbs predicted future visual latents while leaving the current observation clean. That encourages the action predictor to remain useful when its imagined future is imperfect. The authors also change how action generation begins: history-conditioned flow matching starts from a slightly perturbed chunk of previously executed actions, then refines it toward the next chunk. Instead of beginning from random noise every time, the model can use recent behavior as a practical starting point.",
+      "start": 236.52,
+      "end": 269.9
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Does that initialization mainly improve speed, or does it also affect action quality?",
+      "start": 270.82,
+      "end": 275.44
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The paper reports benefits for both inference efficiency and performance. On RoboTwin 2.0, UniWAM achieves a mean success rate of 71.73% across clean and randomized evaluations, with a 6.82 percentage-point drop from the clean setting to the randomized one. On LIBERO, it reports 99.2% mean success. The results suggest that history-based initialization can support strong action generation with fewer refinement steps, though benchmark success alone does not establish reliable behavior in every physical setting.",
+      "start": 275.44,
+      "end": 313.48
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "For robustness, the LIBERO-Plus evaluation varies factors such as camera view, language, lighting, background, sensor noise, and layout. UniWAM reports 92.6% overall success and leads on several, but not all, individual perturbation dimensions. In real-world tests on a dual-arm AgileX Piper setup, it averages 67.5% task success and 82.5% instruction-following rate across four tasks. That second measure asks whether the robot chose the intended object and interaction, even when it did not finish the manipulation.",
+      "start": 314.36,
+      "end": 353.06
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "The real-world study is fairly small; how should we interpret its instruction-following result?",
+      "start": 353.72,
+      "end": 358.8
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "It separates understanding the request from completing a physical task. A robot may identify the right object and attempt the requested interaction but fail because of grasping or execution. UniWAM's instruction-following score captures the first part, while task success requires the whole sequence. In a desk-tidying task described only as “Tidy up the desk,” it earns an average progress score of 5 out of 6. That is evidence of multi-step capability in this setup, not proof of general household competence.",
+      "start": 359.78,
+      "end": 392.52
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The broader connection is to work that joins action with world prediction, including Motus, and to V-L-A systems such as Qwen-VLA that unify action outputs across tasks and embodiments. UniWAM emphasizes a different training balance: human video contributes interaction dynamics, robot demonstrations anchor control, and question-answering data strengthens semantic understanding. Its scaling results suggest human data becomes more helpful as robot data grows, rather than providing consistent gains at every scale. This makes data allocation part of the model design, not merely a preprocessing choice.",
+      "start": 393.72,
+      "end": 433.08
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "So does this establish that human video will improve robot learning as datasets keep growing?",
+      "start": 434.0,
+      "end": 438.74
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Not yet. The paper reports that human data begins to help around 1,000 hours of robot data in the tested settings, with larger gains at larger scales. That is a useful trend, but it does not show that the relationship continues indefinitely or transfers to every robot. The evaluation spans named simulation benchmarks and a limited real-world platform and task set. Different embodiments, longer deployments, and less structured environments remain important tests. The reported robot-data totals also differ between sections, so the scale figures deserve careful reading.",
+      "start": 439.68,
+      "end": 474.82
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "What is the most important takeaway for researchers designing embodied foundation models?",
+      "start": 475.9,
+      "end": 480.34
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "UniWAM shows one way to train semantic reasoning, future-state prediction, and robot action within a shared framework, while respecting what each data source can reliably teach. Its physical-language representation links human and robot interactions; its selective supervision avoids pretending that every video contains precise robot commands; and its post-training changes address imperfect predictions and inference cost. The central research question it leaves us with is how far this combination generalizes across tasks and embodiments. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 481.88,
+      "end": 521.012
+    }
+  ]
+}

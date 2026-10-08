@@ -1,0 +1,252 @@
+{
+  "id": "2610.08789",
+  "title": "QF3: Fast Flow RL with Filtered Q-Gradients",
+  "authors": [
+    "Chung Min Kim",
+    "Brent Yi",
+    "David McAllister",
+    "Hongsuk Choi",
+    "Himanshu Gaurav Singh",
+    "Jinkun Cao",
+    "Ken Goldberg",
+    "Pieter Abbeel",
+    "Carmelo Sferrazza",
+    "Angjoo Kanazawa"
+  ],
+  "abstract": "Flow policies have become a standard policy class for learning robot behaviors from demonstrations, but reinforcement learning is still critical for improving pre-trained flow policies or learning them from scratch through interaction. We introduce QF3 (Fast Flow RL with Filtered Q-Gradients), an online off-policy RL algorithm that trains a flow policy with flow matching plus the critic's action gradient, backpropagated through a one-step prediction of the flow's output. To keep updates where the critic and this prediction are reliable, QF3 applies the critic gradient only to action dimensions that stay near the replay action. To our knowledge, QF3 is the first off-policy flow RL method to train humanoid locomotion policies from scratch and transfer them zero-shot to hardware. Paired with a high-throughput off-policy training recipe, it trains humanoid locomotion and motion-tracking policies with a 10x wall-clock speedup over FPO++, a recent on-policy flow RL method. We further apply QF3 to fine-tune pretrained flow-based manipulation policies on both ABC-Sim and Robomimic tasks. These results suggest that QF3 can both learn robot policies from scratch and refine those acquired from demonstrations. Website: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.08789",
+    "arxiv": "https://arxiv.org/abs/2610.08789"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11444-83cb-7b02-8107-46a34eab3298/podcast.mp3",
+  "duration": 414.798,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.7,
+      "en": "In a Deep Reinforcement Learning Methods course, today’s lecture is on Q-F-three: Fast Flow R-L with Filtered Q-Gradients. Recent work such as Flow Policy Gradients for Robot Control and Flow Q-Learning reflects a broader effort to combine expressive flow policies with reward-driven improvement. This paper asks how to do that while reusing past experience. A humanoid dance-tracking task makes the stakes concrete: misleading critic guidance can derail learning. I see Noah has a question; go ahead.",
+      "zh": "在一门深度强化学习方法课上，今天的讲座是关于Q-F-three：带过滤Q梯度的快速流强化学习。最近的工作，比如面向机器人控制的流策略梯度和流Q学习，反映了大家正在更广泛地尝试把表达能力强的流策略和奖励驱动的改进结合起来。这篇论文问的是，怎么在复用过去经验的同时做到这一点。一个人形机器人舞蹈跟踪任务让这件事的利害变得很具体：误导性的评论家指导会让学习跑偏。我看到Noah有问题，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.82,
+      "end": 39.46,
+      "en": "Hi Professor, what makes improving a flow policy from reward feedback especially difficult?",
+      "zh": "教授您好，为什么根据奖励反馈来改进流策略会特别困难呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.54,
+      "end": 68.82,
+      "en": "A flow policy gradually transforms noise into a robot action using a learned velocity field. To improve it from reward, an actor can use a critic’s estimate of which actions are valuable. But the critic learns from collected experience, so its advice can be unreliable for actions far from that experience. Q-F-three’s central idea is to keep critic guidance close to actions in the replay buffer, while still training the policy to reproduce those actions.",
+      "zh": "流策略通过学到的速度场，把噪声逐步变成机器人的动作。想靠奖励来改进它，actor 可以利用 critic 对哪些动作有价值的估计。但 critic 是从收集到的经验里学的，所以对那些远离这些经验的动作，它给出的建议可能并不可靠。Q-F-three 的核心思路是，让 critic 的引导始终贴近回放缓冲区里的动作，同时仍然训练策略去复现这些动作。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 69.8,
+      "end": 75.18,
+      "en": "Quick question: does Q-F-three change the pretrained policy, or add another policy on top?",
+      "zh": "问个快问题：Q-F-three 是改变预训练策略，还是在上面再加一个策略？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 76.06,
+      "end": 102.94,
+      "en": "It updates the flow policy itself; it does not require a separate learned residual on top of a frozen policy. For each replay action, the method creates a partly noised version along a straight path from noise to action. Flow matching teaches the policy’s velocity field to point back toward the replay action. The method then makes a one-step prediction of the final action and uses the critic’s action gradient to try to improve that prediction.",
+      "zh": "它更新的是流策略本身，不需要在冻结策略之上再学一个单独的残差。对于每个回放动作，方法会沿着从噪声到动作的直线路径构造一个部分加噪的版本。流匹配教策略的速度场指向回放动作。然后方法对最终动作做一步预测，并用评论家的动作梯度来尝试改进这个预测。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 103.92,
+      "end": 134.72,
+      "en": "The filter limits how far that critic-guided prediction can move from its replay-conditioned target. It compares the policy’s velocity with the target velocity and clips the difference separately for each action coordinate. If a coordinate reaches the clip boundary, the critic gradient is turned off for that coordinate; flow matching still pulls the velocity toward the replay target. The authors call this a replay-local trust region, not a guarantee that every nearby critic query is accurate.",
+      "zh": "这个过滤器限制了那个由评论家引导的预测能偏离其回放条件目标多远。它把策略的速度和目标速度做比较，然后对每个动作坐标分别裁剪差值。如果某个坐标碰到了裁剪边界，那个坐标上的评论家梯度就会被关掉；流匹配仍然会把速度拉向回放目标。作者把这叫做回放局部信任域，并不保证附近每一个评论家查询都是准确的。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 135.6,
+      "end": 141.08,
+      "en": "So the clip controls where the critic can steer, but doesn’t certify that the critic is right there?",
+      "zh": "所以这个裁剪控制的是评论家能在哪里引导，但并不能保证评论家在那个位置就是对的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 141.52,
+      "end": 174.42,
+      "en": "Exactly. The actor update uses one velocity evaluation, avoiding integration through the full flow sampler or backpropagation through that sampler. A key test compares clipped Q-F-three with Direct Q, which removes the velocity clip. On Humanoid version four, Direct Q collapses learning even with an actor learning rate 10 times lower than Q-F-three’s default. The clipped method recovers a usable policy. That supports clipping’s value in this setup, but does not prove critic overestimation is the only cause of collapse.",
+      "zh": "正是如此。actor 的更新只用一次速度评估，不需要对整个流采样器做积分，也不用通过那个采样器做反向传播。一个关键测试是把带裁剪的 Q-F-three 和 Direct Q 做对比，后者去掉了速度裁剪。在 Humanoid version four 上，即使 actor 学习率比 Q-F-three 的默认值低 10 倍，Direct Q 的学习依然会崩溃。而带裁剪的方法能恢复出一个可用的策略。这支持了裁剪在这个设定下的价值，但并不能证明 critic 高估是崩溃的唯一原因。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 175.5,
+      "end": 206.52,
+      "en": "The humanoid results also show what replay-based training can accomplish in practice. A 29-degree-of-freedom Unitree G-one policy trained from scratch in simulation tracked an approximately 3-minute dance motion on hardware without real-world fine-tuning. On the L-A-F-A-N dance-tracking task, Q-F-three reached full-length, 500-step episodes in roughly half an hour. The paper reports about a 10-times wall-clock advantage over F-P-O plus plus for this task, not a universal speedup.",
+      "zh": "人形机器人的结果还展示了基于回放的训练在实践中能做到什么。一个29自由度的宇树G1策略在仿真中从零训练，就能在硬件上跟踪一段约3分钟的舞蹈动作，而且没有做真实世界微调。在LAFAN舞蹈跟踪任务上，Q-F-3大约半小时就达到了完整长度、500步的回合。论文报告在这个任务上相比FPO++有大约10倍的挂钟时间优势，这并不是普适的加速。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 208.04,
+      "end": 211.28,
+      "en": "How much of that speed comparison comes from the actor update itself?",
+      "zh": "这个速度对比里有多少是来自actor更新本身？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 212.2,
+      "end": 245.46,
+      "en": "The experiment does not isolate the actor update’s contribution. Q-F-three is evaluated within the high-throughput Fast T-D-three training recipe, which includes parallel GPU simulation, replay, large batches, and a distributional critic. The comparison uses the same GPU type for this task, and the reported curves average 3 seeds. Also, the one-step prediction is for the training update; deployed humanoid actions use 5 Euler steps to integrate the flow.",
+      "zh": "这个实验并没有单独分离出actor更新的贡献。Q-F-three是在高吞吐量的Fast T-D-three训练方案下评估的，该方案包含并行GPU仿真、回放、大批量以及分布式critic。对比在同一任务中使用相同型号的GPU，报告的曲线是3个随机种子的平均值。另外，单步预测针对的是训练更新；部署到人形机器人上的动作则使用5步欧拉积分来对flow进行积分。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 246.32,
+      "end": 281.74,
+      "en": "The paper also tests fine-tuning from demonstrations in simulation. On the ABC-Sim task of throwing bottles into a bin, Q-F-three fine-tunes rank-4 lora adapters in the pretrained action head rather than training the entire vision-language model. Success rises from 91% to 95%. Among successful episodes, mean length falls from 781 to 606 control steps, reported as 22% faster. That duration metric excludes episodes that time out, so it is not a reduction across all attempts.",
+      "zh": "论文还在仿真环境中测试了基于演示的微调。在ABC-Sim的扔瓶子进垃圾桶任务上，Q-F-three只微调预训练动作头中的rank-4 lora适配器，而不是训练整个视觉语言模型。成功率从91%提升到95%。在成功的回合中，平均长度从781个控制步降到606个，报告称快了22%。但这个时长指标排除了超时的回合，所以并不是所有尝试都变短了。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 282.84,
+      "end": 287.76,
+      "en": "Does this mean the same update is equally established for learning from scratch and refining demonstrations?",
+      "zh": "这是否意味着，同样的更新在从零开始学习和微调示范这两种情况下都同样成立？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 289.08,
+      "end": 321.08,
+      "en": "The paper demonstrates both regimes, but in separate settings: humanoid control for learning from scratch, and manipulation for demonstration-based fine-tuning. That distinction matters when interpreting the evidence. The bottle result is one task with evaluations over 50 episodes, and an episode succeeds only if all 5 bottles enter the bin before timeout. The authors also report full-policy fine-tuning on 3 Robomimic tasks, but the adapter experiment alone should not stand in for every fine-tuning setting.",
+      "zh": "这篇论文展示了两种情形，但分别在不同的设定下：从零开始学习用的是人形机器人控制，基于演示的微调用的是操作任务。解读证据时，这个区分很重要。瓶子那个结果只是一个任务，评估跑了50个回合，而且一个回合只有在5个瓶子全部在超时前进入箱子时才算成功。作者还报告了在3个Robomimic任务上做全策略微调，但仅凭适配器实验，不能代表所有微调设定。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 321.82,
+      "end": 351.96,
+      "en": "This work fits alongside several different approaches to combining flow policies and reinforcement learning. Flow Policy Gradients for Robot Control uses on-policy rollouts, while Flow Q-Learning uses a separate one-step policy to improve actions and distills from a flow policy. Q-F-three instead makes a replay-based actor update that retains flow matching as its anchor. The shared question is how to use reward information without losing the useful structure learned by a generative policy.",
+      "zh": "这项工作与几种将流策略和强化学习结合的不同方法处于同一脉络。Flow Policy Gradients for Robot Control 用的是同策略轨迹，而 Flow Q-Learning 则用一个单独的一步策略来改进动作，并从流策略中蒸馏。Q-F-three 则反过来做基于回放的演员更新，同时保留流匹配作为其锚点。它们共同面对的问题是：如何利用奖励信息，又不丢掉生成式策略学到的有用结构。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 351.96,
+      "end": 357.92,
+      "en": "What should researchers test next to know whether this trust-region interpretation holds more broadly?",
+      "zh": "研究人员接下来应该测试什么，才能知道这种信赖域解释是否在更广泛的范围内成立？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 358.82,
+      "end": 386.34,
+      "en": "A natural next step is to test the filter across more tasks, critics, and replay distributions, and to measure when bounded critic queries are still unreliable. The reported results support the method in the tested settings; they do not guarantee stable learning everywhere. Likewise, the 10-times comparison belongs to this dance-tracking setup and its combined training recipe. Keeping those limits clear helps separate the proposed mechanism from the performance of the full system.",
+      "zh": "自然的下一步，是在更多任务、更多评论家和更多回放分布上测试这个过滤器，并衡量有界评论家查询在什么时候仍然不可靠。报告的结果在测试设置下支持该方法，但并不能保证在所有地方都能稳定学习。同样，10倍比较也只属于这个舞蹈跟踪设置及其组合训练方案。把这些边界说清楚，有助于把所提出的机制与整个系统的性能区分开来。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 387.24,
+      "end": 414.798,
+      "en": "The central takeaway is that a critic can guide a flow policy without being allowed to pull it arbitrarily far from replay experience. Q-F-three uses that filtered guidance alongside flow matching, and the paper demonstrates the update for both learning from scratch and fine-tuning. Whether the same balance works elsewhere remains an empirical question. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，critic 可以引导流策略，但不能让它任意偏离回放经验。Q-F-three 把这种经过过滤的引导和流匹配结合起来，论文也展示了从零学习和微调两种情况下这个更新都成立。同样的平衡在别处是否有效，仍然是一个需要靠实验回答的问题。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{kim2026qf3fastflowrl,\n      title={QF3: Fast Flow RL with Filtered Q-Gradients}, \n      author={Chung Min Kim and Brent Yi and David McAllister and Hongsuk Choi and Himanshu Gaurav Singh and Jinkun Cao and Ken Goldberg and Pieter Abbeel and Carmelo Sferrazza and Angjoo Kanazawa},\n      year={2026},\n      eprint={2610.08789},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.08789}, \n}",
+  "topics": [
+    "Robotics",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.565,
+    0.584,
+    0.524,
+    0.493,
+    0.328,
+    0.407,
+    0.425,
+    0.781,
+    0.579,
+    0.458,
+    0.423,
+    0.433,
+    0.409,
+    0.516,
+    0.422,
+    0.5,
+    0.354,
+    0.272,
+    1.0,
+    0.651,
+    0.645,
+    0.7,
+    0.59,
+    0.486,
+    0.492,
+    0.539,
+    0.398,
+    0.406,
+    0.313,
+    0.301,
+    0.53,
+    0.44,
+    0.474,
+    0.472,
+    0.472,
+    0.41,
+    0.522,
+    0.524,
+    0.449,
+    0.343,
+    0.353,
+    0.331,
+    0.496,
+    0.376,
+    0.45,
+    0.415,
+    0.274,
+    0.206,
+    0.206,
+    0.62,
+    0.508,
+    0.461,
+    0.422,
+    0.33,
+    0.45,
+    0.442,
+    0.426,
+    0.374,
+    0.283,
+    0.271,
+    0.288,
+    0.422,
+    0.45,
+    0.477,
+    0.474,
+    0.39,
+    0.321,
+    0.355,
+    0.256,
+    0.274,
+    0.223,
+    0.2
+  ],
+  "published": "2026-10-06",
+  "views": 305,
+  "license": "CC BY"
+}

@@ -1,0 +1,186 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 480.313,
+  "word_match_rate": 0.9604,
+  "line_count": 25,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on Language Model Evaluation, today's lecture is on A Call for an Open Tokenizer Benchmark. Recent work such as Tokenization: A Survey for Modern NLP and Tokenization Is More Than Compression treats tokenization as a consequential design choice, not just preprocessing. This proposal comes from Marco Cognetta, affiliated with Google and The Tokenization Discord. The field is asking how to compare models more fairly; this paper argues we also need a shared way to compare the tokenizers themselves. Yes, Noah?",
+      "start": 0.0,
+      "end": 35.48
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why is comparing tokenizers so difficult if we can just compare model perplexity?",
+      "start": 36.58,
+      "end": 41.84
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because ordinary perplexity counts predictions over a model's tokens, and different tokenizers divide the same text differently. A tokenizer might represent a phrase with a few large units, while another uses many smaller ones. Their token-level scores therefore do not share a straightforward basis. The paper proposes a benchmark to make comparisons more controlled and interpretable, while being clear that it is a plan for community infrastructure—not a report of completed experiments.",
+      "start": 43.0,
+      "end": 71.94
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the paper proposes rules for a benchmark, but doesn't test tokenizers in it yet?",
+      "start": 73.16,
+      "end": 77.58
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The proposal starts from a basic challenge: tokenizer quality cannot be isolated if submissions also change architecture, optimization, or data exposure. It suggests a base modeling track with a small set of model sizes and fixed architectural choices. Participants could change the vocabulary dimensions of the embedding and output layers, while other properties, such as embedding dimension, remain fixed. That resembles a controlled experiment: vary the factor under study and hold other conditions steady.",
+      "start": 78.4,
+      "end": 110.7
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Would those rules exclude approaches that don't use conventional subword tokenization?",
+      "start": 110.7,
+      "end": 115.94
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "They could. The authors specifically recognize that a conventional architecture may disadvantage latent-tokenization approaches or other systems unlike standard subword models. They raise possible separate architecture families, such as an hourglass Transformer, but do not settle the question. They also leave open whether output generation must use a single softmax or may use multiple decoding steps. These are important choices because broader coverage can make results harder to compare.",
+      "start": 116.8,
+      "end": 147.38
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: how would the benchmark keep training comparisons fair when tokenizers produce different numbers of tokens?",
+      "start": 148.18,
+      "end": 154.04
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That is one of the proposal's central design problems. Fixing tokens per batch can favor a coarse tokenizer, which processes more text per token, or a fine-grained tokenizer, which may receive more optimization updates over the same data. One suggested alternative is to form batches from raw text within a byte range—for example, around one megabyte, with a small tolerance. The benchmark would then control the text while participants supply tokenizers.",
+      "start": 155.1,
+      "end": 183.34
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "And would training time be fixed, too?",
+      "start": 184.36,
+      "end": 186.44
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The proposal favors fixing the optimizer and the number of passes over the training data, rather than wall-clock time. That can reduce dependence on hardware and make participation more accessible. It does not, by itself, equalize every training cost: tokenizers can differ in processing speed and the number of sequences they create. The learning-rate schedule is another open choice, since it might be tied to batches, sequences, tokens, or bytes.",
+      "start": 186.98,
+      "end": 216.2
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How does the proposed evaluation compare models without depending on their token counts?",
+      "start": 217.2,
+      "end": 221.42
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The proposed primary metric is bits per byte, which expresses predictive performance relative to the underlying text rather than each tokenizer's units. It still evaluates likelihood under a canonical tokenization; summing over all possible tokenizations would be more comprehensive but too costly for this benchmark. The paper also proposes sequence compression and tokenization speed, measured in bytes processed per second, along with possible convergence measures.",
+      "start": 222.42,
+      "end": 250.84
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Would one combined score make the results easier to rank?",
+      "start": 251.92,
+      "end": 254.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "A single score would simplify ranking, but it could hide useful tradeoffs. A tokenizer might improve predictive quality while being slower, or compress text well without leading on a downstream task. The authors therefore suggest reporting a Pareto frontier: the set of submissions that are not clearly surpassed across the chosen measures. For downstream checks, they favor simple zero-shot tasks, including A-R-C Easy for reasoning and cute for character-level evaluation.",
+      "start": 255.6,
+      "end": 285.68
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Could the benchmark help someone choose a tokenizer for a multilingual product, rather than just rank research systems?",
+      "start": 286.8,
+      "end": 292.62
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Potentially, if its tracks reflect practical needs. The proposal sketches multilingual evaluation with a vocabulary cap, constrained-vocabulary comparisons, scaling studies, tokenizer transfer, and robustness to perturbed tokenizations. Each track would ask a different question while keeping tokenization central. For example, a vocabulary cap can make multilingual allocation choices visible. But these are proposed directions, not finalized specifications, and the paper reports no results showing which tokenizer works best.",
+      "start": 293.56,
+      "end": 325.8
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "What might researchers learn from the transfer and robustness tracks?",
+      "start": 326.6,
+      "end": 332.12
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "A transfer track could examine whether a trained model can adapt when its tokenizer changes, a practical concern when updating systems. A robustness track could test how performance responds to altered segmentations. The proposal also imagines tracks for intrinsic measures and scaling laws: researchers could ask whether tokenizer metrics predict performance across corpora or model sizes. These ideas connect to the broader need for reliable evaluation, but their metrics and protocols still need development.",
+      "start": 332.12,
+      "end": 361.26
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "Does this connect to the concern that compression alone may not predict model quality?",
+      "start": 362.38,
+      "end": 366.1
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "Yes. Tokenization Is More Than Compression argues that fewer tokens do not automatically produce better downstream performance. This proposal takes a compatible stance by treating compression as one measure among several, rather than as a complete definition of tokenizer quality. Its broader contribution is to make the comparison conditions explicit. That could help the community distinguish a tokenizer's efficiency from its effects on prediction, task performance, or training behavior.",
+      "start": 367.16,
+      "end": 397.64
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "What is the main limitation the community would need to resolve first?",
+      "start": 398.6,
+      "end": 401.7
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "There is no single obvious protocol that maximizes fairness, accessibility, and coverage at once. Fixed architectures improve attribution but may omit unconventional systems; fixed data passes reduce hardware dependence but do not make all costs identical. Likewise, one metric is easy to interpret but can conceal tradeoffs. The benchmark would need community decisions about these tensions, along with reproducible rules and relevant tasks, before its comparisons could be trusted.",
+      "start": 402.5,
+      "end": 433.96
+    },
+    {
+      "i": 23,
+      "speaker": "Noah",
+      "text": "So the paper's strongest claim is that the field needs shared rules, not that one metric already solves the problem?",
+      "start": 433.96,
+      "end": 440.96
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "text": "Precisely. This is a call to build the conditions for better tokenizer research, not evidence that a particular tokenizer or metric has won. A useful benchmark could make controlled comparisons easier and help researchers study multilingual allocation, transfer, robustness, and scaling. Its value will depend on how well it balances comparability with real-world diversity. The memorable takeaway is simple: to compare tokenizers fairly, first agree on what stays fixed—and what each measure actually tells us. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 441.82,
+      "end": 480.313
+    }
+  ]
+}

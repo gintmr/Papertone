@@ -1,0 +1,232 @@
+{
+  "id": "2609.36529",
+  "title": "Triadic Linear Attention: Three-Dimensional Recurrent States for Long-Context Sequence Modeling",
+  "authors": [
+    "Oliver Sieberling",
+    "Bharat Runwal",
+    "David Jin",
+    "Ryan Chin",
+    "Rameswar Panda",
+    "Yoon Kim"
+  ],
+  "abstract": "Recurrent neural networks (RNNs) compress the historical context into a memory state of fixed size, thus allowing for constant-time inference. The memory state size is a crucial factor in their performance, as exemplified by the strong performance and resurgence of linear attention, which extends the vector-valued hidden states of ordinary RNNs to matrix-valued hidden states. Crucially, linear attention does so in a parameter-efficient way, in particular by using an outer product of the key and value vectors to write to the matrix-valued hidden state. We generalize this construction and propose triadic linear attention, which writes the triadic outer product of a key, a second key, and a value, into a third-order (i.e., 3D) tensor state, and reads from it by contracting both key axes with two queries. An $E$-dimensional second key thus yields an $E$-fold increase in state size while adding only two projections. Triadic linear attention is compatible with data-dependent forgetting, the delta rule, and chunkwise-parallel training. Applied to Gated DeltaNet and scalar-gated linear attention, triadic linear attention substantially improves long-context language modeling and recall, outperforming alternatives that enlarge the state.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.36529",
+    "arxiv": "https://arxiv.org/abs/2609.36529"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0effc-8fbb-7343-a704-b51e57a66f92/podcast.mp3",
+  "duration": 379.585,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.48,
+      "en": "In Transformer Architectures, today’s lecture is on Triadic Linear Attention. Long-context research is exploring several ways to remember more without keeping every token in a growing cache. Titans adds a learned long-term memory, while Mixture-of-Memories uses multiple recurrent states. This paper takes a different route: it gives a recurrent state another address axis. That matters because a fixed-state model can be efficient, but may have trouble recalling details from far back in a book. Go ahead, Noah.",
+      "zh": "在Transformer架构里，今天这节课讲的是三元线性注意力。长上下文研究正在探索几种方法，让我们不用把所有token都塞进一个不断增长的缓存里，也能记住更多东西。Titans加了一个可学习的长期记忆，而Mixture-of-Memories则用了多个循环状态。这篇论文走的是另一条路：它给循环状态又加了一个寻址轴。这很重要，因为固定状态的模型可以很高效，但可能很难回忆起一本书里很久以前的细节。来吧，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.52,
+      "end": 38.1,
+      "en": "Hi Professor, how does that extra address axis help a recurrent model remember more?",
+      "zh": "教授您好，多出来的那个地址轴是怎么帮助循环模型记住更多东西的？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.84,
+      "end": 70.2,
+      "en": "Think of a recurrent model reading the final pages of a long book. It must carry useful details forward in a fixed-size state, whereas a Transformer can retain a growing key-value cache, using more memory as context expands. Triadic attention stores each value under two learned addresses rather than one. That enlarges the recurrent memory while avoiding a proportional expansion of the sequence-mixer projections. The added capacity is useful, but it is not free or unlimited.",
+      "zh": "想象一个循环模型正在读一本厚书的最后几页。它必须把有用的细节装进一个固定大小的状态里带着走，而Transformer则可以保留一个不断增长的键值缓存，随着上下文扩展而使用更多内存。三元注意力把每个值存到两个学出来的地址下，而不是一个。这就扩大了循环记忆，同时避免了序列混合器投影按比例膨胀。增加的容量确实有用，但它既不是免费的，也不是无限的。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.42,
+      "end": 99.4,
+      "en": "In ordinary linear attention, each token writes a key-value association into a matrix state, and a later query reads from that state. The triadic version also produces a second key and a second query. It binds the value to both keys, so the state has an additional axis. The model can then use both queries to retrieve the stored value. In effect, it can distinguish more associations within a recurrent memory.",
+      "zh": "在普通的线性注意力中，每个token会把一个键值关联写入矩阵状态，之后某个查询再从该状态中读取。三元版本还会生成第二个键和第二个查询。它把值同时绑定到两个键上，因此状态多了一个轴。模型随后可以用两个查询来检索存储的值。实际上，它能在循环记忆中区分更多关联。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.32,
+      "end": 105.02,
+      "en": "So the second address makes the state larger, but does it also make every part of the model larger?",
+      "zh": "所以第二个地址让状态变大了，但它是不是也让模型的每个部分都变大了呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 105.02,
+      "end": 135.16,
+      "en": "The state grows by a factor set by E, the number of slices along that added axis. The main construction adds projections for the second key and query, but does not widen every sequence-mixer projection to the same degree. In the language models, those paths also use a short convolution and a softplus activation, and each state slice has its own forget gate. For Gated DeltaNet, the update erases an old association before writing its corrected value.",
+      "zh": "状态会按E的倍数增长，E就是新增轴上切片的数量。主要构造为第二个键和查询增加了投影，但并没有把每个序列混合器投影都按同样幅度加宽。在语言模型里，这些路径还用了短卷积和softplus激活，而且每个状态切片都有自己的遗忘门。对于Gated DeltaNet，更新时会先擦除旧关联，再写入修正后的值。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.02,
+      "end": 169.16,
+      "en": "The authors first isolate memory capacity with a deliberately small key-value retrieval task. A model stores associations, then sees their keys in random order and must return the matching values. As E increases, accuracy holds up with more stored pairs. At E of 16, the authors report roughly 16 times as many associations as ordinary linear attention, with just 1.08 times the non-embedding parameters. That result describes this controlled task, not a general guarantee for language models.",
+      "zh": "作者先用一个刻意做小的键值检索任务来单独考察记忆容量。模型先存下一批关联，然后以随机顺序看到这些键，必须返回对应的值。随着E增大，能存住的键值对更多，准确率依然撑得住。在E为16时，作者报告能记住的关联数量大约是普通线性注意力的16倍，而非嵌入参数只多了1.08倍。这个结果描述的是这个受控任务，并不是对语言模型的普遍保证。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 170.14,
+      "end": 173.4,
+      "en": "How do they make such a larger state practical to train on a GPU?",
+      "zh": "他们是怎么让这么大的状态在GPU上训练变得可行的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 174.56,
+      "end": 204.42,
+      "en": "They derive a chunkwise-parallel training method, allowing computation over blocks rather than relying only on token-by-token recurrence. They also tile the state along its value axis, so one GPU processing unit does not have to hold the entire third-order state at once. These choices make training feasible, but do not turn the approach into a faster inference method. The paper reports about 28 to 30% training overhead for E of 8 over vanilla Gated DeltaNet.",
+      "zh": "他们推导出一种分块并行的训练方法，可以按块计算，而不是只能依赖逐token的递归。他们还沿着值轴对状态做切分，这样单个GPU处理单元就不必一次性持有整个三阶状态。这些选择让训练变得可行，但并没有让这种方法变成更快的推理方法。论文报告说，当E为8时，相比原始Gated DeltaNet，训练开销大约增加28%到30%。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 206.7,
+      "end": 238.44,
+      "en": "For language modeling, the authors test on held-out P-G-19 books and evaluate next-token prediction across contexts extended up to 64,000 tokens. Their reported comparison shows Triadic Gated DeltaNet with E of 8 predicting better than the Transformer even at 64,000 tokens. They also evaluate recall across six tasks, where an answer counts as correct if the generated text contains it. Those results address retrieval separately from book-text prediction.",
+      "zh": "在语言建模方面，作者在留出的P-G-19书籍上做测试，并评估在上下文扩展到最多64000个token时的下一token预测。他们报告的比较显示，E为8的三元门控DeltaNet即使在64000个token时也预测得比Transformer更好。他们还在六个任务上评估召回，只要生成的文本包含答案就算正确。这些结果把检索与书籍文本预测分开处理。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 239.4,
+      "end": 245.02,
+      "en": "What is the most convincing comparison for showing that the extra address, rather than simply more state, helps?",
+      "zh": "最有说服力的对比是什么，能说明起作用的是额外的地址，而不只是更多的状态？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 245.9,
+      "end": 277.84,
+      "en": "The key comparison matches state size and nearly matches parameter budgets. At 400 million model parameters and four times the state, Triadic Gated DeltaNet has a 25.2 megabyte state and a six-task Recall average of 31.1. The strongest listed Gated DeltaNet alternative, larger heads, has the same stated state size and scores 28.5. The reported scores average three seeds; the parameter totals are close, not identical.",
+      "zh": "关键对比在状态大小上是对齐的，参数量预算也几乎对齐。在4亿模型参数、四倍状态的情况下，Triadic Gated DeltaNet的状态为25.2兆字节，六项任务召回平均分为31.1。列出的最强Gated DeltaNet替代方案，即更大的注意力头，其标称状态大小相同，得分为28.5。报告的分数是三个随机种子的平均值；参数总量接近，但并不完全相同。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 278.92,
+      "end": 308.14,
+      "en": "The authors also report lower perplexity for triadic Gated DeltaNet than each state-enlargement alternative across all three P-G-19 context ranges. Their analysis suggests the added state is used to retain information across different timescales: the slices have varied measured half-lives, and the model benefits from more distant context. These observations support their interpretation, but do not establish that the extra axis alone causes every performance difference.",
+      "zh": "作者还报告说，在三档P-G-19上下文范围内，三元Gated DeltaNet的困惑度都低于每一种扩大状态的替代方案。他们的分析表明，新增的状态被用来在不同时间尺度上保留信息：各个切片测得的半衰期各不相同，而模型也能从更远的上下文中获益。这些观察支持了他们的解释，但并不能证明单靠这个额外的轴就造成了所有的性能差异。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 309.16,
+      "end": 312.96,
+      "en": "Does that mean the approach settles the tradeoff between recall and memory cost?",
+      "zh": "这是否意味着该方法解决了召回率与内存成本之间的权衡问题？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 313.78,
+      "end": 342.96,
+      "en": "No. It makes a fixed recurrent state roomier, but the state still occupies memory, and its capacity remains finite. The findings are also specific to the tested Gated DeltaNet and scalar-gated linear attention models. This connects to the broader direction represented by Titans and Mixture-of-Memories: researchers are changing how models retain history, rather than assuming a Transformer cache is the only option. Triadic attention contributes a particular way to allocate recurrent memory.",
+      "zh": "不。它只是让固定的循环状态容量更大，但这个状态仍然占用内存，容量也依然是有限的。这些发现也仅限于所测试的Gated DeltaNet和标量门控线性注意力模型。这与Titans和Mixture-of-Memories所代表的更广泛方向相关：研究者正在改变模型保留历史的方式，而不是假定Transformer缓存是唯一的选择。三元注意力为分配循环内存提供了一种特定的方式。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 342.96,
+      "end": 379.585,
+      "en": "The practical takeaway is to distinguish memory capacity from memory cost. A second learned address can improve recall and long-context prediction under the tested conditions, and the model’s recurrent state remains fixed in size as the sequence grows. But enlarging that state costs memory and adds training overhead; the paper does not claim cheaper end-to-end inference. When you evaluate recurrent memory designs, ask not only how much they retain, but how effectively they use each added state entry. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "实际要点在于把记忆容量和记忆开销区分开。在测试条件下，第二个学习到的寻址方式可以提升召回和长上下文预测，而且随着序列变长，模型的循环状态大小保持不变。但扩大这个状态会增加内存开销和训练成本；论文并没有声称端到端推理更便宜。当你评估循环记忆设计时，不只要问它们保留了多少，还要问它们对每一个新增的状态条目利用得有多高效。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{sieberling2026triadiclinearattentionthreedimensional,\n      title={Triadic Linear Attention: Three-Dimensional Recurrent States for Long-Context Sequence Modeling}, \n      author={Oliver Sieberling and Bharat Runwal and David Jin and Ryan Chin and Rameswar Panda and Yoon Kim},\n      year={2026},\n      eprint={2609.36529},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.36529}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.908,
+    0.89,
+    0.621,
+    0.423,
+    0.472,
+    0.403,
+    0.477,
+    0.949,
+    0.654,
+    0.762,
+    0.534,
+    0.458,
+    0.282,
+    0.693,
+    0.805,
+    0.56,
+    0.554,
+    0.615,
+    0.448,
+    0.885,
+    0.831,
+    0.627,
+    0.569,
+    0.501,
+    0.694,
+    0.621,
+    0.661,
+    0.454,
+    0.345,
+    0.534,
+    0.317,
+    0.411,
+    0.465,
+    0.646,
+    0.607,
+    0.402,
+    0.371,
+    0.384,
+    0.251,
+    0.701,
+    0.521,
+    0.663,
+    0.415,
+    0.472,
+    0.328,
+    0.497,
+    0.469,
+    0.515,
+    0.434,
+    0.229,
+    0.251,
+    0.249,
+    0.437,
+    1.0,
+    0.702,
+    0.416,
+    0.436,
+    0.609,
+    0.473,
+    0.533,
+    0.455,
+    0.678,
+    0.446,
+    0.331,
+    0.24,
+    0.245,
+    0.265,
+    0.201,
+    0.274,
+    0.416,
+    0.2,
+    0.323
+  ],
+  "published": "2026-09-29",
+  "views": 487,
+  "license": "CC BY"
+}

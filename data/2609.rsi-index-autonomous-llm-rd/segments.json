@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 318.694,
+  "word_match_rate": 0.9579,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in AI Systems. Today's lecture is on a paper from the Vals AI team titled 'RSI-Index: Measuring Autonomous LLM R&D in Frontier Agent Systems'. We've seen a lot of recent work exploring how AI can improve AI, from broad frameworks like those discussed in 'The Last AI Built by Humans' to more specific benchmarks like 'AI4AI-Bench'. This paper tries to create a standardized, external way to measure this capability, moving it out of the private evaluations of model developers. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.88
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. The term recursive self-improvement, or RSI, sounds pretty ambitious. Is this paper claiming that these agents are actually redesigning themselves from the ground up?",
+      "start": 35.38,
+      "end": 44.68
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That's an excellent question, and it gets to the heart of their positioning. The authors are careful to state they are not measuring complete RSI. Instead, the RSI-Index is designed to evaluate the enabling capabilities that would be necessary for such a process to ever occur. They're asking a more practical question: can today's frontier agents independently improve components of the LLM development pipeline?",
+      "start": 44.96,
+      "end": 69.6
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So what kind of components are we talking about?",
+      "start": 70.02,
+      "end": 71.82
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "They break it down into five core research tasks. First, can an agent design and improve a language model training program from scratch? Second, can it develop efficient models, what they call 'Parameter Golf,' where the model and code must fit within a tiny memory budget? Third, can it build reliable evaluators for other AI systems? Fourth, can it apply post-training methods to improve an existing model? And finally, can it sustain experimentation over long time horizons under fixed resource constraints?",
+      "start": 71.96,
+      "end": 101.88
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "That sounds much more like engineering than fundamental research.",
+      "start": 102.34,
+      "end": 105.02
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Precisely. The index measures whether an agent can make technically effective research and engineering decisions. It's not just about completing a long sequence of actions, but whether those actions lead to a measurably better artifact—be it a smaller compressed file, a lower-loss model, or a more accurate evaluation harness. The goal is to separate genuine effectiveness from just appearing busy.",
+      "start": 105.02,
+      "end": 125.64
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How do they actually run these evaluations? You mentioned resource constraints.",
+      "start": 125.98,
+      "end": 129.56
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Each task runs in an isolated Docker sandbox. The agent gets a starting environment, an instruction file, and a fixed budget of time and compute—for example, 30 hours and access to a specific number of GPUs. The agent can edit code, run experiments, and record results in a notebook. When it's done, or the time runs out, it submits a final artifact. Crucially, this artifact is evaluated by an independent, hidden verifier. The agent's own self-reported performance doesn't count.",
+      "start": 130.02,
+      "end": 160.0
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Quick question about the agents themselves. Are they using a standardized harness for all models to ensure a fair comparison?",
+      "start": 160.0,
+      "end": 165.52
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "No, and that's a key methodological choice. They use each provider’s native agent harness—Codex for OpenAI models, Claude Code for Anthropic, and so on. Their reasoning is to measure the combined performance of the model plus the scaffolding its provider deploys it with. It increases what they call 'ecological validity' by testing the system as a user would encounter it, but it does mean you can't perfectly isolate the base model's capability from its tools.",
+      "start": 166.06,
+      "end": 193.42
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "So you're testing the whole product, not just the engine. What did they find? Who did well?",
+      "start": 193.78,
+      "end": 198.0
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The highest overall score went to Claude Fable 5.1, followed by Claude Opus 5 and then GPT-5.6 Sol. In general, newer models from a given provider tended to outperform their predecessors. However, no system reached the reference level of performance on any single task. The closest was Fable 5.1 on the language model training task, where it almost matched the performance of a published character transformer, which is a solid result.",
+      "start": 198.24,
+      "end": 224.32
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "You said they also looked at behavior, not just scores. Did anything interesting come out of that?",
+      "start": 224.7,
+      "end": 228.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Yes, a few things. First, agents often stopped working before their time was up, and needed to be relaunched by a supervisor. Continuing from the saved workspace often led to significant improvements, which suggests that persistence is a major challenge. Second, the sheer number of experiments an agent ran didn't correlate with final quality. Better agents seemed to be more selective. Finally, and perhaps most importantly, the agents mostly just combined and tuned existing, well-known techniques. They weren't inventing new algorithms.",
+      "start": 229.02,
+      "end": 257.44
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So they're more like diligent research assistants than principal investigators.",
+      "start": 258.1,
+      "end": 261.16
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "That's a good way to put it. The paper positions the RSI-Index as an early framework, not a final verdict. The results show that autonomous R&D is becoming technically capable in constrained engineering settings. Agents can meaningfully tune a training run or improve an evaluation harness. But the work also highlights the remaining gaps: reliable long-horizon execution, efficient experimentation, and genuinely novel research are still out of reach. This aligns with findings from other diagnostic work, like in 'How Do Agents Fail on AutoResearch'.",
+      "start": 261.78,
+      "end": 291.9
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The main takeaway here is that we now have a structured, external protocol to track progress on these capabilities. While we are not yet at the stage of fully autonomous recursive self-improvement, these agents can perform sophisticated engineering tasks that were exclusively in the human domain just a short time ago. The challenge is moving from competent tuning to novel discovery.",
+      "start": 293.08,
+      "end": 313.28
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 313.74,
+      "end": 318.694
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "id": "2610.07922",
+  "title": "OpenWAM: An Open Framework for Composable World-Action Models",
+  "authors": [
+    "Heng Yu",
+    "David D. Yuan",
+    "Juze Zhang",
+    "Changan Chen",
+    "Yao Feng",
+    "Michelle Baldonado",
+    "Steve Cousins",
+    "Li Fei-Fei",
+    "Jiajun Wu",
+    "Ehsan Adeli"
+  ],
+  "abstract": "World-action models (WAMs) couple future prediction with robot control, yet existing systems often vary the video backbone, interaction structure, supervision, and inference procedure simultaneously, making their design choices difficult to compare. We introduce OPENWAM, an open world-action modeling framework built around a common causal robot-video foundation and configurable video-action interaction. Starting from Wan2.2-5B, we perform causal robot-video pretraining on over 10,000 hours of video, then integrate an action expert through a shared Mixture-of-Transformers architecture that supports joint, video-then-action, action-then-video, and decoupled generation. OPENWAM achieves high success rates on four LIBERO suites and real-world bimanual tasks; robot-video training with causal adaptation improves VTA success on LIBERO-Long from 68.4% to 97.8%. The same configurable architecture naturally extends to inverse and forward dynamics, allowing us to study how counterfactual transitions improve independently trained dynamics models beyond demonstrations alone. When only the video predictor is adapted to a new task, a frozen local-context inverse dynamics model trained on counterfactual data and demonstrations achieves 84.0% mean success across four held-out LIBERO-90 tasks, compared with 47.0% for a full-context inverse model and 21.5% for a local-context model trained only on demonstrations. For forward dynamics, counterfactual supervision reduces RGB prediction error by 34.5% and raises outcome identification from 21.1% to 71.3% among 16 same-state outcomes. OPENWAM provides a common testbed for comparing WAM interaction designs and for studying dynamics learning from video data beyond successful demonstrations.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.07922",
+    "arxiv": "https://arxiv.org/abs/2610.07922"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11438-3b18-7932-97d3-f25904232bca/podcast.mp3",
+  "duration": 503.431,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.24,
+      "en": "For our graduate seminar in Robot Learning and World Models, today's lecture is on “OpenWAM: An Open Framework for Composable World-Action Models.” Researchers at Stanford study a practical challenge: a robot must not only predict how a scene could change, but also turn that prediction into executable movement. Recent work such as “Causal World Modeling for Robot Control” and “Unified World Models” reflects a trend toward joining visual prediction and action. OpenWAM asks how to compare those designs systematically.",
+      "zh": "我们这门机器人学习与世界模型的研究生讨论课上，今天的讲座主题是“OpenWAM：一个可组合世界-动作模型的开放框架”。斯坦福的研究人员研究了一个很实际的问题：机器人不仅要预测场景会怎么变化，还得把这个预测变成能执行的动作。最近的一些工作，比如“面向机器人控制的因果世界建模”和“统一世界模型”，都反映出一种把视觉预测和动作结合起来的趋势。OpenWAM想解决的，就是怎么系统地比较这些设计。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 35.46,
+      "end": 63.34,
+      "en": "The paper argues that comparisons are difficult when models differ in video backbones, training data, interaction patterns, and inference procedures all at once. It also points out that demonstrations show only the actions a person chose, leaving many possible action–outcome relationships unseen. OpenWAM, by Stanford authors including Heng Yu and David D. Yuan, tests alternative ways to connect imagined futures with movement. Yes, Noah?",
+      "zh": "这篇论文指出，如果模型在视频主干网络、训练数据、交互模式和推理流程上同时存在差异，就很难进行公平比较。论文还指出，演示数据只展示了人实际选择的动作，许多可能的动作与结果之间的关系都看不到。OpenWAM 由斯坦福的作者团队提出，包括 Heng Yu 和 David D. Yuan，它测试了多种不同方式来把想象出的未来与动作连接起来。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 64.48,
+      "end": 70.98,
+      "en": "Hi Professor, when you say “connect imagined futures with movement,” what does the framework actually let researchers change?",
+      "zh": "教授您好，您说“把想象出的未来和动作连接起来”，这个框架实际上让研究者能改变什么呢？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.9,
+      "end": 100.52,
+      "en": "It provides a shared starting point, then varies how video and action are generated. One route predicts a future video and then actions; another predicts actions and then video. A joint route generates both while allowing their future representations to interact, while a decoupled route generates both without that future cross-talk. Holding much of the setup in common makes it easier to ask whether generation order and information exchange affect control.",
+      "zh": "它提供了一个共同的起点，然后改变视频和动作的生成方式。一条路线是先预测未来视频，再预测动作；另一条路线是先预测动作，再预测视频。联合路线在生成两者的同时，允许它们未来的表征相互交互，而解耦路线则生成两者但不进行这种未来的交叉对话。把大部分设置保持共通，就更容易追问：生成顺序和信息交换是否会影响控制。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 101.44,
+      "end": 105.19,
+      "en": "Quick question: are these all one model, or can separate models be connected too?",
+      "zh": "问个快问题：这些全都是一个模型，还是说也可以把分开的模型连起来用？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 106.45,
+      "end": 135.49,
+      "en": "Both are possible. The paper also studies explicit interfaces between separately trained components. An inverse dynamics model, or I-D-M, receives a proposed visual future and predicts actions that could produce it. A forward dynamics model, or F-D-M, receives actions and predicts their visual consequences. Think of these as two translators: one turns a destination into a route, and the other turns a route into an expected destination.",
+      "zh": "两种方式都可行。论文还研究了分别训练的组件之间的显式接口。逆动力学模型，也就是IDM，接收一个提议的未来视觉画面，并预测能产生该画面的动作。前向动力学模型，也就是FDM，接收动作并预测其视觉后果。可以把它们想象成两个翻译器：一个把目的地变成路线，另一个把路线变成预期的目的地。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.51,
+      "end": 166.89,
+      "en": "The shared architecture uses video and action experts that retain their own modality-specific processing while exchanging information through attention. Before that stage, the video model is adapted with causal robot-video training, without action labels. Causal here means each future chunk can use current and previous observations and chunks already generated, but it cannot peek at later chunks. That restriction makes the model’s predictions usable in a sequential control process.",
+      "zh": "共享架构使用了视频专家和动作专家，它们各自保留模态专属的处理方式，同时通过注意力交换信息。在这个阶段之前，视频模型先用因果机器人视频训练进行适配，不使用动作标签。这里的因果是指每个未来片段可以使用当前和之前的观测以及已经生成的片段，但不能偷看后面的片段。这个限制让模型的预测能用于顺序控制过程。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.87,
+      "end": 171.25,
+      "en": "Can you clarify what the separate inverse model is allowed to observe?",
+      "zh": "你能说明一下，这个单独的反向模型被允许观察到什么吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.11,
+      "end": 200.47,
+      "en": "The local-context I-D-M uses the current camera observation, the robot’s sensed body state, called proprioception, and the supplied future video. It does not receive language or history from before the current observation. The authors note that this limited view is adequate only when the information needed for an action is locally observable. So local context is a testable design choice, not a guarantee that every task can be solved from one moment.",
+      "zh": "局部上下文的I-D-M使用当前相机观测、机器人感知到的身体状态（即本体感觉）以及提供给的未来视频。它不接收语言信息，也不接收当前观测之前的历史信息。作者指出，只有当动作所需的信息在局部可观测时，这种有限的视角才足够。因此，局部上下文是一种可测试的设计选择，而不是保证每个任务都能从单一时刻求解。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 201.39,
+      "end": 233.23,
+      "en": "The central transfer experiment asks whether a frozen action component can still work when paired with a video predictor adapted to a new task. To broaden its experience, the team restores selected simulator states and executes alternative future action sequences from those same starting conditions. This creates counterfactual transitions: examples of what else could have happened. The model learns from individual transition records, rather than from a special loss that directly compares paired branches.",
+      "zh": "核心的迁移实验要问的是：一个冻结的动作组件，在与适配到新任务的视频预测器配对后，还能不能正常工作。为了拓宽它的经验，团队会恢复选定的模拟器状态，并从这些相同的起始条件出发，执行其他可能的未来动作序列。这样就产生了反事实转移：也就是本来还可能发生什么的其他例子。模型是从单条转移记录中学习，而不是靠某种专门设计的损失函数去直接比较成对的分支。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 233.23,
+      "end": 238.57,
+      "en": "So does the frozen component transfer the whole task without new task-specific training?",
+      "zh": "那这个冻结的组件，是不是不用针对新任务做专门训练，就能把整个任务迁移过去？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 239.63,
+      "end": 278.73,
+      "en": "No, and that distinction matters. For each target, the video predictor is tuned using demonstrations of that target, including action labels; the source-trained I-D-M stays frozen. Across four held-out simulation tasks, the local-context model trained on mixed counterfactual and demonstration data reaches 84% mean closed-loop success. The matching full-context model reaches 47%, while local-context training on demonstrations alone reaches 21.5%. This shows component reuse after visual-task adaptation, not zero-shot transfer of the entire system.",
+      "zh": "不是，而且这个区别很重要。对于每个目标任务，视频预测器都会用该目标的演示数据进行调优，其中包括动作标签；而源任务训练出来的I-D-M保持冻结。在四个留出的仿真任务上，用反事实和演示混合数据训练的局部上下文模型达到了84%的平均闭环成功率。对应的全上下文模型只有47%，而仅用演示数据训练局部上下文模型则只有21.5%。这说明的是视觉任务适配之后的组件复用，而不是整个系统的零样本迁移。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 279.61,
+      "end": 313.47,
+      "en": "The comparison suggests that both conditioning scope and the breadth of transition experience matter, but it does not isolate either factor as the sole cause. A local-context model trained only on counterfactual transitions reaches a similar 84.5%. The mixed data includes 60% counterfactual transitions and 40% demonstrations. The video predictor still adapts to each target, so the result is best read as evidence that broader transition experience can support a reusable action-grounding component in these tested settings.",
+      "zh": "这一对比说明，条件范围与过渡经验的广度可能都起作用，但并不能把任一因素单独认定为唯一原因。仅用反事实过渡训练的局部上下文模型也达到了相近的84.5%。混合数据中60%是反事实过渡，40%是演示数据。视频预测器仍会针对每个目标做适配，因此这一结果更应被理解为：在这些测试设置下，更广泛的过渡经验能够支撑一个可复用的动作 grounding 组件。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 314.45,
+      "end": 317.35,
+      "en": "What does the forward model add beyond that transfer result?",
+      "zh": "前向模型在那个迁移结果之外还增加了什么？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 317.35,
+      "end": 357.13,
+      "en": "It tests whether the same broader experience helps predict action-dependent visual outcomes. On 2,560 counterfactual futures, the counterfactual-only forward model lowers RGB prediction M-S-E from 14.35 to 9.40 times 10 to the minus 3. Its accuracy in identifying the matching outcome among 16 futures from the same starting state rises from 21.1% to 71.3%. These are controlled, short-horizon visual-prediction results, not evidence of long-horizon planning or transfer to physical-robot dynamics.",
+      "zh": "它检验的是，同样的更广泛经验是否有助于预测依赖动作的视觉结果。在2560个反事实未来上，仅用反事实训练的前向模型把RGB预测的均方误差从14.35降到了9.40乘以10的负3次方。它在同一初始状态的16个未来中识别出匹配结果的准确率，从21.1%升到了71.3%。这些都是受控的短时程视觉预测结果，并不能证明长时程规划能力，也不能证明能迁移到真实机器人的动力学上。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 358.25,
+      "end": 393.19,
+      "en": "There is also a policy result worth interpreting carefully. On a long-horizon simulation suite, success rises from 68.4% with the original video initialization to 97.8% with a robot-video-pretrained causal backbone, while the policy architecture and downstream setup are held fixed. But the comparison combines robot-video pretraining with causal adaptation. It cannot identify the contribution of either factor by itself, so it supports the combined setup rather than a single-cause explanation.",
+      "zh": "还有一个策略方面的结果值得仔细解读。在一个长时程仿真套件上，成功率从使用原始视频初始化的68.4%提升到使用机器人视频预训练的因果骨干网络的97.8%，而策略架构和下游设置保持不变。但这一比较将机器人视频预训练与因果适配结合在了一起，无法单独识别任一因素的贡献，因此它支持的是组合方案，而非单一原因的解释。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 394.11,
+      "end": 398.21,
+      "en": "How does this relate to UniPi, which also connects generated video and actions?",
+      "zh": "这和UniPi有什么关系？UniPi同样把生成的视频和动作连接起来。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 399.81,
+      "end": 430.79,
+      "en": "UniPi is a useful conceptual precedent: it plans with text-conditioned generated video and uses a separately trained, task-specific inverse dynamics model to extract actions. OpenWAM’s distinction is the question it tests, not the invention of that interface. It asks whether a frozen I-D-M trained on source-task transitions can ground futures from a separately task-adapted video model, and whether alternative outcomes help. The paper does not report a head-to-head comparison with UniPi.",
+      "zh": "UniPi是一个有用的概念先例：它用文本条件生成的视频来做规划，再用一个单独训练的、任务特定的逆动力学模型来提取动作。OpenWAM的不同之处在于它要检验的问题，而不是发明了这个接口。它问的是，一个在源任务转场上训练好的冻结逆动力学模型，能否为来自另一个经过任务适配的视频模型的未来做 grounding，以及替代结果是否有帮助。论文没有报告与UniPi的直接对比。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 432.33,
+      "end": 436.55,
+      "en": "Could local-context models become the default, then, or is the evidence too narrow?",
+      "zh": "那么，局部上下文模型会成为默认选择吗？还是说证据还不够充分？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 437.45,
+      "end": 468.11,
+      "en": "The evidence is too narrow to make local context a universal default. Some tasks may require language, longer history, or information that is not visible in the current observation. The study establishes composability primarily in simulation, and the forward-model evaluation is local and short-horizon. Still, it shifts attention toward a useful experimental question: which interfaces can be replaced independently, and what kinds of transition data make those interfaces robust?",
+      "zh": "目前的证据还太窄，不足以让局部上下文成为通用默认方案。有些任务可能需要语言、更长的历史，或者当前观测中看不到的信息。这项研究主要是在仿真中确立了可组合性，而且前向模型的评估是局部的、短时程的。不过，它把注意力转向了一个有用的实验问题：哪些接口可以被独立替换，以及什么样的转移数据能让这些接口变得稳健？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 469.11,
+      "end": 503.431,
+      "en": "The takeaway is that a predicted future is not yet a robot policy: someone or something must ground that future in executable actions. OpenWAM makes the routes between video and action easier to compare, and its results suggest that seeing more possible outcomes can help a frozen action component remain useful after the visual predictor adapts. The boundary is equally important: this is not whole-system zero-shot learning or demonstrated physical-robot transfer. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，预测出来的未来还不等于机器人策略：总得有人或有什么东西把这个未来落到可执行的动作上。OpenWAM让视频和动作之间的路径更容易比较，它的结果也说明，看到更多可能的结果，能帮助一个冻结的动作组件在视觉预测器适应之后仍然有用。边界同样重要：这不是整系统的零样本学习，也不是已经验证过的物理机器人迁移。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yu2026openwamopenframeworkcomposable,\n      title={OpenWAM: An Open Framework for Composable World-Action Models}, \n      author={Heng Yu and David D. Yuan and Juze Zhang and Changan Chen and Yao Feng and Michelle Baldonado and Steve Cousins and Li Fei-Fei and Jiajun Wu and Ehsan Adeli},\n      year={2026},\n      eprint={2610.07922},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.07922}, \n}",
+  "topics": [
+    "Generative Models",
+    "Imitation Learning",
+    "Multimodal Learning"
+  ],
+  "peaks": [
+    0.647,
+    0.382,
+    0.311,
+    0.356,
+    0.2,
+    0.75,
+    0.465,
+    0.343,
+    0.348,
+    0.772,
+    0.598,
+    0.385,
+    0.536,
+    0.514,
+    0.463,
+    0.866,
+    0.398,
+    0.349,
+    0.223,
+    0.464,
+    0.433,
+    0.475,
+    0.277,
+    0.218,
+    1.0,
+    0.378,
+    0.422,
+    0.417,
+    0.373,
+    0.563,
+    0.493,
+    0.211,
+    0.59,
+    0.491,
+    0.485,
+    0.301,
+    0.455,
+    0.271,
+    0.299,
+    0.222,
+    0.798,
+    0.558,
+    0.403,
+    0.651,
+    0.28,
+    0.583,
+    0.38,
+    0.33,
+    0.238,
+    0.26,
+    0.421,
+    0.826,
+    0.625,
+    0.623,
+    0.505,
+    0.396,
+    0.507,
+    0.538,
+    0.525,
+    0.615,
+    0.436,
+    0.547,
+    0.798,
+    0.522,
+    0.541,
+    0.356,
+    0.34,
+    0.942,
+    0.727,
+    0.537,
+    0.574,
+    0.327
+  ],
+  "published": "2026-10-06",
+  "views": 245,
+  "license": "CC BY"
+}

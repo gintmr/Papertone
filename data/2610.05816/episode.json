@@ -1,0 +1,259 @@
+{
+  "id": "2610.05816",
+  "title": "Level-of-Token Diffusion",
+  "authors": [
+    "Kiyohiro Nakayama",
+    "Brian Chao",
+    "Jan Ackermann",
+    "Hansheng Chen",
+    "Federico Tombari",
+    "Leonidas Guibas",
+    "Lior Yariv",
+    "Gordon Wetzstein"
+  ],
+  "abstract": "Image and video diffusion models allocate equal computation to every region, even when the intended scene calls for varying levels of detail. The spatial distribution of detail can often be anticipated before generation, indicating where computation can be reduced. We introduce Level-of-Token (LoT) Diffusion, a framework that turns this knowledge into an explicit multiresolution token layout (Level-of-Token layout) for adaptive and efficient generation. Tokens represent rectangular patches of varying sizes and shapes, allocating finer tokens where detail is needed and coarser tokens elsewhere. We adapt pretrained diffusion transformers to LoT layouts through a patch-wise asymmetric flow parametrization and embeddings for multiresolution tokens, preserving full-resolution flow prediction at every denoising step while processing only a reduced token sequence. LoT Diffusion enables layout-adaptive generation while preserving pretrained generative priors. We demonstrate LoT with layouts derived from semantic masks, bounding boxes, texture variance, and depth-of-field cues, as well as agentic plans. Across image and video generation, LoT offers favorable quality-efficiency tradeoffs, with significant speedups determined by the layout's token budget. Our project website is at this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.05816",
+    "arxiv": "https://arxiv.org/abs/2610.05816"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10f93-0605-73c2-ba86-5d0936bb9bd0/podcast.mp3",
+  "duration": 502.7,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.96,
+      "en": "In our hypothetical graduate course, Computer Vision and Neural Networks, today’s lecture is on Level-of-Token Diffusion. Recent work such as Foveated Diffusion and DDiT explores ways to reduce the cost of diffusion transformers by adapting computation across space. This paper, from researchers at Stanford and Google, takes a related but distinct route: it assigns tokens according to an explicit spatial layout. As image and video generation scales up, deciding where computation is needed may matter as much as making each model operation faster. Yes, Noah?",
+      "zh": "在我们假设的研究生课程“计算机视觉与神经网络”中，今天的讲座是关于token级扩散的。最近的工作，比如Foveated Diffusion和DDiT，探索了通过在不同空间上自适应分配计算来降低扩散Transformer成本的方法。这篇来自斯坦福和谷歌研究人员的论文走了一条相关但不同的路线：它根据明确的空间布局来分配token。随着图像和视频生成规模的扩大，决定哪里需要计算，可能和让每个模型操作变得更快同样重要。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.12,
+      "end": 42.62,
+      "en": "Hi Professor, does the layout simply tell the model where to place objects?",
+      "zh": "教授您好，这个布局只是告诉模型把物体放在哪里吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.58,
+      "end": 76.16,
+      "en": "It can help guide placement, but it also determines how much spatial detail the model can represent in each region. A face might receive small patches, while a smooth sky receives larger ones. The central idea is to use fewer transformer tokens without reducing the final latent grid uniformly. That distinction matters because uniform downsampling saves computation everywhere, including places where fine structure is important. LoT links spatial control and computational allocation in one representation.",
+      "zh": "它能帮助引导摆放位置，但也决定了模型在每个区域能表示多少空间细节。一张脸可能分到小patch，而一片平滑的天空则分到大patch。核心思路是在不统一缩小最终潜空间网格的前提下，用更少的Transformer token。这个区别很关键，因为统一降采样会在所有地方都省算力，包括那些精细结构很重要的地方。LoT把空间控制和计算分配联系在了同一种表示里。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 77.4,
+      "end": 111.5,
+      "en": "A standard diffusion transformer, or D-I-T, divides an image latent into equal-sized patches. Level-of-Token Diffusion instead partitions the grid into rectangular regions of different sizes. Each region becomes one token, so larger regions reduce the sequence length. In video, the method varies patch size across space while keeping each patch’s temporal extent at one frame. The layout therefore makes a concrete tradeoff: fewer tokens lower the processing burden, while finer regions preserve more capacity for detail.",
+      "zh": "标准的扩散Transformer，也就是DiT，会把图像的潜变量切成大小相等的patch。而Level-of-Token Diffusion则不同，它把网格划分成大小不一的矩形区域。每个区域变成一个token，所以区域越大，序列长度就越短。用在视频上时，这个方法在空间上改变patch大小，但每个patch在时间上仍然只覆盖一帧。这样一来，这种布局就做出了一个具体的权衡：token更少，处理负担就更轻；而区域更细，就能为细节保留更多容量。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 111.5,
+      "end": 116.88,
+      "en": "So the layout is effectively a map of where the model gets more representational capacity?",
+      "zh": "所以这个布局实际上就是一张图，标出了模型在哪些地方能获得更强的表征能力？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 117.94,
+      "end": 148.82,
+      "en": "Exactly. The layout may come from a semantic mask, object boxes, texture variation, depth of field, or a custom plan. It can be supplied by a person or proposed by an agent. This turns token allocation into an interpretable control: the model is told not only what content to generate, but also where fine representation is worth spending. The approach is most useful when detail needs vary across the scene; uniformly intricate textures leave less room to save computation.",
+      "zh": "正是如此。这种布局可能来自语义掩码、物体框、纹理变化、景深，或者一份自定义方案。它可以由人来提供，也可以由智能体来提议。这就把token分配变成了一种可解释的控制手段：模型不仅被告知要生成什么内容，还被告知哪里值得投入精细表征。当场景中各处的细节需求不同时，这种方法最有用；如果纹理处处都同样繁复，就没多少节省计算的空间了。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 149.98,
+      "end": 185.22,
+      "en": "The technical challenge is that a pretrained variational autoencoder, or V-A-E, expects a dense latent grid, whereas the transformer now processes fewer tokens. LoT addresses this with patch-wise asymmetric flow prediction. For each patch size, the authors fit a projection basis that maps dense latent patches into the transformer’s token dimensions. The transformer predicts a velocity for each reduced token, and an analytic recovery step restores a full-resolution velocity field, including residual components not represented by the compact token.",
+      "zh": "技术上的难点在于，预训练的变分自编码器（VAE）期望的是密集的潜变量网格，而Transformer现在处理的token数量更少。LoT用逐块非对称流预测来解决这个问题。对每种patch大小，作者拟合了一组投影基，把密集的潜变量patch映射到Transformer的token维度。Transformer为每个压缩后的token预测一个速度，然后通过一个解析恢复步骤还原出全分辨率的速度场，包括那些紧凑token没能表示的残差分量。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 186.14,
+      "end": 192.04,
+      "en": "Quick question: does that recovery require the transformer to predict every fine-scale component after all?",
+      "zh": "快速问一下：那这种恢复是不是终究还是需要Transformer去预测每一个细粒度成分？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 192.76,
+      "end": 225.7,
+      "en": "No. The transformer processes the compact representation, while the analytic step uses the patch’s residual information to reconstruct dense flow. That distinction is what lets the model keep a full-resolution latent for denoising and decoding. The method also rescales clean data by patch extent before adding noise, rather than giving tokens different time values. This preserves shared timestep conditioning. Extent-specific input and output projections, plus learned patch-shape embeddings, help the pretrained transformer handle variable-sized regions.",
+      "zh": "不是。Transformer 处理的是紧凑表示，而解析步骤则利用 patch 的残差信息来重建稠密光流。正是这一区分让模型能够保留全分辨率潜变量用于去噪和解码。该方法还会在加噪之前按 patch 范围对干净数据重新缩放，而不是给不同 token 分配不同的时间值。这样就保留了共享的时间步条件。范围特定的输入和输出投影，加上学习到的 patch 形状嵌入，帮助预训练的 Transformer 处理可变大小的区域。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 226.66,
+      "end": 265.14,
+      "en": "The authors fine-tune pretrained models rather than training a new generator from scratch. They adapt FLUX.2-klein for images and Wan two point one for text-to-video, using lora on selected transformer projections while fully tuning the extent-specific heads and patch-size embeddings. Training layouts mix semantic masks, boxes, texture estimates, and depth-of-field cues. In practical terms, this means an existing generation system could accept a spatial detail plan, then spend its token budget unevenly while still producing a dense final image or video.",
+      "zh": "作者没有从头训练新的生成器，而是微调预训练模型。图像方面他们改造了FLUX.2-klein，文本生成视频方面改造了Wan 2.1，只在选定的Transformer投影上使用LoRA，同时完整训练那些针对区域范围的头和patch尺寸嵌入。训练布局混合了语义掩码、边界框、纹理估计和景深线索。实际来说，这意味着一个现有的生成系统可以接收一份空间细节规划，然后不均匀地分配token预算，同时仍然产出密集的最终图像或视频。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 266.1,
+      "end": 270.44,
+      "en": "How much of the reported speedup comes from model computation, and what is left out?",
+      "zh": "报告的加速里有多少来自模型计算，又有哪些被排除在外？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 270.44,
+      "end": 308.98,
+      "en": "Image experiments report speedups from 1.32 to 2.04 times, while video speedups range from 1.58 to 3.53 times, depending on the token budget. Timing includes sampling and V-A-E decoding, but excludes layout construction and model loading. At matched budgets, LoT generally compares favorably with tested token-reduction baselines on image preference, fidelity, and perceptual measures. For video, it leads the compressed methods on reported aesthetic and imaging-quality scores, while remaining competitive rather than best on every other metric.",
+      "zh": "图像实验报告的加速比为1.32到2.04倍，视频加速比则在1.58到3.53倍之间，具体取决于token预算。计时包含采样和VAE解码，但不包括布局构建和模型加载。在相同预算下，LoT在图像偏好、保真度和感知指标上通常优于所测试的token缩减基线。在视频方面，它在所报告的审美和成像质量分数上领先于压缩方法，而在其他各项指标上则保持竞争力而非最佳。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 309.9,
+      "end": 343.7,
+      "en": "The results also illustrate a control benefit: when prompted subjects should occupy regions assigned fine tokens, placement within those regions improves over the corresponding dense models. However, subject-detection rates are similar and slightly lower for the smaller LoT image model. Ablations show that patch-shape embeddings and analytic flow recovery matter, especially under aggressive compression. This is a useful reminder that variable token size is not just a scheduling trick; the model needs explicit mechanisms to interpret each token’s spatial support.",
+      "zh": "结果还体现出一个可控性上的好处：当提示要求主体占据分配了细粒度token的区域时，这些区域内的放置效果比对应的稠密模型更好。不过，主体检测率相近，而较小的LoT图像模型略低一些。消融实验表明，patch形状嵌入和解析式流恢复很重要，尤其是在激进压缩下。这提醒我们，可变token大小不只是调度技巧；模型需要明确的机制来解释每个token的空间支撑范围。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 344.6,
+      "end": 349.96,
+      "en": "Could layouts derived from references make the evaluation more favorable than unconstrained use would be?",
+      "zh": "从参考图得到的布局，会不会让评估结果比不受约束地使用更有利？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 349.96,
+      "end": 385.34,
+      "en": "That is an important limitation. Image layouts are derived from held-out reference images, and video layouts from generated reference videos, so these tests do not establish how reliably layouts can be produced in an open-ended workflow. The video evaluation also uses 200 prompts and automated metrics. Moreover, dense details such as grass, fabric, or musical notation may need fine tokens throughout, reducing savings or harming fidelity if the budget is too aggressive. Layout quality and scene structure therefore constrain the benefit.",
+      "zh": "这是一个重要的局限。图像布局来自留出的参考图像，视频布局则来自生成的参考视频，因此这些测试无法确定在开放式工作流中布局能有多可靠地生成。视频评估还使用了200个提示词和自动化指标。此外，像草地、织物或乐谱这类密集细节可能全程都需要细粒度的token，如果预算过于激进，就会减少节省或损害保真度。因此，布局质量和场景结构会制约收益。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 386.3,
+      "end": 421.38,
+      "en": "In the broader landscape, work such as Token-wise Feature Caching reduces repeated computation by reusing features, while Foveated Diffusion also allocates spatial effort unevenly. LoT’s particular contribution is to make a prior layout determine variable-sized tokens while preserving dense flow prediction through a pretrained model. That shifts the design question from simply asking how to shorten generation, toward asking where a shorter representation is safe. The idea connects level-of-detail rendering and compression to the internal computation of generative transformers.",
+      "zh": "在更宏观的背景下，Token-wise Feature Caching 这类工作通过复用特征来减少重复计算，而 Foveated Diffusion 同样对空间上的计算投入做了非均匀分配。LoT 的独特贡献在于让先验布局决定可变大小的 token，同时通过预训练模型保留稠密的流预测。这就把设计问题从单纯追问如何缩短生成，转向追问在哪些地方使用更短的表示是安全的。这一思路将细节层次渲染和压缩与生成式 Transformer 的内部计算联系了起来。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 422.32,
+      "end": 426.96,
+      "en": "What would you want future work to test before treating this as a general-purpose control interface?",
+      "zh": "在把它当作通用控制接口之前，你希望未来的工作先测试哪些方面？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 427.92,
+      "end": 461.02,
+      "en": "A next step is to measure the full cost and reliability of constructing layouts in unconstrained settings, including whether an agent can estimate detail needs without access to a reference. Researchers could also test transfer across model families, broader video prompts, and scenes with fine structure everywhere. LoT does not establish that every region can be coarsened safely; instead, it offers a framework for testing that assumption and allocating computation when it holds. Its practical value will depend on matching the layout to the scene.",
+      "zh": "下一步是衡量在无约束环境下构建布局的完整成本和可靠性，包括智能体能否在没有参考的情况下估计细节需求。研究者还可以测试跨模型家族的迁移、更广泛的视频提示，以及处处都有精细结构的场景。LoT并没有证明每个区域都能被安全地粗化；相反，它提供了一个框架来检验这一假设，并在假设成立时分配计算。它的实用价值将取决于布局与场景的匹配程度。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 461.02,
+      "end": 502.7,
+      "en": "The main takeaway is that efficiency and spatial control can be treated as two sides of the same decision: which regions deserve fine tokens, and which can tolerate coarser ones? LoT shows one way to make that decision explicit while retaining dense outputs from pretrained diffusion models. Its reported gains are meaningful but conditional on suitable layouts and scenes with uneven detail demands. Remember the core principle: a smaller token sequence can still support a detailed result when computation is concentrated where the image needs it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "最主要的结论是，效率和空间控制可以看作同一个决策的两面：哪些区域值得用更细的token，哪些区域可以容忍更粗的token？LoT展示了一种方法，把这个决策显式化，同时保留预训练扩散模型输出的密集结果。它报告的提升是有意义的，但前提是布局合适、场景的细节需求不均匀。记住核心原则：只要把计算集中在图像真正需要的地方，更短的token序列依然可以支撑细节丰富的结果。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{nakayama2026leveloftokendiffusion,\n      title={Level-of-Token Diffusion}, \n      author={Kiyohiro Nakayama and Brian Chao and Jan Ackermann and Hansheng Chen and Federico Tombari and Leonidas Guibas and Lior Yariv and Gordon Wetzstein},\n      year={2026},\n      eprint={2610.05816},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.05816}, \n}",
+  "topics": [
+    "Transformers",
+    "Fine Tuning",
+    "Generative Models"
+  ],
+  "peaks": [
+    1.0,
+    0.806,
+    0.736,
+    0.652,
+    0.68,
+    0.627,
+    0.999,
+    0.339,
+    0.491,
+    0.471,
+    0.448,
+    0.725,
+    0.643,
+    0.588,
+    0.508,
+    0.479,
+    0.733,
+    0.719,
+    0.572,
+    0.626,
+    0.521,
+    0.427,
+    0.501,
+    0.406,
+    0.22,
+    0.293,
+    0.433,
+    0.676,
+    0.302,
+    0.447,
+    0.342,
+    0.25,
+    0.48,
+    0.58,
+    0.48,
+    0.318,
+    0.301,
+    0.375,
+    0.85,
+    0.852,
+    0.656,
+    0.909,
+    0.623,
+    0.544,
+    0.496,
+    0.378,
+    0.339,
+    0.287,
+    0.2,
+    0.587,
+    0.664,
+    0.306,
+    0.298,
+    0.243,
+    0.272,
+    0.74,
+    0.493,
+    0.77,
+    0.206,
+    0.627,
+    0.427,
+    0.795,
+    0.361,
+    0.533,
+    0.567,
+    0.302,
+    0.591,
+    0.511,
+    0.49,
+    0.472,
+    0.371,
+    0.374
+  ],
+  "published": "2026-10-05",
+  "views": 273,
+  "license": "CC BY"
+}

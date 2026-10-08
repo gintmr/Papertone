@@ -2,6 +2,79 @@
   "generated_at": null,
   "episodes": [
     {
+      "id": "2610.a-call-for-an-open-tokenizer-benchmark",
+      "title": "A Call for an Open Tokenizer Benchmark",
+      "authors": [
+        "Marco Cognetta"
+      ],
+      "duration": 480.312625,
+      "license": "User Uploaded",
+      "topics": [
+        "NLP",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.a-call-for-an-open-tokenizer-benchmark",
+      "published": "2026-10-06",
+      "views": 275,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a112ea-7959-7c50-8009-c418115425f7/podcast.mp3"
+    },
+    {
+      "id": "2610.08789",
+      "title": "QF3: Fast Flow RL with Filtered Q-Gradients",
+      "authors": [
+        "Chung Min Kim",
+        "Brent Yi",
+        "David McAllister",
+        "Hongsuk Choi",
+        "Himanshu Gaurav Singh",
+        "Jinkun Cao",
+        "Ken Goldberg",
+        "Pieter Abbeel",
+        "Carmelo Sferrazza",
+        "Angjoo Kanazawa"
+      ],
+      "duration": 414.797938,
+      "license": "CC BY",
+      "topics": [
+        "Robotics",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08789",
+      "published": "2026-10-06",
+      "views": 305,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11444-83cb-7b02-8107-46a34eab3298/podcast.mp3"
+    },
+    {
+      "id": "2610.07922",
+      "title": "OpenWAM: An Open Framework for Composable World-Action Models",
+      "authors": [
+        "Heng Yu",
+        "David D. Yuan",
+        "Juze Zhang",
+        "Changan Chen",
+        "Yao Feng",
+        "Michelle Baldonado",
+        "Steve Cousins",
+        "Li Fei-Fei",
+        "Jiajun Wu",
+        "Ehsan Adeli"
+      ],
+      "duration": 503.43125,
+      "license": "CC BY",
+      "topics": [
+        "Generative Models",
+        "Imitation Learning",
+        "Multimodal Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.07922",
+      "published": "2026-10-06",
+      "views": 245,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11438-3b18-7932-97d3-f25904232bca/podcast.mp3"
+    },
+    {
       "id": "2610.kolibri-sovereign-european-model",
       "title": "Kolibri: A Sovereign European Model on the Pareto Frontier",
       "authors": [
@@ -16,7 +89,7 @@
       "cover": "cover.png",
       "path": "2610.kolibri-sovereign-european-model",
       "published": "2026-10-05",
-      "views": 1235,
+      "views": 1413,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10d86-5e08-73d8-bf61-e6a373368d64/podcast.mp3"
     },
     {
@@ -40,8 +113,37 @@
       "cover": "cover.png",
       "path": "2610.06851",
       "published": "2026-10-05",
-      "views": 428,
+      "views": 746,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f76-cd0d-71eb-826e-fd479a71a6bf/podcast.mp3"
+    },
+    {
+      "id": "2610.06850",
+      "title": "InterMimicGen: Scaling Humanoid Loco-Manipulation through Self-Evolving Motion Imitation",
+      "authors": [
+        "Yucheng Zhang",
+        "Sirui Xu",
+        "Jinhong Li",
+        "Liuyu Bian",
+        "Anatulya Nandi",
+        "Derek Zhang",
+        "Xiangchen Liu",
+        "Xueting Li",
+        "Umar Iqbal",
+        "Yu-Xiong Wang",
+        "Liang-Yan Gui"
+      ],
+      "duration": 484.9105,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Data Curation",
+        "Imitation Learning",
+        "Multi Task Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.06850",
+      "published": "2026-10-05",
+      "views": 151,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f6a-37ba-7a95-b812-5a19e14b6d80/podcast.mp3"
     },
     {
       "id": "2610.06805",
@@ -63,8 +165,60 @@
       "cover": "cover.png",
       "path": "2610.06805",
       "published": "2026-10-05",
-      "views": 382,
+      "views": 2391,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fc1-2bb7-7dd1-a9eb-1cbf81ca8df9/podcast.mp3"
+    },
+    {
+      "id": "2610.06647",
+      "title": "LoGRA: Scaling LLM Reinforcement Learning with Low-Rank Gradient Sketches",
+      "authors": [
+        "Shaokun Zhang",
+        "Yifan Zhang",
+        "Jian Hu",
+        "Yueying Li",
+        "Hao Zhang",
+        "Binfeng Xu",
+        "Jan Kautz",
+        "Yi Dong"
+      ],
+      "duration": 412.028938,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Reinforcement Learning",
+        "Fine Tuning",
+        "ML Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2610.06647",
+      "published": "2026-10-05",
+      "views": 159,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f1d-d267-7122-be9a-841c660ac24f/podcast.mp3"
+    },
+    {
+      "id": "2610.05816",
+      "title": "Level-of-Token Diffusion",
+      "authors": [
+        "Kiyohiro Nakayama",
+        "Brian Chao",
+        "Jan Ackermann",
+        "Hansheng Chen",
+        "Federico Tombari",
+        "Leonidas Guibas",
+        "Lior Yariv",
+        "Gordon Wetzstein"
+      ],
+      "duration": 502.699813,
+      "license": "CC BY",
+      "topics": [
+        "Transformers",
+        "Fine Tuning",
+        "Generative Models"
+      ],
+      "cover": "cover.png",
+      "path": "2610.05816",
+      "published": "2026-10-05",
+      "views": 273,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f93-0605-73c2-ba86-5d0936bb9bd0/podcast.mp3"
     },
     {
       "id": "2610.05622",
@@ -85,8 +239,29 @@
       "cover": "cover.png",
       "path": "2610.05622",
       "published": "2026-10-04",
-      "views": 356,
+      "views": 617,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fce-9fdb-7d27-b142-1348dc322d3c/podcast.mp3"
+    },
+    {
+      "id": "2610.04976",
+      "title": "Priced Guidance: Can Language Models Generate Future Research Ideas?",
+      "authors": [
+        "Kaiyue Wen",
+        "Tengyu Ma",
+        "Percy Liang"
+      ],
+      "duration": 428.564438,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Ensemble Methods",
+        "Generative Models"
+      ],
+      "cover": "cover.png",
+      "path": "2610.04976",
+      "published": "2026-10-04",
+      "views": 333,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f19-8ea7-7eba-aa19-b7a26406a915/podcast.mp3"
     },
     {
       "id": "2610.03695",
@@ -106,7 +281,7 @@
       "cover": "cover.png",
       "path": "2610.03695",
       "published": "2026-10-02",
-      "views": 332,
+      "views": 440,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a109e2-27ff-73ed-985a-c4d4d1ffbe8d/podcast.mp3"
     },
     {
@@ -141,7 +316,7 @@
       "cover": "cover.png",
       "path": "2610.02665",
       "published": "2026-10-02",
-      "views": 283,
+      "views": 363,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a109f1-0165-7e7f-bd5c-5d2e66ea02a4/podcast.mp3"
     },
     {
@@ -162,7 +337,7 @@
       "cover": "cover.png",
       "path": "2610.skillrefiner-offline-skill-refinement",
       "published": "2026-10-01",
-      "views": 2574,
+      "views": 2833,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
     },
     {
@@ -186,7 +361,7 @@
       "cover": "cover.png",
       "path": "2610.02208",
       "published": "2026-10-01",
-      "views": 530,
+      "views": 559,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac4-0ae8-74bf-8572-31108e8b0fe0/podcast.mp3"
     },
     {
@@ -213,7 +388,7 @@
       "cover": "cover.png",
       "path": "2610.02204",
       "published": "2026-10-01",
-      "views": 344,
+      "views": 440,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa6b-17f1-75ea-9e45-cf77eb64e55e/podcast.mp3"
     },
     {
@@ -235,7 +410,7 @@
       "cover": "cover.png",
       "path": "2610.02200",
       "published": "2026-10-01",
-      "views": 967,
+      "views": 1173,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0faa4-570a-7126-8d23-e59675871b79/podcast.mp3"
     },
     {
@@ -256,8 +431,40 @@
       "cover": "cover.png",
       "path": "2610.02140",
       "published": "2026-10-01",
-      "views": 2067,
+      "views": 2297,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac6-3980-74a8-8516-eb17968084b3/podcast.mp3"
+    },
+    {
+      "id": "2610.02054",
+      "title": "UniWAM: Unified World-Action Model",
+      "authors": [
+        "Wenxuan Song",
+        "Jiayi Chen",
+        "Jingbo Wang",
+        "Shuai Zhou",
+        "Xicheng Gong",
+        "Zehua Fan",
+        "Ziyang Zhou",
+        "Junwu E",
+        "Haodong Yan",
+        "Fuhao Li",
+        "Qize Yu",
+        "Xu Huang",
+        "Pengwei Wang",
+        "Wen Chen",
+        "Shunbo Zhou",
+        "Haoang Li"
+      ],
+      "duration": 521.011625,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2610.02054",
+      "published": "2026-10-01",
+      "views": 270,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa9c-bd44-772f-8390-542c91f8a113/podcast.mp3"
     },
     {
       "id": "2610.01742",
@@ -278,7 +485,7 @@
       "cover": "cover.png",
       "path": "2610.01742",
       "published": "2026-10-01",
-      "views": 265,
+      "views": 304,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa87-7c9b-7c8e-a668-69a6352ee755/podcast.mp3"
     },
     {
@@ -305,7 +512,7 @@
       "cover": "cover.png",
       "path": "2610.01509",
       "published": "2026-10-01",
-      "views": 1233,
+      "views": 1380,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa76-85be-74e9-99b8-c19ff057bd0d/podcast.mp3"
     },
     {
@@ -330,7 +537,7 @@
       "cover": "cover.png",
       "path": "2610.01016",
       "published": "2026-10-01",
-      "views": 405,
+      "views": 502,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa51-8cdb-7af5-a96b-e301224c77b3/podcast.mp3"
     },
     {
@@ -357,7 +564,7 @@
       "cover": "cover.png",
       "path": "2609.40305",
       "published": "2026-09-30",
-      "views": 1795,
+      "views": 2013,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f56b-1797-72bd-9269-50ebe7951093/podcast.mp3"
     },
     {
@@ -383,7 +590,7 @@
       "cover": "cover.png",
       "path": "2609.40127",
       "published": "2026-09-30",
-      "views": 254,
+      "views": 278,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f57a-3aa4-71ae-a0f8-64b273e58095/podcast.mp3"
     },
     {
@@ -405,7 +612,7 @@
       "cover": "cover.png",
       "path": "2609.39247",
       "published": "2026-09-30",
-      "views": 392,
+      "views": 423,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f53c-f47f-7927-bd0b-028dc2a97dc9/podcast.mp3"
     },
     {
@@ -438,7 +645,7 @@
       "cover": "cover.png",
       "path": "2609.38163",
       "published": "2026-09-29",
-      "views": 258,
+      "views": 296,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f05a-7a2a-7345-b1d4-b4472ee0d2c4/podcast.mp3"
     },
     {
@@ -469,7 +676,7 @@
       "cover": "cover.png",
       "path": "2609.37725",
       "published": "2026-09-29",
-      "views": 2375,
+      "views": 2613,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f021-099c-733f-926f-dcaf0fedf90f/podcast.mp3"
     },
     {
@@ -494,7 +701,7 @@
       "cover": "cover.png",
       "path": "2609.37053",
       "published": "2026-09-29",
-      "views": 596,
+      "views": 608,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f075-7897-7252-bd15-f54e5b6ecb2a/podcast.mp3"
     },
     {
@@ -517,8 +724,71 @@
       "cover": "cover.png",
       "path": "2609.36720",
       "published": "2026-09-29",
-      "views": 402,
+      "views": 470,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0efe0-db83-720f-b48c-97f3a907e260/podcast.mp3"
+    },
+    {
+      "id": "2609.36529",
+      "title": "Triadic Linear Attention: Three-Dimensional Recurrent States for Long-Context Sequence Modeling",
+      "authors": [
+        "Oliver Sieberling",
+        "Bharat Runwal",
+        "David Jin",
+        "Ryan Chin",
+        "Rameswar Panda",
+        "Yoon Kim"
+      ],
+      "duration": 379.584813,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.36529",
+      "published": "2026-09-29",
+      "views": 487,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0effc-8fbb-7343-a704-b51e57a66f92/podcast.mp3"
+    },
+    {
+      "id": "2609.36054",
+      "title": "What if automating AI R&D triggers an intelligence explosion?",
+      "authors": [
+        "Alan Chan",
+        "Christoph Winter",
+        "Andrew Barto",
+        "Jakub Pachocki",
+        "Geoffrey Hinton",
+        "Eric Horvitz",
+        "Yoshua Bengio",
+        "Dawn Song",
+        "Jack Clark",
+        "Hilary Greaves",
+        "Anton Korinek",
+        "Samuel Hammond",
+        "Thore Graepel",
+        "Ben Bariach",
+        "Philip H. S. Torr",
+        "Sheila A. McIlraith",
+        "Jeff Clune",
+        "Sam Manning",
+        "Girish Sastry",
+        "Tom Davidson",
+        "Daniel Eth",
+        "Sören Mindermann"
+      ],
+      "duration": 481.436125,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Human-AI",
+        "Meta-Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.36054",
+      "published": "2026-09-28",
+      "views": 400,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f0e7-0e77-78da-8736-c507038608f9/podcast.mp3"
     },
     {
       "id": "2609.35748",
@@ -542,7 +812,7 @@
       "cover": "cover.png",
       "path": "2609.35748",
       "published": "2026-09-28",
-      "views": 292,
+      "views": 307,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb3d-c1b3-7bda-a308-e664be80d404/podcast.mp3"
     },
     {
@@ -569,7 +839,7 @@
       "cover": "cover.png",
       "path": "2609.35738",
       "published": "2026-09-28",
-      "views": 1316,
+      "views": 1490,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb86-b9e5-7275-ab78-7992e92dea18/podcast.mp3"
     },
     {
@@ -596,7 +866,7 @@
       "cover": "cover.png",
       "path": "2609.35457",
       "published": "2026-09-28",
-      "views": 328,
+      "views": 364,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb9f-c8ec-7f8f-9267-7e5315f7fd08/podcast.mp3"
     },
     {
@@ -617,7 +887,7 @@
       "cover": "cover.png",
       "path": "2609.35318",
       "published": "2026-09-28",
-      "views": 659,
+      "views": 700,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebdf-531d-781a-beae-adab43a13055/podcast.mp3"
     },
     {
@@ -645,7 +915,7 @@
       "cover": "cover.png",
       "path": "2609.34261",
       "published": "2026-09-28",
-      "views": 372,
+      "views": 385,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb13-a7ad-75be-b54d-e75086eda69b/podcast.mp3"
     },
     {
@@ -667,7 +937,7 @@
       "cover": "cover.png",
       "path": "2609.34085",
       "published": "2026-09-28",
-      "views": 736,
+      "views": 759,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb99-de6d-7aec-8bc6-289a98344fc3/podcast.mp3"
     },
     {
@@ -701,7 +971,7 @@
       "cover": "cover.png",
       "path": "2609.33803",
       "published": "2026-09-27",
-      "views": 251,
+      "views": 252,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb24-cbf2-70a5-a3fb-44456de4b4e9/podcast.mp3"
     },
     {
@@ -2276,6 +2546,23 @@
       "published": "2026-09-10",
       "views": 689,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a08e8d-b5a4-7c70-ac59-1886f62cfe7a/podcast.mp3"
+    },
+    {
+      "id": "2609.rsi-index-autonomous-llm-rd",
+      "title": "RSI-Index: Measuring Autonomous LLM R&D in Frontier Agent Systems",
+      "authors": [
+        "Vals AI Team"
+      ],
+      "duration": 318.694,
+      "license": "User Uploaded",
+      "topics": [
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.rsi-index-autonomous-llm-rd",
+      "published": "2026-09-09",
+      "views": 246,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a08701-22e0-70b2-8404-4aaf8d201892/podcast.mp3"
     },
     {
       "id": "2609.10745",

@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 414.798,
+  "word_match_rate": 0.9064,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a Deep Reinforcement Learning Methods course, today’s lecture is on Q-F-three: Fast Flow R-L with Filtered Q-Gradients. Recent work such as Flow Policy Gradients for Robot Control and Flow Q-Learning reflects a broader effort to combine expressive flow policies with reward-driven improvement. This paper asks how to do that while reusing past experience. A humanoid dance-tracking task makes the stakes concrete: misleading critic guidance can derail learning. I see Noah has a question; go ahead.",
+      "start": 0.0,
+      "end": 33.7
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes improving a flow policy from reward feedback especially difficult?",
+      "start": 34.82,
+      "end": 39.46
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A flow policy gradually transforms noise into a robot action using a learned velocity field. To improve it from reward, an actor can use a critic’s estimate of which actions are valuable. But the critic learns from collected experience, so its advice can be unreliable for actions far from that experience. Q-F-three’s central idea is to keep critic guidance close to actions in the replay buffer, while still training the policy to reproduce those actions.",
+      "start": 40.54,
+      "end": 68.82
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: does Q-F-three change the pretrained policy, or add another policy on top?",
+      "start": 69.8,
+      "end": 75.18
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "It updates the flow policy itself; it does not require a separate learned residual on top of a frozen policy. For each replay action, the method creates a partly noised version along a straight path from noise to action. Flow matching teaches the policy’s velocity field to point back toward the replay action. The method then makes a one-step prediction of the final action and uses the critic’s action gradient to try to improve that prediction.",
+      "start": 76.06,
+      "end": 102.94
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The filter limits how far that critic-guided prediction can move from its replay-conditioned target. It compares the policy’s velocity with the target velocity and clips the difference separately for each action coordinate. If a coordinate reaches the clip boundary, the critic gradient is turned off for that coordinate; flow matching still pulls the velocity toward the replay target. The authors call this a replay-local trust region, not a guarantee that every nearby critic query is accurate.",
+      "start": 103.92,
+      "end": 134.72
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So the clip controls where the critic can steer, but doesn’t certify that the critic is right there?",
+      "start": 135.6,
+      "end": 141.08
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Exactly. The actor update uses one velocity evaluation, avoiding integration through the full flow sampler or backpropagation through that sampler. A key test compares clipped Q-F-three with Direct Q, which removes the velocity clip. On Humanoid version four, Direct Q collapses learning even with an actor learning rate 10 times lower than Q-F-three’s default. The clipped method recovers a usable policy. That supports clipping’s value in this setup, but does not prove critic overestimation is the only cause of collapse.",
+      "start": 141.52,
+      "end": 174.42
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The humanoid results also show what replay-based training can accomplish in practice. A 29-degree-of-freedom Unitree G-one policy trained from scratch in simulation tracked an approximately 3-minute dance motion on hardware without real-world fine-tuning. On the L-A-F-A-N dance-tracking task, Q-F-three reached full-length, 500-step episodes in roughly half an hour. The paper reports about a 10-times wall-clock advantage over F-P-O plus plus for this task, not a universal speedup.",
+      "start": 175.5,
+      "end": 206.52
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "How much of that speed comparison comes from the actor update itself?",
+      "start": 208.04,
+      "end": 211.28
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The experiment does not isolate the actor update’s contribution. Q-F-three is evaluated within the high-throughput Fast T-D-three training recipe, which includes parallel GPU simulation, replay, large batches, and a distributional critic. The comparison uses the same GPU type for this task, and the reported curves average 3 seeds. Also, the one-step prediction is for the training update; deployed humanoid actions use 5 Euler steps to integrate the flow.",
+      "start": 212.2,
+      "end": 245.46
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The paper also tests fine-tuning from demonstrations in simulation. On the ABC-Sim task of throwing bottles into a bin, Q-F-three fine-tunes rank-4 lora adapters in the pretrained action head rather than training the entire vision-language model. Success rises from 91% to 95%. Among successful episodes, mean length falls from 781 to 606 control steps, reported as 22% faster. That duration metric excludes episodes that time out, so it is not a reduction across all attempts.",
+      "start": 246.32,
+      "end": 281.74
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Does this mean the same update is equally established for learning from scratch and refining demonstrations?",
+      "start": 282.84,
+      "end": 287.76
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The paper demonstrates both regimes, but in separate settings: humanoid control for learning from scratch, and manipulation for demonstration-based fine-tuning. That distinction matters when interpreting the evidence. The bottle result is one task with evaluations over 50 episodes, and an episode succeeds only if all 5 bottles enter the bin before timeout. The authors also report full-policy fine-tuning on 3 Robomimic tasks, but the adapter experiment alone should not stand in for every fine-tuning setting.",
+      "start": 289.08,
+      "end": 321.08
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "This work fits alongside several different approaches to combining flow policies and reinforcement learning. Flow Policy Gradients for Robot Control uses on-policy rollouts, while Flow Q-Learning uses a separate one-step policy to improve actions and distills from a flow policy. Q-F-three instead makes a replay-based actor update that retains flow matching as its anchor. The shared question is how to use reward information without losing the useful structure learned by a generative policy.",
+      "start": 321.82,
+      "end": 351.96
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What should researchers test next to know whether this trust-region interpretation holds more broadly?",
+      "start": 351.96,
+      "end": 357.92
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "A natural next step is to test the filter across more tasks, critics, and replay distributions, and to measure when bounded critic queries are still unreliable. The reported results support the method in the tested settings; they do not guarantee stable learning everywhere. Likewise, the 10-times comparison belongs to this dance-tracking setup and its combined training recipe. Keeping those limits clear helps separate the proposed mechanism from the performance of the full system.",
+      "start": 358.82,
+      "end": 386.34
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The central takeaway is that a critic can guide a flow policy without being allowed to pull it arbitrarily far from replay experience. Q-F-three uses that filtered guidance alongside flow matching, and the paper demonstrates the update for both learning from scratch and fine-tuning. Whether the same balance works elsewhere remains an empirical question. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 387.24,
+      "end": 414.798
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "id": "2610.04976",
+  "title": "Priced Guidance: Can Language Models Generate Future Research Ideas?",
+  "authors": [
+    "Kaiyue Wen",
+    "Tengyu Ma",
+    "Percy Liang"
+  ],
+  "abstract": "We evaluate language models' capability to generate novel research ideas through the lens of compression. We aim to lower-bound the potentially tiny probability that a language model generates the essence of a future research idea without any hints. Rather than estimate this probability through expensive repeated sampling, our Priced Guidance framework measures the compression cost: how many additional bits of information are needed to guide the model to recover the target idea. We prove that if the model can recover the target idea with at most K bits of guidance in expectation, then it can generate the idea without any guidance with probability at least $2^{-K}$. In our framework, the language model, called the generator, can pose a sequence of multiple-choice questions and specify a probability distribution over possible answers. A guide, which is a language model with access to the target idea, selects answers. If a selected answer has prior probability p, the generator pays $-\\log_2 p$ bits. The generator aims to produce an idea that matches the essence of the target idea with minimal cumulative cost. This cumulative cost equals, up to an additive constant, the number of bits of information sent by the guide. Using this methodology, we evaluate five generator LLMs (Opus 5, Fable 5.1, GPT-6 Astra, GPT-5.6 Sol, and GLM 5.3) on the core ideas in 87 recent high-quality deep learning papers and we use LLM as judge to determine whether the generated idea matches the target in terms of the central research object and defining mechanism. Fable 5.1 achieves the lowest median compression cost at 69.9 bits, substantially lower than gzip's median of 5,712 bits for losslessly compressing the summary of the target idea. A uniform ensemble of Fable 5.1, Opus 5, and Astra further reduces the median compression cost to 55.8 bits and improves the generation probability lower bound by 18,000 times.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.04976",
+    "arxiv": "https://arxiv.org/abs/2610.04976"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10f19-8ea7-7eba-aa19-b7a26406a915/podcast.mp3",
+  "duration": 428.564,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 39.82,
+      "en": "In a graduate course on computational methods for scientific discovery, today’s lecture is on “Priced Guidance: Can Language Models Generate Future Research Ideas?” Researchers at Stanford ask how we can evaluate whether language models recover the substance of real research contributions. Recent work such as “Measuring the Gap Between Human and LLM Research Ideas” and “Scientific Inspiration Machines Optimized for Novelty” reflects growing interest in machine-generated science. This paper takes a different route, using information and compression to measure how much guidance an idea needs. I see your hand, Noah.",
+      "zh": "在一门关于科学发现计算方法的研讨课上，今天的讲座主题是“有价格的引导：语言模型能生成未来的研究想法吗？”斯坦福的研究人员提出，我们该如何评估语言模型是否真正还原了真实研究贡献的实质。近期像“衡量人类与LLM研究想法之间的差距”和“为新颖性优化的科学灵感机器”这样的工作，反映出人们对机器生成科学的兴趣日益增长。这篇论文走了一条不同的路，用信息和压缩来衡量一个想法需要多少引导。我看到你举手了，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 40.82,
+      "end": 45.06,
+      "en": "Hi Professor, what does “priced guidance” measure that a novelty score does not?",
+      "zh": "教授您好，“有价引导”衡量的东西，跟新颖性评分有什么不同？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.94,
+      "end": 73.66,
+      "en": "A novelty score asks whether an idea seems new, but it may not tell us whether the idea is feasible, useful, or truly aligned with a particular contribution. Priced Guidance instead asks how much information a model needs to reconstruct a target idea. Think of it as a guided route: the more surprising the hints the model needs, the more costly that route is. This measures guided reconstruction, not independent scientific judgment.",
+      "zh": "新颖性分数问的是一个想法看起来新不新，但它未必能告诉我们这个想法是否可行、有用，或者是否真的和某项具体贡献对得上。定价引导问的则是，一个模型要重建出目标想法，需要多少信息。可以把它想成一条有引导的路线：模型需要的提示越出人意料，这条路线就越贵。它衡量的是有引导的重建，而不是独立的科学判断。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 74.66,
+      "end": 102.68,
+      "en": "The protocol separates a generator from a guide. The generator proposes a question, possible answers, and its estimated likelihood for each answer. The guide, who can see the target paper, selects an answer consistent with it. The generator sees only that choice, then continues reasoning or submits an idea. If it selects an answer it considered unlikely, that answer costs more bits, much like needing a longer code to transmit a surprising message.",
+      "zh": "这套协议把生成器和引导者分开。生成器提出一个问题、若干可能答案，以及它对每个答案的估计概率。引导者能看到目标论文，从中选出一个与论文一致的答案。生成器只看到这个选择，然后继续推理或提交一个想法。如果它选中的是一个自己认为不太可能的答案，这个答案就要花更多比特，就像要传一条出人意料的消息就得用更长的编码一样。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.58,
+      "end": 108.72,
+      "en": "Quick question: does a low guidance cost mean the model would independently produce the idea often?",
+      "zh": "快速问一下：引导成本低，是否意味着模型自己也能经常想出这个点子？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 109.66,
+      "end": 134.58,
+      "en": "Not necessarily. The paper proves a lower bound: the unguided chance of an accepted idea is at least a quantity implied by the guided-run cost. That is not an estimate of the exact chance, and it does not show that autonomous research is practical. A judge’s confidence in accepting the submitted idea also contributes to the cost. So the measure depends on the generator, the guide, the scaffold, and the judge together.",
+      "zh": "不一定。论文证明的是一个下界：一个被接受的想法在无引导情况下出现的概率，至少不低于引导运行成本所隐含的某个量。这并不是对确切概率的估计，也不能说明自主研究已经可行。评审对接受所提交想法的信心也会影响成本。所以这个指标取决于生成器、引导模型、脚手架和评审四者的共同作用。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 135.5,
+      "end": 167.56,
+      "en": "The authors assess 87 recent, top-ranked Hugging Face Daily Papers from May to September 2026, alongside a 40-paper development set. They screen for possible memorization and use private summaries to represent each target. Five generators are tested, with a Fable model serving as guide and GPT-5.5 models serving as judges. The scaffold first places a topic in a deep-learning taxonomy, then asks questions about the draft idea and its missing concepts.",
+      "zh": "作者评估了2026年5月至9月间87篇近期排名靠前的Hugging Face Daily Papers，外加一个包含40篇论文的开发集。他们筛查了可能的记忆化情况，并用私有摘要来代表每个目标。测试了五种生成器，由一个Fable模型担任引导，由GPT-5.5模型担任评判。该脚手架首先将主题放入一个深度学习分类体系中，然后针对草稿想法及其缺失概念提出问题。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.56,
+      "end": 172.4,
+      "en": "Can you clarify why the paper has separate Directional and Essence criteria?",
+      "zh": "你能解释一下，这篇论文为什么要把标准分成方向性和本质性两类吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 173.64,
+      "end": 205.92,
+      "en": "Directional asks whether an idea captures the target’s broad research direction, contribution type, and a concrete plausible proposal. Essence is stricter: the idea must also recover the central research object and its defining mechanism or organizing principle. This distinction matters because a model may identify the right problem area without retrieving what makes a particular paper distinctive. Essence submissions receive three independent judge evaluations, and their acceptance rates affect the reported cost.",
+      "zh": "方向性标准问的是，一个想法是否抓住了目标研究的总体方向、贡献类型，以及一个具体且合理的方案。本质标准则更严格：这个想法还必须还原出核心研究对象，以及它最关键的机制或组织原则。这个区分很重要，因为一个模型可能找对了问题领域，却没有抓住某篇论文真正独特的地方。本质标准的提交会接受三位独立评审的评估，而它们的接受率会影响所报告的成本。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 206.92,
+      "end": 242.36,
+      "en": "Under Essence, Fable 5.1 had the lowest individual-model median cost, 69.9 bits; Opus 5 and Astra were close, at 70.4 and 71.6. A uniform ensemble of Fable 5.1, Opus 5, and Astra reduced the median to 55.8 bits. That reduction corresponds to an approximately 18,000-fold improvement in the paper’s probability lower-bound score. Under Directional, Opus 5 led individual models at 47.4 bits, while the ensemble reached 43.2.",
+      "zh": "在Essence标准下，Fable 5.1的单模型中位成本最低，为69.9比特；Opus 5和Astra紧随其后，分别为70.4和71.6。将Fable 5.1、Opus 5和Astra做均匀集成后，中位成本降至55.8比特。这一降幅对应论文概率下界分数约18,000倍的提升。在Directional标准下，Opus 5以47.4比特领跑单模型，而集成后达到43.2。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 243.86,
+      "end": 250.44,
+      "en": "Another question: why does combining models help if they are all generating ideas from similar research fields?",
+      "zh": "还有一个问题：如果这些模型都是从相似的研究领域里产生想法，那把它们组合起来为什么会有帮助呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 251.44,
+      "end": 280.4,
+      "en": "The authors suggest that independent runs and different generators can explore complementary paths through the question scaffold. If one model misses a concept, another may surface it with less costly guidance. The scaffold also permits recovery by returning to an earlier question and trying another route. But the ensemble result is not proof that model diversity alone caused the improvement; costs reflect the whole experimental setup, and the fixed budgets make reported costs upper bounds.",
+      "zh": "作者认为，独立运行和不同的生成器可以通过问题脚手架探索互补的路径。如果一个模型漏掉了某个概念，另一个模型可能会以更低的引导成本把它呈现出来。脚手架还允许通过回到之前的问题并尝试另一条路径来进行恢复。但集成结果并不能证明模型多样性本身带来了改进；成本反映的是整个实验设置，而固定预算使得报告的成本只是上限。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 281.38,
+      "end": 285.16,
+      "en": "Hold on, if the guide knows the target, how much of the result belongs to the generator?",
+      "zh": "等等，如果引导者知道目标，那结果有多少是生成器自己的功劳？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 286.2,
+      "end": 316.54,
+      "en": "That is a central limitation. A capable guide can steer the generator toward a paper’s idea, so successful recovery does not show that the model independently knows which hypotheses are true, useful, or feasible. The study also relies on model-generated summaries and language-model judges, which could misunderstand a contribution or reward vague wording. The authors present the benchmark as one component of research capability, not as a complete test of automated discovery.",
+      "zh": "这是一个核心局限。一个能力强的引导者可以把生成器引向论文的核心思想，所以成功还原并不能说明模型自己就知道哪些假设是真的、有用的或可行的。这项研究还依赖模型生成的摘要和语言模型评审，它们可能会误解某项贡献，或者奖励含糊的措辞。作者把这个基准定位为研究能力的一个组成部分，而不是对自动化发现的完整测试。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 317.48,
+      "end": 354.08,
+      "en": "The paper also compares recovering meaning with reproducing text. For GLM 5.3, the median Essence cost was 102.4 bits, versus 1,147.1 bits to encode a target summary verbatim with that model. This illustrates why idea recovery should not be treated as exact-text compression. The comparison with gzip’s 5,712 bits is less direct because both the compressor and the reconstruction criterion differ. The useful shift is toward measuring the information needed for semantic reconstruction.",
+      "zh": "这篇论文还把恢复含义和复现文本做了对比。对GLM 5.3来说，恢复要点的成本中位数是102.4比特，而用该模型逐字编码一段目标摘要需要1,147.1比特。这说明为什么想法恢复不该被当成精确文本压缩。和gzip的5,712比特相比就没那么直接，因为压缩器和重建标准都不一样。真正有用的转变，是去衡量语义重建所需的信息量。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 355.3,
+      "end": 394.88,
+      "en": "This connects information-theoretic evaluation to research-idea systems such as Scientific Inspiration Machines Optimized for Novelty, which focuses on generating directions, and to studies comparing human and language-model ideas. Priced Guidance adds a complementary question: what assistance makes a model recover a known contribution? Future studies could vary guides, scaffolds, and judges, then test whether lower costs predict stronger independent hypothesis generation. For now, the measure supports careful comparisons of reconstruction capability, not claims that a model can conduct science alone.",
+      "zh": "这就把信息论的评估和研究想法系统连了起来，比如以生成方向为核心的“为新颖性优化的科学灵感机器”，以及比较人类与语言模型想法的研究。定价引导补充了一个互补的问题：什么样的辅助能让模型复现一项已知贡献？未来的研究可以改变引导、支架和评判器，再检验更低的成本是否能预测更强的独立假设生成能力。就目前而言，这个指标支持对重建能力做审慎比较，而不是声称模型能独自开展科学研究。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 395.78,
+      "end": 428.564,
+      "en": "The central takeaway is that a research idea can be evaluated as a meaning to recover, with the required guidance treated as information rather than as a simple novelty score. The distinction between direction and essence makes the target of evaluation clearer, while the guide-and-judge dependence sets important limits on interpretation. A low cost is evidence of efficient guided reconstruction, not proof of autonomous discovery. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，一个研究想法可以被当作一种待恢复的含义来评估，而所需的引导则被当作信息，而不是简单的新颖性分数。方向与本质之间的区分让评估目标更清晰，而引导和评判的依赖性则给解读划定了重要边界。低成本只能说明在引导下能高效重建，并不能证明模型可以自主发现。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wen2026pricedguidancelanguagemodels,\n      title={Priced Guidance: Can Language Models Generate Future Research Ideas?}, \n      author={Kaiyue Wen and Tengyu Ma and Percy Liang},\n      year={2026},\n      eprint={2610.04976},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.04976}, \n}",
+  "topics": [
+    "Agents",
+    "Ensemble Methods",
+    "Generative Models"
+  ],
+  "peaks": [
+    0.963,
+    0.783,
+    0.696,
+    0.743,
+    0.648,
+    0.46,
+    0.393,
+    0.751,
+    0.835,
+    0.395,
+    0.421,
+    0.254,
+    0.615,
+    0.738,
+    0.587,
+    0.444,
+    0.61,
+    0.697,
+    0.814,
+    0.567,
+    0.588,
+    0.62,
+    1.0,
+    0.882,
+    0.961,
+    0.903,
+    0.599,
+    0.591,
+    0.681,
+    0.658,
+    0.463,
+    0.439,
+    0.486,
+    0.238,
+    0.455,
+    0.437,
+    0.261,
+    0.338,
+    0.305,
+    0.334,
+    0.2,
+    0.912,
+    0.921,
+    0.83,
+    0.665,
+    0.782,
+    0.547,
+    0.979,
+    0.72,
+    0.506,
+    0.525,
+    0.453,
+    0.737,
+    0.827,
+    0.708,
+    0.516,
+    0.526,
+    0.438,
+    0.399,
+    0.716,
+    0.532,
+    0.784,
+    0.583,
+    0.591,
+    0.604,
+    0.512,
+    0.953,
+    0.704,
+    0.566,
+    0.606,
+    0.481,
+    0.353
+  ],
+  "published": "2026-10-04",
+  "views": 333,
+  "license": "CC BY"
+}

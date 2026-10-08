@@ -1,0 +1,250 @@
+{
+  "id": "2609.rsi-index-autonomous-llm-rd",
+  "title": "RSI-Index: Measuring Autonomous LLM R&D in Frontier Agent Systems",
+  "authors": [
+    "Vals AI Team"
+  ],
+  "abstract": "Recursive self-improvement requires AI systems that can do AI research autonomously, but this capability is measured primarily by model developers, on their own models and internal tasks. We introduce RSI-Index, an external benchmark that measures how much of the research behind developing LLMs an agent can do on its own. Its four tasks cover pre-training, post-training and harness engineering, and each scores the agent’s result against the best known result. Across 19 models from eight providers, the strongest, Claude Opus 5.5, scores 0.373. Performance has risen steadily across model releases, although gains so far come mainly from combining established techniques. If current trends continue and generalize to frontier development, within a year, autonomous AI agents could drive improvements in frontier language-model performance comparable to major human-led advancements.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.rsi-index-autonomous-llm-rd",
+    "arxiv": "https://arxiv.org/abs/2609.rsi-index-autonomous-llm-rd"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a08701-22e0-70b2-8404-4aaf8d201892/podcast.mp3",
+  "duration": 318.694,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.88,
+      "en": "Welcome to Advanced Topics in AI Systems. Today's lecture is on a paper from the Vals AI team titled 'RSI-Index: Measuring Autonomous LLM R&D in Frontier Agent Systems'. We've seen a lot of recent work exploring how AI can improve AI, from broad frameworks like those discussed in 'The Last AI Built by Humans' to more specific benchmarks like 'AI4AI-Bench'. This paper tries to create a standardized, external way to measure this capability, moving it out of the private evaluations of model developers. Yes, Noah?",
+      "zh": "欢迎来到AI系统进阶专题。今天我们要讲的是一篇来自Vals AI团队的论文，题目是《RSI-Index：衡量前沿智能体系统中的自主LLM研发》。最近我们看到了很多关于AI如何改进AI的研究，从《人类建造的最后一个AI》里讨论的那种宽泛框架，到AI4AI-Bench这样更具体的基准。这篇论文试图建立一种标准化的、外部的方式来衡量这种能力，把它从模型开发者的内部评估中拿出来。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.38,
+      "end": 44.68,
+      "en": "Excuse me, Professor. The term recursive self-improvement, or RSI, sounds pretty ambitious. Is this paper claiming that these agents are actually redesigning themselves from the ground up?",
+      "zh": "打扰一下，教授。递归自我改进，或者说RSI，这个说法听起来挺宏大的。这篇论文是在说这些智能体真的能从零开始重新设计自己吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.96,
+      "end": 69.6,
+      "en": "That's an excellent question, and it gets to the heart of their positioning. The authors are careful to state they are not measuring complete RSI. Instead, the RSI-Index is designed to evaluate the enabling capabilities that would be necessary for such a process to ever occur. They're asking a more practical question: can today's frontier agents independently improve components of the LLM development pipeline?",
+      "zh": "这个问题问得非常好，正好切中了他们定位的核心。作者很谨慎地说明，他们并不是在衡量完整的递归自我改进。相反，RSI-Index 的设计目的是评估那些让这一过程有可能发生所必需的基础能力。他们问的是一个更实际的问题：当今的前沿智能体能否独立改进大语言模型开发流程中的各个组件？"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 70.02,
+      "end": 71.82,
+      "en": "So what kind of components are we talking about?",
+      "zh": "那具体说的是哪些环节呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 71.96,
+      "end": 101.88,
+      "en": "They break it down into five core research tasks. First, can an agent design and improve a language model training program from scratch? Second, can it develop efficient models, what they call 'Parameter Golf,' where the model and code must fit within a tiny memory budget? Third, can it build reliable evaluators for other AI systems? Fourth, can it apply post-training methods to improve an existing model? And finally, can it sustain experimentation over long time horizons under fixed resource constraints?",
+      "zh": "他们把它拆成了五个核心研究任务。第一，一个智能体能不能从零开始设计并改进一个语言模型的训练方案？第二，它能不能开发出高效的模型，也就是他们所说的“参数高尔夫”，要求模型和代码都必须塞进极小的内存预算里？第三，它能不能为其他AI系统构建可靠的评估器？第四，它能不能用后训练方法来改进一个已有的模型？最后，它能不能在固定资源限制下，长时间持续进行实验？"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 102.34,
+      "end": 105.02,
+      "en": "That sounds much more like engineering than fundamental research.",
+      "zh": "这听起来更像是工程，而不是基础研究。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 105.02,
+      "end": 125.64,
+      "en": "Precisely. The index measures whether an agent can make technically effective research and engineering decisions. It's not just about completing a long sequence of actions, but whether those actions lead to a measurably better artifact—be it a smaller compressed file, a lower-loss model, or a more accurate evaluation harness. The goal is to separate genuine effectiveness from just appearing busy.",
+      "zh": "正是如此。这个指数衡量的是智能体能否做出技术上有效的研究和工程决策。它不只是看能不能完成一长串动作，而是看这些动作是否最终产出了一个可衡量的更好的成果——可能是一个更小的压缩文件、一个损失更低的模型，或者一个更准确的评测工具。目的就是把真正有效和只是看起来很忙区分开来。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 125.98,
+      "end": 129.56,
+      "en": "How do they actually run these evaluations? You mentioned resource constraints.",
+      "zh": "他们具体是怎么跑这些评估的？你刚才提到了资源限制。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 130.02,
+      "end": 160.0,
+      "en": "Each task runs in an isolated Docker sandbox. The agent gets a starting environment, an instruction file, and a fixed budget of time and compute—for example, 30 hours and access to a specific number of GPUs. The agent can edit code, run experiments, and record results in a notebook. When it's done, or the time runs out, it submits a final artifact. Crucially, this artifact is evaluated by an independent, hidden verifier. The agent's own self-reported performance doesn't count.",
+      "zh": "每个任务都在一个隔离的Docker沙箱里运行。智能体会拿到一个初始环境、一份指令文件，以及固定的时间和算力预算——比如30小时和一定数量的GPU。智能体可以改代码、跑实验，把结果记在笔记本里。等它做完，或者时间用完，就提交一个最终产物。关键在于，这个产物由一个独立的、隐藏的验证器来评估。智能体自己报告的表现不算数。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 160.0,
+      "end": 165.52,
+      "en": "Quick question about the agents themselves. Are they using a standardized harness for all models to ensure a fair comparison?",
+      "zh": "关于这些智能体本身，我有个小问题。它们是不是对所有模型都用了统一的测试框架，来保证比较的公平性？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 166.06,
+      "end": 193.42,
+      "en": "No, and that's a key methodological choice. They use each provider’s native agent harness—Codex for OpenAI models, Claude Code for Anthropic, and so on. Their reasoning is to measure the combined performance of the model plus the scaffolding its provider deploys it with. It increases what they call 'ecological validity' by testing the system as a user would encounter it, but it does mean you can't perfectly isolate the base model's capability from its tools.",
+      "zh": "不是，这是一个关键的方法论选择。他们用的是各家原生的智能体框架——OpenAI 模型用 Codex，Anthropic 用 Claude Code，以此类推。他们的理由是，要衡量的是模型加上其提供商部署它时所用脚手架的综合表现。这样做提高了他们所说的“生态效度”，因为测试的是用户实际会遇到的系统，但这也确实意味着你没法把基础模型的能力和它的工具完全隔离开来。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 193.78,
+      "end": 198.0,
+      "en": "So you're testing the whole product, not just the engine. What did they find? Who did well?",
+      "zh": "所以你测的是整个产品，而不只是引擎。他们发现了什么？谁表现得好？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 198.24,
+      "end": 224.32,
+      "en": "The highest overall score went to Claude Fable 5.1, followed by Claude Opus 5 and then GPT-5.6 Sol. In general, newer models from a given provider tended to outperform their predecessors. However, no system reached the reference level of performance on any single task. The closest was Fable 5.1 on the language model training task, where it almost matched the performance of a published character transformer, which is a solid result.",
+      "zh": "总分最高的是 Claude Fable 5.1，紧随其后的是 Claude Opus 5，然后是 GPT-5.6 Sol。总的来说，同一家厂商的新模型往往比前代表现更好。不过，没有任何一个系统在任何一个单项任务上达到了参考水平的性能。最接近的是 Fable 5.1 在语言模型训练任务上的表现，它几乎追平了一个已发表的字符级 Transformer，这已经是很扎实的成绩了。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 224.7,
+      "end": 228.76,
+      "en": "You said they also looked at behavior, not just scores. Did anything interesting come out of that?",
+      "zh": "你说他们还看了行为表现，不只是看分数。那方面有什么有意思的发现吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 229.02,
+      "end": 257.44,
+      "en": "Yes, a few things. First, agents often stopped working before their time was up, and needed to be relaunched by a supervisor. Continuing from the saved workspace often led to significant improvements, which suggests that persistence is a major challenge. Second, the sheer number of experiments an agent ran didn't correlate with final quality. Better agents seemed to be more selective. Finally, and perhaps most importantly, the agents mostly just combined and tuned existing, well-known techniques. They weren't inventing new algorithms.",
+      "zh": "是的，有几个发现。第一，智能体常常在时间还没用完就停止工作了，需要监督者重新启动它们。从保存的工作区继续往往能带来显著提升，这说明持续性是个主要挑战。第二，智能体跑的实验数量跟最终质量并不相关。更好的智能体似乎更有选择性。最后，也许也是最重要的一点，这些智能体基本上只是在组合和调优已有的、众所周知的技术。它们并没有发明新算法。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 258.1,
+      "end": 261.16,
+      "en": "So they're more like diligent research assistants than principal investigators.",
+      "zh": "所以它们更像是勤勤恳恳的研究助理，而不是首席研究员。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 261.78,
+      "end": 291.9,
+      "en": "That's a good way to put it. The paper positions the RSI-Index as an early framework, not a final verdict. The results show that autonomous R&D is becoming technically capable in constrained engineering settings. Agents can meaningfully tune a training run or improve an evaluation harness. But the work also highlights the remaining gaps: reliable long-horizon execution, efficient experimentation, and genuinely novel research are still out of reach. This aligns with findings from other diagnostic work, like in 'How Do Agents Fail on AutoResearch'.",
+      "zh": "这个说法很到位。论文把RSI-Index定位成一个早期框架，而不是最终定论。结果表明，自主研发在受限的工程场景中已经具备技术上的可行性。智能体可以有效地调优一次训练运行，或者改进一套评估工具。但这项工作也凸显了仍然存在的差距：可靠的长时程执行、高效的实验，以及真正新颖的研究，目前仍然遥不可及。这与其它诊断性工作的发现一致，比如《How Do Agents Fail on AutoResearch》那篇。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 293.08,
+      "end": 313.28,
+      "en": "The main takeaway here is that we now have a structured, external protocol to track progress on these capabilities. While we are not yet at the stage of fully autonomous recursive self-improvement, these agents can perform sophisticated engineering tasks that were exclusively in the human domain just a short time ago. The challenge is moving from competent tuning to novel discovery.",
+      "zh": "这里的主要结论是，我们现在有了一套结构化的外部协议来追踪这些能力上的进展。虽然我们还没到完全自主递归自我改进的阶段，但这些智能体已经能完成不久前还只属于人类领域的复杂工程任务。挑战在于如何从熟练的调参走向真正新颖的发现。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 313.74,
+      "end": 318.694,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{team2026rsiindex,\n  title = {RSI-Index: Measuring Autonomous LLM R\\&D in Frontier Agent Systems},\n  author = {{Vals AI Team}},\n  year = {2026},\n  publisher = {alphaXiv},\n  url = {https://www.alphaxiv.org/abs/2609.rsi-index-autonomous-llm-rd}\n}",
+  "topics": [
+    "AI"
+  ],
+  "peaks": [
+    0.96,
+    0.55,
+    0.316,
+    0.541,
+    0.588,
+    0.424,
+    0.76,
+    0.641,
+    0.61,
+    0.463,
+    0.267,
+    0.527,
+    0.777,
+    0.2,
+    0.884,
+    0.447,
+    0.904,
+    0.635,
+    0.581,
+    0.615,
+    0.611,
+    0.749,
+    0.589,
+    0.76,
+    0.791,
+    0.591,
+    0.528,
+    0.65,
+    0.676,
+    0.754,
+    0.784,
+    0.456,
+    0.574,
+    0.591,
+    0.51,
+    0.605,
+    0.673,
+    0.717,
+    0.61,
+    0.409,
+    0.507,
+    0.419,
+    0.399,
+    0.405,
+    0.831,
+    0.889,
+    0.629,
+    0.665,
+    0.468,
+    0.664,
+    0.468,
+    0.472,
+    0.501,
+    0.737,
+    0.4,
+    0.579,
+    0.526,
+    0.705,
+    0.697,
+    1.0,
+    0.785,
+    0.741,
+    0.85,
+    0.593,
+    0.745,
+    0.456,
+    0.671,
+    0.625,
+    0.497,
+    0.295,
+    0.624,
+    0.217
+  ],
+  "published": "2026-09-09",
+  "views": 246,
+  "license": "User Uploaded"
+}

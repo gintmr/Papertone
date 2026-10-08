@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 502.7,
+  "word_match_rate": 0.9301,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical graduate course, Computer Vision and Neural Networks, today’s lecture is on Level-of-Token Diffusion. Recent work such as Foveated Diffusion and DDiT explores ways to reduce the cost of diffusion transformers by adapting computation across space. This paper, from researchers at Stanford and Google, takes a related but distinct route: it assigns tokens according to an explicit spatial layout. As image and video generation scales up, deciding where computation is needed may matter as much as making each model operation faster. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.96
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does the layout simply tell the model where to place objects?",
+      "start": 39.12,
+      "end": 42.62
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It can help guide placement, but it also determines how much spatial detail the model can represent in each region. A face might receive small patches, while a smooth sky receives larger ones. The central idea is to use fewer transformer tokens without reducing the final latent grid uniformly. That distinction matters because uniform downsampling saves computation everywhere, including places where fine structure is important. LoT links spatial control and computational allocation in one representation.",
+      "start": 43.58,
+      "end": 76.16
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "A standard diffusion transformer, or D-I-T, divides an image latent into equal-sized patches. Level-of-Token Diffusion instead partitions the grid into rectangular regions of different sizes. Each region becomes one token, so larger regions reduce the sequence length. In video, the method varies patch size across space while keeping each patch’s temporal extent at one frame. The layout therefore makes a concrete tradeoff: fewer tokens lower the processing burden, while finer regions preserve more capacity for detail.",
+      "start": 77.4,
+      "end": 111.5
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the layout is effectively a map of where the model gets more representational capacity?",
+      "start": 111.5,
+      "end": 116.88
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The layout may come from a semantic mask, object boxes, texture variation, depth of field, or a custom plan. It can be supplied by a person or proposed by an agent. This turns token allocation into an interpretable control: the model is told not only what content to generate, but also where fine representation is worth spending. The approach is most useful when detail needs vary across the scene; uniformly intricate textures leave less room to save computation.",
+      "start": 117.94,
+      "end": 148.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The technical challenge is that a pretrained variational autoencoder, or V-A-E, expects a dense latent grid, whereas the transformer now processes fewer tokens. LoT addresses this with patch-wise asymmetric flow prediction. For each patch size, the authors fit a projection basis that maps dense latent patches into the transformer’s token dimensions. The transformer predicts a velocity for each reduced token, and an analytic recovery step restores a full-resolution velocity field, including residual components not represented by the compact token.",
+      "start": 149.98,
+      "end": 185.22
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does that recovery require the transformer to predict every fine-scale component after all?",
+      "start": 186.14,
+      "end": 192.04
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. The transformer processes the compact representation, while the analytic step uses the patch’s residual information to reconstruct dense flow. That distinction is what lets the model keep a full-resolution latent for denoising and decoding. The method also rescales clean data by patch extent before adding noise, rather than giving tokens different time values. This preserves shared timestep conditioning. Extent-specific input and output projections, plus learned patch-shape embeddings, help the pretrained transformer handle variable-sized regions.",
+      "start": 192.76,
+      "end": 225.7
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The authors fine-tune pretrained models rather than training a new generator from scratch. They adapt FLUX.2-klein for images and Wan two point one for text-to-video, using lora on selected transformer projections while fully tuning the extent-specific heads and patch-size embeddings. Training layouts mix semantic masks, boxes, texture estimates, and depth-of-field cues. In practical terms, this means an existing generation system could accept a spatial detail plan, then spend its token budget unevenly while still producing a dense final image or video.",
+      "start": 226.66,
+      "end": 265.14
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How much of the reported speedup comes from model computation, and what is left out?",
+      "start": 266.1,
+      "end": 270.44
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Image experiments report speedups from 1.32 to 2.04 times, while video speedups range from 1.58 to 3.53 times, depending on the token budget. Timing includes sampling and V-A-E decoding, but excludes layout construction and model loading. At matched budgets, LoT generally compares favorably with tested token-reduction baselines on image preference, fidelity, and perceptual measures. For video, it leads the compressed methods on reported aesthetic and imaging-quality scores, while remaining competitive rather than best on every other metric.",
+      "start": 270.44,
+      "end": 308.98
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The results also illustrate a control benefit: when prompted subjects should occupy regions assigned fine tokens, placement within those regions improves over the corresponding dense models. However, subject-detection rates are similar and slightly lower for the smaller LoT image model. Ablations show that patch-shape embeddings and analytic flow recovery matter, especially under aggressive compression. This is a useful reminder that variable token size is not just a scheduling trick; the model needs explicit mechanisms to interpret each token’s spatial support.",
+      "start": 309.9,
+      "end": 343.7
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Could layouts derived from references make the evaluation more favorable than unconstrained use would be?",
+      "start": 344.6,
+      "end": 349.96
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That is an important limitation. Image layouts are derived from held-out reference images, and video layouts from generated reference videos, so these tests do not establish how reliably layouts can be produced in an open-ended workflow. The video evaluation also uses 200 prompts and automated metrics. Moreover, dense details such as grass, fabric, or musical notation may need fine tokens throughout, reducing savings or harming fidelity if the budget is too aggressive. Layout quality and scene structure therefore constrain the benefit.",
+      "start": 349.96,
+      "end": 385.34
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "In the broader landscape, work such as Token-wise Feature Caching reduces repeated computation by reusing features, while Foveated Diffusion also allocates spatial effort unevenly. LoT’s particular contribution is to make a prior layout determine variable-sized tokens while preserving dense flow prediction through a pretrained model. That shifts the design question from simply asking how to shorten generation, toward asking where a shorter representation is safe. The idea connects level-of-detail rendering and compression to the internal computation of generative transformers.",
+      "start": 386.3,
+      "end": 421.38
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "What would you want future work to test before treating this as a general-purpose control interface?",
+      "start": 422.32,
+      "end": 426.96
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "A next step is to measure the full cost and reliability of constructing layouts in unconstrained settings, including whether an agent can estimate detail needs without access to a reference. Researchers could also test transfer across model families, broader video prompts, and scenes with fine structure everywhere. LoT does not establish that every region can be coarsened safely; instead, it offers a framework for testing that assumption and allocating computation when it holds. Its practical value will depend on matching the layout to the scene.",
+      "start": 427.92,
+      "end": 461.02
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The main takeaway is that efficiency and spatial control can be treated as two sides of the same decision: which regions deserve fine tokens, and which can tolerate coarser ones? LoT shows one way to make that decision explicit while retaining dense outputs from pretrained diffusion models. Its reported gains are meaningful but conditional on suitable layouts and scenes with uneven detail demands. Remember the core principle: a smaller token sequence can still support a detailed result when computation is concentrated where the image needs it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 461.02,
+      "end": 502.7
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 503.431,
+  "word_match_rate": 0.9404,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "For our graduate seminar in Robot Learning and World Models, today's lecture is on “OpenWAM: An Open Framework for Composable World-Action Models.” Researchers at Stanford study a practical challenge: a robot must not only predict how a scene could change, but also turn that prediction into executable movement. Recent work such as “Causal World Modeling for Robot Control” and “Unified World Models” reflects a trend toward joining visual prediction and action. OpenWAM asks how to compare those designs systematically.",
+      "start": 0.0,
+      "end": 34.24
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "The paper argues that comparisons are difficult when models differ in video backbones, training data, interaction patterns, and inference procedures all at once. It also points out that demonstrations show only the actions a person chose, leaving many possible action–outcome relationships unseen. OpenWAM, by Stanford authors including Heng Yu and David D. Yuan, tests alternative ways to connect imagined futures with movement. Yes, Noah?",
+      "start": 35.46,
+      "end": 63.34
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say “connect imagined futures with movement,” what does the framework actually let researchers change?",
+      "start": 64.48,
+      "end": 70.98
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "It provides a shared starting point, then varies how video and action are generated. One route predicts a future video and then actions; another predicts actions and then video. A joint route generates both while allowing their future representations to interact, while a decoupled route generates both without that future cross-talk. Holding much of the setup in common makes it easier to ask whether generation order and information exchange affect control.",
+      "start": 71.9,
+      "end": 100.52
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: are these all one model, or can separate models be connected too?",
+      "start": 101.44,
+      "end": 105.19
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Both are possible. The paper also studies explicit interfaces between separately trained components. An inverse dynamics model, or I-D-M, receives a proposed visual future and predicts actions that could produce it. A forward dynamics model, or F-D-M, receives actions and predicts their visual consequences. Think of these as two translators: one turns a destination into a route, and the other turns a route into an expected destination.",
+      "start": 106.45,
+      "end": 135.49
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The shared architecture uses video and action experts that retain their own modality-specific processing while exchanging information through attention. Before that stage, the video model is adapted with causal robot-video training, without action labels. Causal here means each future chunk can use current and previous observations and chunks already generated, but it cannot peek at later chunks. That restriction makes the model’s predictions usable in a sequential control process.",
+      "start": 136.51,
+      "end": 166.89
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify what the separate inverse model is allowed to observe?",
+      "start": 167.87,
+      "end": 171.25
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The local-context I-D-M uses the current camera observation, the robot’s sensed body state, called proprioception, and the supplied future video. It does not receive language or history from before the current observation. The authors note that this limited view is adequate only when the information needed for an action is locally observable. So local context is a testable design choice, not a guarantee that every task can be solved from one moment.",
+      "start": 172.11,
+      "end": 200.47
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The central transfer experiment asks whether a frozen action component can still work when paired with a video predictor adapted to a new task. To broaden its experience, the team restores selected simulator states and executes alternative future action sequences from those same starting conditions. This creates counterfactual transitions: examples of what else could have happened. The model learns from individual transition records, rather than from a special loss that directly compares paired branches.",
+      "start": 201.39,
+      "end": 233.23
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So does the frozen component transfer the whole task without new task-specific training?",
+      "start": 233.23,
+      "end": 238.57
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No, and that distinction matters. For each target, the video predictor is tuned using demonstrations of that target, including action labels; the source-trained I-D-M stays frozen. Across four held-out simulation tasks, the local-context model trained on mixed counterfactual and demonstration data reaches 84% mean closed-loop success. The matching full-context model reaches 47%, while local-context training on demonstrations alone reaches 21.5%. This shows component reuse after visual-task adaptation, not zero-shot transfer of the entire system.",
+      "start": 239.63,
+      "end": 278.73
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The comparison suggests that both conditioning scope and the breadth of transition experience matter, but it does not isolate either factor as the sole cause. A local-context model trained only on counterfactual transitions reaches a similar 84.5%. The mixed data includes 60% counterfactual transitions and 40% demonstrations. The video predictor still adapts to each target, so the result is best read as evidence that broader transition experience can support a reusable action-grounding component in these tested settings.",
+      "start": 279.61,
+      "end": 313.47
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "What does the forward model add beyond that transfer result?",
+      "start": 314.45,
+      "end": 317.35
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "It tests whether the same broader experience helps predict action-dependent visual outcomes. On 2,560 counterfactual futures, the counterfactual-only forward model lowers RGB prediction M-S-E from 14.35 to 9.40 times 10 to the minus 3. Its accuracy in identifying the matching outcome among 16 futures from the same starting state rises from 21.1% to 71.3%. These are controlled, short-horizon visual-prediction results, not evidence of long-horizon planning or transfer to physical-robot dynamics.",
+      "start": 317.35,
+      "end": 357.13
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "There is also a policy result worth interpreting carefully. On a long-horizon simulation suite, success rises from 68.4% with the original video initialization to 97.8% with a robot-video-pretrained causal backbone, while the policy architecture and downstream setup are held fixed. But the comparison combines robot-video pretraining with causal adaptation. It cannot identify the contribution of either factor by itself, so it supports the combined setup rather than a single-cause explanation.",
+      "start": 358.25,
+      "end": 393.19
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this relate to UniPi, which also connects generated video and actions?",
+      "start": 394.11,
+      "end": 398.21
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "UniPi is a useful conceptual precedent: it plans with text-conditioned generated video and uses a separately trained, task-specific inverse dynamics model to extract actions. OpenWAM’s distinction is the question it tests, not the invention of that interface. It asks whether a frozen I-D-M trained on source-task transitions can ground futures from a separately task-adapted video model, and whether alternative outcomes help. The paper does not report a head-to-head comparison with UniPi.",
+      "start": 399.81,
+      "end": 430.79
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "Could local-context models become the default, then, or is the evidence too narrow?",
+      "start": 432.33,
+      "end": 436.55
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The evidence is too narrow to make local context a universal default. Some tasks may require language, longer history, or information that is not visible in the current observation. The study establishes composability primarily in simulation, and the forward-model evaluation is local and short-horizon. Still, it shifts attention toward a useful experimental question: which interfaces can be replaced independently, and what kinds of transition data make those interfaces robust?",
+      "start": 437.45,
+      "end": 468.11
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The takeaway is that a predicted future is not yet a robot policy: someone or something must ground that future in executable actions. OpenWAM makes the routes between video and action easier to compare, and its results suggest that seeing more possible outcomes can help a frozen action component remain useful after the visual predictor adapts. The boundary is equally important: this is not whole-system zero-shot learning or demonstrated physical-robot transfer. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 469.11,
+      "end": 503.431
+    }
+  ]
+}

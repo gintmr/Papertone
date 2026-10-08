@@ -1,0 +1,299 @@
+{
+  "id": "2610.a-call-for-an-open-tokenizer-benchmark",
+  "title": "A Call for an Open Tokenizer Benchmark",
+  "authors": [
+    "Marco Cognetta"
+  ],
+  "abstract": "Tokenizer research lags behind other areas of the language modeling stack due in part to the difficulty of: 1) comparing across models with different tokenizers, 2) quickly and accurately measuring the impact of a tokenizer change, 3) a lack of good predictive metrics and scaling laws for tokenizers, and 4) a lack of standardized public benchmarks. Here, we hope to start the discussion and formalization of tokenization-targeting language modeling community benchmarks `a la the NanoGPT Speed/Slowrun.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.a-call-for-an-open-tokenizer-benchmark",
+    "arxiv": "https://arxiv.org/abs/2610.a-call-for-an-open-tokenizer-benchmark"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a112ea-7959-7c50-8009-c418115425f7/podcast.mp3",
+  "duration": 480.313,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.48,
+      "en": "In our graduate seminar on Language Model Evaluation, today's lecture is on A Call for an Open Tokenizer Benchmark. Recent work such as Tokenization: A Survey for Modern NLP and Tokenization Is More Than Compression treats tokenization as a consequential design choice, not just preprocessing. This proposal comes from Marco Cognetta, affiliated with Google and The Tokenization Discord. The field is asking how to compare models more fairly; this paper argues we also need a shared way to compare the tokenizers themselves. Yes, Noah?",
+      "zh": "在我们关于语言模型评估的研究生研讨课上，今天的讲座主题是《呼吁建立开放的tokenizer基准》。近期的工作，比如《Tokenization：现代NLP综述》和《Tokenization不只是压缩》，都把tokenization看作一个重要的设计选择，而不只是预处理。这个提议来自Marco Cognetta，他隶属于谷歌和Tokenization Discord。这个领域正在追问如何更公平地比较模型；这篇论文主张，我们也需要一种共享的方式来比较tokenizer本身。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.58,
+      "end": 41.84,
+      "en": "Hi Professor, why is comparing tokenizers so difficult if we can just compare model perplexity?",
+      "zh": "教授您好，如果我们直接比较模型的困惑度，为什么比较tokenizer还会这么难呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.0,
+      "end": 71.94,
+      "en": "Because ordinary perplexity counts predictions over a model's tokens, and different tokenizers divide the same text differently. A tokenizer might represent a phrase with a few large units, while another uses many smaller ones. Their token-level scores therefore do not share a straightforward basis. The paper proposes a benchmark to make comparisons more controlled and interpretable, while being clear that it is a plan for community infrastructure—not a report of completed experiments.",
+      "zh": "因为普通的困惑度是基于模型 token 来统计预测的，而不同 tokenizer 会把同一段文本切得不一样。一个 tokenizer 可能用几个大的单元来表示一个短语，另一个则用很多更小的单元。所以它们的 token 级分数并没有一个直接可比的基准。这篇论文提出了一个基准，让比较更可控、更好解释，同时也明确说明这是一个面向社区基础设施的计划，而不是已经完成的实验报告。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 73.16,
+      "end": 77.58,
+      "en": "So the paper proposes rules for a benchmark, but doesn't test tokenizers in it yet?",
+      "zh": "所以这篇论文只是提出了一套基准的规则，但还没有在里面测试分词器？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 78.4,
+      "end": 110.7,
+      "en": "Exactly. The proposal starts from a basic challenge: tokenizer quality cannot be isolated if submissions also change architecture, optimization, or data exposure. It suggests a base modeling track with a small set of model sizes and fixed architectural choices. Participants could change the vocabulary dimensions of the embedding and output layers, while other properties, such as embedding dimension, remain fixed. That resembles a controlled experiment: vary the factor under study and hold other conditions steady.",
+      "zh": "没错。这个提案源于一个基本挑战：如果提交的方案同时改变了架构、优化方式或数据暴露，就无法单独评估tokenizer的质量。它建议设立一个基础建模赛道，限定一小组模型规模和固定的架构选择。参赛者可以改变嵌入层和输出层的词表维度，而其他属性如嵌入维度则保持不变。这就像是一个控制实验：改变所研究的因素，同时保持其他条件不变。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 110.7,
+      "end": 115.94,
+      "en": "Would those rules exclude approaches that don't use conventional subword tokenization?",
+      "zh": "这些规则会不会把不采用传统子词分词的方法排除在外？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 116.8,
+      "end": 147.38,
+      "en": "They could. The authors specifically recognize that a conventional architecture may disadvantage latent-tokenization approaches or other systems unlike standard subword models. They raise possible separate architecture families, such as an hourglass Transformer, but do not settle the question. They also leave open whether output generation must use a single softmax or may use multiple decoding steps. These are important choices because broader coverage can make results harder to compare.",
+      "zh": "有可能。作者特别指出，传统架构可能会让潜在token化方法或其他不同于标准子词模型的系统处于劣势。他们提出了可能的独立架构家族，比如沙漏Transformer，但没有就此下定论。他们也未确定输出生成是否必须使用单一softmax，还是可以使用多步解码。这些都是重要的选择，因为覆盖范围越广，结果就越难比较。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 148.18,
+      "end": 154.04,
+      "en": "Quick question: how would the benchmark keep training comparisons fair when tokenizers produce different numbers of tokens?",
+      "zh": "快速问一下：当不同的分词器产生不同数量的token时，这个基准要怎么保证训练对比是公平的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 155.1,
+      "end": 183.34,
+      "en": "That is one of the proposal's central design problems. Fixing tokens per batch can favor a coarse tokenizer, which processes more text per token, or a fine-grained tokenizer, which may receive more optimization updates over the same data. One suggested alternative is to form batches from raw text within a byte range—for example, around one megabyte, with a small tolerance. The benchmark would then control the text while participants supply tokenizers.",
+      "zh": "这正是该提案的核心设计难题之一。固定每批的 token 数量，可能会偏向粗粒度分词器——它每个 token 处理更多文本；也可能偏向细粒度分词器——它在相同数据上可能获得更多优化更新。一个建议的替代方案是：从字节范围内的原始文本构建批次，例如大约一兆字节，允许少量浮动。这样基准就能控制文本，而由参与者提供分词器。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 184.36,
+      "end": 186.44,
+      "en": "And would training time be fixed, too?",
+      "zh": "那训练时间也会固定吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 186.98,
+      "end": 216.2,
+      "en": "The proposal favors fixing the optimizer and the number of passes over the training data, rather than wall-clock time. That can reduce dependence on hardware and make participation more accessible. It does not, by itself, equalize every training cost: tokenizers can differ in processing speed and the number of sequences they create. The learning-rate schedule is another open choice, since it might be tied to batches, sequences, tokens, or bytes.",
+      "zh": "该提案倾向于固定优化器和训练数据的遍历次数，而不是固定实际运行时间。这样可以减少对硬件的依赖，让更多人能够参与。但这本身并不能让所有训练成本都变得对等：不同的分词器在处理速度和生成的序列数量上可能不同。学习率调度是另一个尚未确定的选项，因为它可以基于批次、序列、token 或字节来设定。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 217.2,
+      "end": 221.42,
+      "en": "How does the proposed evaluation compare models without depending on their token counts?",
+      "zh": "所提出的评估方法是如何在不依赖各模型token数量的情况下对它们进行比较的？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 222.42,
+      "end": 250.84,
+      "en": "The proposed primary metric is bits per byte, which expresses predictive performance relative to the underlying text rather than each tokenizer's units. It still evaluates likelihood under a canonical tokenization; summing over all possible tokenizations would be more comprehensive but too costly for this benchmark. The paper also proposes sequence compression and tokenization speed, measured in bytes processed per second, along with possible convergence measures.",
+      "zh": "提出的主要指标是每字节比特数，它表达的是相对于底层文本的预测性能，而不是每个分词器的单位。它仍然在一种规范的分词方式下评估似然；对所有可能的分词方式求和会更全面，但对这个基准来说成本太高。论文还提出了序列压缩和分词速度，以每秒处理的字节数来衡量，以及可能的收敛度量。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 251.92,
+      "end": 254.76,
+      "en": "Would one combined score make the results easier to rank?",
+      "zh": "一个综合评分会让结果更容易排名吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 255.6,
+      "end": 285.68,
+      "en": "A single score would simplify ranking, but it could hide useful tradeoffs. A tokenizer might improve predictive quality while being slower, or compress text well without leading on a downstream task. The authors therefore suggest reporting a Pareto frontier: the set of submissions that are not clearly surpassed across the chosen measures. For downstream checks, they favor simple zero-shot tasks, including A-R-C Easy for reasoning and cute for character-level evaluation.",
+      "zh": "单一分数确实能让排名更简单，但可能会掩盖有用的权衡。一个tokenizer可能提升了预测质量，但速度更慢；或者压缩文本效果很好，却在下游任务上并不领先。因此作者建议报告帕累托前沿：也就是在所选的各项指标上都没有被明显超越的那一组提交结果。对于下游检查，他们倾向于简单的零样本任务，包括用于推理的A-R-C Easy和用于字符级评估的cute。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 286.8,
+      "end": 292.62,
+      "en": "Could the benchmark help someone choose a tokenizer for a multilingual product, rather than just rank research systems?",
+      "zh": "这个基准能不能帮人们为多语言产品挑选tokenizer，而不只是给研究系统排个名？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 293.56,
+      "end": 325.8,
+      "en": "Potentially, if its tracks reflect practical needs. The proposal sketches multilingual evaluation with a vocabulary cap, constrained-vocabulary comparisons, scaling studies, tokenizer transfer, and robustness to perturbed tokenizations. Each track would ask a different question while keeping tokenization central. For example, a vocabulary cap can make multilingual allocation choices visible. But these are proposed directions, not finalized specifications, and the paper reports no results showing which tokenizer works best.",
+      "zh": "有可能，前提是它的赛道能反映实际需求。这个提案勾勒了多语言评估的设想，包括词表上限、受限词表对比、规模扩展研究、分词器迁移，以及对扰动分词的鲁棒性。每条赛道会问不同的问题，但都围绕分词展开。比如，词表上限能让多语言分配的选择变得可见。不过这些都是提议的方向，不是最终定稿的规范，而且论文没有报告任何结果来说明哪种分词器效果最好。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 326.6,
+      "end": 332.12,
+      "en": "What might researchers learn from the transfer and robustness tracks?",
+      "zh": "研究人员能从迁移和鲁棒性这两条线里学到什么？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 332.12,
+      "end": 361.26,
+      "en": "A transfer track could examine whether a trained model can adapt when its tokenizer changes, a practical concern when updating systems. A robustness track could test how performance responds to altered segmentations. The proposal also imagines tracks for intrinsic measures and scaling laws: researchers could ask whether tokenizer metrics predict performance across corpora or model sizes. These ideas connect to the broader need for reliable evaluation, but their metrics and protocols still need development.",
+      "zh": "迁移赛道可以考察一个训练好的模型在分词器变化时能否适应，这在系统更新时是个实际问题。鲁棒性赛道可以测试性能如何随分词方式改变而变化。这个提案还设想了内在度量和缩放定律的赛道：研究者可以探究分词器指标能否预测不同语料库或模型规模下的表现。这些想法都指向了对可靠评估的更广泛需求，但它们的指标和协议仍有待开发。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 362.38,
+      "end": 366.1,
+      "en": "Does this connect to the concern that compression alone may not predict model quality?",
+      "zh": "这是否呼应了这样一种担忧：仅靠压缩并不能预测模型质量？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 367.16,
+      "end": 397.64,
+      "en": "Yes. Tokenization Is More Than Compression argues that fewer tokens do not automatically produce better downstream performance. This proposal takes a compatible stance by treating compression as one measure among several, rather than as a complete definition of tokenizer quality. Its broader contribution is to make the comparison conditions explicit. That could help the community distinguish a tokenizer's efficiency from its effects on prediction, task performance, or training behavior.",
+      "zh": "是的。《Tokenization Is More Than Compression》这篇论文认为，token更少并不自动带来更好的下游表现。这个提案采取了兼容的立场，把压缩视为若干衡量指标之一，而不是tokenizer质量的完整定义。它更广泛的贡献在于把比较条件明确化。这有助于社区区分tokenizer的效率与它对预测、任务表现或训练行为的影响。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 398.6,
+      "end": 401.7,
+      "en": "What is the main limitation the community would need to resolve first?",
+      "zh": "社区首先需要解决的主要局限是什么？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 402.5,
+      "end": 433.96,
+      "en": "There is no single obvious protocol that maximizes fairness, accessibility, and coverage at once. Fixed architectures improve attribution but may omit unconventional systems; fixed data passes reduce hardware dependence but do not make all costs identical. Likewise, one metric is easy to interpret but can conceal tradeoffs. The benchmark would need community decisions about these tensions, along with reproducible rules and relevant tasks, before its comparisons could be trusted.",
+      "zh": "目前并没有一个显而易见、能同时兼顾公平性、可及性和覆盖面的统一协议。固定架构能改善归因，但可能漏掉非常规系统；固定数据流程能降低对硬件的依赖，但并不能让所有成本变得一样。同样，单一指标虽然容易解读，却可能掩盖取舍。基准要想让比较结果可信，就需要社区先就这些矛盾做出决定，并制定可复现的规则和相关任务。"
+    },
+    {
+      "i": 23,
+      "speaker": "Noah",
+      "start": 433.96,
+      "end": 440.96,
+      "en": "So the paper's strongest claim is that the field needs shared rules, not that one metric already solves the problem?",
+      "zh": "所以这篇论文最核心的主张是，这个领域需要一套共同的规则，而不是说某个指标已经解决了问题？"
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "start": 441.82,
+      "end": 480.313,
+      "en": "Precisely. This is a call to build the conditions for better tokenizer research, not evidence that a particular tokenizer or metric has won. A useful benchmark could make controlled comparisons easier and help researchers study multilingual allocation, transfer, robustness, and scaling. Its value will depend on how well it balances comparability with real-world diversity. The memorable takeaway is simple: to compare tokenizers fairly, first agree on what stays fixed—and what each measure actually tells us. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "正是如此。这是在呼吁为更好的分词器研究创造条件，而不是证明某个特定的分词器或指标已经胜出。一个有用的基准可以让受控比较变得更容易，并帮助研究者研究多语言分配、迁移、鲁棒性和扩展性。它的价值将取决于它在可比性与现实世界多样性之间平衡得有多好。最值得记住的结论很简单：要公平地比较分词器，先就得固定什么达成一致——以及每个指标究竟告诉了我们什么。感谢收听。如果你还有任何问题，可以询问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{cognetta-open-tokenizer-benchmark-2026,\n  author = {Cognetta, Marco},\n  keywords = {Computation and Language (cs.CL), Machine Learning (cs.LG), Tokenization, Language Modeling, Benchmarking},\n  title = {A Call for an Open Tokenizer Benchmark},\n  publisher = {COLM},\n  year = {2026}\n}",
+  "topics": [
+    "NLP",
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.5,
+    0.282,
+    0.204,
+    0.224,
+    0.267,
+    0.402,
+    0.793,
+    0.647,
+    0.828,
+    0.671,
+    0.438,
+    0.823,
+    0.619,
+    0.47,
+    0.369,
+    0.371,
+    0.558,
+    0.943,
+    0.527,
+    0.386,
+    0.454,
+    0.396,
+    0.449,
+    0.309,
+    0.22,
+    0.249,
+    0.2,
+    0.246,
+    0.926,
+    0.612,
+    0.582,
+    0.516,
+    0.44,
+    0.557,
+    0.541,
+    0.476,
+    0.276,
+    0.526,
+    0.641,
+    0.662,
+    0.602,
+    0.539,
+    0.357,
+    0.871,
+    0.475,
+    0.522,
+    0.232,
+    0.358,
+    0.287,
+    0.889,
+    0.58,
+    0.666,
+    0.517,
+    0.539,
+    0.474,
+    0.796,
+    0.426,
+    0.388,
+    0.268,
+    0.504,
+    1.0,
+    0.76,
+    0.43,
+    0.627,
+    0.361,
+    0.768,
+    0.594,
+    0.427,
+    0.372,
+    0.737,
+    0.466,
+    0.493
+  ],
+  "published": "2026-10-06",
+  "views": 275,
+  "license": "User Uploaded"
+}
