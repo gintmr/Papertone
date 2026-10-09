@@ -1,0 +1,231 @@
+{
+  "id": "2610.08778",
+  "title": "Sherpa: Teaching LLMs to Teach Adaptively",
+  "authors": [
+    "Weixian Xu",
+    "Yanzhe Zhang",
+    "Zora Zhiruo Wang",
+    "Changyu Chen",
+    "Diyi Yang"
+  ],
+  "abstract": "Large language models (LLMs) have become increasingly capable problem solvers, but being able to solve a problem is not the same as being able to teach it. Existing approaches to training LLMs as teachers rely on demonstrations, preference data, or predefined pedagogical criteria that specify what good teaching looks like. However, these signals are often not grounded in individual student learning outcomes, where effective teaching strategies can vary substantially across learners. To address this, we introduce Sherpa, a multi-turn reinforcement learning framework that instantiates multiple student archetypes with LLMs conditioned on distinct learning preferences and trains a teacher model to adapt its instruction by directly maximizing their learning outcomes. Teacher LLMs trained with Sherpa improve instructed students' performance across all archetypes by an average of 20.5 percentage points. Under MathTutorBench's evaluation, Sherpa raises the overall pedagogy score from 52.5% to 79.2%, indicating better teaching responses. Our human studies show that the trained teacher is preferred over the base model in 79.6% of pairwise comparisons. Together, Sherpa trains LLM teachers to adapt to diverse simulated students and become better aligned with human teachers, paving the road towards AI tutors teaching real students.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.08778",
+    "arxiv": "https://arxiv.org/abs/2610.08778"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11470-7a13-7a8f-b81c-e1283f3d18b3/podcast.mp3",
+  "duration": 389.799,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 30.78,
+      "en": "In a hypothetical course called Reinforcement Learning for Language Models, we would ask how to train a tutor that does more than produce correct answers. Today's lecture is on Sherpa, a framework for training language-model tutors around student outcomes and different learning preferences. Recent work such as StudentSim and SocraticLLM reflects a wider move toward simulated learners and conversational teaching. Sherpa fits that trend, but puts the student’s ability to solve a problem afterward at the center. Yes, Noah?",
+      "zh": "在一门假设的课程“语言模型强化学习”里，我们会问：怎么训练一个不止能给出正确答案的辅导老师？今天的课讲的是Sherpa，一个围绕学生表现和不同学习偏好来训练语言模型辅导老师的框架。最近像StudentSim和SocraticLLM这样的工作，反映出一种更广泛的趋势，就是转向模拟学习者和对话式教学。Sherpa符合这个趋势，但它把学生之后能不能自己解出问题放在了核心位置。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 31.96,
+      "end": 37.06,
+      "en": "Hi Professor, if the tutor already gives the correct answer, why does the student’s later performance matter?",
+      "zh": "教授您好，如果辅导模型已经给出了正确答案，那学生之后的表现在意它干嘛？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 37.92,
+      "end": 67.22,
+      "en": "Because a correct answer can finish a problem without helping someone solve the next one. Consider a student asking for two ways to find the parameters of a tangent function, so they can compare approaches. The base model proceeds directly through a solution. Sherpa offers an approach based on distances between asymptotes and another based on their locations, then asks which the student wants to start with. That example illustrates a response style, not proof that the student learned.",
+      "zh": "因为给出正确答案只能解决眼前这道题，并不能帮学生解决下一道。设想一个学生想用两种方法求正切函数的参数，好比较不同思路。基线模型直接从头解到尾。Sherpa则给出一种基于渐近线间距的方法，再给出一种基于渐近线位置的方法，然后问学生想先从哪个入手。这个例子说明的是一种回答风格，并不能证明学生真的学会了。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 68.24,
+      "end": 98.82,
+      "en": "The training idea is to make those differences consequential. Sherpa simulates tutoring conversations with students that have particular instructional preferences, then tests whether each student can solve the problem after the exchange. The teacher is rewarded for improvement in the simulated student’s test performance, rather than only for matching a fixed checklist of desirable teaching behaviors. This is multi-turn reinforcement learning: the model improves through repeated teaching interactions and outcome feedback.",
+      "zh": "训练思路就是让这些差异真正产生影响。Sherpa 会模拟带有特定教学偏好的学生，与之进行辅导对话，然后测试每个学生在交流之后能否解出题目。教师的奖励来自模拟学生测试成绩的提升，而不只是看它有没有照着固定的理想教学行为清单来做。这就是多轮强化学习：模型通过反复的教学互动和结果反馈来不断改进。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.82,
+      "end": 103.5,
+      "en": "Quick question: what kinds of preferences does the simulated student have?",
+      "zh": "快速问一下：模拟学生有哪些偏好类型？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 103.5,
+      "end": 137.06,
+      "en": "The paper defines six: diagnose an issue in an attempt, explain why a step is valid, connect a subgoal to the overall solution, demonstrate one step and return control, verify a claim, or compare approaches. A seventh student type has no specified preference. The teacher privately prepares a solution, tutors over several turns, and the student is tested. Sherpa compares the student’s post-tutoring chance of answering correctly with its unaided chance; that difference becomes the outcome reward.",
+      "zh": "论文定义了六种：诊断尝试中的问题、解释某一步为何成立、把子目标与整体解法联系起来、演示一步后交还控制权、验证某个说法，或者比较不同方法。第七种学生类型没有指定偏好。教师私下准备一份解法，通过多轮进行辅导，然后对学生进行测试。Sherpa 比较学生接受辅导后答对的概率与未受辅导时答对的概率；两者之差成为结果奖励。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.0,
+      "end": 166.72,
+      "en": "Two gates shape the simulated interaction. A guidance gate rejects instructions that reveal the final answer, while allowing intermediate reasoning and partial solutions. An adaptive gate checks whether an instruction suits that student’s preference. A rejected instruction is not passed into the student model’s learning context, but the student returns scripted feedback that the teacher can use. These mechanisms are intended to make both answer leakage and preference mismatch visible during training.",
+      "zh": "两个门控机制塑造了模拟交互的过程。一个引导门控会拒绝那些泄露最终答案的指令，但允许中间推理和部分解答通过。一个自适应门控则检查指令是否契合该学生的偏好。被拒绝的指令不会进入学生模型的学习上下文，但学生会返回预设的反馈供教师使用。这些机制的目的是让答案泄露和偏好不匹配在训练过程中变得可见。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.7,
+      "end": 172.66,
+      "en": "Can you clarify whether those gates were tested against anything besides the preference-conditioned students?",
+      "zh": "你能澄清一下，这些门控除了在偏好条件化的学生身上测试过，还跟别的什么做过对比吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 173.7,
+      "end": 202.52,
+      "en": "Yes. The authors compared gated students with students given the same preferences only in their prompts. They paired six student preferences with six fixed teaching strategies. In the gated simulation, improvement was more concentrated on matched strategy-preference pairs, and complaints were lower for matched pairs. The prompted version did not show those patterns consistently. That supports the simulator’s design in this test; it does not establish that the archetypes capture real learners’ needs.",
+      "zh": "是的。作者把带门控的学生和只在提示里给出相同偏好的学生做了对比。他们把六种学生偏好和六种固定教学策略配对。在带门控的模拟中，提升更集中在策略与偏好匹配的配对上，匹配配对的抱怨也更少。而仅靠提示的版本并没有稳定地呈现出这些模式。这在这个测试里支持了模拟器的设计，但并不能证明这些原型就捕捉到了真实学习者的需求。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 202.52,
+      "end": 240.4,
+      "en": "The main learning-outcome evaluation used a quen three eight B teacher and a quen three one point seven B simulated student on 528 filtered MATH problems. Sherpa’s average final test accuracy across seven student types was 69%, compared with 48.6% for the untrained teacher, a 20.4 percentage-point difference. Four preferences appeared in training and three were held out. This is post-tutoring accuracy, not the student’s gain over its own unaided baseline, and the students were simulated.",
+      "zh": "主要的学习效果评估用的是Qwen3-8B教师模型和Qwen3-1.7B模拟学生，在528道筛选后的MATH题目上测试。Sherpa在七种学生类型上的平均最终测试准确率是69%，而未训练教师是48.6%，相差20.4个百分点。训练中出现了四种偏好，另外三种被留出。这是辅导后的准确率，不是学生相对于自身无辅助基线的提升，而且学生是模拟的。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 241.54,
+      "end": 244.32,
+      "en": "So does the benchmark evidence measure student learning too?",
+      "zh": "那这个基准的证据是不是也能衡量学生的学习效果呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 244.32,
+      "end": 282.28,
+      "en": "No. On MathTutorBench, Sherpa’s Pedagogy Average was 79.2%, compared with 63.2% for the Qwen3 PedagogicalRL baseline and 52.5% for untrained Qwen3. That average combines four teacher-response tasks, where a pedagogical reward model prefers a generated response over a human-teacher reference. It measures benchmark response quality, not student learning. The human comparison is also a response judgment: high-school teachers preferred Sherpa’s responses over the base model’s in 79.6% of non-tied comparisons.",
+      "zh": "不是。在MathTutorBench上，Sherpa的教学法平均分为79.2%，而Qwen3 PedagogicalRL基线为63.2%，未训练的Qwen3为52.5%。这个平均分综合了四项教师回复任务，其中教学法奖励模型更偏好生成的回复，而非人类教师的参考回复。它衡量的是基准中的回复质量，而不是学生的学习效果。人类对比同样是对回复的评判：在非平局的比较中，高中教师在79.6%的情况下更偏好Sherpa的回复，而非基础模型的回复。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 283.52,
+      "end": 317.92,
+      "en": "There are tradeoffs. Sherpa improved all four response-generation measures in the benchmark, but mistake-location accuracy and Socratic-questioning performance fell relative to the untrained model. The authors also tested extra penalties when a gate rejected an instruction. A smaller penalty left MATH accuracy essentially unchanged, while a larger one lowered it to 57.5%; benchmark pedagogy scores also declined as penalties rose. The results caution against assuming that adding more preset criteria automatically improves teaching.",
+      "zh": "这里有权衡。Sherpa在基准的所有四项回复生成指标上都有提升，但错误定位准确率和苏格拉底式提问表现相比未训练模型有所下降。作者还测试了当门控拒绝某条指令时施加额外惩罚的效果。较小的惩罚让MATH准确率基本不变，而较大的惩罚则将其降至57.5%；基准的教学法得分也随着惩罚加大而下降。这些结果提醒我们，不要想当然地认为加入更多预设标准就一定能改善教学。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 318.92,
+      "end": 321.88,
+      "en": "How does Sherpa compare with earlier outcome-based tutoring work?",
+      "zh": "Sherpa和早期基于结果的辅导方法相比如何？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 322.76,
+      "end": 354.58,
+      "en": "That comparison matters because Sherpa is not the first tutoring method to reward student success. PedagogicalRL also uses multi-turn simulated interactions and combines student success with leakage and helpfulness judgments. Sherpa’s distinction is its preference-conditioned student archetypes and its emphasis on student improvement as the training signal. The broader shift is toward evaluating teaching through what learners can do, while this paper also asks whether simulated learner needs can steer the teaching strategy.",
+      "zh": "这个对比之所以重要，是因为Sherpa并不是第一个用学生成功作为奖励的辅导方法。PedagogicalRL同样使用多轮模拟交互，并把学生成功与泄漏和有用性判断结合起来。Sherpa的不同之处在于它用偏好条件化的学生原型，并强调把学生进步作为训练信号。更广泛的转变是，通过学习者能做什么来评估教学，而这篇论文还进一步追问，模拟的学习者需求能否引导教学策略。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 354.58,
+      "end": 389.799,
+      "en": "The evidence should remain bounded: the outcome result comes from simulated students and filtered math problems, the benchmark is math-specific, and teachers in the human study rated constructed tutoring responses rather than teaching real students. The next challenge is richer or combined preferences, including learners who may not know what kind of help they need. Sherpa’s central question is worth carrying forward: does the learner become more capable after the interaction? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这些证据的适用范围应当有所限定：结果来自模拟学生和经过筛选的数学题，基准也是专门针对数学的，而人类研究中的教师评分针对的是构造出来的辅导回复，而不是教真实的学生。下一个挑战是更丰富或组合式的偏好，包括那些可能并不清楚自己需要什么帮助的学习者。Sherpa 的核心问题值得继续追问：学习者在交互之后是否变得更有能力了？感谢收听。如果还有进一步的问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{xu2026sherpateachingllmsteach,\n      title={Sherpa: Teaching LLMs to Teach Adaptively}, \n      author={Weixian Xu and Yanzhe Zhang and Zora Zhiruo Wang and Changyu Chen and Diyi Yang},\n      year={2026},\n      eprint={2610.08778},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.08778}, \n}",
+  "topics": [
+    "NLP",
+    "AI"
+  ],
+  "peaks": [
+    1.0,
+    0.498,
+    0.483,
+    0.486,
+    0.276,
+    0.224,
+    0.43,
+    0.978,
+    0.883,
+    0.832,
+    0.656,
+    0.592,
+    0.512,
+    0.424,
+    0.375,
+    0.368,
+    0.293,
+    0.338,
+    0.413,
+    0.539,
+    0.619,
+    0.744,
+    0.446,
+    0.443,
+    0.306,
+    0.384,
+    0.649,
+    0.374,
+    0.312,
+    0.334,
+    0.299,
+    0.493,
+    0.648,
+    0.336,
+    0.461,
+    0.531,
+    0.368,
+    0.815,
+    0.839,
+    0.412,
+    0.461,
+    0.526,
+    0.438,
+    0.371,
+    0.391,
+    0.619,
+    0.317,
+    0.2,
+    0.594,
+    0.271,
+    0.308,
+    0.242,
+    0.71,
+    0.297,
+    0.578,
+    0.347,
+    0.319,
+    0.431,
+    0.294,
+    0.929,
+    0.899,
+    0.662,
+    0.405,
+    0.447,
+    0.811,
+    0.455,
+    0.532,
+    0.329,
+    0.442,
+    0.502,
+    0.345,
+    0.218
+  ],
+  "published": "2026-10-06",
+  "views": 187,
+  "license": "arXiv 默认许可"
+}

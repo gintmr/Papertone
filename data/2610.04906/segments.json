@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 421.929,
+  "word_match_rate": 0.9304,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on long-horizon agent systems, today's lecture is on “Scaling Verifiable Environments for Long-Horizon Work Agents.” Recent work such as “S-W-E-Universe: Scale Real-World Verifiable Environments to Millions” and “EnvScaler: Scaling Tool-Interactive Environments for L-L-M Agent via Programmatic Synthesis” reflects a field seeking scalable agent settings. This paper, from researchers at Tencent and Fudan University, emphasizes real workspaces where task demands and evidence stay linked. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 39.24
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes an environment verifiable in this context?",
+      "start": 40.24,
+      "end": 43.66
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A verifiable environment is a workspace where an agent has to complete a task using files and tools, and where the final work can be checked against evidence in those files. Workforge’s central idea is to build the task, the solution plan, and the evaluation criteria from the same inspected workspace. That connection matters: it reduces the chance that instructions ask for unsupported facts or that an evaluator rewards an answer the workspace cannot substantiate.",
+      "start": 44.62,
+      "end": 73.78
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the files come first, rather than inventing a task and building a workspace around it?",
+      "start": 74.74,
+      "end": 79.4
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The process begins with expert-authored workflow blueprints that describe a professional context, expected deliverables, resources, dependencies, and decisions. An acquisition agent then finds and retrieves suitable materials. Rather than stripping them down to a handful of convenient files, Workforge preserves their existing organization. It profiles each workspace, recording file roles, artifact formats, possible task directions, and observable facts that can anchor later instructions and checks.",
+      "start": 79.4,
+      "end": 112.84
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "From that profile, a task designer creates a visible instruction and a hidden solution plan. The instruction describes the objective and deliverables; the plan sketches a plausible route through the workspace. Both are checked against available evidence, and unsupported claims or invalid file paths trigger regeneration. The design resembles building a research assignment from an archive: first establish what the archive contains, then ask questions that its evidence can actually answer.",
+      "start": 113.82,
+      "end": 143.62
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify how the system checks deliverables that don't have one objectively correct answer?",
+      "start": 144.54,
+      "end": 149.42
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "It uses two complementary forms of verification. Programmatic checks handle deterministic conditions, such as whether a required file exists, is valid, or contains a specified value. A language-model judge assesses more open-ended qualities, including whether an analysis is complete or recommendations follow from the evidence. Workforge keeps the two scores separate, which makes it possible to distinguish a concrete compliance failure from a weakness in judgment or presentation.",
+      "start": 150.18,
+      "end": 180.58
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The next critical step is generating interaction trajectories. A solver sees only the workspace and task instruction, then uses files and tools until it submits deliverables or reaches an execution limit. Each record captures messages, tool use, final artifacts, scores, and model configuration. The resulting collection contains 16,665 environments and training trajectories across 40 professional domains; workspaces average 42.3 files, while trajectories average 31.8 steps and 33.8 tool calls.",
+      "start": 181.74,
+      "end": 216.36
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "How does that training translate into results on tasks outside the generated workspaces?",
+      "start": 219.14,
+      "end": 223.6
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The authors use the trajectories for supervised fine-tuning and evaluate on five external benchmarks, including WildClawBench, Claw-Eval, G-D-P-val, A-P-E-X-Agents, and Agents’ Last Exam. For a 35-billion-parameter base model, scores improve on all five. G-D-P-val rises from 45.5 to 73.6, while A-P-E-X rises from 5.0 to 21.3. A 27-billion-parameter model also improves across all five, suggesting the data helps both a base model and one already adapted for agent work.",
+      "start": 224.52,
+      "end": 264.26
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The scaling and filtering studies offer clues about why the data helps. Increasing the training set from 1,000 to 16,000 trajectories raises the score on Agents’ Last Exam from 15.7 to 28.7 and on WildClaw from 21.5 to 29.9. Longer interaction examples also help: training on 41-to-60-turn trajectories beats training on 0-to-20-turn trajectories by 4.2 points on Agents’ Last Exam and 5.0 on WildClaw.",
+      "start": 265.18,
+      "end": 298.42
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Does the filtering experiment show that one verifier is more important than the other?",
+      "start": 299.3,
+      "end": 303.24
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The reported results favor combining them. On Agents’ Last Exam, filtering with both programmatic and semantic scores reaches 22.11, compared with 15.62 for semantic-only filtering and 14.89 for programmatic-only filtering. The same pattern appears on A-P-E-X. This supports a practical point: exact checks and qualitative review catch different problems. Still, these scores do not prove that every generated task or evaluator is reliable in every professional domain.",
+      "start": 303.24,
+      "end": 339.8
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Workforge’s broader contribution is a design principle for agent training: scale environments without separating the requested work from the evidence available to do it. That complements efforts such as S-W-E-Universe, which builds verifiable software-engineering environments from real repositories, while Workforge targets a wider range of professional workflows and file types. The reported transfer to external benchmarks is encouraging evidence, but it should be read alongside the authors’ caveats about resource access and limited expert calibration.",
+      "start": 341.6,
+      "end": 373.04
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What would you most want future studies to test?",
+      "start": 374.12,
+      "end": 376.38
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "I would look for broader expert review of generated profiles, tasks, and verifiers, and evaluation of intermediate work—not only final deliverables. The approach depends on accessible real-world materials and expert workflow specifications, so proprietary or sensitive domains may remain difficult to cover. A useful next step would be testing whether the same evidence-grounded design holds up across more domains and independent evaluators. The central takeaway is simple: better work-agent training needs not just more tasks, but tasks whose evidence, actions, and checks fit together. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 377.28,
+      "end": 421.929
+    }
+  ]
+}

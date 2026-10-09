@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 389.799,
+  "word_match_rate": 0.927,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course called Reinforcement Learning for Language Models, we would ask how to train a tutor that does more than produce correct answers. Today's lecture is on Sherpa, a framework for training language-model tutors around student outcomes and different learning preferences. Recent work such as StudentSim and SocraticLLM reflects a wider move toward simulated learners and conversational teaching. Sherpa fits that trend, but puts the student’s ability to solve a problem afterward at the center. Yes, Noah?",
+      "start": 0.0,
+      "end": 30.78
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the tutor already gives the correct answer, why does the student’s later performance matter?",
+      "start": 31.96,
+      "end": 37.06
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because a correct answer can finish a problem without helping someone solve the next one. Consider a student asking for two ways to find the parameters of a tangent function, so they can compare approaches. The base model proceeds directly through a solution. Sherpa offers an approach based on distances between asymptotes and another based on their locations, then asks which the student wants to start with. That example illustrates a response style, not proof that the student learned.",
+      "start": 37.92,
+      "end": 67.22
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The training idea is to make those differences consequential. Sherpa simulates tutoring conversations with students that have particular instructional preferences, then tests whether each student can solve the problem after the exchange. The teacher is rewarded for improvement in the simulated student’s test performance, rather than only for matching a fixed checklist of desirable teaching behaviors. This is multi-turn reinforcement learning: the model improves through repeated teaching interactions and outcome feedback.",
+      "start": 68.24,
+      "end": 98.82
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what kinds of preferences does the simulated student have?",
+      "start": 99.82,
+      "end": 103.5
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The paper defines six: diagnose an issue in an attempt, explain why a step is valid, connect a subgoal to the overall solution, demonstrate one step and return control, verify a claim, or compare approaches. A seventh student type has no specified preference. The teacher privately prepares a solution, tutors over several turns, and the student is tested. Sherpa compares the student’s post-tutoring chance of answering correctly with its unaided chance; that difference becomes the outcome reward.",
+      "start": 103.5,
+      "end": 137.06
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Two gates shape the simulated interaction. A guidance gate rejects instructions that reveal the final answer, while allowing intermediate reasoning and partial solutions. An adaptive gate checks whether an instruction suits that student’s preference. A rejected instruction is not passed into the student model’s learning context, but the student returns scripted feedback that the teacher can use. These mechanisms are intended to make both answer leakage and preference mismatch visible during training.",
+      "start": 138.0,
+      "end": 166.72
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify whether those gates were tested against anything besides the preference-conditioned students?",
+      "start": 167.7,
+      "end": 172.66
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Yes. The authors compared gated students with students given the same preferences only in their prompts. They paired six student preferences with six fixed teaching strategies. In the gated simulation, improvement was more concentrated on matched strategy-preference pairs, and complaints were lower for matched pairs. The prompted version did not show those patterns consistently. That supports the simulator’s design in this test; it does not establish that the archetypes capture real learners’ needs.",
+      "start": 173.7,
+      "end": 202.52
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The main learning-outcome evaluation used a quen three eight B teacher and a quen three one point seven B simulated student on 528 filtered MATH problems. Sherpa’s average final test accuracy across seven student types was 69%, compared with 48.6% for the untrained teacher, a 20.4 percentage-point difference. Four preferences appeared in training and three were held out. This is post-tutoring accuracy, not the student’s gain over its own unaided baseline, and the students were simulated.",
+      "start": 202.52,
+      "end": 240.4
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So does the benchmark evidence measure student learning too?",
+      "start": 241.54,
+      "end": 244.32
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No. On MathTutorBench, Sherpa’s Pedagogy Average was 79.2%, compared with 63.2% for the Qwen3 PedagogicalRL baseline and 52.5% for untrained Qwen3. That average combines four teacher-response tasks, where a pedagogical reward model prefers a generated response over a human-teacher reference. It measures benchmark response quality, not student learning. The human comparison is also a response judgment: high-school teachers preferred Sherpa’s responses over the base model’s in 79.6% of non-tied comparisons.",
+      "start": 244.32,
+      "end": 282.28
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "There are tradeoffs. Sherpa improved all four response-generation measures in the benchmark, but mistake-location accuracy and Socratic-questioning performance fell relative to the untrained model. The authors also tested extra penalties when a gate rejected an instruction. A smaller penalty left MATH accuracy essentially unchanged, while a larger one lowered it to 57.5%; benchmark pedagogy scores also declined as penalties rose. The results caution against assuming that adding more preset criteria automatically improves teaching.",
+      "start": 283.52,
+      "end": 317.92
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does Sherpa compare with earlier outcome-based tutoring work?",
+      "start": 318.92,
+      "end": 321.88
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That comparison matters because Sherpa is not the first tutoring method to reward student success. PedagogicalRL also uses multi-turn simulated interactions and combines student success with leakage and helpfulness judgments. Sherpa’s distinction is its preference-conditioned student archetypes and its emphasis on student improvement as the training signal. The broader shift is toward evaluating teaching through what learners can do, while this paper also asks whether simulated learner needs can steer the teaching strategy.",
+      "start": 322.76,
+      "end": 354.58
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The evidence should remain bounded: the outcome result comes from simulated students and filtered math problems, the benchmark is math-specific, and teachers in the human study rated constructed tutoring responses rather than teaching real students. The next challenge is richer or combined preferences, including learners who may not know what kind of help they need. Sherpa’s central question is worth carrying forward: does the learner become more capable after the interaction? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 354.58,
+      "end": 389.799
+    }
+  ]
+}

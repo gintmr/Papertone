@@ -1,0 +1,279 @@
+{
+  "id": "2609.20659",
+  "title": "HIL-UMI: Bringing Human-in-the-Loop Post-Training of Vision-Language-Action Models to Universal Manipulation Interface",
+  "authors": [
+    "Zimu Han",
+    "Yiming Zeng",
+    "Jiyao Zhang",
+    "Zihao Zhao",
+    "Yuanfei Wang",
+    "Yixiang Jin",
+    "Shiqi Li",
+    "Shuangben Chen",
+    "Wei Huang",
+    "Ruodai Li",
+    "Hui Shen",
+    "Hao Dong"
+  ],
+  "abstract": "Large-scale vision-language-action (VLA) models provide powerful priors for robot manipulation, yet adapting them to a specific deployment remains challenging. Supervised fine-tuning (SFT) on task-specific demonstrations provides a step toward deployment, but faces two persistent limitations: static data provide limited coverage of out-of-distribution states, and standard imitation objectives do not distinguish progressing behavior from less useful data. Interactive post-training can address these limitations, but typically requires repeated policy execution and human intervention on a physical robot. We introduce HIL-UMI, a policy-guided Universal Manipulation Interface (UMI) framework for robot-free human-in-the-loop VLA post-training. During handheld UMI demonstrations, HIL-UMI queries the current policy on the same observation stream without executing its predictions. The Energy Score compares the human action trajectory with policy inference and triggers collection when their discrepancy indicates an out-of-distribution region. In a separate feedback loop, low online advantage predictions identify essential segments for refining a progress-based advantage estimator. The updated estimator then guides advantage-conditioned behavioral cloning using a balanced mixture of base demonstrations and new policy data. This design preserves the iterative and policy-aware nature of human-in-the-loop learning while decoupling data collection from robot deployment. Experiments on four real-world tasks spanning long-horizon and precise manipulation show that HIL-UMI achieves consistent improvement over SFT and benefits from both targeted collection and advantage refinement. Moreover, HIL-UMI outperforms HG-DAgger on Clean Up Table with lower per-frame collection time, suggesting a scalable path for VLA post-training across operators and locations.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.20659",
+    "arxiv": "https://arxiv.org/abs/2609.20659"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0b266-a963-709e-b05c-df20dbaecd19/podcast.mp3",
+  "duration": 393.665,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.9,
+      "en": "In our Advanced Topics in Robotic Learning course, we've discussed how Vision-Language-Action, or VLA, models are becoming general-purpose policies. Today's lecture is on “HIL-UMI: Bringing Human-in-the-Loop Post-Training of Vision-Language-Action Models to Universal Manipulation Interface” from researchers at Peking University and others. We've seen a trend of using reinforcement learning to adapt VLAs, with papers like “SimpleVLA-RL” and “VLA-RL”. This work, however, explores a different path for post-training that avoids some of the complexities of online RL. Yes, Noah?",
+      "zh": "在我们这门机器人学习高级专题课上，我们讨论过视觉-语言-动作模型，也就是VLA模型，正在成为通用策略。今天的讲座是关于“HIL-UMI：将视觉-语言-动作模型的人在回路后训练引入通用操作接口”，来自北京大学等机构的研究人员。我们看到了一个趋势，就是用强化学习来适配VLA，比如“SimpleVLA-RL”和“VLA-RL”这些论文。不过，这项工作探索了一条不同的后训练路径，避开了在线强化学习的一些复杂性。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.3,
+      "end": 44.44,
+      "en": "Excuse me, Professor. What's the main issue with the standard way of adapting these large VLA models that this paper is trying to solve?",
+      "zh": "打扰一下，教授。这篇论文想要解决的，用标准方法适配这些大型VLA模型的主要问题是什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.72,
+      "end": 77.3,
+      "en": "Good question. The core problem is that a pre-trained VLA model, despite its general knowledge, often fails when deployed on a specific robot due to differences in camera setup, robot body, or workspace. The standard solution is supervised fine-tuning, or SFT, where you just show the robot more demonstrations. But this is inefficient. You might collect hundreds of examples of behavior the policy already knows, without addressing its specific blind spots. This can lead to compounding errors, where one small mistake sends the policy into a state it can't recover from.",
+      "zh": "问得好。核心问题在于，一个预训练的VLA模型尽管有通用的知识，但部署到具体机器人上时，往往会因为摄像头配置、机器人本体或工作空间的差异而失败。标准的做法是有监督微调，也就是SFT，你只需要给机器人看更多的示范。但这效率很低。你可能收集了上百个策略已经会的行为样本，却没解决它真正的盲点。这会导致误差累积，一个小错误就可能把策略带到一个它无法恢复的状态。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 77.56,
+      "end": 80.24,
+      "en": "So it's a data efficiency problem. We need smarter data collection.",
+      "zh": "所以这是个数据效率问题。我们需要更智能的数据采集方式。"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 80.64,
+      "end": 117.32,
+      "en": "Precisely. The main contribution of HIL-UMI is a method for human-in-the-loop post-training that is policy-aware—it actively seeks out the policy's weaknesses. But, critically, it does this without needing constant access to the physical robot during data collection. The operator uses a portable handheld gripper, the Universal Manipulation Interface or UMI, to perform demonstrations. The system watches the human and the policy's internal predictions in real-time, and only flags a segment for collection if it detects a disagreement or a point of confusion for the current policy. This makes the post-training process much more targeted.",
+      "zh": "正是如此。HIL-UMI 的核心贡献在于提出了一种人在回路的后训练方法，而且这种方法是策略感知的——它会主动找出策略的薄弱环节。但关键在于，它在数据采集过程中不需要始终接触实体机器人。操作员用一个便携式手持夹爪，也就是通用操作接口 UMI，来做演示。系统会实时观察人类和策略的内部预测，只有当它检测到当前策略出现分歧或困惑时，才会标记某一段进行采集。这让后训练过程变得更有针对性。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 117.74,
+      "end": 125.96,
+      "en": "So it’s an interactive approach like DAgger, but the interaction happens between the human demonstrator and the policy's predictions, not with the physical robot's actions. Is that right?",
+      "zh": "所以它像DAgger一样是一种交互式方法，但交互发生在人类演示者和策略的预测之间，而不是和物理机器人的动作之间。对吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 126.42,
+      "end": 141.78,
+      "en": "Exactly. That's a very good way to put it. It keeps the corrective, policy-aware benefits of interactive learning while decoupling the data collection from the hardware. This greatly improves scalability, as multiple operators can collect data in parallel without needing a fleet of robots.",
+      "zh": "完全正确，这个说法很到位。它保留了交互式学习那种能纠错、能感知策略的好处，同时又把数据采集和硬件解耦了。这大大提升了可扩展性，因为多个操作员可以并行采集数据，而不需要一整套机器人。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 142.18,
+      "end": 168.3,
+      "en": "Let's get into the technical approach. The system uses two parallel processes to decide when to collect data. The first is policy-based out-of-distribution detection. As the human uses the UMI device, the VLA policy is also generating its own action predictions for the same observation. The system then compares the human’s action to the distribution of the policy’s predictions using a metric called an Energy Score.",
+      "zh": "我们来聊聊技术方法。这个系统用两个并行的过程来决定什么时候采集数据。第一个是基于策略的分布外检测。当人操作UMI设备时，VLA策略也在针对同样的观测生成自己的动作预测。然后系统用一个叫能量分数的指标，把人的动作和策略预测的分布做比较。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 168.56,
+      "end": 175.82,
+      "en": "Wait, why use a complex 'Energy Score'? Wouldn't a simple distance metric between the human's action and the policy's mean prediction work?",
+      "zh": "等等，为什么要用一个复杂的“能量分数”？直接算人类动作和策略预测均值之间的简单距离不行吗？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 176.18,
+      "end": 209.76,
+      "en": "That's a key detail. A simple distance metric wouldn't distinguish between two scenarios: one where the policy is confident but wrong, and another where the policy is just highly uncertain. The Energy Score accounts for the spread, or variance, of the policy's own predictions. So, it can tell if the human's action is an outlier because the policy's predictions are tightly clustered somewhere else, or simply because the policy is uncertain and its predictions are all over the place. If the score exceeds a threshold, it signals a valuable learning opportunity, and that demonstration segment is recorded.",
+      "zh": "这是个关键细节。简单的距离度量没法区分两种情况：一种是策略很自信但错了，另一种是策略本身就很没把握。能量分数会把策略自身预测的分散程度，也就是方差，考虑进去。所以它能判断人类的动作是离群点，究竟是因为策略的预测紧紧聚在别的地方，还是仅仅因为策略不确定、预测到处都是。如果分数超过阈值，就说明这是个有价值的学习机会，那段演示就会被记录下来。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 210.34,
+      "end": 214.24,
+      "en": "I see. So it captures both disagreement and uncertainty. What's the second process?",
+      "zh": "我明白了，所以它同时捕捉了分歧和不确定性。那第二个过程是什么？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 214.58,
+      "end": 241.14,
+      "en": "The second is advantage-based detection. They train a separate model, an advantage estimator, to predict task progress. During a demonstration, if the human is clearly making progress but the advantage model predicts low progress, it signals another kind of blind spot. This time, it's a blind spot in the system's understanding of what constitutes a useful action. Data collected from these segments is used to refine the advantage estimator itself.",
+      "zh": "第二个是基于优势的检测。他们训练了一个单独的模型，叫优势估计器，用来预测任务进展。在演示过程中，如果人类明显在取得进展，但优势模型预测进展很低，这就说明存在另一种盲区。这次是系统对什么算是有用动作的理解上的盲区。从这些片段中收集的数据被用来改进优势估计器本身。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 241.54,
+      "end": 244.2,
+      "en": "And then this advantage information is used to train the main policy?",
+      "zh": "那这些优势信息接下来就用来训练主策略了吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 244.68,
+      "end": 271.54,
+      "en": "Correct. The policy is updated using advantage-conditioned behavioral cloning. This means they label data as either 'high advantage' or 'low advantage'. The data collected from policy disagreements are automatically labeled as high advantage. For the rest, they use the updated advantage estimator. The policy then learns to generate actions conditioned on achieving a high-advantage outcome. This helps it focus on mimicking the most useful parts of the demonstrations.",
+      "zh": "没错。策略是通过优势条件行为克隆来更新的。也就是说，他们把数据标注为“高优势”或“低优势”。来自策略分歧的数据会被自动标为高优势。其余的则用更新后的优势估计器来标注。然后策略学习在给定高优势结果的条件下生成动作。这有助于它专注于模仿演示中最有用的部分。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 272.16,
+      "end": 295.2,
+      "en": "The main implication here is a shift in how we think about scaling up robot learning. Instead of just collecting massive, undirected datasets or relying on complex online reinforcement learning, HIL-UMI proposes a more surgical approach. It focuses human effort on fixing the policy's specific, current weaknesses. This makes post-training more of a targeted debugging process than a brute-force data collection effort.",
+      "zh": "这里的主要意义在于，它改变了我们对如何扩展机器人学习的思考方式。HIL-UMI 不再只是收集海量、无方向的数据集，也不再依赖复杂的在线强化学习，而是提出了一种更有针对性的方法。它把人的精力集中在修复策略当前具体的短板上。这让后训练更像是一个有针对性的调试过程，而不是靠蛮力堆数据的做法。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 295.6,
+      "end": 301.06,
+      "en": "How does this compare to a framework like ConRFT, which also combines offline and human-in-the-loop tuning?",
+      "zh": "和ConRFT这类同样结合了离线训练和人在回路微调的框架相比，它有什么不同？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 301.42,
+      "end": 332.34,
+      "en": "Good connection. Both aim to refine pre-trained models. However, ConRFT and many similar methods still rely on collecting corrective data on the physical robot. HIL-UMI’s primary architectural significance is separating the policy-aware data collection loop from the policy execution loop. Their experiments show they achieve better performance than a real-robot DAgger variant with over five times less collection time per frame, simply because they remove the robot rollout and correction latency from the process. This makes the entire post-training pipeline more accessible and easier to distribute.",
+      "zh": "这个联系很好。两者的目标都是对预训练模型做精调。但ConRFT和很多类似方法仍然依赖在实体机器人上采集纠正数据。HIL-UMI在架构上最重要的意义，是把策略感知的数据采集回路和策略执行回路分离开来。他们的实验表明，相比一个真机DAgger变体，他们用每帧少五倍以上的采集时间就取得了更好的表现，原因很简单：他们把机器人轨迹和纠正延迟从流程中拿掉了。这让整个后训练流程更容易上手，也更容易分发。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 332.8,
+      "end": 338.52,
+      "en": "But it still relies on the assumption that the UMI-to-robot transfer is perfect and that the human demonstrator is always optimal, right?",
+      "zh": "但它仍然依赖于这样一个假设：UMI到机器人的迁移是完美的，而且人类示范者始终是最优的，对吧？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 338.76,
+      "end": 355.38,
+      "en": "Yes, those are valid limitations to consider. The quality of the UMI calibration and the skill of the human operator are definite factors. The paper addresses the optimality assumption somewhat by using the advantage estimator to filter for task-progressing behavior, but it's not a complete solution.",
+      "zh": "是的，这些确实是值得考虑的局限。UMI标定的质量和人类操作者的技能肯定是影响因素。论文通过使用优势估计器来筛选出推动任务进展的行为，在一定程度上回应了最优性假设的问题，但这并不是一个完整的解决方案。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 355.76,
+      "end": 388.56,
+      "en": "To wrap up, HIL-UMI presents a practical framework for adapting large VLA models. It combines the scalability of offline data collection using a portable device with the targeted, corrective nature of interactive learning. By being selective about what data to collect—focusing on states where the policy is uncertain, wrong, or fails to recognize progress—it makes post-training far more efficient than standard fine-tuning. The key takeaway is that for robot learning, not all data is created equal, and intelligently guiding human feedback can significantly accelerate progress.",
+      "zh": "总结一下，HIL-UMI 提出了一个适配大型 VLA 模型的实用框架。它把便携设备带来的离线数据采集的可扩展性，与交互式学习那种有针对性的纠错特性结合了起来。通过对采集哪些数据保持选择性——聚焦于策略不确定、出错或无法识别进展的状态——它让后训练比标准微调高效得多。关键结论是，对于机器人学习来说，并非所有数据都是平等的，智能地引导人类反馈可以显著加速进展。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 388.94,
+      "end": 393.665,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{han2026hilumibringinghumanintheloopposttraining,\n      title={HIL-UMI: Bringing Human-in-the-Loop Post-Training of Vision-Language-Action Models to Universal Manipulation Interface}, \n      author={Zimu Han and Yiming Zeng and Jiyao Zhang and Zihao Zhao and Yuanfei Wang and Yixiang Jin and Shiqi Li and Shuangben Chen and Wei Huang and Ruodai Li and Hui Shen and Hao Dong},\n      year={2026},\n      eprint={2609.20659},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.20659}, \n}",
+  "topics": [
+    "Data Curation",
+    "Reinforcement Learning",
+    "Human-AI"
+  ],
+  "peaks": [
+    0.807,
+    0.679,
+    1.0,
+    0.48,
+    0.662,
+    0.611,
+    0.508,
+    0.702,
+    0.463,
+    0.402,
+    0.369,
+    0.347,
+    0.419,
+    0.346,
+    0.522,
+    0.458,
+    0.359,
+    0.409,
+    0.44,
+    0.47,
+    0.267,
+    0.522,
+    0.481,
+    0.667,
+    0.448,
+    0.426,
+    0.568,
+    0.226,
+    0.822,
+    0.391,
+    0.292,
+    0.359,
+    0.393,
+    0.612,
+    0.597,
+    0.686,
+    0.536,
+    0.558,
+    0.474,
+    0.451,
+    0.533,
+    0.564,
+    0.308,
+    0.26,
+    0.592,
+    0.525,
+    0.377,
+    0.2,
+    0.306,
+    0.689,
+    0.581,
+    0.72,
+    0.324,
+    0.348,
+    0.499,
+    0.839,
+    0.441,
+    0.26,
+    0.546,
+    0.491,
+    0.46,
+    0.48,
+    0.888,
+    0.527,
+    0.392,
+    0.994,
+    0.759,
+    0.637,
+    0.488,
+    0.74,
+    0.519,
+    0.57
+  ],
+  "published": "2026-09-17",
+  "views": 240,
+  "license": "CC BY"
+}

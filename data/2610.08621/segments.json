@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 488.307,
+  "word_match_rate": 0.9421,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Agentic Software Development, we’ve seen systems such as Harness-of-Harness coordinate coding agents through repeated planning and testing, while GameCraft-Bench asks whether agents can build complete playable games. Today's lecture is on Recursive Game Creator: An Agentic Product-Level Experience-Oriented Game Harness. Developed by researchers including members of HKU MMLab at the University of Hong Kong, this paper asks how generated games can be refined for player experience, not merely made runnable. I see a hand—go ahead, Noah.",
+      "start": 0.0,
+      "end": 36.18
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, are you saying that a game can pass its technical checks and still fail as a player experience?",
+      "start": 37.34,
+      "end": 42.9
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. A game may launch, respond to inputs, and satisfy a specification, yet still have confusing controls, poor pacing, or little reason to keep playing. Recursive Game Creator, or R-G-C, makes experience an explicit target of development. It connects implementation with repeated play, behavioral and visual assessment, preference feedback, and version selection. The central idea is to treat game creation not as a single act of code generation, but as a cycle in which evidence from play helps guide the next revision.",
+      "start": 43.86,
+      "end": 78.02
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The cycle has four roles: Designer, Builder, Player, and Reviewer. The Designer turns the user’s brief and earlier feedback into a plan, including changes to make, features to preserve, and acceptance goals. Those goals connect broad aims to observable outcomes, such as a scene, a player input, and the expected result. The Builder implements the plan in stages, first creating a playable draft and then integrating requested assets while checking how they work with animation, collision, and interaction.",
+      "start": 78.02,
+      "end": 111.62
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what makes this Player different from an agent that just looks at screenshots and presses buttons?",
+      "start": 112.68,
+      "end": 117.98
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "R-G-C’s Player is coding-native: it reads the game’s state schema and available actions, then writes executable policies that interact through the game’s programmatic interface. A policy might pursue quick completion, while another explores optional areas or takes fewer risks. The system can run these policies repeatedly, recording observations, actions, events, progress, elapsed time, and outcomes. Screenshots or recordings can also be reviewed, but visual interpretation is kept separate from the frequent control loop.",
+      "start": 119.92,
+      "end": 152.58
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "This separation is meant to make playtesting more reusable. Instead of asking an agent to interpret every new image and choose each action from scratch, the system creates a policy and executes it across trials or separate game instances. The resulting trajectories give the Reviewer structured evidence about what happened and where progress stopped. Policy creation, repair, execution, and review still have costs, though; the approach does not make evaluation free. It changes how tests are gathered and organized.",
+      "start": 153.5,
+      "end": 184.76
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So how does the Reviewer decide whether a game is actually improving, rather than just producing more successful runs?",
+      "start": 185.86,
+      "end": 191.84
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It interprets shared signals such as success rate and playtime alongside progress and reasons for stopping. A high success rate could mean a game is too easy, while repeated failure could suggest frustration; long sessions might indicate exploration, or simply being stuck. The Reviewer also uses game-specific criteria. For a racing game, it might assess steering response and collision feedback; for a visual novel, dialogue coherence and whether choices feel consequential.",
+      "start": 191.84,
+      "end": 222.46
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify how user preferences become part of the next version?",
+      "start": 223.44,
+      "end": 226.92
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The Reviewer turns its findings into a structured preference record: the experience being sought, supporting evidence, whether the preference was explicitly stated or inferred from play, and priorities for revision. It then compares the new candidate with the retained version using shared signals and game-specific criteria. The outcome can favor either version, call them tied, or leave the judgment unavailable. The selected version is kept, and the next Designer plan draws on the review, closing the loop.",
+      "start": 227.8,
+      "end": 260.74
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The evaluation shows gains on two benchmarks, but the results need careful interpretation. On GameCraft-Bench, R-G-C rises from 72.70 after its first refinement round to 77.89 after its third, compared with 71.26 for the same-model baseline. All five reported categories improve between those rounds, with Action rising by 9.66 points. The paper suggests that action games may need several rounds to coordinate controls, combat feedback, and progression, but the scores alone do not prove why.",
+      "start": 261.7,
+      "end": 299.9
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "On GameASG-Bench, R-G-C passes 25 of 47 tasks, or 53.2%, compared with 9 of 47 for the same-model G-P-T six Astra high baseline. Its mean runtime-check pass rate is 93.4%. But a different-model G-P-T six Astra ultra baseline passes 26 tasks, slightly more than R-G-C, so it would be inaccurate to claim the best task-success result across every entry. A spatial example also shows 48 policy rollouts covering 97.1% of a test map, including 11 interiors.",
+      "start": 300.7,
+      "end": 339.9
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does that map coverage establish that coding-native testing is faster or more representative than ordinary playtesting?",
+      "start": 340.94,
+      "end": 346.3
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "No. The coverage example illustrates what the policies can explore; it is not a controlled speed comparison with graphical-interface play. Expert ratings also rise between the first and third rounds: controls move from 2 to 8, playability from 1 to 7, depth from 3 to 6, and art from 2 to 8 on a 1-to-10 scale. Average playtime increases from 1.50 to 12.41 minutes, but the supplied paper text does not report the study’s sample size or statistical uncertainty.",
+      "start": 348.04,
+      "end": 382.22
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader implication is a shift from checking whether generated software runs toward asking what happens when someone—or a test policy—uses it. This connects to Harness-of-Harness’s repeated development and testing, while R-G-C specializes that cycle around game experience and player evidence. Its reusable policies are valuable when a game exposes state and actions programmatically. But those interfaces may not reflect ordinary human play, and policy strategies cannot stand in for the full range of player responses.",
+      "start": 383.22,
+      "end": 416.06
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should future work address the gap between inferred preferences and what players actually enjoy?",
+      "start": 417.06,
+      "end": 422.28
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "A natural next step is to validate inferred preferences with human playtests, then examine whether those preferences predict satisfaction across different player groups and game types. Success rates and time spent are useful clues, not direct measures of enjoyment; a person may play longer because they are engaged or because they are lost. The same caution applies to benchmark gains: they support progress within the reported settings, but do not establish generalization across engines, populations, or development workflows.",
+      "start": 423.28,
+      "end": 453.84
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The lasting lesson is that experience-oriented game generation needs more than a capable Builder. It needs a way to play, record what happened, interpret that evidence in context, and decide which revision to keep. R-G-C offers one structured approach, with coding-native policies as a practical source of repeatable behavioral evidence and human testing as an essential complement. A playable artifact is a beginning, not a verdict on quality. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 454.94,
+      "end": 488.307
+    }
+  ]
+}

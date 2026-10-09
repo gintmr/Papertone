@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 470.987,
+  "word_match_rate": 0.962,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Online Learning and Inverse Optimization, today’s lecture is on Optimal and Efficient Online Inverse Optimization. Recent work such as “Efficient Online Inverse Optimization with O(d) Regret” and “Tight Regret Bound for Online Inverse Linear Optimization via Multiscale Matrix Weights” reflects a push toward lower regret and more efficient algorithms. This paper, by researchers at Google Research, including collaborators affiliated with NYU and Carnegie Mellon, asks whether optimal regret can also be deterministic and proper. I see Noah’s hand; go ahead.",
+      "start": 0.0,
+      "end": 38.5
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does inverse optimization mean in this setting?",
+      "start": 39.42,
+      "end": 42.98
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The learner sees an expert choose an action from a changing set of options, but does not see the expert’s objective or the values assigned to the options. The learner must infer enough about the expert’s preferences to recommend well next time. Regret measures the cumulative shortfall of those recommendations under the hidden objective. The challenge is to keep that shortfall small even when the available action sets are chosen adversarially.",
+      "start": 43.8,
+      "end": 68.96
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the learner watches choices rather than rewards?",
+      "start": 70.98,
+      "end": 73.32
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The paper formalizes the expert’s preference as a fixed hidden vector, while each round brings a new action set. The expert selects the action that scores highest under that vector; the learner observes the selected action, but not the scores. Earlier methods achieved regret growing with the number of rounds. Later work made regret independent of the horizon or logarithmic in it, but the best guarantees came with tradeoffs in dimension dependence, randomization, or computational cost.",
+      "start": 74.38,
+      "end": 105.74
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The central result closes an important part of that gap. The authors give a deterministic, proper learner with regret proportional to the square root of the dimension, for every horizon. Proper means the learner maintains an explicit estimate of the expert’s objective and recommends an action that maximizes that estimate over the current options. The dimension dependence is optimal up to constants, matching known lower bounds rather than merely improving on earlier algorithms.",
+      "start": 106.66,
+      "end": 134.8
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: why is being proper important?",
+      "start": 135.98,
+      "end": 138.48
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "A proper learner’s recommendation follows from a concrete objective estimate, so its behavior has a direct interpretation as a model of the expert’s preferences. That can matter in applications where we want to inspect or use the inferred objective, not just obtain a good action. The paper also shows that optimal regret does not require abandoning this structure. Its proof first transforms inverse optimization into a more general problem called a cutting-plane game.",
+      "start": 139.5,
+      "end": 167.88
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "In that game, the learner queries a point that represents its current estimate. An oracle replies with a direction that separates the query from the hidden point, while respecting a strong separation condition. The learner’s loss is tied to how far its query lies from the hidden point in that direction. A reduction then turns a learner for this game into a proper inverse-optimization algorithm, with at most a factor-of-2 increase in regret.",
+      "start": 168.78,
+      "end": 194.7
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify what makes the new algorithm different from earlier variable-metric methods?",
+      "start": 195.7,
+      "end": 200.24
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Earlier variable-metric approaches accumulated information in a matrix that permanently changed how the learner moved. RVM, the paper’s main algorithm, allows some of those metric updates—called stretches—to be revoked. Intuitively, a stretch slows movement along a direction the learner has already explored. If the query later travels far enough, that stretch can be removed, restoring flexibility instead of letting old information constrain every future step.",
+      "start": 201.24,
+      "end": 231.98
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "That revocation is the first key insight: the algorithm can use stronger temporary updates without paying for them forever. The second is a geometric rule for deciding when to revoke one. Each stretch is active only while the query remains inside a slab around where the stretch began; reaching a boundary triggers its removal. The slab is sized so the query has moved enough that the refund from revocation can cover the update’s earlier cost.",
+      "start": 232.9,
+      "end": 260.5
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Wait, how does the analysis keep track of those costs?",
+      "start": 261.46,
+      "end": 264.12
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The proof tracks the squared distance from the query to the hidden point, measured using the current metric. Creating a stretch increases this potential, while revoking it gives back part of that cost. Stretches that remain active are handled with a separate trace-based potential involving the inverse metric. Together, these accounting tools control movement, the lifetime of each stretch, and the updates that survive. The resulting cutting-plane regret is at most 6.375 times the radius times the square root of the dimension.",
+      "start": 264.12,
+      "end": 298.58
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The reduction gives inverse-optimization regret below 13 times the square root of the dimension, uniformly over the horizon and adaptive action sets. In each round, the learner also solves one linear optimization problem over the current action set. The stated arithmetic cost grows with the round number, though it remains polynomial for finite horizons. A variant skips sufficiently small stretches: it improves average computation while retaining essentially the same regret guarantee.",
+      "start": 299.56,
+      "end": 329.92
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Does that mean the algorithm is efficient in practice as well as in theory?",
+      "start": 330.92,
+      "end": 334.28
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The paper establishes polynomial computation, not practical performance on real applications; it reports no empirical evaluation. The basic algorithm’s per-round arithmetic cost increases over time. The skipping variant reduces the average cost to a bound that grows logarithmically with the horizon, but it does not eliminate horizon dependence. A finite-precision version also makes the guarantees robust to rounding, at the cost of a larger constant in the regret bound.",
+      "start": 335.22,
+      "end": 364.6
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The broader shift is that optimal dimension dependence can coexist with deterministic, proper recommendations. Earlier work, including “Efficient Online Inverse Optimization with O(d) Regret,” offered deterministic proper learning but with a larger dependence on dimension. Randomized and improper approaches reached the square-root rate, but with substantial implementation costs. RVM shows that revocable updates can bridge those approaches’ tradeoffs, at least for regret and polynomial-time computation.",
+      "start": 365.42,
+      "end": 397.78
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "What remains open after this result?",
+      "start": 398.82,
+      "end": 400.5
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The key open question is whether one can retain square-root-of-dimension regret while making per-round computation polynomial in dimension and independent of the round number. The work also points toward applications where decisions reveal preferences, such as contextual recommendation, routing, and control. But theoretical regret alone does not establish usefulness in those domains; empirical testing and attention to modeling assumptions would be needed. The authors also report that an automated system helped produce the proof, which they verified and edited.",
+      "start": 401.38,
+      "end": 436.54
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The main takeaway is a useful algorithmic principle: information need not remain in a learner’s model forever. By letting metric updates be revoked when their job is done, this paper reaches optimal dimension-dependent regret while preserving a clear objective estimate and deterministic behavior. That is a meaningful theoretical advance, alongside an honest reminder that computational guarantees and practical performance are different questions. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 437.48,
+      "end": 470.987
+    }
+  ]
+}

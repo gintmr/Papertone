@@ -1,0 +1,263 @@
+{
+  "id": "2610.10515",
+  "title": "RoboJEPA: Scaling Robotic Latent World Models",
+  "authors": [
+    "Artem Zholus",
+    "Nicolas Beltran-Velez",
+    "Jianhao Yuan",
+    "Sarath Chandar",
+    "Tushar Nagarajan",
+    "Daniel Severo",
+    "Koustuv Sinha",
+    "Michal Drozdzal",
+    "Adriana Romero Soriano",
+    "Jeannette Bohg",
+    "Nicolas Ballas",
+    "Mahmoud Assran"
+  ],
+  "abstract": "Latent world models have shown a remarkable ability to predict future states and to plan in the real world. In practice, however, we lack a principled way to estimate how their capabilities scale with model size, data, and compute, an open problem that slows progress in the field. In this work we present RoboJEPA, a world model based on the Joint Embedding Predictive Architecture (JEPA) and trained on a large-scale dataset spanning 12 robotic embodiments. We show that RoboJEPA's imagination error, the error of its latent rollouts, follows a second-order power law in compute, allowing us to predict model quality well beyond the scale at which the law is fit. We further show that downstream robotic planning performance improves predictably with compute, and that imagination error is strongly correlated with it, making it a reliable proxy for real-robot evaluation. Finally, we demonstrate that latent world models can be deployed zero-shot as robotic agents, planning toward a single goal image to solve tasks requiring long-horizon planning on real hardware. We release all model checkpoints together with our training and robot deployment code. To our knowledge, this is the first work to establish scaling laws for multi-embodiment robotic world models trained on real robot data, and RoboJEPA, at 8B parameters, is the largest JEPA predictor model trained to date.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10515",
+    "arxiv": "https://arxiv.org/abs/2610.10515"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11964-c995-7e6a-9b1e-b477da634deb/podcast.mp3",
+  "duration": 395.337,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.6,
+      "en": "In Deep Learning for Robotics, today’s lecture is on Robo jepa: Scaling Robotic Latent World Models. Recent work such as V-jepa 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning, and LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels, reflects growing interest in latent world models. This study, from researchers including FAIR at Meta and Mila, asks how these models scale with compute, a practical question when robot data and deployment are costly. Yes, Noah?",
+      "zh": "在机器人学的深度学习课上，今天讲的是Robo jepa：扩展机器人潜在世界模型。最近的一些工作，比如V-jepa 2：自监督视频模型实现理解、预测与规划，以及LeWorldModel：从像素出发的稳定端到端联合嵌入预测架构，都反映出人们对潜在世界模型的兴趣日益增长。这项研究来自Meta的FAIR和Mila等机构的研究人员，探讨的是这些模型如何随算力扩展，这在机器人数据和部署成本高昂的情况下是个很实际的问题。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.64,
+      "end": 40.82,
+      "en": "Hi Professor, why focus on scaling a world model instead of just making a robot policy larger?",
+      "zh": "教授您好，为什么重点是扩展世界模型，而不是直接把机器人策略做大？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.82,
+      "end": 71.86,
+      "en": "A policy maps observations and instructions directly to actions, while a world model predicts what may happen after proposed actions. Robo jepa studies whether those predictions improve systematically as compute grows, and whether better predictions help planning. Its planner receives a goal image and searches for actions that bring the predicted future representation closer to that image. That makes the paper’s focus different from scaling policies trained to imitate demonstrations.",
+      "zh": "策略直接把观测和指令映射成动作，而世界模型预测的是在候选动作之后可能发生什么。Robo jepa 研究的是，这些预测是否会随着算力增长而系统性地变好，以及更好的预测是否有助于规划。它的规划器接收一张目标图像，然后搜索能让预测出的未来表示更接近那张图像的动作。这就让这篇论文的关注点不同于单纯扩大那些通过模仿演示来训练的策略。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 73.1,
+      "end": 77.58,
+      "en": "Quick question: does the model generate future video frames, or something more compact?",
+      "zh": "快速问一下：这个模型是生成未来的视频帧，还是生成更紧凑的东西？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 77.58,
+      "end": 108.56,
+      "en": "It predicts compact visual features rather than pixels. A frozen V-jepa 2.1 encoder converts camera images into representations, and an action-conditioned transformer predicts the next representation using previous visual features, robot actions, and proprioceptive states. The encoder stays fixed across model sizes, so the scaling experiments isolate the dynamics predictor. Think of it as forecasting a scene’s useful summary rather than repainting every pixel.",
+      "zh": "它预测的是紧凑的视觉特征，而不是像素。一个冻结的V-jepa 2.1编码器把摄像头图像转换成表征，然后一个以动作为条件的Transformer利用之前的视觉特征、机器人动作和本体感知状态来预测下一个表征。编码器在不同模型规模下保持固定，因此缩放实验隔离出的是动力学预测器。可以把它理解为预测场景的有用摘要，而不是重新绘制每一个像素。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 109.54,
+      "end": 141.84,
+      "en": "Training uses both next-step prediction from observed sequences and autoregressive rollouts, where the predictor must use its own earlier predictions as inputs. The data mixture combines 23 public manipulation datasets, about 2.87 million trajectories, and 12 physical robot platforms, alongside simulated data. Predictors range from 22 million to 8 billion parameters. The team measures nine-step prediction error on held-out real-robot and simulation scenes to test how error changes with compute.",
+      "zh": "训练同时使用基于观测序列的下一步预测和自回归轨迹，后者要求预测器把自己的早期预测作为输入。数据混合了23个公开操作数据集、约287万条轨迹、12个物理机器人平台，外加模拟数据。预测器规模从2200万到80亿参数不等。团队在留出的真实机器人和模拟场景上测量九步预测误差，以检验误差如何随计算量变化。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 142.94,
+      "end": 147.2,
+      "en": "How do they know a better offline prediction actually helps a robot complete a task?",
+      "zh": "他们怎么知道更好的离线预测真的能帮机器人完成任务呢？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 148.18,
+      "end": 177.8,
+      "en": "They test planning in RoboCasa and on a physical Franka robot. For each plan, the system encodes a final goal image, samples candidate action sequences, and ranks them by how close their predicted final features are to the goal. It executes part of a plan, observes the result, and replans. This receding-horizon approach connects the offline prediction measure to task outcomes without using language instructions or a learned action proposal.",
+      "zh": "他们在RoboCasa和一台实体Franka机器人上测试了规划。对每个规划，系统会编码一张最终目标图像，采样候选动作序列，然后根据预测的最终特征与目标的接近程度对它们排序。它执行规划的一部分，观察结果，然后重新规划。这种滚动时域的方法把离线预测指标和任务结果联系了起来，而且不需要语言指令，也不需要学习到的动作提议。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 177.8,
+      "end": 183.28,
+      "en": "Can you clarify what the planner optimizes, since it never compares full predicted images?",
+      "zh": "你能澄清一下规划器到底在优化什么吗？毕竟它从不比较完整的预测图像。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 184.36,
+      "end": 214.44,
+      "en": "The planner compares predicted and goal representations, not rendered pixels. Across the simpler simulated tasks, reaching becomes effective around ten to the 20th floating-point operations, and reaching while holding an object appears around three times ten to the 20th. These results suggest that some basic control capabilities emerge at lower compute. The physical-robot results also generally improve with model size, though performance differs across grasping, lifting, and pick-and-place.",
+      "zh": "规划器比较的是预测表征和目标表征，而不是渲染出来的像素。在那些更简单的模拟任务里，大约到10的20次方浮点运算量时，够到目标就变得有效了，而一边够到一边抓住物体大概出现在3乘10的20次方。这些结果表明，一些基本的控制能力在较低算力下就会涌现。物理机器人上的结果总体上也是随着模型规模变大而改善，不过在抓取、举起和取放这几类任务上表现各有不同。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 216.32,
+      "end": 220.64,
+      "en": "So what changes when the task involves obstacles or moving an object through contact?",
+      "zh": "那么，当任务涉及障碍物或通过接触移动物体时，情况会有什么变化呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 221.6,
+      "end": 253.92,
+      "en": "Those tasks require longer predictions. The initial short-rollout recipe did not show a clear scaling trend for obstacle avoidance, so the researchers trained with rollouts extended from 2 to 10 steps and added higher-resolution inputs. Obstacle avoidance then became evident around ten to the 21st floating-point operations, while object pushing showed positive success around ten to the 22nd. This progression suggests that predicting contact-driven object movement requires more than learning basic end-effector motion.",
+      "zh": "这些任务需要更长的预测。最初的短轨迹方案在避障上没有显示出清晰的扩展趋势，所以研究者把轨迹从2步延长到10步来训练，并加入了更高分辨率的输入。避障能力大约在10的21次方浮点运算时开始显现，而物体推动则在10的22次方左右出现正向成功率。这一进展表明，预测接触驱动的物体运动，比学习基本的末端执行器运动要求更高。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 254.86,
+      "end": 286.9,
+      "en": "Prediction error also follows a useful scaling pattern: a second-order power law forecasts held-out error better than a standard power law, including for 4-billion- and 8-billion-parameter models excluded from the fit. On the Franka, the 8-billion-parameter model reports 67% success for grasping, 50% for lifting, and 27% for pick-and-place. These findings connect compute, prediction quality, and planning, but the real-robot comparisons with other systems are not controlled comparisons.",
+      "zh": "预测误差也呈现出一种有用的缩放规律：二阶幂律对留出误差的预测效果优于标准幂律，即便对未参与拟合的40亿和80亿参数模型也是如此。在Franka上，80亿参数模型报告的成功率为：抓取67%、举升50%、取放27%。这些发现把计算量、预测质量和规划联系了起来，但与其它系统在真实机器人上的比较并非受控对比。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 287.92,
+      "end": 292.2,
+      "en": "Does that mean the fitted scaling law tells us how much compute any robot model needs?",
+      "zh": "这是否意味着拟合出的缩放规律能告诉我们任何机器人模型需要多少算力？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 292.2,
+      "end": 318.22,
+      "en": "Not broadly. The encoder is frozen, the training mixture is fixed, and the results concern this predictor and representation under these evaluation conditions. More diverse data or a different encoder could change the relationship. The paper’s practical contribution is a way to forecast model prediction error and investigate whether that forecast tracks planning, rather than a universal recipe for every robot or task.",
+      "zh": "并不具有普遍性。编码器是冻结的，训练数据配比是固定的，结果也只适用于这些评估条件下的这个预测器和表征。更多样的数据或不同的编码器可能会改变这种关系。这篇论文的实际贡献在于提供了一种预测模型预测误差的方法，并研究这种预测是否能跟踪规划表现，而不是给出适用于所有机器人或任务的通用配方。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 318.22,
+      "end": 322.54,
+      "en": "How does this connect to the broader latent-world-model research direction?",
+      "zh": "这和更广泛的潜在世界模型研究方向有什么联系？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 323.44,
+      "end": 355.48,
+      "en": "Earlier work such as V-jepa 2 establishes latent prediction as a route toward understanding and planning, while LeWorldModel studies compact action-conditioned representations. Robo jepa adds a systematic compute-scaling analysis and tests whether gains carry into goal-image planning. Its staged results also suggest that researchers should evaluate distinct capabilities, not rely on one average prediction score. Scaling laws may help guide investments, but they need to be checked against task-specific behavior.",
+      "zh": "早期像V-jepa 2这样的工作，把潜在预测确立为通往理解和规划的路径，而LeWorldModel则研究紧凑的动作条件表示。Robo jepa增加了系统性的计算规模分析，并检验这些收益能否迁移到目标图像规划中。它分阶段的结果也表明，研究者应该评估不同的能力，而不是依赖单一的平均预测分数。规模定律或许有助于指导投入，但还需要结合具体任务的表现来检验。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 356.78,
+      "end": 359.64,
+      "en": "What’s the main caution you’d leave us with when interpreting the results?",
+      "zh": "在解读这些结果时，你最想留给大家的主要提醒是什么？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 360.64,
+      "end": 395.337,
+      "en": "Treat the scaling curve as evidence about a particular model family, frozen representation, and data mixture, not as a promise that larger models solve every manipulation problem. The clearest takeaway is that latent prediction can be measured as it scales, and those measurements can help explain when planning capabilities appear. Connecting forecastable model quality to real task performance is the step that makes scaling research useful for robotics. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "把缩放曲线看作是关于特定模型家族、冻结表示和数据混合的证据，而不是更大模型能解决所有操控问题的承诺。最明确的结论是，潜在预测可以随着规模扩展而被测量，而这些测量有助于解释规划能力何时出现。把可预测的模型质量与真实任务表现联系起来，这一步才让缩放研究对机器人学真正有用。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zholus2026robojepascalingroboticlatent,\n      title={RoboJEPA: Scaling Robotic Latent World Models}, \n      author={Artem Zholus and Nicolas Beltran-Velez and Jianhao Yuan and Sarath Chandar and Tushar Nagarajan and Daniel Severo and Koustuv Sinha and Michal Drozdzal and Adriana Romero Soriano and Jeannette Bohg and Nicolas Ballas and Mahmoud Assran},\n      year={2026},\n      eprint={2610.10515},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.10515}, \n}",
+  "topics": [
+    "Agents",
+    "Multi Task Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    0.658,
+    0.309,
+    0.365,
+    0.257,
+    0.23,
+    0.276,
+    0.583,
+    0.681,
+    0.605,
+    0.459,
+    0.435,
+    0.31,
+    0.288,
+    0.568,
+    0.592,
+    0.695,
+    0.275,
+    0.387,
+    0.24,
+    0.541,
+    0.825,
+    0.878,
+    0.499,
+    0.935,
+    0.639,
+    0.323,
+    0.736,
+    0.535,
+    0.584,
+    0.479,
+    0.424,
+    0.484,
+    0.706,
+    0.824,
+    0.316,
+    0.392,
+    0.416,
+    0.463,
+    0.306,
+    0.742,
+    0.611,
+    0.911,
+    0.552,
+    0.484,
+    0.375,
+    0.644,
+    0.678,
+    0.991,
+    0.597,
+    0.414,
+    0.344,
+    0.457,
+    0.547,
+    0.805,
+    0.621,
+    0.395,
+    0.58,
+    0.42,
+    1.0,
+    0.826,
+    0.614,
+    0.587,
+    0.381,
+    0.512,
+    0.285,
+    0.657,
+    0.299,
+    0.416,
+    0.266,
+    0.211,
+    0.2,
+    0.236
+  ],
+  "published": "2026-10-07",
+  "views": 481,
+  "license": "CC BY"
+}

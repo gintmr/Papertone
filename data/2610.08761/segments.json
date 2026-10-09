@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 426.396,
+  "word_match_rate": 0.9136,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning Methods, we often study how an agent improves from feedback. Today's lecture is on VeriFine. Recent work such as Skill Self-Play and The Red Queen Gödel Machine explores agents and evaluators that evolve together. VeriFine takes that broad idea into embodied policies, where a judgment must connect to what a robot or vehicle sees and does. The key question is whether feedback can keep pace as a policy’s failures change. Yes, Noah?",
+      "start": 0.0,
+      "end": 31.14
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why does an embodied agent need its judge to change at all?",
+      "start": 32.32,
+      "end": 36.22
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Imagine a robot told to go to the living room and identify four closed decorative volumes beside a potted plant. A plausible route explanation can still point it the wrong way or make it stop too soon. A fixed judge may keep rewarding yesterday’s familiar behavior while overlooking new mistakes. VeriFine proposes adapting the policy, its training curriculum, and its judge together. In the illustrated example, the authors say the updated sequence corrects movement failures, but it does not establish that the robot found the requested objects.",
+      "start": 37.08,
+      "end": 70.08
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The first component is the Policy Improvement Loop, or P-I-L. A rubric-based judge examines the policy’s reasoning and proposed action in context, then reports a score and structured diagnoses. The system looks for recurring errors, selects contexts where improvement is needed, and filters out unreliable targets before training. Think of it as a coach that identifies both which skill needs practice and which demonstrations are trustworthy enough to use.",
+      "start": 71.12,
+      "end": 97.98
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what does reference-free mean here?",
+      "start": 98.76,
+      "end": 101.38
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It means the judge does not need a human-written reference explanation for every sample it evaluates. Instead, it uses physical context, including visual observations, the agent’s state, and the instruction. The rubric makes its criteria explicit. For driving, it considers whether an action is consistent and safe, whether the reasoning is grounded in the scene, and whether it covers relevant details and their causal connection to the action. Reference-free does not mean free of human involvement everywhere.",
+      "start": 102.18,
+      "end": 132.02
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The second component is the Judge Improvement Loop, or J-I-L. The system monitors policy progress on an expert-verified anchor set. If progress stalls, or the judge’s reward signal diverges from measured progress, it selects uncertain or consequential examples from newer rollouts. Human experts and the agent discuss disagreements and refine the rubric. Humans can also revise earlier calibration judgments; they are collaborators in calibration, not treated as infallible oracles.",
+      "start": 132.9,
+      "end": 162.98
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the judge changes when the policy reveals failures the earlier rubric did not handle well?",
+      "start": 163.98,
+      "end": 168.9
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That is the intended cycle. A frontier vision-language model serves as a calibrated teacher, and its rubric judgments are distilled into a smaller student judge for frequent scoring. The paper reports 0.07 seconds per sample for student inference, compared with 20.92 seconds for the teacher in a batch-size-one measurement on an H-one hundred. That measures judge inference latency only; it does not show that total training or the full system runs faster.",
+      "start": 168.9,
+      "end": 200.14
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The headline driving result uses a fixed reference-based evaluator to measure policy reasoning. The Alpamayo one point five, eight-billion-parameter policy scores 60.56 at the base and 71.61 after round 3, an 18.2% relative increase. The strongest reference-based judge configuration scores 67.70, so the round-3 policy is 5.8% higher. Each round starts from the same base checkpoint with matched training budgets; this is improvement across evolving supervision, not one continuously trained checkpoint.",
+      "start": 201.06,
+      "end": 239.54
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does the score comparison show that the curriculum itself caused the whole improvement?",
+      "start": 240.68,
+      "end": 244.48
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No, and the within-round comparison gives a more focused test. In round 3, the reward judge, base initialization, and policy-training budget are held fixed. Judge-guided data selection reaches 71.61 on the fixed reference-based evaluator, while random selection reaches 68.53. The reference-free scores are 83.13 and 81.59, respectively. This supports a contribution from targeted selection under those conditions, but it does not isolate curriculum as the sole cause of all multi-round gains.",
+      "start": 246.34,
+      "end": 281.92
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A second result asks whether the judge tracks human ratings on newly challenging examples. On a later test subset, the round-1 student judge has a Pearson correlation of 0.07 with human scores, while the round-2 student reaches 0.74. Correlation measures whether scores track relative human-rated quality; it is not policy performance. The result supports better alignment on that subset, not universal reliability or proof that calibration alone caused the change.",
+      "start": 283.04,
+      "end": 315.42
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does that approach compare with Skill Self-Play or The Red Queen Gödel Machine?",
+      "start": 316.32,
+      "end": 320.54
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Those works also make co-evolution between agents and evaluators part of the research landscape. VeriFine’s particular emphasis is coupling judge revision to the policy’s emerging failures, then using the revised judge to shape later training data. It also differs from DynamicRubric, which adapts rubrics to distinguish current language-model responses, and CoVer-VLA, which uses a verifier to select instructions and actions at test time. VeriFine instead links policy learning, curriculum selection, and selective human calibration.",
+      "start": 320.54,
+      "end": 355.16
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader implication is that verification can be treated as an adaptive part of embodied learning, rather than a fixed scoring tool. Still, the evidence covers driving with reinforcement fine-tuning and robot navigation with supervised fine-tuning. The fixed policy evaluator uses expert-verified reference reasoning, and human guidance remains part of judge calibration. So the work suggests a useful design direction, while leaving open how well this coupled process transfers to other tasks and evaluation settings.",
+      "start": 356.26,
+      "end": 387.02
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "What would be the next important test for this framework?",
+      "start": 388.14,
+      "end": 390.42
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "A useful next step would test whether the loop remains dependable across more tasks, environments, and kinds of failure, while separating the effects of judge revision, human calibration, and curriculum selection. For now, VeriFine’s central lesson is concrete: when an embodied policy’s errors change, its feedback and practice examples may need to change too. In the navigation illustration, the revised movement sequence makes that idea visible without proving task completion. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 391.56,
+      "end": 426.396
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 393.665,
+  "word_match_rate": 0.9411,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our Advanced Topics in Robotic Learning course, we've discussed how Vision-Language-Action, or VLA, models are becoming general-purpose policies. Today's lecture is on “HIL-UMI: Bringing Human-in-the-Loop Post-Training of Vision-Language-Action Models to Universal Manipulation Interface” from researchers at Peking University and others. We've seen a trend of using reinforcement learning to adapt VLAs, with papers like “SimpleVLA-RL” and “VLA-RL”. This work, however, explores a different path for post-training that avoids some of the complexities of online RL. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.9
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. What's the main issue with the standard way of adapting these large VLA models that this paper is trying to solve?",
+      "start": 38.3,
+      "end": 44.44
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Good question. The core problem is that a pre-trained VLA model, despite its general knowledge, often fails when deployed on a specific robot due to differences in camera setup, robot body, or workspace. The standard solution is supervised fine-tuning, or SFT, where you just show the robot more demonstrations. But this is inefficient. You might collect hundreds of examples of behavior the policy already knows, without addressing its specific blind spots. This can lead to compounding errors, where one small mistake sends the policy into a state it can't recover from.",
+      "start": 44.72,
+      "end": 77.3
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So it's a data efficiency problem. We need smarter data collection.",
+      "start": 77.56,
+      "end": 80.24
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Precisely. The main contribution of HIL-UMI is a method for human-in-the-loop post-training that is policy-aware—it actively seeks out the policy's weaknesses. But, critically, it does this without needing constant access to the physical robot during data collection. The operator uses a portable handheld gripper, the Universal Manipulation Interface or UMI, to perform demonstrations. The system watches the human and the policy's internal predictions in real-time, and only flags a segment for collection if it detects a disagreement or a point of confusion for the current policy. This makes the post-training process much more targeted.",
+      "start": 80.64,
+      "end": 117.32
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So it’s an interactive approach like DAgger, but the interaction happens between the human demonstrator and the policy's predictions, not with the physical robot's actions. Is that right?",
+      "start": 117.74,
+      "end": 125.96
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Exactly. That's a very good way to put it. It keeps the corrective, policy-aware benefits of interactive learning while decoupling the data collection from the hardware. This greatly improves scalability, as multiple operators can collect data in parallel without needing a fleet of robots.",
+      "start": 126.42,
+      "end": 141.78
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Let's get into the technical approach. The system uses two parallel processes to decide when to collect data. The first is policy-based out-of-distribution detection. As the human uses the UMI device, the VLA policy is also generating its own action predictions for the same observation. The system then compares the human’s action to the distribution of the policy’s predictions using a metric called an Energy Score.",
+      "start": 142.18,
+      "end": 168.3
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Wait, why use a complex 'Energy Score'? Wouldn't a simple distance metric between the human's action and the policy's mean prediction work?",
+      "start": 168.56,
+      "end": 175.82
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "That's a key detail. A simple distance metric wouldn't distinguish between two scenarios: one where the policy is confident but wrong, and another where the policy is just highly uncertain. The Energy Score accounts for the spread, or variance, of the policy's own predictions. So, it can tell if the human's action is an outlier because the policy's predictions are tightly clustered somewhere else, or simply because the policy is uncertain and its predictions are all over the place. If the score exceeds a threshold, it signals a valuable learning opportunity, and that demonstration segment is recorded.",
+      "start": 176.18,
+      "end": 209.76
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "I see. So it captures both disagreement and uncertainty. What's the second process?",
+      "start": 210.34,
+      "end": 214.24
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The second is advantage-based detection. They train a separate model, an advantage estimator, to predict task progress. During a demonstration, if the human is clearly making progress but the advantage model predicts low progress, it signals another kind of blind spot. This time, it's a blind spot in the system's understanding of what constitutes a useful action. Data collected from these segments is used to refine the advantage estimator itself.",
+      "start": 214.58,
+      "end": 241.14
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "And then this advantage information is used to train the main policy?",
+      "start": 241.54,
+      "end": 244.2
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Correct. The policy is updated using advantage-conditioned behavioral cloning. This means they label data as either 'high advantage' or 'low advantage'. The data collected from policy disagreements are automatically labeled as high advantage. For the rest, they use the updated advantage estimator. The policy then learns to generate actions conditioned on achieving a high-advantage outcome. This helps it focus on mimicking the most useful parts of the demonstrations.",
+      "start": 244.68,
+      "end": 271.54
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The main implication here is a shift in how we think about scaling up robot learning. Instead of just collecting massive, undirected datasets or relying on complex online reinforcement learning, HIL-UMI proposes a more surgical approach. It focuses human effort on fixing the policy's specific, current weaknesses. This makes post-training more of a targeted debugging process than a brute-force data collection effort.",
+      "start": 272.16,
+      "end": 295.2
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How does this compare to a framework like ConRFT, which also combines offline and human-in-the-loop tuning?",
+      "start": 295.6,
+      "end": 301.06
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Good connection. Both aim to refine pre-trained models. However, ConRFT and many similar methods still rely on collecting corrective data on the physical robot. HIL-UMI’s primary architectural significance is separating the policy-aware data collection loop from the policy execution loop. Their experiments show they achieve better performance than a real-robot DAgger variant with over five times less collection time per frame, simply because they remove the robot rollout and correction latency from the process. This makes the entire post-training pipeline more accessible and easier to distribute.",
+      "start": 301.42,
+      "end": 332.34
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "But it still relies on the assumption that the UMI-to-robot transfer is perfect and that the human demonstrator is always optimal, right?",
+      "start": 332.8,
+      "end": 338.52
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Yes, those are valid limitations to consider. The quality of the UMI calibration and the skill of the human operator are definite factors. The paper addresses the optimality assumption somewhat by using the advantage estimator to filter for task-progressing behavior, but it's not a complete solution.",
+      "start": 338.76,
+      "end": 355.38
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "To wrap up, HIL-UMI presents a practical framework for adapting large VLA models. It combines the scalability of offline data collection using a portable device with the targeted, corrective nature of interactive learning. By being selective about what data to collect—focusing on states where the policy is uncertain, wrong, or fails to recognize progress—it makes post-training far more efficient than standard fine-tuning. The key takeaway is that for robot learning, not all data is created equal, and intelligently guiding human feedback can significantly accelerate progress.",
+      "start": 355.76,
+      "end": 388.56
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 388.94,
+      "end": 393.665
+    }
+  ]
+}

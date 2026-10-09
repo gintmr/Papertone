@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 395.337,
+  "word_match_rate": 0.92,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Learning for Robotics, today’s lecture is on Robo jepa: Scaling Robotic Latent World Models. Recent work such as V-jepa 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning, and LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels, reflects growing interest in latent world models. This study, from researchers including FAIR at Meta and Mila, asks how these models scale with compute, a practical question when robot data and deployment are costly. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.6
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why focus on scaling a world model instead of just making a robot policy larger?",
+      "start": 35.64,
+      "end": 40.82
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A policy maps observations and instructions directly to actions, while a world model predicts what may happen after proposed actions. Robo jepa studies whether those predictions improve systematically as compute grows, and whether better predictions help planning. Its planner receives a goal image and searches for actions that bring the predicted future representation closer to that image. That makes the paper’s focus different from scaling policies trained to imitate demonstrations.",
+      "start": 41.82,
+      "end": 71.86
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: does the model generate future video frames, or something more compact?",
+      "start": 73.1,
+      "end": 77.58
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "It predicts compact visual features rather than pixels. A frozen V-jepa 2.1 encoder converts camera images into representations, and an action-conditioned transformer predicts the next representation using previous visual features, robot actions, and proprioceptive states. The encoder stays fixed across model sizes, so the scaling experiments isolate the dynamics predictor. Think of it as forecasting a scene’s useful summary rather than repainting every pixel.",
+      "start": 77.58,
+      "end": 108.56
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Training uses both next-step prediction from observed sequences and autoregressive rollouts, where the predictor must use its own earlier predictions as inputs. The data mixture combines 23 public manipulation datasets, about 2.87 million trajectories, and 12 physical robot platforms, alongside simulated data. Predictors range from 22 million to 8 billion parameters. The team measures nine-step prediction error on held-out real-robot and simulation scenes to test how error changes with compute.",
+      "start": 109.54,
+      "end": 141.84
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How do they know a better offline prediction actually helps a robot complete a task?",
+      "start": 142.94,
+      "end": 147.2
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "They test planning in RoboCasa and on a physical Franka robot. For each plan, the system encodes a final goal image, samples candidate action sequences, and ranks them by how close their predicted final features are to the goal. It executes part of a plan, observes the result, and replans. This receding-horizon approach connects the offline prediction measure to task outcomes without using language instructions or a learned action proposal.",
+      "start": 148.18,
+      "end": 177.8
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Can you clarify what the planner optimizes, since it never compares full predicted images?",
+      "start": 177.8,
+      "end": 183.28
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The planner compares predicted and goal representations, not rendered pixels. Across the simpler simulated tasks, reaching becomes effective around ten to the 20th floating-point operations, and reaching while holding an object appears around three times ten to the 20th. These results suggest that some basic control capabilities emerge at lower compute. The physical-robot results also generally improve with model size, though performance differs across grasping, lifting, and pick-and-place.",
+      "start": 184.36,
+      "end": 214.44
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So what changes when the task involves obstacles or moving an object through contact?",
+      "start": 216.32,
+      "end": 220.64
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Those tasks require longer predictions. The initial short-rollout recipe did not show a clear scaling trend for obstacle avoidance, so the researchers trained with rollouts extended from 2 to 10 steps and added higher-resolution inputs. Obstacle avoidance then became evident around ten to the 21st floating-point operations, while object pushing showed positive success around ten to the 22nd. This progression suggests that predicting contact-driven object movement requires more than learning basic end-effector motion.",
+      "start": 221.6,
+      "end": 253.92
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Prediction error also follows a useful scaling pattern: a second-order power law forecasts held-out error better than a standard power law, including for 4-billion- and 8-billion-parameter models excluded from the fit. On the Franka, the 8-billion-parameter model reports 67% success for grasping, 50% for lifting, and 27% for pick-and-place. These findings connect compute, prediction quality, and planning, but the real-robot comparisons with other systems are not controlled comparisons.",
+      "start": 254.86,
+      "end": 286.9
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does that mean the fitted scaling law tells us how much compute any robot model needs?",
+      "start": 287.92,
+      "end": 292.2
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Not broadly. The encoder is frozen, the training mixture is fixed, and the results concern this predictor and representation under these evaluation conditions. More diverse data or a different encoder could change the relationship. The paper’s practical contribution is a way to forecast model prediction error and investigate whether that forecast tracks planning, rather than a universal recipe for every robot or task.",
+      "start": 292.2,
+      "end": 318.22
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How does this connect to the broader latent-world-model research direction?",
+      "start": 318.22,
+      "end": 322.54
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Earlier work such as V-jepa 2 establishes latent prediction as a route toward understanding and planning, while LeWorldModel studies compact action-conditioned representations. Robo jepa adds a systematic compute-scaling analysis and tests whether gains carry into goal-image planning. Its staged results also suggest that researchers should evaluate distinct capabilities, not rely on one average prediction score. Scaling laws may help guide investments, but they need to be checked against task-specific behavior.",
+      "start": 323.44,
+      "end": 355.48
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "What’s the main caution you’d leave us with when interpreting the results?",
+      "start": 356.78,
+      "end": 359.64
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Treat the scaling curve as evidence about a particular model family, frozen representation, and data mixture, not as a promise that larger models solve every manipulation problem. The clearest takeaway is that latent prediction can be measured as it scales, and those measurements can help explain when planning capabilities appear. Connecting forecastable model quality to real task performance is the step that makes scaling research useful for robotics. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 360.64,
+      "end": 395.337
+    }
+  ]
+}

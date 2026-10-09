@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 421.59,
+  "word_match_rate": 0.9167,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on language models for scientific discovery, today’s lecture is on IdeaAnchor: Teaching LLMs to Turn Literature into Research Ideas. Recent work such as SciPIP: An LLM-based Scientific Paper Idea Proposer and ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models reflects a shift toward literature-assisted ideation. IdeaAnchor, from researchers at Yale and the University of Chicago, focuses on teaching models how papers jointly motivate a new direction. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.28
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does it mean for a research idea to be anchored in literature?",
+      "start": 39.34,
+      "end": 43.3
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It means more than citing papers or borrowing a technique. A proposal should explain what each relevant study contributes, what remains unresolved, and why those pieces together make a new research direction plausible. IdeaAnchor treats that chain of reasoning as something a model can learn. The central challenge is moving from several separate summaries to a defensible gap, rather than producing a polished but generic combination of familiar ideas.",
+      "start": 44.28,
+      "end": 71.06
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what information does an IdeaAnchor actually contain?",
+      "start": 72.02,
+      "end": 75.72
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Each anchor assigns prior papers functional roles: direct predecessor, inspiration, gap and motivation, or methodological ingredient. It then describes what those papers achieved and left open, and explains their relationships. Finally, it provides checkable criteria for judging a proposal’s motivation, use of literature-grounded methods, and overall coherence. Think of it as a research map with both landmarks and possible routes, not a script requiring the model to reproduce one exact published method.",
+      "start": 76.66,
+      "end": 109.84
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The team built anchors by starting with published papers, identifying 5 to 7 influential prior works, and using an L-L-M to infer roles and learned insights. Their corpus contains 14,183 papers from machine learning conferences and Nature Communications. They tested three training strategies: S-F-T learns from demonstrations produced with anchor guidance; S-S-D learns from the target model’s own anchor-informed proposals; and R-L rewards proposals for meeting anchor-derived criteria.",
+      "start": 110.84,
+      "end": 145.88
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How can the model learn from an anchor without simply copying it into the answer?",
+      "start": 147.02,
+      "end": 150.5
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The anchor is privileged information: it is available during training but withheld at deployment. For demonstrations and self-distillation, the training prompts discourage copying the guidance directly into outputs. In reinforcement learning, G-R-P-O trains a model using a judge that checks whether criteria are met, while penalizing format violations. The intended lesson is a reusable reasoning process, not memorization of the hidden anchor or its reference proposal.",
+      "start": 151.42,
+      "end": 182.14
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "This distinction matters when we look at results. On the I-C-L-R benchmark, quen three eight B rises from 10.9% criteria satisfaction at baseline to 16.3% with self-distillation, 21.7% with S-F-T, and 24.6% with R-L. For quen three point five nine B, S-F-T reaches 48.7% and R-L reaches 54.2%, above the reported G-P-T reference scores. Human pairwise reviews also generally prefer trained proposals.",
+      "start": 183.08,
+      "end": 219.36
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Does retrieval improve the model’s research direction, or mainly the technical plan?",
+      "start": 220.5,
+      "end": 224.82
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Mostly the technical plan. Role-aware retrieval finds full-text passages suited to each paper’s assigned function, such as methods for a methodological source or problem statements for a paper defining a gap. In comparisons, retrieved proposals often add experimental settings, baselines, implementation constraints, and methodological choices. They less often change the high-level research direction. Retrieval can therefore supply evidence for elaboration, while training seems more important for learning how to select and justify a gap.",
+      "start": 225.72,
+      "end": 259.34
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "That division suggests a practical workflow: first use learned synthesis to decide what unresolved opportunity the literature supports, then retrieve targeted evidence to make the plan actionable. In a small study across 6 machine-learning topics, the trained model with full-text retrieval improved grounding, specificity, and overall quality compared with its baseline. Feasibility changed less. The authors also warn that a mistaken role assignment can retrieve evidence that reinforces a weak premise, especially for weaker models.",
+      "start": 260.22,
+      "end": 292.18
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How much should we trust a benchmark whose criteria come from published papers?",
+      "start": 293.16,
+      "end": 296.88
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "That is an important limitation. The held-out benchmark covers 924 I-C-L-R 2026 papers, and its criteria are carefully reviewed, but each instance still begins from one published contribution and its reconstructed history. The evaluation relies substantially on L-L-M judges, with human comparisons as a complement. High scores do not establish field-wide originality or show that proposals will succeed in experiments. Alternative valid ideas and execution-level testing remain open challenges.",
+      "start": 306.1,
+      "end": 334.28
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "IdeaAnchor connects to a broader movement toward evidence-grounded ideation, including ResearchStudio-Idea’s operational patterns and SciPIP’s structured proposal generation. Its distinct emphasis is using the intellectual provenance of real papers as training supervision, then withholding that guidance at use time. Results also suggest that synthesis can transfer from natural-science training examples to machine-learning evaluation. The larger implication is a research assistant that combines learned judgment with targeted literature access, rather than expecting retrieval alone to invent a sound direction.",
+      "start": 336.28,
+      "end": 376.46
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So the key claim is improved proposal generation, not that the model can independently conduct science?",
+      "start": 377.5,
+      "end": 382.84
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Exactly. IdeaAnchor offers a way to train models to connect contributions, limitations, and methods across papers, and its experiments show measurable improvements in proposal quality. But proposal writing is only one part of discovery; novelty, experimental success, and usefulness to researchers require further validation. The memorable takeaway is that good scientific assistance needs both a reasoned path from literature to a research gap and concrete evidence for developing that path. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 383.88,
+      "end": 421.59
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 461.374,
+  "word_match_rate": 0.9238,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on AI Research Agents, today’s lecture is on R-S-I Gym: A Flexible Environment for Recursive Self-Improvement. M-L-Gym and The Last AI Built by Humans reflect growing interest in research agents and in what recursive improvement really means. This paper, by researchers affiliated with Evolvent AI and the National University of Singapore, offers shared infrastructure for testing improvements across data, training, and agent harnesses. The field is moving from isolated experiments toward integrated, auditable research systems. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.2
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does recursive self-improvement here mean the system keeps improving itself across repeated cycles?",
+      "start": 39.2,
+      "end": 45.06
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That distinction is central. The authors define recursive self-improvement as retaining accepted changes as the starting point for a later improvement cycle. They distinguish it from recursive progress, where those inherited changes also make later improvement more effective. R-S-I Gym mainly measures whether agents improve a target system during one budgeted run. It does not demonstrate that improvements compound across successive cycles, so we should treat the title as the research setting, not as a claim that this stronger effect has been proven.",
+      "start": 46.04,
+      "end": 80.38
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The platform’s main idea is Everything as a Service: agents use shared services for training, inference, model rollouts, evaluation, and sandbox computation. Rather than making each agent build its own training stack or arrange computing infrastructure, the environment exposes these capabilities through consistent interfaces. Permission controls specify what an agent may change, and a shared budget tracks service use. This gives researchers a common setup for comparing different improvement strategies.",
+      "start": 81.18,
+      "end": 112.76
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what can an agent actually change in the different tracks?",
+      "start": 112.76,
+      "end": 117.44
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "In the Data track, agents can change training examples, while training settings and the harness stay fixed. In the Harness track, agents can revise execution code, but model weights remain fixed. The Joint track allows changes to data, training settings, and harness code, starting from the same base model. These permissions turn a broad question—what makes a system better?—into comparisons of individual interventions and their interactions.",
+      "start": 118.42,
+      "end": 146.32
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The agents operate in lightweight, C-P-U-only containers, while remote services handle heavier work. The Training Service performs lora fine-tuning; inference serves base models and checkpoints; rollout models can generate data or judge outputs. Evaluation returns scores alongside task rewards, execution trajectories, and logs. Each call is authorized and charged against the run’s budget. That arrangement makes resource allocation part of the research task, rather than an infrastructure problem agents must solve first.",
+      "start": 147.44,
+      "end": 180.22
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the paper measures improvement across its benchmarks?",
+      "start": 180.96,
+      "end": 184.4
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The study covers software engineering, terminal use, mathematics, scientific reasoning, and skill-based tasks. Its R-S-I Index averages, with equal weight, how much of the remaining performance gap each system closes across five benchmarks. Each benchmark score averages three attempts per task. In the Joint track, six research agents start from the same Qwen base model and minimal harness, with a 500-dollar service budget. Training data must be generated during the run, and post-run audits check data overlap and submitted artifacts.",
+      "start": 185.52,
+      "end": 220.26
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "So the agents generally improved, but did one approach lead across every kind of task?",
+      "start": 221.56,
+      "end": 226.18
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "No. All six agents improve the overall index, with Opus 5 highest at 0.4809, but no agent leads on every benchmark. Across 30 agent-and-benchmark settings, 29 scores improve; the exception is Sol 6 on G-P-Q-A Diamond. Opus 5 raises S-W-E-bench Verified from 17.67% to 50.33%, and its A-I-M-E score from 31.67% to 97.78%. Yet gains on Terminal-Bench and SkillsBench are much more limited.",
+      "start": 227.18,
+      "end": 265.3
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The single-track evidence helps explain why. With weights fixed, an Opus 5 harness change improves S-W-E-bench by 16.67 percentage points and Terminal-Bench by 11.98 points. In a separate case study, the agent addresses truncated outputs, unverified completion claims, and background services in an execution loop. Terminal-Bench rises from 30.34% to 40.82%, while tasks solved on all three attempts increase from 15 to 26. A better harness can therefore improve how a model uses its capabilities.",
+      "start": 265.3,
+      "end": 305.16
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "But does that mean more fine-tuning or a larger budget reliably produces better systems?",
+      "start": 306.46,
+      "end": 311.36
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The results argue against that simple expectation. In eight of ten within-run comparisons, the more heavily trained candidate scores lower than its matched reference; the other two gain one task each. Still, training can help: DeepSeek’s trained model improves its development score on S-W-E-bench under the same harness. Doubling the budget from 500 to 1,000 dollars also gives mixed results: three of four tested pairs improve, while Opus 5’s Terminal-Bench score falls. More compute is not a guarantee.",
+      "start": 312.3,
+      "end": 345.66
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "How does this platform relate to work like M-L-Gym, and what should we be cautious about?",
+      "start": 345.66,
+      "end": 351.94
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "M-L-Gym provides a framework and benchmark for open-ended AI research challenges; R-S-I Gym emphasizes shared services and permissions across model, data, and harness changes. Both help make research-agent behavior a subject of evaluation. R-S-I Gym also records trajectories and logs, which can reveal why a change worked or failed. But each configuration is a single run, so these comparisons do not establish run-to-run reliability, and agents can inspect benchmark material during development.",
+      "start": 353.42,
+      "end": 385.66
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Does the paper show that successful changes make the next research cycle more effective?",
+      "start": 386.74,
+      "end": 390.8
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Not yet. Its results concern improvement within a single run, not recursive progress across multiple cycles. The authors also report limits in network-isolated and self-improvement case studies, including runs with no overall gain. The R-S-I Index is useful for summarizing relative gap closure, but equal benchmark weighting cannot capture every difference in task difficulty or practical value. Future studies could repeat runs, better control evaluation exposure, and test whether retained changes improve later research.",
+      "start": 390.8,
+      "end": 425.2
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The key takeaway is that model improvement is not just a matter of changing weights. Data, training choices, execution harnesses, and resource allocation can all shape results, and their interactions deserve careful study. R-S-I Gym gives researchers a shared way to examine those choices while tracking costs and experimental traces. Its findings are promising as evidence about budgeted improvement, but they also show why replication and multi-cycle evaluation matter. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 426.2,
+      "end": 461.374
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "id": "2610.10310",
+  "title": "RSIGym: A Flexible Environment for Recursive Self-Improvement",
+  "authors": [
+    "Fanqing Meng",
+    "Lingxiao Du",
+    "Haocheng Lu",
+    "Qiguang Chen",
+    "Ziqi Zhao",
+    "Zijian Wu",
+    "Jiayuan Zhuo",
+    "Mengkang Hu",
+    "Michael Qizhe Shieh"
+  ],
+  "abstract": "Recursive self-improvement requires carrying accepted changes into later improvement cycles, while studying agent-proposed changes also requires substantial research infrastructure. Existing settings often leave agents to rebuild routine infrastructure or restrict exploration to individual components. We introduce RSIGym, an agent-native research environment based on Everything as a Service (EaaS). RSIGym exposes training, inference, rollout, evaluation, and sandbox execution through reusable services, with shared budget and permission controls supporting Data, Harness, and Joint improvement tracks. This design enables agents to investigate individual interventions and jointly optimize data, training settings, and execution harnesses within the same environment. We define RSI-Index as the mean fraction of the remaining performance gap closed across five benchmarks covering software engineering, terminal interaction, mathematics, scientific reasoning, and skill-based tasks. Comparing six frontier research models in independent Joint runs, Opus 5 achieves the highest RSI-Index of 0.4809 under a $500 platform-service budget per benchmark run. Its selected systems improve all five benchmarks, raising SWE-bench Verified from 17.67% to 50.33% and AIME from 31.67% to 97.78%. Additional experiments examine DSH-harness refinement, budget variation, and restricted network access, while recorded trajectories reveal how agents diagnose failures and select candidates. We open-source the full RSIGym codebase and results to support reproducibility and further research.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10310",
+    "arxiv": "https://arxiv.org/abs/2610.10310"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11964-f456-7972-bfc2-218f88d03d85/podcast.mp3",
+  "duration": 461.374,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.2,
+      "en": "In a graduate course on AI Research Agents, today’s lecture is on R-S-I Gym: A Flexible Environment for Recursive Self-Improvement. M-L-Gym and The Last AI Built by Humans reflect growing interest in research agents and in what recursive improvement really means. This paper, by researchers affiliated with Evolvent AI and the National University of Singapore, offers shared infrastructure for testing improvements across data, training, and agent harnesses. The field is moving from isolated experiments toward integrated, auditable research systems. Yes, Noah?",
+      "zh": "在一门关于AI研究智能体的研究生课程里，今天的讲座讲的是R-S-I Gym：一个用于递归自我改进的灵活环境。M-L-Gym和“人类建造的最后一个AI”反映出人们对研究智能体以及递归改进真正意味着什么的兴趣日益增长。这篇论文由Evolvent AI和新加坡国立大学的研究人员合作完成，提供了一个共享基础设施，用来测试数据、训练和智能体框架方面的改进。这个领域正从孤立的实验走向集成化、可审计的研究系统。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.2,
+      "end": 45.06,
+      "en": "Hi Professor, does recursive self-improvement here mean the system keeps improving itself across repeated cycles?",
+      "zh": "教授您好，这里的递归自我改进是指系统在反复循环中不断自我提升吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.04,
+      "end": 80.38,
+      "en": "That distinction is central. The authors define recursive self-improvement as retaining accepted changes as the starting point for a later improvement cycle. They distinguish it from recursive progress, where those inherited changes also make later improvement more effective. R-S-I Gym mainly measures whether agents improve a target system during one budgeted run. It does not demonstrate that improvements compound across successive cycles, so we should treat the title as the research setting, not as a claim that this stronger effect has been proven.",
+      "zh": "这个区分很关键。作者把递归式自我改进定义为：把已被接受的改动保留下来，作为下一轮改进的起点。他们把它和递归式进步区分开来，后者指的是这些继承下来的改动还能让后续的改进更有效。R-S-I Gym 主要衡量的是智能体在一次有预算的运行中能否改进目标系统。它并没有证明改进会在连续多轮中不断累积，所以我们应当把标题理解为研究设定，而不是把它当成已经证明了这种更强效应的说法。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 81.18,
+      "end": 112.76,
+      "en": "The platform’s main idea is Everything as a Service: agents use shared services for training, inference, model rollouts, evaluation, and sandbox computation. Rather than making each agent build its own training stack or arrange computing infrastructure, the environment exposes these capabilities through consistent interfaces. Permission controls specify what an agent may change, and a shared budget tracks service use. This gives researchers a common setup for comparing different improvement strategies.",
+      "zh": "这个平台的核心思路是“一切皆服务”：智能体通过共享服务来完成训练、推理、模型轨迹、评估和沙箱计算。环境不会让每个智能体各自搭建训练流程或安排计算基础设施，而是通过统一的接口把这些能力开放出来。权限控制规定了智能体可以改动什么，共享预算则追踪服务的使用情况。这样一来，研究者就有了一个统一的设置来比较不同的改进策略。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 112.76,
+      "end": 117.44,
+      "en": "Quick question: what can an agent actually change in the different tracks?",
+      "zh": "快速问一下：在不同赛道里，智能体到底能改什么？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 118.42,
+      "end": 146.32,
+      "en": "In the Data track, agents can change training examples, while training settings and the harness stay fixed. In the Harness track, agents can revise execution code, but model weights remain fixed. The Joint track allows changes to data, training settings, and harness code, starting from the same base model. These permissions turn a broad question—what makes a system better?—into comparisons of individual interventions and their interactions.",
+      "zh": "在数据赛道，智能体可以修改训练样本，而训练设置和运行框架保持不变。在框架赛道，智能体可以修改执行代码，但模型权重固定不变。联合赛道则允许同时修改数据、训练设置和框架代码，且都从同一个基础模型出发。这些权限把一个宽泛的问题——什么能让系统变得更好？——转化为对各项单独干预及其相互作用的比较。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 147.44,
+      "end": 180.22,
+      "en": "The agents operate in lightweight, C-P-U-only containers, while remote services handle heavier work. The Training Service performs lora fine-tuning; inference serves base models and checkpoints; rollout models can generate data or judge outputs. Evaluation returns scores alongside task rewards, execution trajectories, and logs. Each call is authorized and charged against the run’s budget. That arrangement makes resource allocation part of the research task, rather than an infrastructure problem agents must solve first.",
+      "zh": "智能体运行在轻量级、仅用CPU的容器里，较重的活儿则交给远程服务处理。训练服务负责LoRA微调；推理服务提供基础模型和检查点；轨迹模型可以生成数据或评判输出。评估会返回分数，同时附带任务奖励、执行轨迹和日志。每次调用都要经过授权，并从本次运行的预算中扣费。这样的安排让资源分配成为研究任务的一部分，而不是智能体必须先解决的基础设施问题。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 180.96,
+      "end": 184.4,
+      "en": "Can you clarify how the paper measures improvement across its benchmarks?",
+      "zh": "你能说明一下这篇论文是如何衡量各个基准上的改进的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 185.52,
+      "end": 220.26,
+      "en": "The study covers software engineering, terminal use, mathematics, scientific reasoning, and skill-based tasks. Its R-S-I Index averages, with equal weight, how much of the remaining performance gap each system closes across five benchmarks. Each benchmark score averages three attempts per task. In the Joint track, six research agents start from the same Qwen base model and minimal harness, with a 500-dollar service budget. Training data must be generated during the run, and post-run audits check data overlap and submitted artifacts.",
+      "zh": "这项研究覆盖软件工程、终端操作、数学、科学推理和技能型任务。它的R-S-I指数以等权重取平均，衡量每个系统在五个基准上弥合了多少剩余的性能差距。每个基准分数取每项任务三次尝试的平均值。在联合赛道中，六个研究智能体从相同的Qwen基础模型和最小化框架出发，拥有500美元的服务预算。训练数据必须在运行期间生成，运行后的审计会检查数据重叠和提交的产物。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 221.56,
+      "end": 226.18,
+      "en": "So the agents generally improved, but did one approach lead across every kind of task?",
+      "zh": "所以这些智能体总体上都进步了，但是不是有哪一种方法在所有类型的任务上都领先呢？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 227.18,
+      "end": 265.3,
+      "en": "No. All six agents improve the overall index, with Opus 5 highest at 0.4809, but no agent leads on every benchmark. Across 30 agent-and-benchmark settings, 29 scores improve; the exception is Sol 6 on G-P-Q-A Diamond. Opus 5 raises S-W-E-bench Verified from 17.67% to 50.33%, and its A-I-M-E score from 31.67% to 97.78%. Yet gains on Terminal-Bench and SkillsBench are much more limited.",
+      "zh": "不是。六个智能体的综合指数都有提升，其中 Opus 5 最高，达到 0.4809，但没有任何一个智能体在所有基准上都领先。在 30 个智能体与基准的组合中，有 29 个分数上升；唯一的例外是 Sol 6 在 G-P-Q-A Diamond 上。Opus 5 把 S-W-E-bench Verified 从 17.67% 提高到 50.33%，A-I-M-E 分数从 31.67% 提高到 97.78%。但在 Terminal-Bench 和 SkillsBench 上的提升要有限得多。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 265.3,
+      "end": 305.16,
+      "en": "The single-track evidence helps explain why. With weights fixed, an Opus 5 harness change improves S-W-E-bench by 16.67 percentage points and Terminal-Bench by 11.98 points. In a separate case study, the agent addresses truncated outputs, unverified completion claims, and background services in an execution loop. Terminal-Bench rises from 30.34% to 40.82%, while tasks solved on all three attempts increase from 15 to 26. A better harness can therefore improve how a model uses its capabilities.",
+      "zh": "单轨证据有助于解释原因。在权重固定的情况下，仅改变Opus 5的框架就能让S-W-E-bench提升16.67个百分点，Terminal-Bench提升11.98个点。在另一项案例研究中，该智能体在执行循环中处理了输出截断、未经验证的完成声明以及后台服务等问题。Terminal-Bench从30.34%升至40.82%，三次尝试全部解决的任务数从15个增加到26个。因此，更好的框架能改善模型对其能力的运用方式。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 306.46,
+      "end": 311.36,
+      "en": "But does that mean more fine-tuning or a larger budget reliably produces better systems?",
+      "zh": "但这意味着更多的微调或更大的预算就一定能造出更好的系统吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 312.3,
+      "end": 345.66,
+      "en": "The results argue against that simple expectation. In eight of ten within-run comparisons, the more heavily trained candidate scores lower than its matched reference; the other two gain one task each. Still, training can help: DeepSeek’s trained model improves its development score on S-W-E-bench under the same harness. Doubling the budget from 500 to 1,000 dollars also gives mixed results: three of four tested pairs improve, while Opus 5’s Terminal-Bench score falls. More compute is not a guarantee.",
+      "zh": "结果并不支持这种简单的预期。在十组同轮次对比中，有八组是训练更充分的候选模型得分低于对应的参照模型；另外两组各多赢了一个任务。不过训练确实可能有帮助：DeepSeek 训练后的模型在相同测试框架下，其 S-W-E-bench 开发集得分有所提升。把预算从 500 美元翻倍到 1000 美元，结果同样好坏参半：四对测试中有三对提升，而 Opus 5 的 Terminal-Bench 得分反而下降。更多算力并不等于稳赢。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 345.66,
+      "end": 351.94,
+      "en": "How does this platform relate to work like M-L-Gym, and what should we be cautious about?",
+      "zh": "这个平台和M-L-Gym这类工作有什么关系，我们又该注意些什么？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 353.42,
+      "end": 385.66,
+      "en": "M-L-Gym provides a framework and benchmark for open-ended AI research challenges; R-S-I Gym emphasizes shared services and permissions across model, data, and harness changes. Both help make research-agent behavior a subject of evaluation. R-S-I Gym also records trajectories and logs, which can reveal why a change worked or failed. But each configuration is a single run, so these comparisons do not establish run-to-run reliability, and agents can inspect benchmark material during development.",
+      "zh": "M-L-Gym 为开放式 AI 研究挑战提供了框架和基准；R-S-I Gym 则强调模型、数据和工具链变更之间的共享服务与权限。两者都推动了把研究智能体的行为作为评估对象。R-S-I Gym 还会记录轨迹和日志，这能揭示某个改动为什么成功或失败。但每种配置只跑一次，所以这些比较无法确立多次运行之间的可靠性，而且智能体在开发过程中可以查看基准材料。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 386.74,
+      "end": 390.8,
+      "en": "Does the paper show that successful changes make the next research cycle more effective?",
+      "zh": "这篇论文是否表明，成功的改动会让下一轮研究更有效？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 390.8,
+      "end": 425.2,
+      "en": "Not yet. Its results concern improvement within a single run, not recursive progress across multiple cycles. The authors also report limits in network-isolated and self-improvement case studies, including runs with no overall gain. The R-S-I Index is useful for summarizing relative gap closure, but equal benchmark weighting cannot capture every difference in task difficulty or practical value. Future studies could repeat runs, better control evaluation exposure, and test whether retained changes improve later research.",
+      "zh": "还没有。它的结果关注的是单次运行内的改进，而不是跨多个周期的递归进展。作者也报告了在网络隔离和自我改进案例研究中的局限，包括一些运行没有带来整体收益。R-S-I 指数有助于总结相对差距的缩小，但等权基准无法捕捉任务难度或实际价值上的所有差异。未来的研究可以重复运行、更好地控制评估暴露，并测试保留下来的改动是否能改善后续研究。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 426.2,
+      "end": 461.374,
+      "en": "The key takeaway is that model improvement is not just a matter of changing weights. Data, training choices, execution harnesses, and resource allocation can all shape results, and their interactions deserve careful study. R-S-I Gym gives researchers a shared way to examine those choices while tracking costs and experimental traces. Its findings are promising as evidence about budgeted improvement, but they also show why replication and multi-cycle evaluation matter. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键在于，模型改进不只是改权重那么简单。数据、训练选择、执行框架和资源分配都会影响结果，它们之间的相互作用值得仔细研究。R-S-I Gym 为研究者提供了一种共同的方法来审视这些选择，同时追踪成本和实验记录。它的发现作为预算约束下改进的证据很有前景，但也说明了为什么复现和多周期评估很重要。感谢收听。如果还有问题，可以问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{meng2026rsigymflexibleenvironmentrecursive,\n      title={RSIGym: A Flexible Environment for Recursive Self-Improvement}, \n      author={Fanqing Meng and Lingxiao Du and Haocheng Lu and Qiguang Chen and Ziqi Zhao and Zijian Wu and Jiayuan Zhuo and Mengkang Hu and Michael Qizhe Shieh},\n      year={2026},\n      eprint={2610.10310},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.10310}, \n}",
+  "topics": [
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.666,
+    0.385,
+    0.299,
+    0.361,
+    0.207,
+    0.246,
+    0.789,
+    0.681,
+    0.409,
+    0.557,
+    0.484,
+    0.333,
+    0.441,
+    0.38,
+    0.407,
+    0.2,
+    0.27,
+    0.277,
+    0.663,
+    0.442,
+    0.492,
+    0.52,
+    0.314,
+    1.0,
+    0.599,
+    0.846,
+    0.598,
+    0.501,
+    0.585,
+    0.53,
+    0.434,
+    0.323,
+    0.377,
+    0.392,
+    0.572,
+    0.624,
+    0.593,
+    0.318,
+    0.416,
+    0.236,
+    0.228,
+    0.548,
+    0.829,
+    0.506,
+    0.699,
+    0.589,
+    0.308,
+    0.773,
+    0.751,
+    0.46,
+    0.485,
+    0.508,
+    0.579,
+    0.409,
+    0.516,
+    0.662,
+    0.325,
+    0.544,
+    0.473,
+    0.367,
+    0.523,
+    0.614,
+    0.562,
+    0.602,
+    0.365,
+    0.393,
+    0.572,
+    0.37,
+    0.574,
+    0.374,
+    0.423,
+    0.399
+  ],
+  "published": "2026-10-07",
+  "views": 322,
+  "license": "CC BY"
+}

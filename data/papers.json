@@ -2,6 +2,61 @@
   "generated_at": null,
   "episodes": [
     {
+      "id": "2610.10515",
+      "title": "RoboJEPA: Scaling Robotic Latent World Models",
+      "authors": [
+        "Artem Zholus",
+        "Nicolas Beltran-Velez",
+        "Jianhao Yuan",
+        "Sarath Chandar",
+        "Tushar Nagarajan",
+        "Daniel Severo",
+        "Koustuv Sinha",
+        "Michal Drozdzal",
+        "Adriana Romero Soriano",
+        "Jeannette Bohg",
+        "Nicolas Ballas",
+        "Mahmoud Assran"
+      ],
+      "duration": 395.336563,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Multi Task Learning",
+        "Representation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.10515",
+      "published": "2026-10-07",
+      "views": 481,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11964-c995-7e6a-9b1e-b477da634deb/podcast.mp3"
+    },
+    {
+      "id": "2610.10310",
+      "title": "RSIGym: A Flexible Environment for Recursive Self-Improvement",
+      "authors": [
+        "Fanqing Meng",
+        "Lingxiao Du",
+        "Haocheng Lu",
+        "Qiguang Chen",
+        "Ziqi Zhao",
+        "Zijian Wu",
+        "Jiayuan Zhuo",
+        "Mengkang Hu",
+        "Michael Qizhe Shieh"
+      ],
+      "duration": 461.374188,
+      "license": "CC BY",
+      "topics": [
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.10310",
+      "published": "2026-10-07",
+      "views": 322,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11964-f456-7972-bfc2-218f88d03d85/podcast.mp3"
+    },
+    {
       "id": "2610.a-call-for-an-open-tokenizer-benchmark",
       "title": "A Call for an Open Tokenizer Benchmark",
       "authors": [
@@ -16,7 +71,7 @@
       "cover": "cover.png",
       "path": "2610.a-call-for-an-open-tokenizer-benchmark",
       "published": "2026-10-06",
-      "views": 275,
+      "views": 318,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a112ea-7959-7c50-8009-c418115425f7/podcast.mp3"
     },
     {
@@ -43,8 +98,130 @@
       "cover": "cover.png",
       "path": "2610.08789",
       "published": "2026-10-06",
-      "views": 305,
+      "views": 513,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11444-83cb-7b02-8107-46a34eab3298/podcast.mp3"
+    },
+    {
+      "id": "2610.08781",
+      "title": "IdeaAnchor: Teaching LLMs to Turn Literature into Research Ideas",
+      "authors": [
+        "Ziyu Chen",
+        "Yilun Zhao",
+        "Jiashuo Sun",
+        "Yiling Ma",
+        "Manasi Patwardhan",
+        "Arman Cohan"
+      ],
+      "duration": 421.589688,
+      "license": "CC BY",
+      "topics": [
+        "NLP",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08781",
+      "published": "2026-10-06",
+      "views": 166,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a1144e-6fd6-727b-ac98-f6ccb0f47f78/podcast.mp3"
+    },
+    {
+      "id": "2610.08778",
+      "title": "Sherpa: Teaching LLMs to Teach Adaptively",
+      "authors": [
+        "Weixian Xu",
+        "Yanzhe Zhang",
+        "Zora Zhiruo Wang",
+        "Changyu Chen",
+        "Diyi Yang"
+      ],
+      "duration": 389.798625,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "NLP",
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08778",
+      "published": "2026-10-06",
+      "views": 187,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11470-7a13-7a8f-b81c-e1283f3d18b3/podcast.mp3"
+    },
+    {
+      "id": "2610.08761",
+      "title": "VeriFine: Scaling Verification for Self-Improvement in Embodied Reasoning",
+      "authors": [
+        "Zewei Zhou",
+        "Rachel Luo",
+        "Yulong Cao",
+        "Chaowei Xiao",
+        "Chensheng Peng",
+        "Boyi Li",
+        "Thomas Tian",
+        "Zheng Lian",
+        "Yan Wang",
+        "Jiaqi Ma",
+        "Boris Ivanovic",
+        "Marco Pavone",
+        "Wenhao Ding"
+      ],
+      "duration": 426.396188,
+      "license": "CC BY",
+      "topics": [
+        "Active Learning",
+        "Agents",
+        "Autonomous Vehicles"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08761",
+      "published": "2026-10-06",
+      "views": 218,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a1145a-a51f-7e26-8e35-25004ab6e86c/podcast.mp3"
+    },
+    {
+      "id": "2610.08735",
+      "title": "Optimal and Efficient Online Inverse Optimization",
+      "authors": [
+        "Anupam Gupta",
+        "Guru Guruganesh",
+        "Honghao Lin",
+        "Vahab Mirrokni",
+        "Renato Paes Leme",
+        "David P. Woodruff"
+      ],
+      "duration": 470.987188,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Online Learning",
+        "Optimization Methods",
+        "Statistical Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08735",
+      "published": "2026-10-06",
+      "views": 222,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11476-8d7a-7bd4-8f67-74b4d96860ef/podcast.mp3"
+    },
+    {
+      "id": "2610.08621",
+      "title": "Recursive Game Creator: An Agentic Product-Level Experience-Oriented Game Harness",
+      "authors": [
+        "Jiajun Chen",
+        "Haoyu Wu",
+        "Mingda Jia",
+        "Xihui Liu"
+      ],
+      "duration": 488.306563,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Generative Models",
+        "Human-AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08621",
+      "published": "2026-10-06",
+      "views": 204,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11426-2415-70ab-a7d5-a0d38f5f4e6a/podcast.mp3"
     },
     {
       "id": "2610.07922",
@@ -71,7 +248,7 @@
       "cover": "cover.png",
       "path": "2610.07922",
       "published": "2026-10-06",
-      "views": 245,
+      "views": 384,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11438-3b18-7932-97d3-f25904232bca/podcast.mp3"
     },
     {
@@ -89,7 +266,7 @@
       "cover": "cover.png",
       "path": "2610.kolibri-sovereign-european-model",
       "published": "2026-10-05",
-      "views": 1413,
+      "views": 1538,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10d86-5e08-73d8-bf61-e6a373368d64/podcast.mp3"
     },
     {
@@ -113,7 +290,7 @@
       "cover": "cover.png",
       "path": "2610.06851",
       "published": "2026-10-05",
-      "views": 746,
+      "views": 905,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f76-cd0d-71eb-826e-fd479a71a6bf/podcast.mp3"
     },
     {
@@ -142,7 +319,7 @@
       "cover": "cover.png",
       "path": "2610.06850",
       "published": "2026-10-05",
-      "views": 151,
+      "views": 170,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f6a-37ba-7a95-b812-5a19e14b6d80/podcast.mp3"
     },
     {
@@ -165,7 +342,7 @@
       "cover": "cover.png",
       "path": "2610.06805",
       "published": "2026-10-05",
-      "views": 2391,
+      "views": 3582,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fc1-2bb7-7dd1-a9eb-1cbf81ca8df9/podcast.mp3"
     },
     {
@@ -191,7 +368,7 @@
       "cover": "cover.png",
       "path": "2610.06647",
       "published": "2026-10-05",
-      "views": 159,
+      "views": 191,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f1d-d267-7122-be9a-841c660ac24f/podcast.mp3"
     },
     {
@@ -217,7 +394,7 @@
       "cover": "cover.png",
       "path": "2610.05816",
       "published": "2026-10-05",
-      "views": 273,
+      "views": 348,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f93-0605-73c2-ba86-5d0936bb9bd0/podcast.mp3"
     },
     {
@@ -239,7 +416,7 @@
       "cover": "cover.png",
       "path": "2610.05622",
       "published": "2026-10-04",
-      "views": 617,
+      "views": 693,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fce-9fdb-7d27-b142-1348dc322d3c/podcast.mp3"
     },
     {
@@ -260,8 +437,52 @@
       "cover": "cover.png",
       "path": "2610.04976",
       "published": "2026-10-04",
-      "views": 333,
+      "views": 365,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f19-8ea7-7eba-aa19-b7a26406a915/podcast.mp3"
+    },
+    {
+      "id": "2610.04906",
+      "title": "Scaling Verifiable Environments for Long-horizon Work Agents",
+      "authors": [
+        "Jiazheng Zhang",
+        "Long Ma",
+        "Yunxian Yang",
+        "Zhiheng Xi",
+        "Zhikai Lei",
+        "Yajie Yang",
+        "Chenyang Liao",
+        "Enyu Zhou",
+        "Yang Nan",
+        "Yuchen Tian",
+        "Senjie Jin",
+        "Yibo Wang",
+        "Wei He",
+        "Boyang Liu",
+        "Jixuan Huang",
+        "Xin Guo",
+        "Zhezheng Hao",
+        "Xinbing Liang",
+        "Zhihao Zhang",
+        "Changzhi Zhou",
+        "Wiggin Zhou",
+        "Tao Gui",
+        "Qi Zhang",
+        "Xuanjing Huang",
+        "Clarenceai",
+        "Aiden Adams"
+      ],
+      "duration": 421.929188,
+      "license": "unknown",
+      "topics": [
+        "Agents",
+        "Data Curation",
+        "Fine Tuning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.04906",
+      "published": "2026-10-04",
+      "views": 178,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10eea-317a-77a6-8281-fbdabd8485f8/podcast.mp3"
     },
     {
       "id": "2610.03695",
@@ -281,7 +502,7 @@
       "cover": "cover.png",
       "path": "2610.03695",
       "published": "2026-10-02",
-      "views": 440,
+      "views": 496,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a109e2-27ff-73ed-985a-c4d4d1ffbe8d/podcast.mp3"
     },
     {
@@ -316,7 +537,7 @@
       "cover": "cover.png",
       "path": "2610.02665",
       "published": "2026-10-02",
-      "views": 363,
+      "views": 407,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a109f1-0165-7e7f-bd5c-5d2e66ea02a4/podcast.mp3"
     },
     {
@@ -337,7 +558,7 @@
       "cover": "cover.png",
       "path": "2610.skillrefiner-offline-skill-refinement",
       "published": "2026-10-01",
-      "views": 2833,
+      "views": 3043,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f853-5927-7f1c-947b-9e0c28f9e0c4/podcast.mp3"
     },
     {
@@ -361,7 +582,7 @@
       "cover": "cover.png",
       "path": "2610.02208",
       "published": "2026-10-01",
-      "views": 559,
+      "views": 583,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac4-0ae8-74bf-8572-31108e8b0fe0/podcast.mp3"
     },
     {
@@ -388,7 +609,7 @@
       "cover": "cover.png",
       "path": "2610.02204",
       "published": "2026-10-01",
-      "views": 440,
+      "views": 505,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa6b-17f1-75ea-9e45-cf77eb64e55e/podcast.mp3"
     },
     {
@@ -410,7 +631,7 @@
       "cover": "cover.png",
       "path": "2610.02200",
       "published": "2026-10-01",
-      "views": 1173,
+      "views": 1370,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0faa4-570a-7126-8d23-e59675871b79/podcast.mp3"
     },
     {
@@ -431,7 +652,7 @@
       "cover": "cover.png",
       "path": "2610.02140",
       "published": "2026-10-01",
-      "views": 2297,
+      "views": 2520,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fac6-3980-74a8-8516-eb17968084b3/podcast.mp3"
     },
     {
@@ -463,7 +684,7 @@
       "cover": "cover.png",
       "path": "2610.02054",
       "published": "2026-10-01",
-      "views": 270,
+      "views": 314,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa9c-bd44-772f-8390-542c91f8a113/podcast.mp3"
     },
     {
@@ -485,7 +706,7 @@
       "cover": "cover.png",
       "path": "2610.01742",
       "published": "2026-10-01",
-      "views": 304,
+      "views": 338,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa87-7c9b-7c8e-a668-69a6352ee755/podcast.mp3"
     },
     {
@@ -512,7 +733,7 @@
       "cover": "cover.png",
       "path": "2610.01509",
       "published": "2026-10-01",
-      "views": 1380,
+      "views": 1468,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa76-85be-74e9-99b8-c19ff057bd0d/podcast.mp3"
     },
     {
@@ -537,7 +758,7 @@
       "cover": "cover.png",
       "path": "2610.01016",
       "published": "2026-10-01",
-      "views": 502,
+      "views": 553,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0fa51-8cdb-7af5-a96b-e301224c77b3/podcast.mp3"
     },
     {
@@ -564,7 +785,7 @@
       "cover": "cover.png",
       "path": "2609.40305",
       "published": "2026-09-30",
-      "views": 2013,
+      "views": 2148,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f56b-1797-72bd-9269-50ebe7951093/podcast.mp3"
     },
     {
@@ -590,7 +811,7 @@
       "cover": "cover.png",
       "path": "2609.40127",
       "published": "2026-09-30",
-      "views": 278,
+      "views": 290,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f57a-3aa4-71ae-a0f8-64b273e58095/podcast.mp3"
     },
     {
@@ -612,7 +833,7 @@
       "cover": "cover.png",
       "path": "2609.39247",
       "published": "2026-09-30",
-      "views": 423,
+      "views": 439,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f53c-f47f-7927-bd0b-028dc2a97dc9/podcast.mp3"
     },
     {
@@ -645,7 +866,7 @@
       "cover": "cover.png",
       "path": "2609.38163",
       "published": "2026-09-29",
-      "views": 296,
+      "views": 328,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f05a-7a2a-7345-b1d4-b4472ee0d2c4/podcast.mp3"
     },
     {
@@ -676,7 +897,7 @@
       "cover": "cover.png",
       "path": "2609.37725",
       "published": "2026-09-29",
-      "views": 2613,
+      "views": 2812,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f021-099c-733f-926f-dcaf0fedf90f/podcast.mp3"
     },
     {
@@ -701,7 +922,7 @@
       "cover": "cover.png",
       "path": "2609.37053",
       "published": "2026-09-29",
-      "views": 608,
+      "views": 617,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f075-7897-7252-bd15-f54e5b6ecb2a/podcast.mp3"
     },
     {
@@ -724,7 +945,7 @@
       "cover": "cover.png",
       "path": "2609.36720",
       "published": "2026-09-29",
-      "views": 470,
+      "views": 510,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0efe0-db83-720f-b48c-97f3a907e260/podcast.mp3"
     },
     {
@@ -747,7 +968,7 @@
       "cover": "cover.png",
       "path": "2609.36529",
       "published": "2026-09-29",
-      "views": 487,
+      "views": 500,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0effc-8fbb-7343-a704-b51e57a66f92/podcast.mp3"
     },
     {
@@ -787,7 +1008,7 @@
       "cover": "cover.png",
       "path": "2609.36054",
       "published": "2026-09-28",
-      "views": 400,
+      "views": 420,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f0e7-0e77-78da-8736-c507038608f9/podcast.mp3"
     },
     {
@@ -812,7 +1033,7 @@
       "cover": "cover.png",
       "path": "2609.35748",
       "published": "2026-09-28",
-      "views": 307,
+      "views": 310,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb3d-c1b3-7bda-a308-e664be80d404/podcast.mp3"
     },
     {
@@ -839,7 +1060,7 @@
       "cover": "cover.png",
       "path": "2609.35738",
       "published": "2026-09-28",
-      "views": 1490,
+      "views": 1527,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb86-b9e5-7275-ab78-7992e92dea18/podcast.mp3"
     },
     {
@@ -866,7 +1087,7 @@
       "cover": "cover.png",
       "path": "2609.35457",
       "published": "2026-09-28",
-      "views": 364,
+      "views": 372,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0eb9f-c8ec-7f8f-9267-7e5315f7fd08/podcast.mp3"
     },
     {
@@ -887,7 +1108,7 @@
       "cover": "cover.png",
       "path": "2609.35318",
       "published": "2026-09-28",
-      "views": 700,
+      "views": 709,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebdf-531d-781a-beae-adab43a13055/podcast.mp3"
     },
     {
@@ -1623,6 +1844,36 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b25e-6c42-749c-b0bf-3e19a31cd867/podcast.mp3"
     },
     {
+      "id": "2609.20659",
+      "title": "HIL-UMI: Bringing Human-in-the-Loop Post-Training of Vision-Language-Action Models to Universal Manipulation Interface",
+      "authors": [
+        "Zimu Han",
+        "Yiming Zeng",
+        "Jiyao Zhang",
+        "Zihao Zhao",
+        "Yuanfei Wang",
+        "Yixiang Jin",
+        "Shiqi Li",
+        "Shuangben Chen",
+        "Wei Huang",
+        "Ruodai Li",
+        "Hui Shen",
+        "Hao Dong"
+      ],
+      "duration": 393.66525,
+      "license": "CC BY",
+      "topics": [
+        "Data Curation",
+        "Reinforcement Learning",
+        "Human-AI"
+      ],
+      "cover": "cover.png",
+      "path": "2609.20659",
+      "published": "2026-09-17",
+      "views": 240,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0b266-a963-709e-b05c-df20dbaecd19/podcast.mp3"
+    },
+    {
       "id": "2609.20100",
       "title": "A Smaller Transformer in Your Transformer",
       "authors": [
@@ -2226,6 +2477,37 @@
       "published": "2026-09-13",
       "views": 1039,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a4c6-ba1c-7458-816a-55c844d74cff/podcast.mp3"
+    },
+    {
+      "id": "2609.14193",
+      "title": "Data-Free On-Policy Distillation: How Far Can We Go Without External Data?",
+      "authors": [
+        "Gengsheng Li",
+        "Mao Zheng",
+        "Mingyang Song",
+        "Jie Sun",
+        "Zeyuan Liu",
+        "Ruiqi Liu",
+        "Tianyu Yang",
+        "Qiyong Zhong",
+        "Haiyun Guo",
+        "Junfeng Fang",
+        "Shiming Xiang",
+        "Jinqiao Wang",
+        "Tat-Seng Chua"
+      ],
+      "duration": 374.83125,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Data Curation",
+        "Fine Tuning"
+      ],
+      "cover": "cover.png",
+      "path": "2609.14193",
+      "published": "2026-09-12",
+      "views": 180,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0a2c8-7d34-7f97-b85e-cc5fab8a2451/podcast.mp3"
     },
     {
       "id": "2609.13814",
