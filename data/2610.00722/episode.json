@@ -1,0 +1,243 @@
+{
+  "id": "2610.00722",
+  "title": "JEPA-TTT: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts",
+  "authors": [
+    "Zheyuan Zhang",
+    "Suyu Ye",
+    "Nakul Agarwal",
+    "Hossein Nourkhiz Mahjoub",
+    "Ehsan Moradi Pari",
+    "Daniel Khashabi",
+    "Tianmin Shu",
+    "Vaishnav Tadiparthi"
+  ],
+  "abstract": "World models enable agents to plan by predicting future states of the environment, but their predictions can become unreliable when test-time dynamics differ from those seen during training. We present JEPA-TTT, which adapts the latent dynamics predictor of a pretrained action-conditioned Joint-Embedding Predictive Architecture world model throughout test time. Self-supervised updates accumulate across episodes, while the visual encoder and reward head remain fixed, preserving the pretrained representation and task objective. Planning requires neither a goal image nor online environment reward. JEPA-TTT uses dense replay, which forms prediction windows at every temporal offset, retains them in a growing buffer, and samples minibatches from that buffer for predictor updates. Across eight dynamics shifts in four continuous-control environments, JEPA-TTT improves planning on every shift. After 500 test-time episodes, it reduces autoregressive latent prediction error by 83% on average and improves planning performance by 153% over the frozen JEPA world model. These results show that persistent self-supervised test-time training can adapt a pretrained latent world model under changed dynamics.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.00722",
+    "arxiv": "https://arxiv.org/abs/2610.00722"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0fa4a-fe2f-741d-b89f-022feed1e719/podcast.mp3",
+  "duration": 423.967,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 30.94,
+      "en": "In a hypothetical course called Model-Based Reinforcement Learning, today’s lecture is on jepa tee tee tee: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts. Recent work such as Ada jepa and H-jepa reflects a growing interest in latent prediction for visual planning. This paper, from researchers at Honda Research Institute USA and Johns Hopkins University, asks how those models can adapt after deployment. I see Noah’s hand. Go ahead, Noah.",
+      "zh": "在一门假设叫基于模型的强化学习的课上，今天讲的是jepa ttt：在动力学变化下做规划时，对潜在世界模型进行持续测试时训练。最近像Ada jepa和H-jepa这样的工作，反映出大家对用潜在预测做视觉规划越来越感兴趣。这篇论文来自本田美国研究所和约翰斯·霍普金斯大学的研究人员，问的是这些模型在部署之后要怎么适应。我看到Noah举手了。说吧，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.42,
+      "end": 37.38,
+      "en": "Hi Professor, why does adapting the dynamics model matter if the task itself stays the same?",
+      "zh": "教授您好，如果任务本身没变，为什么适应动力学模型还这么重要呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.26,
+      "end": 67.94,
+      "en": "Because a planner chooses actions based on predicted outcomes. If a robot’s controls or contact behavior change, its old model may forecast the wrong consequences, even though the goal and observations remain familiar. The paper studies that specific mismatch: transition dynamics shift, while the task, action space, and observation mapping stay fixed. Its central idea is to learn from transitions gathered during use, without relying on online reward labels to update the model.",
+      "zh": "因为规划器是根据预测结果来选择动作的。如果机器人的控制方式或接触行为变了，它原来的模型就可能预测出错误的结果，哪怕目标和观测看起来还是老样子。这篇论文研究的正是这种特定的错配：转移动态发生了变化，而任务、动作空间和观测映射保持不变。它的核心思路是利用使用过程中收集到的转移来学习，而不依赖在线奖励标签来更新模型。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 68.8,
+      "end": 99.0,
+      "en": "The system begins with a pretrained action-conditioned jepa world model. An encoder turns each image into a latent representation, and a predictor estimates future representations based on recent latents and action blocks. Rather than reconstructing future pixels, it predicts compact features that can support control. That design is useful here because the adaptation target is the transition forecast: the model must learn how actions now affect the world, not how to redraw the world.",
+      "zh": "系统从一个预训练的动作条件jepa世界模型开始。编码器把每张图像转成潜在表示，预测器则根据最近的潜在表示和动作块来估计未来的表示。它不重建未来的像素，而是预测能支持控制的紧凑特征。这个设计在这里很有用，因为适应的目标是转移预测：模型必须学会动作现在如何影响世界，而不是如何重新画出世界。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.5,
+      "end": 105.42,
+      "en": "So the model changes its forecasts, but does it also change what it considers important in an image?",
+      "zh": "所以模型会改变它的预测，但它会不会也改变它认为图像中重要的东西呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 106.36,
+      "end": 137.88,
+      "en": "No. The visual encoder stays frozen during deployment, as does the reward head that scores predicted states. Only parts of the dynamics predictor are trained from new experience. That separation makes the experiment easier to interpret: improvements come from refining predictions within the existing representation, rather than jointly changing perception, task preferences, and dynamics. It also means the method assumes the original representation still contains features that matter under the shifted conditions.",
+      "zh": "不会。部署期间，视觉编码器保持冻结，给预测状态打分的奖励头也一样。只有动力学预测器的部分模块会根据新经验进行训练。这种分离让实验更容易解读：改进来自在现有表征内部优化预测，而不是同时改变感知、任务偏好和动力学。这也意味着，该方法假设原始表征仍然包含在分布偏移条件下依然重要的特征。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.98,
+      "end": 166.88,
+      "en": "At each replanning step, the agent compares a predicted future latent state with the latent state encoded from the observation that actually arrives. It uses the mismatch as a self-supervised learning signal. The targets are detached from gradient updates, so the predictor learns to approach the observed representations rather than moving the target to make the loss look smaller. This resembles correcting a route forecast after seeing where the last turn actually led.",
+      "zh": "在每次重新规划时，智能体会把预测的未来潜在状态和从实际到达的观测中编码出的潜在状态做比较，并用两者的不匹配作为自监督学习信号。目标表示会从梯度更新中分离出来，因此预测器学到的是逼近观测到的表示，而不是把目标本身挪动，让损失看起来更小。这有点像看到上一个转弯实际通向哪里之后，再去修正路线预测。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.78,
+      "end": 171.12,
+      "en": "Quick question: how does this update affect the agent’s next action?",
+      "zh": "快速问一下：这个更新会怎么影响智能体下一步的动作？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.02,
+      "end": 204.84,
+      "en": "Planning uses the Cross-Entropy Method, or C-E-M. The planner tests candidate action sequences by predicting their latent trajectories and scoring them with the fixed reward head. It executes the first block, then replans after receiving the next observation. Each block contains 5 consecutive actions. Crucially, the deployment updates use observed transitions, not online scores; scores are reserved for evaluation. That distinction separates self-supervised adaptation from reward-driven policy learning.",
+      "zh": "规划用的是交叉熵方法，也就是C-E-M。规划器会先预测候选动作序列的潜在轨迹，再用固定的奖励头给它们打分。它先执行第一个动作块，收到下一个观测后再重新规划。每个动作块包含5个连续动作。关键在于，部署阶段的更新用的是实际观测到的状态转移，而不是在线打分；打分只留给评估用。这个区分把自监督适配和奖励驱动的策略学习分开了。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 205.74,
+      "end": 235.56,
+      "en": "The most consequential design choice is persistence. The predictor, optimizer state, and replay buffer carry across episodes, so the agent can accumulate evidence instead of starting over after every run. Dense replay also creates training windows at every valid temporal offset and samples from the growing collection. The experiments cover 4 continuous-control environments and 8 shifts, including rotated controls, cross-axis coupling, altered contact responses, and delayed actuation.",
+      "zh": "最关键的设计选择是持久化。预测器、优化器状态和回放缓冲区会跨回合保留，这样智能体就能不断积累证据，而不是每次运行后都从头开始。密集回放还会在每个有效的时间偏移处创建训练窗口，并从不断增长的数据集中采样。实验覆盖了4个连续控制环境和8种变化，包括控制方向旋转、跨轴耦合、接触响应改变和驱动延迟。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 237.52,
+      "end": 242.88,
+      "en": "Couldn’t replay just help because it gives the model more training updates, rather than better coverage of experience?",
+      "zh": "难道回放起作用只是因为给了模型更多训练更新，而不是因为它更好地覆盖了经验吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 243.92,
+      "end": 278.7,
+      "en": "The ablations help separate those explanations. Dense-stream training outperformed a compute-matched sparse stream on average, suggesting broader temporal coverage matters, while dense replay added a smaller further benefit. Persistence also mattered: retaining adaptation produced mean best score of 0.729 and mean normalized A-U-C of 0.637, versus 0.289 and 0.273 when the system reset each episode. The authors report these results across three deployment runs from the same pretrained model.",
+      "zh": "消融实验有助于区分这些解释。密集流训练在平均表现上优于算力匹配的稀疏流，说明更广的时间覆盖很重要，而密集回放则带来了较小的额外收益。持续性也很关键：保留适应状态的平均最佳得分为0.729，平均归一化A-U-C为0.637，而每个回合都重置系统时仅为0.289和0.273。作者报告了来自同一预训练模型的三次部署运行结果。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 279.44,
+      "end": 320.36,
+      "en": "Across all 8 shifts, jepa tee tee tee raised mean best held-out score from 0.267 for the frozen model to 0.678, and mean normalized A-U-C from 0.267 to 0.571. Five-block latent prediction error fell on every shift, by 83% on average. It also outperformed the compared P-P-O test-time-training and Ada jepa baselines on both planning measures, despite not using online rewards. The evidence links improved prediction with improved planning, though it does not prove one alone causes the other.",
+      "zh": "在全部8个偏移上，JEPA TTT把冻结模型的平均最佳留出分数从0.267提高到0.678，把平均归一化A-U-C从0.267提高到0.571。五块潜在预测误差在每个偏移上都下降了，平均降幅为83%。它还在两项规划指标上都超过了对比的PPO测试时训练和Ada JEPA基线，尽管没有使用在线奖励。这些证据把预测改善和规划改善联系了起来，但并不能证明其中一方单独导致了另一方。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 320.9,
+      "end": 326.22,
+      "en": "How far can we generalize that result beyond one fixed shift and one pretrained model?",
+      "zh": "这个结果能在多大程度上推广到不止一种固定变化、也不止一个预训练模型的情况呢？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 327.08,
+      "end": 357.12,
+      "en": "Carefully. The study tests controlled simulations, not physical robots, and considers one fixed dynamics shift at a time. It does not test visual or reward changes, sequences of changing dynamics, or returning to an earlier regime. Persistent updates could also damage performance on previously encountered conditions, a forgetting issue the experiments leave open. The offline reference is informative, but not a strict upper bound because its data collection differs from the agent’s online experience.",
+      "zh": "要谨慎看待。这项研究测试的是受控的模拟环境，而不是真实的物理机器人，而且一次只考虑一种固定的动力学变化。它没有测试视觉或奖励的变化、连续变化的动力学，或者回到之前的运行状态。持续更新也可能损害在之前遇到过的条件下的表现，这是一个实验没有回答的遗忘问题。离线参考虽然有参考价值，但并不是严格的上界，因为它的数据收集方式与智能体的在线经验不同。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 358.1,
+      "end": 392.38,
+      "en": "The broader contribution is to show that latent world models can adapt their transition predictions from interaction while preserving their visual encoder and task objective. That complements work such as Ada jepa, which adapts within an episode and discards that adaptation, by emphasizing cross-episode learning. The practical implication is a promising design direction for agents facing actuator or contact changes, alongside a clear research agenda: test multiple shifts, measure retention, and evaluate safety under real hardware constraints.",
+      "zh": "更广泛的贡献在于表明，潜在世界模型可以在保留视觉编码器和任务目标的同时，通过交互来调整其转移预测。这补充了像Ada jepa这样的工作——后者在一个回合内进行适应，然后丢弃这种适应——因为它强调的是跨回合的学习。实际意义在于，这为面对执行器或接触变化的智能体提供了一个有前景的设计方向，同时也给出了一条清晰的研究议程：测试多种变化、衡量保留程度，并在真实硬件约束下评估安全性。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 393.42,
+      "end": 423.967,
+      "en": "The memorable takeaway is that a model-based agent need not relearn its whole world to cope with a changed one; it can revise the part that predicts how actions alter the world, using the evidence its own interaction provides. But persistence is not automatically safe or universal: its value depends on stable tasks, useful latent features, and careful evaluation of what the model retains. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "最值得记住的一点是，基于模型的智能体不必为了适应一个变化了的世界而重新学习整个世界；它可以只修正那部分预测动作如何改变世界的模块，利用自身交互提供的证据来完成更新。但这种持续适应并不自动意味着安全或普适：它的价值取决于任务是否稳定、潜在特征是否有用，以及对模型保留了什么进行仔细评估。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026jepatttpersistenttesttimetraining,\n      title={JEPA-TTT: Persistent Test-Time Training of Latent World Models for Planning under Dynamics Shifts}, \n      author={Zheyuan Zhang and Suyu Ye and Nakul Agarwal and Hossein Nourkhiz Mahjoub and Ehsan Moradi Pari and Daniel Khashabi and Tianmin Shu and Vaishnav Tadiparthi},\n      year={2026},\n      eprint={2610.00722},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.00722}, \n}",
+  "topics": [
+    "Reinforcement Learning",
+    "Online Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.516,
+    0.54,
+    0.47,
+    0.506,
+    0.437,
+    0.426,
+    0.479,
+    0.395,
+    0.269,
+    0.255,
+    0.499,
+    0.596,
+    0.266,
+    0.44,
+    0.337,
+    0.425,
+    0.603,
+    0.524,
+    0.301,
+    0.329,
+    0.288,
+    0.346,
+    0.308,
+    0.323,
+    0.2,
+    0.313,
+    0.27,
+    0.377,
+    0.594,
+    0.655,
+    0.645,
+    0.574,
+    0.668,
+    0.562,
+    0.624,
+    0.761,
+    0.587,
+    0.607,
+    0.474,
+    0.581,
+    0.554,
+    0.646,
+    0.483,
+    0.65,
+    0.564,
+    0.486,
+    0.678,
+    0.6,
+    0.714,
+    0.467,
+    0.533,
+    0.44,
+    0.344,
+    0.473,
+    0.63,
+    0.388,
+    0.281,
+    0.289,
+    0.286,
+    0.288,
+    0.336,
+    0.279,
+    0.254,
+    0.253,
+    0.204,
+    0.325,
+    0.805,
+    0.404,
+    0.453,
+    0.34,
+    0.381
+  ],
+  "published": "2026-09-30",
+  "views": 498,
+  "license": "CC BY"
+}

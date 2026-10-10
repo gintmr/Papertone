@@ -1,0 +1,179 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 498.363,
+  "word_match_rate": 0.9384,
+  "line_count": 24,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on embodied agents and world models, today's lecture is on AgentGarten: Code Worlds for Evolving Agents. Recent work such as Training Agents Inside of Scalable World Models and Agent-World shows two active directions: learning interactive worlds from data and building executable environments for agents. AgentGarten joins these concerns, pairing explicit simulation rules with learned visual rendering. The authors include researchers from Tsinghua University and Peking University. I see Noah’s hand; go ahead, Noah.",
+      "start": 0.0,
+      "end": 37.06
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the simulator already defines the world, what does the learned model contribute?",
+      "start": 38.26,
+      "end": 43.18
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The simulator contributes dependable state transitions: objects move, collisions occur, and task variables update according to executable rules. The learned model contributes what the agent sees. It turns structured geometric conditions, an appearance reference, text, and prior frames into a first-person image. Think of the simulator as a stage manager tracking every prop, while the renderer handles lighting and scenery. This division lets researchers change a world’s appearance without rewriting its underlying mechanics.",
+      "start": 44.14,
+      "end": 75.86
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the renderer cannot change the actual simulator state, even if its image is wrong?",
+      "start": 77.0,
+      "end": 81.42
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "That is the intended separation. Each action updates persistent state inside the engine, which also exports conditions such as depth and surface normals. The renderer uses those conditions to make an observation, but does not feed its generated pixels back into the engine. Visual errors therefore do not directly accumulate in the world dynamics. The authors can also replay a recorded state trajectory with another camera or appearance reference, making the system useful for controlled comparisons.",
+      "start": 81.42,
+      "end": 113.04
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "How do they create these worlds without modeling every visual detail?",
+      "start": 114.18,
+      "end": 117.54
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "A code world combines an executable scene program, an engine, and the renderer. The authors describe starting from text or a single image. For image-based scenes, perception and three-dimensional generation tools estimate layout, depth, camera information, and object geometry. A coding agent then creates the scene program, extends unseen areas, and defines interaction rules. The geometry only needs to capture structure well enough for layout and motion; detailed textures and visual style are delegated to the renderer.",
+      "start": 118.44,
+      "end": 153.22
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: how do they keep the renderer coherent as the agent acts over time?",
+      "start": 153.94,
+      "end": 158.24
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They adapt a pretrained video model in stages. First, it learns to follow geometric conditions, with training augmentations intended to prevent overreliance on artifacts in estimated depth or normals. Next, it learns blockwise causal generation: each new block can use the reference and earlier frames, but not future ones. That resembles live performance, where the next scene must continue from what has already happened rather than borrowing information from later scenes.",
+      "start": 159.0,
+      "end": 187.5
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify what Adversarial Forcing adds beyond that causal training?",
+      "start": 187.5,
+      "end": 192.24
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Adversarial Forcing distills the renderer into a few-step model trained on its own rollouts. It combines matching a frozen teacher’s output distribution with an adversarial objective against real data. A key implementation detail is exact replay: the system records a rollout, then recomputes it block by block so later losses can affect how earlier history was encoded. The authors report bitwise-identical recomputation, unlike full-sequence replay, which changes numerical execution.",
+      "start": 193.28,
+      "end": 225.14
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Does that replay method make interaction fast enough, or is speed still a bottleneck?",
+      "start": 226.2,
+      "end": 230.36
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The reported steady-state throughput is 36.5 frames per second at 480 by 832 resolution on one H-one hundred G-P-U. That measurement includes condition encoding, 4 denoising steps, decoding, and transfer to the host. A bounded key-value cache keeps a fixed prefix and recent frames while removing older history; custom kernels and graph replay also reduce latency. This supports the proposed interactive setup on that hardware, though it does not guarantee the same speed on other devices.",
+      "start": 231.34,
+      "end": 269.0
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "What evidence shows that agents actually learn from these rendered interactions?",
+      "start": 270.1,
+      "end": 273.66
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "In hide-and-seek, agents receive task instructions and first-person frames, but not privileged object coordinates or simulator state. They write playbooks about tested strategies, failures, and unresolved questions, and later agents inherit those notes. Hiders learned to move a panel for cover by round 4; seekers used a ramp to cross a wall by round 10. In another example, a seeker adjusted a failed jump by moving the ramp closer, then tried again.",
+      "start": 274.76,
+      "end": 304.86
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How should we interpret the comparison with reinforcement-learning agents that needed millions of episodes?",
+      "start": 305.78,
+      "end": 310.5
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Carefully. The paper contrasts its milestones with an earlier self-play study that reportedly needed about 25 million episodes for shelter construction and 100 million for ramp use. But those agents learned from scratch using object-state observations, whereas AgentGarten’s pretrained agents brought prior knowledge and used written playbooks. The authors explicitly say this is not a direct sample-efficiency comparison. It illustrates a different learning setup, not proof that playbook transfer replaces reinforcement learning.",
+      "start": 311.58,
+      "end": 344.1
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Does the approach improve reliably across the other tasks, or are the results mixed?",
+      "start": 344.48,
+      "end": 349.24
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The additional environments show improvement, but not uniformly. In the bridge task, both cars completed their swap in every round, while completion time fell from 71 to 41 seconds. In herding, agents progressed from penning 3 of 4 sheep to penning all 4. Quarry performance varied, with a zero score in round 2 and a score of 90.9 in round 4. These results are promising demonstrations, but the small set of designed worlds limits broader conclusions.",
+      "start": 350.12,
+      "end": 380.18
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "How does this fit with work like Dreamer 4 and Agent-World?",
+      "start": 381.32,
+      "end": 383.62
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "Those papers help locate the design choice. Training Agents Inside of Scalable World Models explores learning from a simulator learned from recorded video and actions, while Agent-World emphasizes executable, stateful environments. AgentGarten retains executable dynamics but uses a learned model to render observations. That combination could make visual variation easier without sacrificing inspectable rules. Still, the current paper’s renderer is judged mainly through qualitative examples, and depth and normals cannot express every task-relevant property, such as material identity.",
+      "start": 385.16,
+      "end": 422.2
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "What should researchers test next to know whether this scales beyond the demonstrations?",
+      "start": 422.2,
+      "end": 427.2
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "A useful next step is systematic evaluation across more worlds, tasks, and agent types, with clearer measures of visual fidelity and how often generated observations match engine state. Researchers could also test richer conditions for properties that depth and normals miss, then study whether playbooks transfer to genuinely different tasks. The broader implication is a modular research platform: world rules, appearance, and accumulated agent experience can be studied separately, while still meeting in one interactive loop.",
+      "start": 428.4,
+      "end": 461.5
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "text": "The central takeaway is that AgentGarten treats reliable dynamics and rich visual observations as related but distinct problems. Its code worlds preserve explicit state, while a fast learned renderer supplies what an agent sees; written playbooks then carry experience between rounds. The evidence supports feasibility and shows adaptation in several designed tasks, but it does not yet establish broad transfer or a general replacement for reinforcement learning. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 462.38,
+      "end": 498.363
+    }
+  ]
+}

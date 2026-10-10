@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 500.767,
+  "word_match_rate": 0.9292,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Computer Vision and Neural Networks, today's lecture is on “SGF+: Decoupling Gradient Flows for Autoregressive Video Generation.” Recent work such as “Self Forcing: Bridging the Train-Test Gap in Autoregressive Video Diffusion” and “Self Gradient Forcing: Native Long Video Extrapolation” reflects a field moving toward training models on their own generated histories. This paper, from authors affiliated with Tsinghua University and the Chinese University of Hong Kong, asks how those histories should be learned. I see your hand, Noah.",
+      "start": 0.0,
+      "end": 37.98
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why does learning from the model’s own history still leave a problem?",
+      "start": 39.0,
+      "end": 43.14
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because a model’s generated past is not just a sequence of images; it is also a set of stored representations that guide what comes next. Autoregressive video systems generate a frame or block, encode it into key-value states, and use those states to condition later frames. This supports streaming, but small errors in either the video or its stored history can compound over time. Better long-range conditioning matters for coherent video and interactive world models.",
+      "start": 44.02,
+      "end": 73.26
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what did Self Forcing and Self Gradient Forcing each change?",
+      "start": 74.2,
+      "end": 78.76
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Teacher forcing trains with real, ground-truth histories, which differ from the model’s own histories at deployment. Self Forcing, or S-F, reduces that gap by training on generated histories, but freezes their stored states during later predictions. Self Gradient Forcing, or S-G-F, adds a differentiable replay of the context-writing operation, letting later losses train those historical representations. S-G-F plus builds on that improvement, but targets a separate issue: the same weights still perform context writing and denoising.",
+      "start": 78.76,
+      "end": 114.64
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The central claim is that these two jobs can need different parameter updates. A denoiser should estimate clean current content from noisy input; a context writer should encode that content so future predictions can use it. Those goals are linked by the generation objective, but they are not identical. If their gradients point in opposing directions, combining them on shared weights can weaken the update for each role, like asking one editor to optimize both a scene and its index at once.",
+      "start": 115.62,
+      "end": 144.54
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify how the authors tell whether the gradients really conflict?",
+      "start": 145.5,
+      "end": 148.82
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "They compare the gradients contributed by context-writing tokens and denoising tokens for shared linear weights. A negative cosine similarity means the updates point partly against one another. Across 128 prompts and 4 denoising steps, the reported mean directions differ by 104.2 degrees in attention and 106.3 degrees in feed-forward networks. All 512 prompt-step pairs have negative similarity in both module families, and conflict also appears at teacher-forcing initialization.",
+      "start": 149.74,
+      "end": 184.26
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The method preserves the useful training setup of S-G-F. First, the model performs a self-generated rollout without storing gradients through the entire sequence. It records generated clean estimates and sampled noisy latents. In a second pass, it reconstructs the relevant computation in parallel under a causal mask. The clean estimates are written into differentiable key-value states, and the denoiser predicts target content. A distribution-matching distillation loss then trains both roles without backpropagating through the full sampling trajectory.",
+      "start": 184.26,
+      "end": 217.9
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Wait, if the rollout is detached, how can future predictions teach the context writer?",
+      "start": 218.94,
+      "end": 223.3
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The crucial distinction is between replaying the whole rollout and replaying the context-writing operation. The first pass supplies recorded content, but the second pass computes the key-value states again with gradients enabled. Predictions depend on those reconstructed states, so their loss can flow back into the context writer. S-G-F plus then gives that writer its own parameters, separate from the denoiser’s, while retaining their causal attention interaction and optimizing both with the same objective.",
+      "start": 224.14,
+      "end": 254.2
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "This separation is full-model in the main experiment: two complete parameter sets start from the same autoregressive diffusion model. The evaluated student is based on Wan2.1-T2V-1.3B, with a frozen Wan2.1-T2V-14B teacher and a separately trained fake-score network. Training uses 5-second windows, while comparisons test 5, 60, and 240 seconds. The approach therefore tests whether better role separation can improve extrapolation without simply training on longer clips.",
+      "start": 255.24,
+      "end": 293.44
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "So does the quality gain hold across the long-video measures, or only some of them?",
+      "start": 293.44,
+      "end": 298.78
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "At 60 and 240 seconds, S-G-F plus scores higher than S-F and S-G-F on most reported measures of subject and background consistency, flickering, motion smoothness, aesthetics, and imaging quality. For 240-second chunkwise generation, its subject consistency is 98.21 and motion smoothness is 98.63, compared with 97.72 and 98.50 for S-G-F. Dynamic Degree is an exception: S-G-F plus is lower in several settings, and the paper cautions that higher values can also reflect incoherent motion or scene changes.",
+      "start": 299.28,
+      "end": 339.56
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The practical tradeoff is parameter storage and memory, not a major change in measured inference speed for the tested workload. Full separation raises generator size from 1.4 billion to 2.8 billion parameters. For 81-frame inference, latency is nearly unchanged: 4.969 seconds versus 4.962 seconds for S-G-F. Memory increases from 24.85 to 27.96 gigabytes, and training time per step rises by about 8.2%. Separating only attention or only feed-forward networks generally performs worse than separating both.",
+      "start": 339.56,
+      "end": 381.8
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Could this mean that long-video systems should focus less on longer training clips and more on how they represent history?",
+      "start": 382.54,
+      "end": 388.4
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "That is a reasonable implication, with an important qualification. S-G-F plus suggests that improving how a model writes its history can help even when the training window remains short. This complements work such as “Long-Context Autoregressive Video Modeling with Next-Frame Prediction,” which emphasizes longer context, and cache-management approaches such as “Deep Forcing.” These methods address different constraints: S-G-F plus changes the parameters used to write and read context, rather than extending the context window or changing cache policy.",
+      "start": 389.36,
+      "end": 424.54
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The evidence is promising within the tested setup, but it does not settle whether the same design is best for other architectures or tasks. The main quantitative tests use one student-model family and benchmark metrics; the 24-hour generations are demonstrations, not systematic evaluations over the full duration. Dynamic Degree also does not consistently improve. Future work could test lightweight context writers, compressed key-value states, or world-action models, while checking whether those gains justify added memory and deployment costs.",
+      "start": 425.42,
+      "end": 459.48
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "So the main lesson is to separate roles when their learning signals disagree?",
+      "start": 460.5,
+      "end": 463.98
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Exactly: the paper’s takeaway is that a model can share one generation objective without forcing context writing and denoising to share one set of parameters. Its gradient analysis offers a reason for that choice, and its experiments show improved long-horizon consistency in the evaluated setting, alongside real memory costs and metric-specific limits. When a video model learns from its own past, ask not only what history it sees, but how it learns to write that history. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 464.86,
+      "end": 500.767
+    }
+  ]
+}

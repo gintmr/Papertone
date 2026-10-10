@@ -1,0 +1,303 @@
+{
+  "id": "2610.12374",
+  "title": "AgentGarten: Code Worlds for Evolving Agents",
+  "authors": [
+    "Jiawei Chi",
+    "Shangchen Miao",
+    "Zhiyuan Shi",
+    "Kailu Wu",
+    "Hanyang Wang",
+    "Weiliang Chen",
+    "Qiyu Dai",
+    "Jinshan Ren",
+    "Jun Gao",
+    "Mingsheng Long",
+    "Yueqi Duan",
+    "Jiangran Lyu",
+    "Jialong Wu",
+    "Fangfu Liu"
+  ],
+  "abstract": "Interactive virtual worlds allow agents to learn through exploration and interaction. What agents can learn is bounded by the environments they practice in, which must be faithful, with consistent state, rules, and dynamics, and realistic, with observations that follow the real-world visual distributions. Achieving both across diverse worlds remains a bottleneck. We introduce AgentGarten, a framework that couples simulators and game engines with a shared neural renderer to build real-time interactive environments. Its simulation backends maintain persistent world state and execute program-defined interaction rules, while the renderer generates visual observations from structured conditions exported through a common interface. To build the neural renderer, we adapt a pretrained video model to geometry conditions, distill it with our proposed Adversarial Forcing, and optimize inference for real-time interaction. Adversarial Forcing makes history prefilling differentiable through exact replay, so that losses on later predictions update how the renderer encodes prior observations, and adds real-data adversarial supervision to improve its visual quality. In AgentGarten, agents perceive the world through visual observations, interact with it in real time, and improve by distilling each round of experience into playbooks that subsequent agents inherit and refine. Our empirical study demonstrates a substantial gain in learning efficiency, with agents learning from just 4 rounds compared with millions for a conventional reinforcement learning counterpart. As new worlds can be written as code and rendered through the same interface, environments can scale in both number and difficulty alongside their agents, a step toward agents that keep evolving through interactive experience.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12374",
+    "arxiv": "https://arxiv.org/abs/2610.12374"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e71-19f6-7078-ac45-009929888b8c/podcast.mp3",
+  "duration": 498.363,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.06,
+      "en": "In our graduate seminar on embodied agents and world models, today's lecture is on AgentGarten: Code Worlds for Evolving Agents. Recent work such as Training Agents Inside of Scalable World Models and Agent-World shows two active directions: learning interactive worlds from data and building executable environments for agents. AgentGarten joins these concerns, pairing explicit simulation rules with learned visual rendering. The authors include researchers from Tsinghua University and Peking University. I see Noah’s hand; go ahead, Noah.",
+      "zh": "在我们关于具身智能体和世界模型的研究生讨论课上，今天的讲座是AgentGarten：面向演化智能体的代码世界。最近的工作，比如《在可扩展世界模型内训练智能体》和Agent-World，展示了两个活跃的方向：从数据中学习可交互的世界，以及为智能体构建可执行的环境。AgentGarten把这两个关切结合了起来，将显式的仿真规则与学习到的视觉渲染配对。作者包括来自清华大学和北京大学的研究人员。我看到Noah举手了，请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.26,
+      "end": 43.18,
+      "en": "Hi Professor, if the simulator already defines the world, what does the learned model contribute?",
+      "zh": "教授您好，如果模拟器已经定义了世界，那学习到的模型贡献了什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.14,
+      "end": 75.86,
+      "en": "The simulator contributes dependable state transitions: objects move, collisions occur, and task variables update according to executable rules. The learned model contributes what the agent sees. It turns structured geometric conditions, an appearance reference, text, and prior frames into a first-person image. Think of the simulator as a stage manager tracking every prop, while the renderer handles lighting and scenery. This division lets researchers change a world’s appearance without rewriting its underlying mechanics.",
+      "zh": "模拟器负责的是可靠的状态转移：物体怎么移动、什么时候发生碰撞、任务变量怎么更新，全都按照可执行的规则来。而学到的模型负责的是智能体看到的东西。它把结构化的几何条件、一张外观参考图、文本以及之前的帧，合成出一张第一人称视角的图像。你可以把模拟器想象成舞台监督，盯着每一个道具的位置；而渲染器则负责打光和布景。这种分工让研究者可以在不改动底层机制的情况下，改变一个世界的外观。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 77.0,
+      "end": 81.42,
+      "en": "So the renderer cannot change the actual simulator state, even if its image is wrong?",
+      "zh": "所以就算渲染器生成的图像出错了，它也没法改变模拟器的实际状态，对吗？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 81.42,
+      "end": 113.04,
+      "en": "That is the intended separation. Each action updates persistent state inside the engine, which also exports conditions such as depth and surface normals. The renderer uses those conditions to make an observation, but does not feed its generated pixels back into the engine. Visual errors therefore do not directly accumulate in the world dynamics. The authors can also replay a recorded state trajectory with another camera or appearance reference, making the system useful for controlled comparisons.",
+      "zh": "这就是有意设计的分离。每个动作会更新引擎内部的持久状态，引擎同时还会导出深度、表面法线等条件信息。渲染器利用这些条件生成观测，但不会把自己生成的像素再喂回引擎。因此，视觉上的误差不会直接在世界动态中累积。作者还可以用另一个相机或外观参考来重放已记录的状态轨迹，这让系统很适合做受控对比。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 114.18,
+      "end": 117.54,
+      "en": "How do they create these worlds without modeling every visual detail?",
+      "zh": "他们是如何在不建模每个视觉细节的情况下创建这些世界的？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 118.44,
+      "end": 153.22,
+      "en": "A code world combines an executable scene program, an engine, and the renderer. The authors describe starting from text or a single image. For image-based scenes, perception and three-dimensional generation tools estimate layout, depth, camera information, and object geometry. A coding agent then creates the scene program, extends unseen areas, and defines interaction rules. The geometry only needs to capture structure well enough for layout and motion; detailed textures and visual style are delegated to the renderer.",
+      "zh": "一个代码世界由可执行的场景程序、引擎和渲染器组成。作者描述说，可以从文本或单张图像开始。对于基于图像的场景，感知和三维生成工具会估计布局、深度、相机信息和物体几何。然后一个编码智能体创建场景程序，扩展未见区域，并定义交互规则。几何只需要足够好地捕捉结构，以支持布局和运动；详细的纹理和视觉风格则交给渲染器处理。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 153.94,
+      "end": 158.24,
+      "en": "Quick question: how do they keep the renderer coherent as the agent acts over time?",
+      "zh": "快速问一下：随着智能体随时间行动，他们是怎么让渲染器保持连贯的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 159.0,
+      "end": 187.5,
+      "en": "They adapt a pretrained video model in stages. First, it learns to follow geometric conditions, with training augmentations intended to prevent overreliance on artifacts in estimated depth or normals. Next, it learns blockwise causal generation: each new block can use the reference and earlier frames, but not future ones. That resembles live performance, where the next scene must continue from what has already happened rather than borrowing information from later scenes.",
+      "zh": "他们分阶段微调一个预训练的视频模型。首先，它学会遵循几何条件，训练时还加了数据增强，目的是防止模型过度依赖估计深度或法线里的伪影。接着，它学习分块因果生成：每个新块可以用参考帧和之前的帧，但不能用未来的帧。这就像现场演出，下一幕必须从已经发生的内容接着演，而不能从后面的场景里借信息。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 187.5,
+      "end": 192.24,
+      "en": "Can you clarify what Adversarial Forcing adds beyond that causal training?",
+      "zh": "你能说明一下，对抗强制训练在因果训练之外还增加了什么吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 193.28,
+      "end": 225.14,
+      "en": "Adversarial Forcing distills the renderer into a few-step model trained on its own rollouts. It combines matching a frozen teacher’s output distribution with an adversarial objective against real data. A key implementation detail is exact replay: the system records a rollout, then recomputes it block by block so later losses can affect how earlier history was encoded. The authors report bitwise-identical recomputation, unlike full-sequence replay, which changes numerical execution.",
+      "zh": "对抗强制把渲染器蒸馏成一个少步模型，并在它自己的轨迹上训练。它把匹配冻结教师的输出分布和针对真实数据的对抗目标结合在一起。一个关键的实现细节是精确重放：系统记录一条轨迹，然后逐块重新计算，这样后续的损失就能影响更早的历史是如何被编码的。作者报告了逐位一致的重计算，这跟全序列重放不同，后者会改变数值执行过程。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 226.2,
+      "end": 230.36,
+      "en": "Does that replay method make interaction fast enough, or is speed still a bottleneck?",
+      "zh": "这种回放方法能让交互快到够用吗，还是速度仍然是个瓶颈？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 231.34,
+      "end": 269.0,
+      "en": "The reported steady-state throughput is 36.5 frames per second at 480 by 832 resolution on one H-one hundred G-P-U. That measurement includes condition encoding, 4 denoising steps, decoding, and transfer to the host. A bounded key-value cache keeps a fixed prefix and recent frames while removing older history; custom kernels and graph replay also reduce latency. This supports the proposed interactive setup on that hardware, though it does not guarantee the same speed on other devices.",
+      "zh": "报告中的稳态吞吐量是在单块H100 GPU上，480乘832分辨率下达到每秒36.5帧。这个测量涵盖了条件编码、4步去噪、解码以及传输到主机。一个有界键值缓存保留固定前缀和近期帧，同时移除较旧的历史；自定义内核和图重放也降低了延迟。这在该硬件上支持了所提出的交互式设置，不过并不能保证在其他设备上也有同样的速度。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 270.1,
+      "end": 273.66,
+      "en": "What evidence shows that agents actually learn from these rendered interactions?",
+      "zh": "有哪些证据表明智能体确实从这些渲染出来的交互中学到了东西？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 274.76,
+      "end": 304.86,
+      "en": "In hide-and-seek, agents receive task instructions and first-person frames, but not privileged object coordinates or simulator state. They write playbooks about tested strategies, failures, and unresolved questions, and later agents inherit those notes. Hiders learned to move a panel for cover by round 4; seekers used a ramp to cross a wall by round 10. In another example, a seeker adjusted a failed jump by moving the ramp closer, then tried again.",
+      "zh": "在捉迷藏中，智能体接收任务指令和第一人称画面，但拿不到特权级的物体坐标或模拟器状态。它们会写下关于已验证策略、失败经历和未解决问题的战术手册，后来的智能体会继承这些笔记。躲藏者在第4轮学会了移动挡板来掩护自己；寻找者在第10轮学会了用斜坡翻过一堵墙。另一个例子中，一个寻找者通过把斜坡挪近，调整了一次失败的跳跃，然后再次尝试。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 305.78,
+      "end": 310.5,
+      "en": "How should we interpret the comparison with reinforcement-learning agents that needed millions of episodes?",
+      "zh": "我们该怎么理解跟那些需要几百万个回合的强化学习智能体的对比呢？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 311.58,
+      "end": 344.1,
+      "en": "Carefully. The paper contrasts its milestones with an earlier self-play study that reportedly needed about 25 million episodes for shelter construction and 100 million for ramp use. But those agents learned from scratch using object-state observations, whereas AgentGarten’s pretrained agents brought prior knowledge and used written playbooks. The authors explicitly say this is not a direct sample-efficiency comparison. It illustrates a different learning setup, not proof that playbook transfer replaces reinforcement learning.",
+      "zh": "要谨慎看待。论文把自己的里程碑和早前一项自对弈研究做了对比，据说那项研究搭建庇护所需要大约2500万条轨迹，使用坡道需要1亿条。但那些智能体是从零开始、基于物体状态观测来学习的，而AgentGarten的预训练智能体则带着先验知识，还用了写好的策略手册。作者明确表示，这并不是直接的样本效率对比。它说明的是一种不同的学习设置，并不能证明策略手册迁移可以取代强化学习。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 344.48,
+      "end": 349.24,
+      "en": "Does the approach improve reliably across the other tasks, or are the results mixed?",
+      "zh": "这个方法在其他任务上都能稳定提升吗，还是结果参差不齐？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 350.12,
+      "end": 380.18,
+      "en": "The additional environments show improvement, but not uniformly. In the bridge task, both cars completed their swap in every round, while completion time fell from 71 to 41 seconds. In herding, agents progressed from penning 3 of 4 sheep to penning all 4. Quarry performance varied, with a zero score in round 2 and a score of 90.9 in round 4. These results are promising demonstrations, but the small set of designed worlds limits broader conclusions.",
+      "zh": "额外的环境确实带来了提升，但并不是一致的。在桥接任务里，两辆车每一轮都完成了交换，完成时间从71秒降到了41秒。在赶羊任务里，智能体从把4只羊中的3只赶进圈，进步到了4只全部赶进圈。采石场的表现则参差不齐，第2轮得了零分，第4轮又拿到了90.9分。这些结果是有前景的展示，但设计的世界数量太少，还不足以得出更广泛的结论。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 381.32,
+      "end": 383.62,
+      "en": "How does this fit with work like Dreamer 4 and Agent-World?",
+      "zh": "这和Dreamer 4、Agent-World这类工作是什么关系？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 385.16,
+      "end": 422.2,
+      "en": "Those papers help locate the design choice. Training Agents Inside of Scalable World Models explores learning from a simulator learned from recorded video and actions, while Agent-World emphasizes executable, stateful environments. AgentGarten retains executable dynamics but uses a learned model to render observations. That combination could make visual variation easier without sacrificing inspectable rules. Still, the current paper’s renderer is judged mainly through qualitative examples, and depth and normals cannot express every task-relevant property, such as material identity.",
+      "zh": "这些论文有助于定位这一设计选择。《在可扩展世界模型中训练智能体》探讨的是从录制的视频和动作中学习出的模拟器进行学习，而Agent-World则强调可执行、有状态的环境。AgentGarten保留了可执行的动态，但使用学习到的模型来渲染观测。这种组合可能让视觉变化更容易实现，同时不牺牲可检查的规则。不过，当前论文的渲染器主要通过定性示例来评判，而深度和法线无法表达所有与任务相关的属性，比如材质身份。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 422.2,
+      "end": 427.2,
+      "en": "What should researchers test next to know whether this scales beyond the demonstrations?",
+      "zh": "研究人员接下来应该测试什么，才能知道这套方法能否超越演示规模？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 428.4,
+      "end": 461.5,
+      "en": "A useful next step is systematic evaluation across more worlds, tasks, and agent types, with clearer measures of visual fidelity and how often generated observations match engine state. Researchers could also test richer conditions for properties that depth and normals miss, then study whether playbooks transfer to genuinely different tasks. The broader implication is a modular research platform: world rules, appearance, and accumulated agent experience can be studied separately, while still meeting in one interactive loop.",
+      "zh": "一个有用的下一步，是在更多世界、任务和智能体类型上做系统性评估，同时更清晰地衡量视觉保真度，以及生成的观察与引擎状态匹配的频率。研究者还可以测试更丰富的条件，覆盖深度和法线所遗漏的属性，然后研究这些操作手册是否能迁移到真正不同的任务上。更广泛的意义在于，这是一个模块化的研究平台：世界规则、外观和智能体积累的经验可以分别研究，同时又能在一个交互循环中汇合。"
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "start": 462.38,
+      "end": 498.363,
+      "en": "The central takeaway is that AgentGarten treats reliable dynamics and rich visual observations as related but distinct problems. Its code worlds preserve explicit state, while a fast learned renderer supplies what an agent sees; written playbooks then carry experience between rounds. The evidence supports feasibility and shows adaptation in several designed tasks, but it does not yet establish broad transfer or a general replacement for reinforcement learning. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，AgentGarten把可靠的动力学和丰富的视觉观测当作两个相关但不同的问题来处理。它的代码世界保留显式状态，而一个快速的学习型渲染器提供智能体看到的内容；写好的策略手册则在轮次之间传递经验。证据支持了可行性，并展示了在几个设计任务中的适应能力，但还没有确立广泛的迁移能力，也不足以成为强化学习的通用替代方案。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chi2026agentgartencodeworldsevolving,\n      title={AgentGarten: Code Worlds for Evolving Agents}, \n      author={Jiawei Chi and Shangchen Miao and Zhiyuan Shi and Kailu Wu and Hanyang Wang and Weiliang Chen and Qiyu Dai and Jinshan Ren and Jun Gao and Mingsheng Long and Yueqi Duan and Jiangran Lyu and Jialong Wu and Fangfu Liu},\n      year={2026},\n      eprint={2610.12374},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.12374}, \n}",
+  "topics": [
+    "Computer Vision"
+  ],
+  "peaks": [
+    0.521,
+    0.3,
+    0.41,
+    0.228,
+    0.2,
+    0.542,
+    0.828,
+    0.745,
+    0.436,
+    0.59,
+    0.483,
+    0.906,
+    0.613,
+    0.505,
+    0.599,
+    0.546,
+    0.561,
+    0.916,
+    0.576,
+    0.408,
+    0.362,
+    0.382,
+    0.785,
+    0.949,
+    0.542,
+    0.536,
+    0.689,
+    0.818,
+    0.919,
+    0.713,
+    0.891,
+    0.868,
+    0.698,
+    0.951,
+    0.53,
+    0.443,
+    0.428,
+    0.456,
+    0.418,
+    0.782,
+    0.575,
+    0.593,
+    0.606,
+    0.722,
+    0.804,
+    1.0,
+    0.561,
+    0.522,
+    0.577,
+    0.565,
+    0.954,
+    0.856,
+    0.7,
+    0.862,
+    0.67,
+    0.981,
+    0.998,
+    0.639,
+    0.656,
+    0.554,
+    0.465,
+    0.867,
+    0.661,
+    0.547,
+    0.43,
+    0.596,
+    0.538,
+    0.605,
+    0.502,
+    0.563,
+    0.321,
+    0.341
+  ],
+  "published": "2026-10-08",
+  "views": 262,
+  "license": "arXiv 默认许可"
+}

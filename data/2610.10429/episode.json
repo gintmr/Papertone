@@ -1,0 +1,270 @@
+{
+  "id": "2610.10429",
+  "title": "SGF+: Decoupling Gradient Flows for Autoregressive Video Generation",
+  "authors": [
+    "Zihan Su",
+    "Junhao Zhuang",
+    "Yaowei Li",
+    "Siwen Lu",
+    "Haoran Li",
+    "Lingen Li",
+    "Haoyu Wu",
+    "Weiyang Jin",
+    "Songchun Zhang",
+    "Haoyang Huang",
+    "Chun Yuan",
+    "Zeyue Xue",
+    "Nan Duan"
+  ],
+  "abstract": "Autoregressive video generation requires denoising the current frames while writing their key-value representations as context for future predictions. However, these two roles typically share parameters, and we find that their gradients exhibit distinct patterns and systematic negative alignment, hindering the joint optimization of visual quality and temporal consistency. We introduce Self Gradient Forcing Plus (SGF+), which assigns separate parameters to context writing and denoising while preserving their interaction through causal attention. Both roles are jointly optimized using the original generation objective without auxiliary losses, with context writing supervised through its contribution to future predictions. This simple change improves visual quality and long-horizon consistency over the evaluated baselines in both framewise and chunkwise generation, without additional video training data or a longer training horizon. Trained on only 5s rollouts, SGF+ supports continuous generation for up to 24 hours without long-video fine-tuning. These results highlight role-specific parameterization as an effective design principle for high-quality autoregressive video generation and native long-horizon extrapolation.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10429",
+    "arxiv": "https://arxiv.org/abs/2610.10429"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1194d-2a18-762b-83a4-7fe526779d92/podcast.mp3",
+  "duration": 500.767,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.98,
+      "en": "In our graduate course on Computer Vision and Neural Networks, today's lecture is on “SGF+: Decoupling Gradient Flows for Autoregressive Video Generation.” Recent work such as “Self Forcing: Bridging the Train-Test Gap in Autoregressive Video Diffusion” and “Self Gradient Forcing: Native Long Video Extrapolation” reflects a field moving toward training models on their own generated histories. This paper, from authors affiliated with Tsinghua University and the Chinese University of Hong Kong, asks how those histories should be learned. I see your hand, Noah.",
+      "zh": "在我们计算机视觉与神经网络的研究生课程中，今天的讲座是“SGF+：为自回归视频生成解耦梯度流”。最近的工作，比如“Self Forcing：弥合自回归视频扩散中的训练-测试差距”和“Self Gradient Forcing：原生长视频外推”，反映出这个领域正朝着让模型在自己的生成历史上面训练的方向发展。这篇论文的作者来自清华大学和香港中文大学，它要问的是：这些历史应该怎么学。我看到你举手了，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.0,
+      "end": 43.14,
+      "en": "Hi Professor, why does learning from the model’s own history still leave a problem?",
+      "zh": "教授您好，为什么从模型自身的历史中学习仍然会留下问题呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.02,
+      "end": 73.26,
+      "en": "Because a model’s generated past is not just a sequence of images; it is also a set of stored representations that guide what comes next. Autoregressive video systems generate a frame or block, encode it into key-value states, and use those states to condition later frames. This supports streaming, but small errors in either the video or its stored history can compound over time. Better long-range conditioning matters for coherent video and interactive world models.",
+      "zh": "因为模型生成的过去不只是一串图像，它还是一组被存下来的表示，用来引导接下来生成什么。自回归视频系统会生成一帧或一个块，把它编码成键值状态，再用这些状态去条件化后面的帧。这能支持流式生成，但视频或它存储的历史里只要有一点小误差，就会随着时间不断累积。更好的长程条件化，对连贯视频和交互式世界模型都很重要。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 74.2,
+      "end": 78.76,
+      "en": "Quick question: what did Self Forcing and Self Gradient Forcing each change?",
+      "zh": "快速问一下：Self Forcing和Self Gradient Forcing各自改了什么？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 78.76,
+      "end": 114.64,
+      "en": "Teacher forcing trains with real, ground-truth histories, which differ from the model’s own histories at deployment. Self Forcing, or S-F, reduces that gap by training on generated histories, but freezes their stored states during later predictions. Self Gradient Forcing, or S-G-F, adds a differentiable replay of the context-writing operation, letting later losses train those historical representations. S-G-F plus builds on that improvement, but targets a separate issue: the same weights still perform context writing and denoising.",
+      "zh": "教师强制用真实的、标准答案式的历史来训练，这和模型部署时自己生成的历史不一样。自强制，也就是S-F，通过在生成的历史上训练来缩小这个差距，但在后续预测时会冻结这些历史存储的状态。自梯度强制，也就是S-G-F，加入了一个可微的上下文写入操作回放，让后续的损失也能训练这些历史表示。S-G-F plus在此基础上进一步改进，但针对的是另一个问题：同一组权重仍然同时负责上下文写入和去噪。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 115.62,
+      "end": 144.54,
+      "en": "The central claim is that these two jobs can need different parameter updates. A denoiser should estimate clean current content from noisy input; a context writer should encode that content so future predictions can use it. Those goals are linked by the generation objective, but they are not identical. If their gradients point in opposing directions, combining them on shared weights can weaken the update for each role, like asking one editor to optimize both a scene and its index at once.",
+      "zh": "核心主张是，这两项工作可能需要不同的参数更新。去噪器应当从带噪输入中估计出干净的当前内容；上下文写入器则应当对该内容进行编码，以便未来预测能够使用它。这两个目标通过生成目标联系在一起，但并不完全相同。如果它们的梯度方向相反，那么在共享权重上把它们结合起来，就会削弱各自角色的更新，就像让同一个编辑同时优化一个场景和它的索引一样。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 145.5,
+      "end": 148.82,
+      "en": "Can you clarify how the authors tell whether the gradients really conflict?",
+      "zh": "你能说清楚作者是怎么判断梯度是否真的冲突的吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 149.74,
+      "end": 184.26,
+      "en": "They compare the gradients contributed by context-writing tokens and denoising tokens for shared linear weights. A negative cosine similarity means the updates point partly against one another. Across 128 prompts and 4 denoising steps, the reported mean directions differ by 104.2 degrees in attention and 106.3 degrees in feed-forward networks. All 512 prompt-step pairs have negative similarity in both module families, and conflict also appears at teacher-forcing initialization.",
+      "zh": "他们比较了上下文写入token和去噪token对共享线性权重所贡献的梯度。余弦相似度为负，说明这些更新方向部分相反。在128个提示词和4个去噪步骤上，报告的平均方向在注意力模块中相差104.2度，在前馈网络中相差106.3度。全部512个提示词-步骤组合在两个模块族中都呈现负相似度，而且在教师强制初始化时也出现了冲突。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 184.26,
+      "end": 217.9,
+      "en": "The method preserves the useful training setup of S-G-F. First, the model performs a self-generated rollout without storing gradients through the entire sequence. It records generated clean estimates and sampled noisy latents. In a second pass, it reconstructs the relevant computation in parallel under a causal mask. The clean estimates are written into differentiable key-value states, and the denoiser predicts target content. A distribution-matching distillation loss then trains both roles without backpropagating through the full sampling trajectory.",
+      "zh": "这个方法保留了S-G-F中有用的训练设置。首先，模型自己生成一段轨迹，但不在整个序列上存储梯度。它会记录生成的干净估计和采样得到的噪声潜变量。第二步，在因果掩码下并行重建相关计算。干净估计被写入可微的键值状态，去噪器则预测目标内容。接着用一个分布匹配的蒸馏损失来同时训练这两个角色，而不需要沿着完整的采样轨迹做反向传播。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 218.94,
+      "end": 223.3,
+      "en": "Wait, if the rollout is detached, how can future predictions teach the context writer?",
+      "zh": "等等，如果轨迹是分离的，那未来的预测怎么教上下文写入器呢？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 224.14,
+      "end": 254.2,
+      "en": "The crucial distinction is between replaying the whole rollout and replaying the context-writing operation. The first pass supplies recorded content, but the second pass computes the key-value states again with gradients enabled. Predictions depend on those reconstructed states, so their loss can flow back into the context writer. S-G-F plus then gives that writer its own parameters, separate from the denoiser’s, while retaining their causal attention interaction and optimizing both with the same objective.",
+      "zh": "关键区别在于，是回放整个轨迹，还是只回放上下文写入这一步。第一遍提供的是记录下来的内容，而第二遍则在启用梯度的情况下重新计算键值状态。预测依赖这些重建后的状态，因此它们的损失可以回流到上下文写入器。S-G-F plus 随后让这个写入器拥有自己的参数，与去噪器的参数分开，同时保留它们之间的因果注意力交互，并用同一个目标函数优化两者。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 255.24,
+      "end": 293.44,
+      "en": "This separation is full-model in the main experiment: two complete parameter sets start from the same autoregressive diffusion model. The evaluated student is based on Wan2.1-T2V-1.3B, with a frozen Wan2.1-T2V-14B teacher and a separately trained fake-score network. Training uses 5-second windows, while comparisons test 5, 60, and 240 seconds. The approach therefore tests whether better role separation can improve extrapolation without simply training on longer clips.",
+      "zh": "这种分离在主实验中是全模型层面的：两套完整参数都从同一个自回归扩散模型出发。被评估的学生模型基于Wan2.1-T2V-1.3B，配有一个冻结的Wan2.1-T2V-14B教师模型和一个单独训练的假评分网络。训练用5秒窗口，而对比测试则覆盖5秒、60秒和240秒。因此，这种方法检验的是：更好的角色分离能否提升外推能力，而不只是靠在更长的片段上训练。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 293.44,
+      "end": 298.78,
+      "en": "So does the quality gain hold across the long-video measures, or only some of them?",
+      "zh": "那么这种质量提升在长视频的各项指标上都成立，还是只在部分指标上成立？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 299.28,
+      "end": 339.56,
+      "en": "At 60 and 240 seconds, S-G-F plus scores higher than S-F and S-G-F on most reported measures of subject and background consistency, flickering, motion smoothness, aesthetics, and imaging quality. For 240-second chunkwise generation, its subject consistency is 98.21 and motion smoothness is 98.63, compared with 97.72 and 98.50 for S-G-F. Dynamic Degree is an exception: S-G-F plus is lower in several settings, and the paper cautions that higher values can also reflect incoherent motion or scene changes.",
+      "zh": "在60秒和240秒时，S-G-F plus在大多数报告的主体与背景一致性、闪烁、运动平滑度、美学和成像质量指标上都高于S-F和S-G-F。在240秒分块生成中，它的主体一致性为98.21，运动平滑度为98.63，而S-G-F分别为97.72和98.50。动态程度是个例外：S-G-F plus在多个设置下更低，论文也提醒说，更高的数值也可能反映不连贯的运动或场景变化。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 339.56,
+      "end": 381.8,
+      "en": "The practical tradeoff is parameter storage and memory, not a major change in measured inference speed for the tested workload. Full separation raises generator size from 1.4 billion to 2.8 billion parameters. For 81-frame inference, latency is nearly unchanged: 4.969 seconds versus 4.962 seconds for S-G-F. Memory increases from 24.85 to 27.96 gigabytes, and training time per step rises by about 8.2%. Separating only attention or only feed-forward networks generally performs worse than separating both.",
+      "zh": "实际的取舍在于参数存储和内存，而不是在测试负载下推理速度出现明显变化。完全分离让生成器规模从14亿参数增加到28亿参数。对于81帧的推理，延迟几乎不变：4.969秒，而S-G-F是4.962秒。内存从24.85GB增加到27.96GB，每步训练时间增加约8.2%。只分离注意力或只分离前馈网络，通常都不如两者都分离。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 382.54,
+      "end": 388.4,
+      "en": "Could this mean that long-video systems should focus less on longer training clips and more on how they represent history?",
+      "zh": "这是否意味着，长视频系统应该少关注更长的训练片段，多关注它们如何表示历史？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 389.36,
+      "end": 424.54,
+      "en": "That is a reasonable implication, with an important qualification. S-G-F plus suggests that improving how a model writes its history can help even when the training window remains short. This complements work such as “Long-Context Autoregressive Video Modeling with Next-Frame Prediction,” which emphasizes longer context, and cache-management approaches such as “Deep Forcing.” These methods address different constraints: S-G-F plus changes the parameters used to write and read context, rather than extending the context window or changing cache policy.",
+      "zh": "这是一个合理的推论，但有一个重要的限定条件。S-G-F plus表明，即使训练窗口仍然很短，改进模型写入历史的方式也能带来帮助。这与“Long-Context Autoregressive Video Modeling with Next-Frame Prediction”等强调更长上下文的工作，以及“Deep Forcing”等缓存管理方法形成互补。这些方法解决的是不同约束：S-G-F plus改变的是用于写入和读取上下文的参数，而不是扩展上下文窗口或改变缓存策略。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 425.42,
+      "end": 459.48,
+      "en": "The evidence is promising within the tested setup, but it does not settle whether the same design is best for other architectures or tasks. The main quantitative tests use one student-model family and benchmark metrics; the 24-hour generations are demonstrations, not systematic evaluations over the full duration. Dynamic Degree also does not consistently improve. Future work could test lightweight context writers, compressed key-value states, or world-action models, while checking whether those gains justify added memory and deployment costs.",
+      "zh": "这些证据在测试过的设定里挺有前景，但还不能确定同样的设计对其他架构或任务是不是最优。主要的定量测试只用了同一个学生模型系列和基准指标；那些24小时的生成只是演示，并不是覆盖完整时长的系统性评估。动态程度也没有稳定提升。未来可以测试轻量级的上下文写入器、压缩的键值状态，或者世界动作模型，同时看看这些收益是否值得额外的内存和部署成本。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 460.5,
+      "end": 463.98,
+      "en": "So the main lesson is to separate roles when their learning signals disagree?",
+      "zh": "所以主要的经验就是，当不同角色的学习信号不一致时，就应该把它们分开？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 464.86,
+      "end": 500.767,
+      "en": "Exactly: the paper’s takeaway is that a model can share one generation objective without forcing context writing and denoising to share one set of parameters. Its gradient analysis offers a reason for that choice, and its experiments show improved long-horizon consistency in the evaluated setting, alongside real memory costs and metric-specific limits. When a video model learns from its own past, ask not only what history it sees, but how it learns to write that history. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "完全正确：这篇论文的核心结论是，一个模型可以共享同一个生成目标，而不必强迫上下文写入和去噪共享同一组参数。它的梯度分析为这一选择提供了理由，实验也表明在评估设置中长时程一致性有所提升，同时也存在真实的内存开销和特定指标上的局限。当一个视频模型从自己的过去中学习时，不仅要问它看到了什么历史，还要问它是如何学会书写这段历史的。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{su2026sgfdecouplinggradientflows,\n      title={SGF+: Decoupling Gradient Flows for Autoregressive Video Generation}, \n      author={Zihan Su and Junhao Zhuang and Yaowei Li and Siwen Lu and Haoran Li and Lingen Li and Haoyu Wu and Weiyang Jin and Songchun Zhang and Haoyang Huang and Chun Yuan and Zeyue Xue and Nan Duan},\n      year={2026},\n      eprint={2610.10429},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.10429}, \n}",
+  "topics": [
+    "Computer Vision"
+  ],
+  "peaks": [
+    0.596,
+    0.481,
+    0.537,
+    0.51,
+    0.435,
+    0.476,
+    0.783,
+    0.731,
+    0.485,
+    0.543,
+    0.452,
+    1.0,
+    0.862,
+    0.783,
+    0.721,
+    0.617,
+    0.711,
+    0.501,
+    0.53,
+    0.491,
+    0.476,
+    0.707,
+    0.664,
+    0.531,
+    0.573,
+    0.476,
+    0.679,
+    0.897,
+    0.701,
+    0.538,
+    0.614,
+    0.416,
+    0.458,
+    0.26,
+    0.3,
+    0.366,
+    0.579,
+    0.522,
+    0.622,
+    0.383,
+    0.384,
+    0.483,
+    0.501,
+    0.507,
+    0.302,
+    0.295,
+    0.319,
+    0.245,
+    0.258,
+    0.42,
+    0.365,
+    0.38,
+    0.244,
+    0.2,
+    0.282,
+    0.792,
+    0.818,
+    0.695,
+    0.563,
+    0.4,
+    0.334,
+    0.572,
+    0.341,
+    0.324,
+    0.434,
+    0.425,
+    0.562,
+    0.462,
+    0.39,
+    0.319,
+    0.388,
+    0.274
+  ],
+  "published": "2026-10-07",
+  "views": 193,
+  "license": "arXiv 默认许可"
+}
