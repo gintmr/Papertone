@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 429.27,
+  "word_match_rate": 0.9232,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on computer vision and representation learning, today’s lecture is on unpaired cross-modal alignment through Wasserstein Procrustes. Work such as Better Together and It’s a (Blind) Match! reflects a field exploring what can be learned when image and text data are not neatly paired. This paper asks whether independently trained models can be connected using the shape of their embedding spaces, rather than matched examples. That matters when paired data is scarce, especially in new scientific domains. I see your hand, Noah.",
+      "start": 0.0,
+      "end": 34.32
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what is the practical bottleneck that paired examples create?",
+      "start": 35.5,
+      "end": 39.16
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A model turns each image or sentence into an embedding, a vector that places the sample in a space of learned features. Two independently trained models may represent similar concepts, but their vector coordinates differ, and the samples in their datasets may not correspond. Figure 1 illustrates the proposed alternative: align the spaces using their broad geometric patterns. With no paired examples and disjoint datasets, image neighbors often describe a similar scene or object, though not the exact image.",
+      "start": 40.08,
+      "end": 71.42
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the method can connect the spaces without first knowing which image matches which caption?",
+      "start": 72.42,
+      "end": 76.58
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Yes, but the connection is initially coarse. The method centers and normalizes both embedding sets, then repeatedly clusters each set independently. It compares the similarity patterns among cluster centers and permutes the centers to find a good match between those patterns. This is like matching two maps by the shape of their neighborhoods, even though the maps use different coordinates and show different individual landmarks. The method uses a quadratic assignment solver to find that cluster-level correspondence.",
+      "start": 77.54,
+      "end": 107.54
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The matched clusters provide approximate links between samples. The method averages those coarse matches, then uses blockwise one-to-one assignment to read them out as pseudo-pairs. It alternates between updating the sample correspondences and refining a single orthogonal map with Procrustes updates. Orthogonal means the map preserves distances and angles. It does not mean every image is assigned its true caption. If known pairs are available, they can contribute evidence to both the cluster matching and map refinement.",
+      "start": 108.62,
+      "end": 139.62
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question, how do they tell whether the resulting image-caption matches are useful?",
+      "start": 139.62,
+      "end": 144.88
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "They report F-O-S-C-T-T-M, a retrieval measure: for each image, it counts the fraction of other samples ranked closer than its true caption, then averages. Zero means perfect matching; 0.5 is chance. On M-S C-O-C-O, across 21 vision-language model combinations, the method averages 0.154, compared with 0.223 for mini-vec2vec. That shows meaningful coarse correspondence, not exact recovery. The alignment itself is fitted from disjoint unimodal embeddings; paired validation examples are used to calculate the score.",
+      "start": 145.66,
+      "end": 185.62
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The authors also examine whether spaces with more similar geometry align better. C-K-A compares the arrangement of the same samples in two spaces, and its measured association with alignment quality is strong in both vision-language and scientific-domain experiments. But this analysis uses corresponding samples. It does not show how to predict success from two wholly unpaired datasets; the authors say that remains an open problem. Across M-S C-O-C-O images and captions from a separate dataset, mean F-O-S-C-T-T-M worsens from 0.154 to 0.236, yet most model pairs remain alignable.",
+      "start": 186.46,
+      "end": 227.66
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can a small number of pairs still help, or does the method rely on geometry alone?",
+      "start": 229.18,
+      "end": 233.54
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Pairs can help refine the bridge. In a comparison using dee-no-v-two, vision transformer base, and quen three eight billion, the authors give every baseline the same known examples. With up to 20 pairs, their method reports F-O-S-C-T-T-M 14 to 28 times lower than the strongest baseline. Separately, with zero pairs, it reaches 79.6% top-one accuracy on a 10-class image benchmark; STRUCTURE and an orthogonal-map baseline reach that level only with 500 pairs. That classification result is distinct from retrieval quality.",
+      "start": 234.42,
+      "end": 273.34
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "An initialization ablation helps explain the mechanism. With the read-out held fixed and no refinement, k-means plus M-P-Opt achieves 0.076 F-O-S-C-T-T-M, compared with 0.092 for mini-vec2vec’s k-means plus 2-opt, and 0.432 for random Gromov-Wasserstein initialization. This supports initialization as an important factor in this setting, but does not prove it alone explains the final performance. In practice, the approach is most useful when the two models share substantial geometry, not merely because both handle images and language.",
+      "start": 274.32,
+      "end": 315.54
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Does that mean the method should work for any two modalities with overlapping meanings?",
+      "start": 316.5,
+      "end": 320.46
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "No. Shared structure is conditional, and modality-specific details may not line up. The paper mainly studies relatively high-quality image-caption data, so noisier text could offer less useful geometry. Its text-to-image generation experiment is also a proof of concept, not a competitive generator: a diffusion model is trained on images, and captions affect generation through the learned map. Generated scenes can miss details. These qualifications keep the results from implying universal alignment or a generator trained without images.",
+      "start": 321.46,
+      "end": 355.58
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The distinction from earlier work is useful. It’s a (Blind) Match! studies vision-language matching without parallel data, but uses class-aggregated embeddings and selected matching problems. This paper instead targets disjoint, sample-level embedding sets without class labels or shared reference points. mini-vec2vec contributes a cluster-based initialization for unpaired same-modality alignment; it is a comparison point and a component inspiration, not the paper’s cross-modal result. The broader implication is that paired data may not always be needed to establish an initial bridge, while geometry remains a hypothesis to test, not a guarantee.",
+      "start": 355.58,
+      "end": 396.76
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The takeaway is that independently trained models can sometimes be connected by the way they organize concepts, even when their coordinates and individual examples do not match. A handful of paired examples can improve that bridge, but neither coarse alignment nor semantic similarity promises exact correspondence. The practical next question is how to detect useful shared geometry before collecting pairs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 397.82,
+      "end": 429.27
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 444.055,
+  "word_match_rate": 0.9207,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical graduate course, Recursive Agents and Self-Supervision, today's lecture is on Recursive Self-Improvement Through Multi-Agent Self-Supervision. Work such as Recursive Harness Self-Improvement and Multi-Agent Evolve reflects growing interest in agents that revise their own systems. Researchers at the University of California, Berkeley, and Sakana A-I take this a step further by connecting workflow search to model training. The field is moving toward systems that improve both their procedures and their weights. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.02
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the central idea just to let several copies of a model solve the same problem?",
+      "start": 35.22,
+      "end": 40.16
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is part of the setup, but the contribution is what happens to the coordination traces afterward. The same model takes on worker, evaluator, and optimizer roles. It searches for a useful division of labor, then learns from selected executions of that workflow. The motivation is practical: for open-ended research, reliable external feedback can be costly or unavailable, while a model judging its own work can repeat its own blind spots.",
+      "start": 40.94,
+      "end": 69.68
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what does the workflow actually specify?",
+      "start": 70.66,
+      "end": 73.6
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "A workflow is a written plan attached to a task. It assigns roles to subagents, gives them instructions, says what each should return, and sets the order of calls. The orchestrator uses those outputs to build a final workspace. This matters because coordination is not simply “add more agents.” A team can help by sending the right intermediate information to the right role at the right time.",
+      "start": 74.58,
+      "end": 100.94
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The method alternates between workflow search and fine-tuning. First, the model proposes and executes workflows while its weights stay fixed. It evaluates the resulting workspaces, keeps the best one found so far, and uses feedback to propose revisions. Then it trains on selected executions. With the updated weights, the model begins another search-and-training cycle. This is an iterative process, not a guarantee of steady improvement.",
+      "start": 101.8,
+      "end": 132.18
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How does the search avoid simply keeping a workflow that got lucky once?",
+      "start": 132.82,
+      "end": 136.76
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "It compares candidate workspaces pairwise using an in-loop evaluator and ranks them with a Bradley-Terry model. Still, the search keeps only one best-so-far workflow, so it is an elite-size-one strategy, not a global optimizer. The optimizer is prompted to improve communication contracts and call order. That design makes coordination the object of search, but leaves room for noisy judgments or unstable outcomes.",
+      "start": 137.8,
+      "end": 164.5
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "After searching, the model generates 18 candidate executions per training task. The evaluator compares them, and up to 15 trajectories are selected for training, with another reserved for validation. The initial workflow prompt is removed from the orchestrator’s training input, though worker assignments remain in the conversations. So the model must learn coordination from examples rather than merely being handed the optimized plan at test time.",
+      "start": 165.66,
+      "end": 193.24
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify what data and training scale support the reported gains?",
+      "start": 194.06,
+      "end": 197.8
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The first cycle used a Qwen three point six, 27 billion parameter model and eight post-training tasks from finance, robotics, and pharmacy research programming. One designated task was excluded because search failed to beat its reference. The resulting dataset held 119 trajectories and about 17.2 million supervised tokens. The researchers fine-tuned on assistant responses in token windows, then repeated the process for a second generation. That is meaningful evidence, but a narrow starting base.",
+      "start": 198.72,
+      "end": 232.52
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Evaluation covered three held-out synthetic research tasks and six public benchmarks, including ScienceAgentBench, M-L-R-Bench, D-S-Bench, AstaBench, Terminal-Bench 2.0, and S-W-E-bench Verified. On public benchmarks, the models used the same coding-agent scaffold, without a searched workflow. External judgments came from G-P-T five point five and Claude Opus 4.8, with three seeds per judge. Those judgments were withheld from the main search and training.",
+      "start": 233.44,
+      "end": 267.0
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Wait, do the benchmark gains mean the completed research reports themselves got better?",
+      "start": 267.0,
+      "end": 272.48
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Not necessarily. The second generation improved aggregate scores on ScienceAgentBench, M-L-R-Bench, AstaBench, and D-S-Bench, and reported 1.2 to 1.6 times higher score per output token across those four. But report completion also rose on M-L-R-Bench and AstaBench, while conditional scores among delivered reports fell. Terminal-Bench and S-W-E-bench declined. So the pattern is mixed, and higher completion can contribute to aggregate gains.",
+      "start": 273.4,
+      "end": 304.96
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "How does this connect to harness-search work, and what seems to transfer?",
+      "start": 305.88,
+      "end": 309.0
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Recursive Harness Self-Improvement focuses on editing a harness, whereas this approach also fine-tunes the model on multi-agent traces. The paper reports transfer across roles: agreement with external evaluator judgments rose from 73% for the base model to 93% after two cycles. With the executor held fixed at the base model, workflows from the first trained model won 64% of comparisons against base-generated workflows. Those results suggest shared traces can benefit more than task solving.",
+      "start": 309.94,
+      "end": 343.6
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The trace audit also found more spontaneous coordination under bare prompts: delegation appeared in 87 of 110 second-generation trajectories, compared with 1 of 110 for the base model. Code handoffs rose similarly. Yet the base model could coordinate when explicitly prompted, so the evidence points to more reliable use, not a wholly new capability. The reported token-efficiency comparison favors multi-agent training, but its datasets and selection procedures were not fully matched.",
+      "start": 343.6,
+      "end": 376.72
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "What should researchers test before treating this as a dependable self-improvement loop?",
+      "start": 377.78,
+      "end": 382.28
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "They should test more base models, domains, and improvement cycles, and measure the full cost of searching, executing, and evaluating workflows. The study uses a small set of private training tasks, relies on model judgments in parts of the loop, and reports search instability. It does not establish that each cycle improves or that gains generalize broadly. Its useful implication is narrower: coordination traces are a plausible source of supervision worth examining carefully.",
+      "start": 383.0,
+      "end": 413.54
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The memorable takeaway is that a model may learn not only from answers, but from how a team divided work, passed evidence, and combined results. This paper gives a concrete way to turn those interactions into training examples, while also showing why careful evaluation matters: completion, answer quality, and compute cost tell different parts of the story. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 414.56,
+      "end": 444.055
+    }
+  ]
+}

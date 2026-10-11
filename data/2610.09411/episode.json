@@ -1,0 +1,232 @@
+{
+  "id": "2610.09411",
+  "title": "Shared Geometry As A Rosetta Stone: Cross-Modal Alignment Without Paired Data",
+  "authors": [
+    "Dominik Schnaus",
+    "Thomas Dagès",
+    "Daniel Cremers",
+    "Xi Wang",
+    "Phillip Isola"
+  ],
+  "abstract": "Multimodal representations enable zero-shot classification and retrieval, but aligning independently trained models usually requires large amounts of paired data. Yet, the Platonic Representation Hypothesis suggests that models trained on different modalities may converge spontaneously toward a shared representation geometry. But then, do we even need paired examples for cross-modal alignment? Remarkably, we show that paired examples are unnecessary for coarse cross-modal alignment. Our simple Wasserstein Procrustes method with a coarse geometric initialization aligns two disjoint embedding sets by estimating a single orthogonal map without seeing any pairs. Across datasets, modalities, and unimodal models, we show that we can consistently align independently trained representations without pairs, and standard geometric alignment metrics accurately predict when this is possible. Nevertheless, we can naturally benefit from paired examples. In the very few-pair regime, our method substantially outperforms existing ones, while staying competitive with pair-based methods with more added examples. Finally, we demonstrate that the resulting alignments can enable text-to-image generation without paired examples. These results show that independently trained models often share enough geometry to establish cross-modal correspondence with little or no paired data.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.09411",
+    "arxiv": "https://arxiv.org/abs/2610.09411"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11a0f-425d-7c29-bf8a-3a102233f31b/podcast.mp3",
+  "duration": 429.27,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.32,
+      "en": "In a graduate course on computer vision and representation learning, today’s lecture is on unpaired cross-modal alignment through Wasserstein Procrustes. Work such as Better Together and It’s a (Blind) Match! reflects a field exploring what can be learned when image and text data are not neatly paired. This paper asks whether independently trained models can be connected using the shape of their embedding spaces, rather than matched examples. That matters when paired data is scarce, especially in new scientific domains. I see your hand, Noah.",
+      "zh": "在一门关于计算机视觉与表征学习的研究生课程中，今天的讲座聚焦于通过Wasserstein Procrustes实现非配对的跨模态对齐。Better Together和It’s a (Blind) Match!这类工作反映了一个正在探索的领域：当图像和文本数据并非整齐配对时，我们还能学到什么。这篇论文要问的是，能否利用嵌入空间的形状，而不是配对样本，把独立训练的模型连接起来。当配对数据稀缺时，这一点尤其重要，在新兴科学领域更是如此。诺亚，我看到你举手了。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.5,
+      "end": 39.16,
+      "en": "Hi Professor, what is the practical bottleneck that paired examples create?",
+      "zh": "教授您好，配对样本带来的实际瓶颈是什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.08,
+      "end": 71.42,
+      "en": "A model turns each image or sentence into an embedding, a vector that places the sample in a space of learned features. Two independently trained models may represent similar concepts, but their vector coordinates differ, and the samples in their datasets may not correspond. Figure 1 illustrates the proposed alternative: align the spaces using their broad geometric patterns. With no paired examples and disjoint datasets, image neighbors often describe a similar scene or object, though not the exact image.",
+      "zh": "模型会把每张图像或每个句子转成一个嵌入，也就是一个向量，把样本放进一个由学到的特征构成的空间里。两个独立训练的模型可能表示相似的概念，但它们的向量坐标不同，而且它们数据集里的样本可能并不对应。图1展示了论文提出的另一种做法：利用它们大范围的几何模式来对齐这些空间。在没有成对样本、数据集也互不相交的情况下，图像的近邻往往描述的是相似的场景或物体，尽管并不是那张完全相同的图像。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 72.42,
+      "end": 76.58,
+      "en": "So the method can connect the spaces without first knowing which image matches which caption?",
+      "zh": "所以这个方法不需要先知道哪张图对应哪句描述，就能把两个空间连起来？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 77.54,
+      "end": 107.54,
+      "en": "Yes, but the connection is initially coarse. The method centers and normalizes both embedding sets, then repeatedly clusters each set independently. It compares the similarity patterns among cluster centers and permutes the centers to find a good match between those patterns. This is like matching two maps by the shape of their neighborhoods, even though the maps use different coordinates and show different individual landmarks. The method uses a quadratic assignment solver to find that cluster-level correspondence.",
+      "zh": "是的，但这种连接一开始是比较粗糙的。该方法会先对两组嵌入做中心化和归一化，然后分别反复聚类。它比较各聚类中心之间的相似度模式，并通过置换中心来找到这些模式之间的良好匹配。这就像根据邻域的形状来匹配两张地图，尽管这两张地图使用不同的坐标，显示的也是不同的个别地标。该方法使用二次分配求解器来找到这种聚类级别的对应关系。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 108.62,
+      "end": 139.62,
+      "en": "The matched clusters provide approximate links between samples. The method averages those coarse matches, then uses blockwise one-to-one assignment to read them out as pseudo-pairs. It alternates between updating the sample correspondences and refining a single orthogonal map with Procrustes updates. Orthogonal means the map preserves distances and angles. It does not mean every image is assigned its true caption. If known pairs are available, they can contribute evidence to both the cluster matching and map refinement.",
+      "zh": "匹配好的聚类提供了样本之间的粗略联系。这个方法把这些粗略匹配做平均，然后用分块的一对一分配把它们读出来，作为伪配对。它在更新样本对应关系和用Procrustes更新来精炼一个单一正交映射之间交替进行。正交的意思是这个映射保持距离和角度不变。这并不意味着每张图都被分配到了它真正的描述。如果有已知的配对，它们可以为聚类匹配和映射精炼两方面都提供证据。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 139.62,
+      "end": 144.88,
+      "en": "Quick question, how do they tell whether the resulting image-caption matches are useful?",
+      "zh": "问个简单的问题，他们怎么判断得到的图文匹配到底有没有用？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 145.66,
+      "end": 185.62,
+      "en": "They report F-O-S-C-T-T-M, a retrieval measure: for each image, it counts the fraction of other samples ranked closer than its true caption, then averages. Zero means perfect matching; 0.5 is chance. On M-S C-O-C-O, across 21 vision-language model combinations, the method averages 0.154, compared with 0.223 for mini-vec2vec. That shows meaningful coarse correspondence, not exact recovery. The alignment itself is fitted from disjoint unimodal embeddings; paired validation examples are used to calculate the score.",
+      "zh": "他们报告了F-O-S-C-T-T-M，这是一种检索指标：对每张图像，统计有多少其他样本的排名比它真正的描述更靠前，然后取平均值。零表示完美匹配，0.5相当于随机水平。在M-S C-O-C-O上，21种视觉语言模型组合的平均值是0.154，而mini-vec2vec是0.223。这说明存在有意义的粗粒度对应关系，但并非精确还原。对齐本身是用互不相交的单模态嵌入拟合出来的；配对验证样本仅用于计算得分。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 186.46,
+      "end": 227.66,
+      "en": "The authors also examine whether spaces with more similar geometry align better. C-K-A compares the arrangement of the same samples in two spaces, and its measured association with alignment quality is strong in both vision-language and scientific-domain experiments. But this analysis uses corresponding samples. It does not show how to predict success from two wholly unpaired datasets; the authors say that remains an open problem. Across M-S C-O-C-O images and captions from a separate dataset, mean F-O-S-C-T-T-M worsens from 0.154 to 0.236, yet most model pairs remain alignable.",
+      "zh": "作者还考察了几何结构更相似的空间是否对齐得更好。C-K-A比较的是同一批样本在两个空间中的排列方式，在视觉语言和科学领域的实验中，它测得的关联与对齐质量都很强。但这项分析用的是有对应关系的样本。它并不能说明如何从两个完全无配对的数据集预测能否成功；作者表示这仍是一个未解决的问题。在M-S C-O-C-O图像和来自另一个数据集的说明文字上，平均F-O-S-C-T-T-M从0.154变差到0.236，但大多数模型组合仍然可以对齐。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 229.18,
+      "end": 233.54,
+      "en": "Can a small number of pairs still help, or does the method rely on geometry alone?",
+      "zh": "少量配对样本还能起作用吗，还是说这个方法完全依赖几何结构？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 234.42,
+      "end": 273.34,
+      "en": "Pairs can help refine the bridge. In a comparison using dee-no-v-two, vision transformer base, and quen three eight billion, the authors give every baseline the same known examples. With up to 20 pairs, their method reports F-O-S-C-T-T-M 14 to 28 times lower than the strongest baseline. Separately, with zero pairs, it reaches 79.6% top-one accuracy on a 10-class image benchmark; STRUCTURE and an orthogonal-map baseline reach that level only with 500 pairs. That classification result is distinct from retrieval quality.",
+      "zh": "配对样本可以帮助优化这座桥接。在一项使用 dee-no-v-two、vision transformer base 和 quen 三十八亿的对比中，作者给每个基线提供了相同的已知样本。在最多 20 对样本的情况下，他们的方法报告的 F-O-S-C-T-T-M 比最强基线低 14 到 28 倍。另外，在零对样本的情况下，它在一个 10 类图像基准上达到了 79.6% 的 top-one 准确率；STRUCTURE 和一个正交映射基线只有用 500 对样本才能达到这一水平。这个分类结果与检索质量是两回事。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 274.32,
+      "end": 315.54,
+      "en": "An initialization ablation helps explain the mechanism. With the read-out held fixed and no refinement, k-means plus M-P-Opt achieves 0.076 F-O-S-C-T-T-M, compared with 0.092 for mini-vec2vec’s k-means plus 2-opt, and 0.432 for random Gromov-Wasserstein initialization. This supports initialization as an important factor in this setting, but does not prove it alone explains the final performance. In practice, the approach is most useful when the two models share substantial geometry, not merely because both handle images and language.",
+      "zh": "初始化消融实验有助于解释这一机制。在读出固定且不做精炼的情况下，k-means加M-P-Opt达到0.076的F-O-S-C-T-T-M，而mini-vec2vec的k-means加2-opt为0.092，随机Gromov-Wasserstein初始化为0.432。这说明初始化在这一设定下是一个重要因素，但并不能证明仅靠它就能解释最终性能。在实践中，当两个模型共享大量几何结构时，这种方法最有用，而不仅仅是因为它们都处理图像和语言。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 316.5,
+      "end": 320.46,
+      "en": "Does that mean the method should work for any two modalities with overlapping meanings?",
+      "zh": "这是否意味着，只要两种模态在含义上有重叠，该方法就应该适用？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 321.46,
+      "end": 355.58,
+      "en": "No. Shared structure is conditional, and modality-specific details may not line up. The paper mainly studies relatively high-quality image-caption data, so noisier text could offer less useful geometry. Its text-to-image generation experiment is also a proof of concept, not a competitive generator: a diffusion model is trained on images, and captions affect generation through the learned map. Generated scenes can miss details. These qualifications keep the results from implying universal alignment or a generator trained without images.",
+      "zh": "不是。共享结构是有条件的，特定模态的细节未必对得上。这篇论文主要研究的是质量相对较高的图像-描述数据，所以噪声更大的文本可能提供不了那么有用的几何结构。它的文本到图像生成实验也只是概念验证，并不是一个有竞争力的生成器：扩散模型是在图像上训练的，描述通过学到的映射来影响生成。生成的场景可能会漏掉细节。这些限定让结果不至于被理解为通用对齐，或者一个不靠图像训练的生成器。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 355.58,
+      "end": 396.76,
+      "en": "The distinction from earlier work is useful. It’s a (Blind) Match! studies vision-language matching without parallel data, but uses class-aggregated embeddings and selected matching problems. This paper instead targets disjoint, sample-level embedding sets without class labels or shared reference points. mini-vec2vec contributes a cluster-based initialization for unpaired same-modality alignment; it is a comparison point and a component inspiration, not the paper’s cross-modal result. The broader implication is that paired data may not always be needed to establish an initial bridge, while geometry remains a hypothesis to test, not a guarantee.",
+      "zh": "与早期工作的区别很有用。It’s a (Blind) Match! 研究的是没有平行数据的视觉语言匹配，但用的是按类别聚合的嵌入和选定的匹配问题。这篇论文则针对的是不相交、样本级别的嵌入集合，没有类别标签，也没有共享的参考点。mini-vec2vec 为无配对的同模态对齐贡献了一种基于聚类的初始化；它是一个比较对象和组件灵感来源，不是这篇论文的跨模态结果。更广泛的含义是，建立初步桥梁可能并不总是需要配对数据，而几何结构仍然是一个有待检验的假设，而不是一种保证。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 397.82,
+      "end": 429.27,
+      "en": "The takeaway is that independently trained models can sometimes be connected by the way they organize concepts, even when their coordinates and individual examples do not match. A handful of paired examples can improve that bridge, but neither coarse alignment nor semantic similarity promises exact correspondence. The practical next question is how to detect useful shared geometry before collecting pairs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，独立训练的模型有时能通过它们组织概念的方式被连接起来，即使它们的坐标和具体样本对不上。少量配对样本可以改善这座桥，但无论是粗对齐还是语义相似度，都不保证精确对应。实际的下一个问题是，如何在收集配对之前检测出有用的共享几何结构。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{schnaus2026sharedgeometryrosettastone,\n      title={Shared Geometry As A Rosetta Stone: Cross-Modal Alignment Without Paired Data}, \n      author={Dominik Schnaus and Thomas Dagès and Daniel Cremers and Xi Wang and Phillip Isola},\n      year={2026},\n      eprint={2610.09411},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.09411}, \n}",
+  "topics": [
+    "Computer Vision",
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.721,
+    0.379,
+    0.37,
+    0.28,
+    0.22,
+    0.2,
+    0.629,
+    0.386,
+    0.412,
+    0.469,
+    0.446,
+    0.329,
+    0.552,
+    0.829,
+    0.387,
+    0.257,
+    0.31,
+    0.304,
+    0.508,
+    0.477,
+    0.45,
+    0.268,
+    0.307,
+    0.306,
+    0.544,
+    0.406,
+    0.454,
+    0.362,
+    0.486,
+    0.465,
+    0.359,
+    1.0,
+    0.484,
+    0.552,
+    0.557,
+    0.621,
+    0.411,
+    0.533,
+    0.796,
+    0.661,
+    0.709,
+    0.435,
+    0.407,
+    0.466,
+    0.406,
+    0.227,
+    0.748,
+    0.518,
+    0.663,
+    0.615,
+    0.437,
+    0.614,
+    0.508,
+    0.628,
+    0.558,
+    0.519,
+    0.311,
+    0.299,
+    0.285,
+    0.511,
+    0.409,
+    0.328,
+    0.337,
+    0.286,
+    0.2,
+    0.347,
+    0.424,
+    0.628,
+    0.549,
+    0.538,
+    0.414,
+    0.48
+  ],
+  "published": "2026-10-07",
+  "views": 263,
+  "license": "CC BY"
+}

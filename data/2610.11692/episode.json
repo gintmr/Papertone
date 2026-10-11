@@ -1,0 +1,272 @@
+{
+  "id": "2610.11692",
+  "title": "Can Jev be Your Q or Policy in Reinforcement Learning?",
+  "authors": [
+    "Yi Ma",
+    "Tianpei Yang",
+    "Yaodong Yang",
+    "Weixun Wang",
+    "Hongyao Tang"
+  ],
+  "abstract": "Foundation models supply reinforcement learning (RL) with priors that mitigate its longstanding weaknesses in sample efficiency and transfer, but their token-by-token generation makes queries sequential and costly. Jev, a recently released decision model, generates nothing and returns calibrated, typed answers in a single forward pass. Existing work studies foundation models in RL either as models to be trained or as generators to be prompted, and Jev belongs to neither category, having so far served only as a black box in single domains. How well such a model decides on its own in RL environments, and how it can improve RL as a component of training, therefore remain unaddressed. To this end, in this paper we first examine the requirements that the objects of an RL system place on the answers they consume, and establish that Jev can fulfill all of them except the cardinal use of a value function. The remaining objects form positions that admit several roles each. We then construct algorithms that employ Jev at three of these positions, as a reference policy, an exploration judge, and a replay rater, to improve sample efficiency, exploration, and learning performance. Across nine MiniGrid tasks and three Atari games, training with Jev outperforms a standard RL learner, including where the learner makes no progress alone, while the model itself remains untrained. To our knowledge, we present the first use of Jev within the RL learning process and establish a frozen decision model as a usable component of RL training, inviting further exploration of how Jev and other advanced decision models can improve RL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.11692",
+    "arxiv": "https://arxiv.org/abs/2610.11692"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e65-6461-7b6b-a1f9-66db18316170/podcast.mp3",
+  "duration": 473.391,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.16,
+      "en": "In a hypothetical course called Deep Reinforcement Learning Methods, today's lecture is on Can Jev Be Your Q or Policy in Reinforcement Learning? Recent work such as Toward Efficient Exploration by Large Language Model Agents and How to Train Your Deep Research Agent? Prompt, Reward, and Policy Optimization in Search R-1 reflects growing interest in using model knowledge to shape learning. This paper, by researchers including scholars at Shanxi University and The Chinese University of Hong Kong, tests a distinct idea: keeping a decision model fixed and using its judgments to guide a learner. Yes, Noah?",
+      "zh": "在一门假设叫深度强化学习方法的课上，今天的讲座主题是Jev能不能在强化学习里当你的Q或者策略？最近的一些工作，比如《用大语言模型智能体实现高效探索》和《怎么训练你的深度研究智能体？搜索R-1里的提示、奖励和策略优化》，都反映出大家越来越感兴趣用模型知识来塑造学习过程。这篇论文由山西大学和香港中文大学等机构的研究者合作完成，测试了一个很不一样的想法：把一个决策模型固定住，用它的判断来指导一个学习器。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.2,
+      "end": 43.1,
+      "en": "Hi Professor, does the paper train Jev, or is Jev already trained?",
+      "zh": "教授您好，这篇论文是训练了Jev，还是Jev已经训练好了？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.96,
+      "end": 71.16,
+      "en": "Jev stays frozen throughout the study. It receives a description of the situation and a typed question, then returns a constrained answer, such as an action choice, a rubric score, or a probability. The central question is whether those compact judgments can help a separate reinforcement-learning agent learn more effectively. That differs from treating a foundation model as a trainable policy or repeatedly asking it to generate long plans during interaction.",
+      "zh": "Jev 在整个研究中始终保持冻结。它接收对情境的描述和一个输入的问题，然后返回一个受限的答案，比如动作选择、评分标准分数或概率。核心问题是，这些简洁的判断能否帮助一个独立的强化学习智能体更有效地学习。这与把基础模型当作可训练的策略，或在交互过程中反复让它生成长计划的做法不同。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 72.18,
+      "end": 74.88,
+      "en": "So Jev is more like an adviser than the agent being trained?",
+      "zh": "所以Jev更像是一个顾问，而不是被训练的那个智能体？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 75.84,
+      "end": 102.14,
+      "en": "Exactly. The authors map Jev’s answer types onto familiar reinforcement-learning roles: policy, reward, transition model, and value-related judgment. A choice among actions can guide a policy, while a score on a consistent rubric can act as a reward. The paper’s contribution is not just to show that Jev can answer questions, but to test how those answers might be placed inside a learner’s training process.",
+      "zh": "完全正确。作者把Jev的回答类型对应到常见的强化学习角色上：策略、奖励、转移模型，以及与价值相关的判断。对动作的选择可以指导策略，而在统一评分标准下给出的分数则可以充当奖励。这篇论文的贡献不只是展示Jev能回答问题，而是测试这些回答如何被放进学习者的训练过程中。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 102.14,
+      "end": 131.16,
+      "en": "One important distinction is between ranking and measuring. Jev can score states or actions and thereby rank them, but the authors argue that an ordered rubric score is not automatically a cardinal value. A ranking can tell us that one state seems more promising than another; it does not justify treating the gap between scores as a precise quantity for addition, discounting, or averaging. So Jev is not simply substituted for a conventional value function.",
+      "zh": "一个重要区别在于排序和测量。Jev可以给状态或动作打分，从而对它们进行排序，但作者认为，一个有序的评分标准分数并不自动等同于一个基数价值。排序可以告诉我们一个状态看起来比另一个更有前景，但这并不能证明可以把分数之间的差距当作一个精确的量来做加法、折扣或平均。所以Jev并不是简单地替代了传统的价值函数。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 131.16,
+      "end": 134.76,
+      "en": "Can you clarify why that distinction matters in practice?",
+      "zh": "你能说清楚这个区别在实际中为什么重要吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 135.92,
+      "end": 166.68,
+      "en": "A conventional value function participates in arithmetic: a learner combines rewards across time and compares discounted returns. Ordinal scores only preserve an ordering, unless their numerical meaning is validated. Confusing the two could make an algorithm’s calculations look principled while relying on unsupported assumptions about score differences. The paper therefore focuses its experiments on roles that fit Jev’s answers more directly: policy guidance, exploration decisions, and replay prioritization.",
+      "zh": "传统的价值函数会参与算术运算：学习器把不同时间点的奖励组合起来，再比较折扣后的回报。而序数分数只保留排序关系，除非其数值含义经过验证。混淆这两者，可能让算法的计算看起来很有原则，实际上却依赖了关于分数差值的、没有依据的假设。因此，这篇论文把实验重点放在更直接契合Jev回答的角色上：策略指导、探索决策和回放优先级排序。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 167.68,
+      "end": 198.54,
+      "en": "For policy guidance, the paper tests three patterns. One trains a student to imitate Jev’s selected action. Another lets the student’s critics compare its own proposed action with Jev’s recommendation, so the recommendation can be rejected. A third substitutes Jev-preferred actions for random actions during exploration. These approaches use the same fixed adviser differently: as a target to copy, a candidate to evaluate, or a source of exploratory behavior.",
+      "zh": "在策略引导方面，论文测试了三种模式。一种训练学生模型模仿Jev选出的动作。另一种让学生模型的评论器把自己提出的动作和Jev的建议做比较，因此建议可以被拒绝。第三种在探索过程中用Jev偏好的动作替代随机动作。这些方法以不同方式使用同一个固定的顾问：作为模仿目标、作为待评估的候选，或作为探索行为的来源。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 199.48,
+      "end": 229.66,
+      "en": "The other two channels address what the learner experiences and remembers. An exploration gate chooses between the learner’s greedy action and a random action; Jev can also score novelty in states, actions, or transitions, with scores converted into auxiliary reward bonuses. For replay, Jev rates stored transitions and those ratings influence sampling probabilities. A probability floor keeps every transition selectable, but no correction removes the deliberate change in sample influence.",
+      "zh": "另外两个通道则针对学习器所经历和记住的内容。一个探索门控在学习器的贪心动作和随机动作之间做选择；Jev 还可以对状态、动作或状态转移的新颖度打分，并把分数转换成辅助奖励加成。在回放方面，Jev 对存储的状态转移进行评分，这些评分会影响采样概率。一个概率下限保证每个状态转移都有可能被选中，但没有任何校正机制能消除这种对样本影响力的刻意改变。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 230.52,
+      "end": 234.76,
+      "en": "Does that mean the novelty bonus is guaranteed to preserve the original task objective?",
+      "zh": "这是否意味着新颖性奖励一定能保留原始任务目标？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 234.76,
+      "end": 264.32,
+      "en": "No. The authors explicitly treat these bonuses as auxiliary objectives, not as potential-based shaping with a guarantee that the original optimal policy is preserved. That matters when interpreting results: a bonus can make exploration productive, but it may also change what the learner is rewarded for. The study evaluates learned policies without Jev or auxiliary rewards, which helps test whether any benefit carries over to the underlying task.",
+      "zh": "不是。作者明确把这些奖励当作辅助目标，而不是带有保证原始最优策略不变的势能塑形。这一点在解读结果时很重要：奖励可以让探索更有成效，但也可能改变学习器获得奖励的原因。这项研究在没有Jev或辅助奖励的情况下评估学到的策略，这有助于检验任何收益是否能迁移到基础任务上。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 265.28,
+      "end": 299.56,
+      "en": "The experiments cover nine MiniGrid tasks and three Atari games, using deep Q-learning as the common learner and prioritized experience replay as an additional replay comparison. Jev performs well on the tested MiniGrid tasks under direct control, while Atari outcomes are mixed. More importantly, policy guidance, exploration, and replay each help on selected tasks, but none is consistently best. Students can sometimes surpass Jev, suggesting its useful role may be guidance rather than a performance ceiling.",
+      "zh": "实验覆盖了九个MiniGrid任务和三款Atari游戏，使用深度Q学习作为共同的学习器，并用优先经验回放作为额外的回放对比。Jev在直接控制下于所测试的MiniGrid任务上表现良好，而Atari上的结果则参差不齐。更重要的是，策略引导、探索和回放各自在部分任务上有帮助，但没有哪一种始终最优。学生有时能超越Jev，这说明它的作用可能更多是引导，而非性能上限。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 300.54,
+      "end": 303.66,
+      "en": "How much do the results depend on what information Jev receives?",
+      "zh": "结果在多大程度上取决于Jev接收到的信息？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 304.66,
+      "end": 335.68,
+      "en": "Quite substantially on some navigation tasks. When candidate routes and related progress information are removed, success falls from 96% to 40% on FourRooms and from 100% to 38% on MultiRoom-N4. Other tasks change less. The interface is therefore part of the method: Jev’s apparent decision-making ability depends on the observations and engineered context it receives, so results should not be read as evidence that it independently discovers every route.",
+      "zh": "在某些导航任务上影响相当大。把候选路线和相关进度信息去掉后，FourRooms上的成功率从96%掉到40%，MultiRoom-N4上从100%掉到38%。其他任务变化没那么大。所以这个界面本身就是方法的一部分：Jev表面上的决策能力依赖于它接收到的观测和工程化上下文，因此不能把这些结果解读为它能独立发现每一条路线。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 335.68,
+      "end": 339.9,
+      "en": "And do the replay ratings reliably beat standard replay methods?",
+      "zh": "那这些回放评分能稳定胜过标准回放方法吗？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 341.06,
+      "end": 369.68,
+      "en": "No; replay results are mixed. Fixed-experience analyses suggest that intuitive importance ratings can help on MultiRoom-N2, but success-oriented ratings do not win across comparisons and can even underperform uniform sampling. These controls are valuable because they separate the quality of the collected experience from the effect of weighting it during learning. A useful judgment does not automatically become a useful sampling rule; its value depends on how it changes the learner’s updates.",
+      "zh": "不，轨迹回放的结果好坏参半。固定经验的分析表明，直觉式的重要性评分在MultiRoom-N2上可能有帮助，但以成功为导向的评分在各项对比中并不占优，甚至可能不如均匀采样。这些对照实验之所以有价值，是因为它们把所收集经验的质量与在学习过程中对其加权的影响区分开来。一个有用的判断并不会自动变成一条有用的采样规则；它的价值取决于它如何改变学习器的更新。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 370.68,
+      "end": 399.72,
+      "en": "That distinction connects this work to broader research on model-guided learning. Papers such as Toward Efficient Exploration by Large Language Model Agents focus on how model knowledge can aid exploration, while this study also asks whether a frozen decision interface can influence data selection and replay. Its main shift is methodological: evaluate a model not only as a controller, but also as a component that shapes what a conventional learner tries, stores, and learns from.",
+      "zh": "这一区分把这项工作与更广泛的模型引导学习研究联系了起来。像《Toward Efficient Exploration by Large Language Model Agents》这样的论文关注的是模型知识如何帮助探索，而这项研究还进一步追问，一个冻结的决策接口是否会影响数据选择和回放。它的主要转变在于方法论：不仅把模型当作控制器来评估，也把它当作一个组件来评估，看它如何塑造传统学习器尝试什么、存储什么以及从什么中学习。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 400.74,
+      "end": 404.5,
+      "en": "What should researchers test next before applying this idea beyond benchmarks?",
+      "zh": "在把这个想法应用到基准之外前，研究人员下一步应该测试什么？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 405.68,
+      "end": 436.64,
+      "en": "They should test how robust the judgments are to question wording, observation design, and task changes, while accounting for query cost and latency. This study uses benchmark environments, limited training seeds, structured inputs that sometimes contain engineered information, and an external model tied to a recorded version. It does not establish universal calibration or real-world safety. Those limits make careful ablations and transparent interfaces essential parts of future evaluation.",
+      "zh": "他们应该测试这些判断对问题措辞、观测设计和任务变化的稳健性，同时考虑查询成本和延迟。这项研究使用的是基准环境、有限的训练种子、有时包含人为设计信息的结构化输入，以及一个绑定到特定记录版本的外部模型。它并不能确立通用的校准能力或现实世界中的安全性。这些局限使得细致的消融实验和透明的接口成为未来评估中不可或缺的部分。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 437.68,
+      "end": 473.391,
+      "en": "The takeaway is that a decision model need not solve an entire task to contribute useful local judgments. Jev can offer action preferences, exploration signals, or replay ratings, but each channel has task-dependent benefits and assumptions that must be tested. For reinforcement-learning research, that opens a practical question: how can external knowledge improve a learner’s data and updates without being mistaken for a complete policy? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键在于，决策模型不必解决整个任务，也能贡献有用的局部判断。Jev 可以提供动作偏好、探索信号或回放评分，但每个渠道的收益和假设都取决于具体任务，必须经过测试。对于强化学习研究来说，这就引出了一个实际问题：外部知识如何才能改善学习器的数据和更新，同时又不被误认为是一个完整的策略？感谢收听。如果还有任何疑问，可以询问我们的 AI 助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{ma2026jevqpolicyreinforcement,\n      title={Can Jev be Your Q or Policy in Reinforcement Learning?}, \n      author={Yi Ma and Tianpei Yang and Yaodong Yang and Weixun Wang and Hongyao Tang},\n      year={2026},\n      eprint={2610.11692},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.11692}, \n}",
+  "topics": [
+    "Agent Based Systems",
+    "Agents",
+    "Reinforcement Learning"
+  ],
+  "peaks": [
+    0.677,
+    0.392,
+    0.307,
+    0.311,
+    0.203,
+    0.208,
+    0.693,
+    0.292,
+    0.401,
+    0.421,
+    0.244,
+    0.916,
+    0.415,
+    0.657,
+    0.469,
+    0.48,
+    0.672,
+    0.657,
+    0.338,
+    0.417,
+    0.898,
+    0.845,
+    0.602,
+    0.455,
+    0.425,
+    0.38,
+    0.32,
+    0.377,
+    0.294,
+    0.215,
+    0.561,
+    0.852,
+    0.539,
+    0.755,
+    0.468,
+    0.504,
+    0.521,
+    0.429,
+    0.574,
+    0.491,
+    1.0,
+    0.764,
+    0.659,
+    0.475,
+    0.306,
+    0.519,
+    0.442,
+    0.241,
+    0.306,
+    0.337,
+    0.243,
+    0.646,
+    0.933,
+    0.528,
+    0.624,
+    0.405,
+    0.462,
+    0.503,
+    0.539,
+    0.368,
+    0.375,
+    0.781,
+    0.678,
+    0.564,
+    0.499,
+    0.444,
+    0.428,
+    0.248,
+    0.211,
+    0.22,
+    0.243,
+    0.2
+  ],
+  "published": "2026-10-08",
+  "views": 254,
+  "license": "CC BY"
+}

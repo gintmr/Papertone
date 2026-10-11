@@ -1,0 +1,264 @@
+{
+  "id": "2610.12176",
+  "title": "Recursive Self-Improvement through Multi-Agent Self-Supervision",
+  "authors": [
+    "Hyunin Lee",
+    "Jinglue Xu",
+    "Jeffrey Seely",
+    "Donghyun Lee",
+    "Somayeh Sojoudi",
+    "Matei Zaharia",
+    "Yujin Tang"
+  ],
+  "abstract": "Recursive self-improvement (RSI) of a model on non-verifiable tasks, such as open-ended research, faces a supervision bottleneck when its outputs exceed what even human experts can reliably assess, leaving the model itself (optimizee) as the best available optimizer and evaluator. However, a single model instance struggles to critique and improve its own complex reasoning under this homogeneous loop. To address this, we propose Multi-Agent Self-Supervision (MASS), an RSI method that alternates between evolutionary workflow optimization and supervised fine-tuning on self-generated trajectories. Guided by early findings that multi-agent topologies excel at complex reasoning, MASS prompts a single base model to iteratively propose, execute, and self-evaluate multi-agent workflows. Through an evolutionary search constrained by structural guardrails, the model optimizes these computational-graph-like orchestrations, discovering the most effective distinct roles and information routing for a given task. Over two MASS cycles with Qwen3.6-27B, the model achieves 1.2-1.6x higher performance per output tokens on four open-ended public benchmarks. Because the improved model subsequently acts as a better optimizer and evaluator, this alternating framework enables a continuous, recursive bootstrapping of the model's capabilities. Moreover, multi-agent traces are also more training-efficient: a student trained on them outperforms a single-agent student trained on 1.4x more training tokens. These findings suggest that jointly learning orchestration and bounded subagent execution from multi-agent trajectories can provide an effective signal for RSI.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12176",
+    "arxiv": "https://arxiv.org/abs/2610.12176"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e72-228b-76cc-a8f1-153ecb357d97/podcast.mp3",
+  "duration": 444.055,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.02,
+      "en": "In our hypothetical graduate course, Recursive Agents and Self-Supervision, today's lecture is on Recursive Self-Improvement Through Multi-Agent Self-Supervision. Work such as Recursive Harness Self-Improvement and Multi-Agent Evolve reflects growing interest in agents that revise their own systems. Researchers at the University of California, Berkeley, and Sakana A-I take this a step further by connecting workflow search to model training. The field is moving toward systems that improve both their procedures and their weights. Yes, Noah?",
+      "zh": "在我们假设的研究生课程“递归智能体与自监督”中，今天的讲座主题是通过多智能体自监督实现递归自我改进。像递归工具自改进和多智能体进化这样的工作，反映出人们对能够修改自身系统的智能体越来越感兴趣。加州大学伯克利分校和Sakana AI的研究人员更进一步，把工作流搜索和模型训练连接了起来。这个领域正朝着既能改进流程又能改进权重的系统发展。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.22,
+      "end": 40.16,
+      "en": "Hi Professor, is the central idea just to let several copies of a model solve the same problem?",
+      "zh": "教授您好，核心思路是不是就让同一个模型的几个副本去解同一个问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.94,
+      "end": 69.68,
+      "en": "That is part of the setup, but the contribution is what happens to the coordination traces afterward. The same model takes on worker, evaluator, and optimizer roles. It searches for a useful division of labor, then learns from selected executions of that workflow. The motivation is practical: for open-ended research, reliable external feedback can be costly or unavailable, while a model judging its own work can repeat its own blind spots.",
+      "zh": "这是设置的一部分，但真正的贡献在于之后对协调轨迹的处理。同一个模型会扮演工作者、评估者和优化者三种角色。它会搜索一种有用的分工方式，然后从该工作流中被选中的执行过程里学习。动机很实际：对于开放式研究，可靠的外部反馈可能代价高昂或根本拿不到，而让模型评判自己的工作又容易重复自己的盲点。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 70.66,
+      "end": 73.6,
+      "en": "Quick question: what does the workflow actually specify?",
+      "zh": "快速问一下：这个工作流到底规定了什么？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.58,
+      "end": 100.94,
+      "en": "A workflow is a written plan attached to a task. It assigns roles to subagents, gives them instructions, says what each should return, and sets the order of calls. The orchestrator uses those outputs to build a final workspace. This matters because coordination is not simply “add more agents.” A team can help by sending the right intermediate information to the right role at the right time.",
+      "zh": "工作流是附在任务上的一份书面计划。它给各个子代理分配角色，给它们下指令，说明每个子代理该返回什么，并设定调用顺序。编排器用这些输出来构建最终的工作区。这一点很重要，因为协调并不只是“加更多代理”那么简单。一个团队能帮上忙，靠的是在合适的时间把合适的中间信息发给合适的角色。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 101.8,
+      "end": 132.18,
+      "en": "The method alternates between workflow search and fine-tuning. First, the model proposes and executes workflows while its weights stay fixed. It evaluates the resulting workspaces, keeps the best one found so far, and uses feedback to propose revisions. Then it trains on selected executions. With the updated weights, the model begins another search-and-training cycle. This is an iterative process, not a guarantee of steady improvement.",
+      "zh": "这个方法在流程搜索和微调之间交替进行。首先，模型在权重保持不变的情况下提出并执行流程。它会评估生成的工作区，保留目前找到的最好的一个，并利用反馈来提出修改方案。然后，它基于选定的执行结果进行训练。有了更新后的权重，模型就开启下一轮搜索与训练的循环。这是一个迭代过程，并不保证会稳步提升。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 132.82,
+      "end": 136.76,
+      "en": "How does the search avoid simply keeping a workflow that got lucky once?",
+      "zh": "搜索如何避免只是保留一个碰巧走运一次的流程？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 137.8,
+      "end": 164.5,
+      "en": "It compares candidate workspaces pairwise using an in-loop evaluator and ranks them with a Bradley-Terry model. Still, the search keeps only one best-so-far workflow, so it is an elite-size-one strategy, not a global optimizer. The optimizer is prompted to improve communication contracts and call order. That design makes coordination the object of search, but leaves room for noisy judgments or unstable outcomes.",
+      "zh": "它用循环内的评估器对候选工作区两两比较，并用Bradley-Terry模型排序。不过，搜索只保留一个当前最优的工作流，所以这是精英数为1的策略，而不是全局优化器。优化器被提示去改进通信契约和调用顺序。这种设计让协调本身成为搜索的对象，但也为有噪声的判断或不稳定的结果留下了空间。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 165.66,
+      "end": 193.24,
+      "en": "After searching, the model generates 18 candidate executions per training task. The evaluator compares them, and up to 15 trajectories are selected for training, with another reserved for validation. The initial workflow prompt is removed from the orchestrator’s training input, though worker assignments remain in the conversations. So the model must learn coordination from examples rather than merely being handed the optimized plan at test time.",
+      "zh": "搜索完成后，模型会为每个训练任务生成18个候选执行方案。评估器会对它们进行比较，最多选出15条轨迹用于训练，另外保留一条用于验证。初始的工作流提示会从编排器的训练输入中移除，不过工作分配仍然保留在对话中。因此，模型必须从示例中学习协调，而不是在测试时直接拿到优化好的方案。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 194.06,
+      "end": 197.8,
+      "en": "Can you clarify what data and training scale support the reported gains?",
+      "zh": "你能说明一下，报告中的提升是基于什么数据和训练规模吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 198.72,
+      "end": 232.52,
+      "en": "The first cycle used a Qwen three point six, 27 billion parameter model and eight post-training tasks from finance, robotics, and pharmacy research programming. One designated task was excluded because search failed to beat its reference. The resulting dataset held 119 trajectories and about 17.2 million supervised tokens. The researchers fine-tuned on assistant responses in token windows, then repeated the process for a second generation. That is meaningful evidence, but a narrow starting base.",
+      "zh": "第一个循环用的是Qwen 3.6、270亿参数的模型，以及来自金融、机器人和药学方向研究编程的八个后训练任务。其中一个指定任务被排除，因为搜索没能超过它的参考基线。最终得到的数据集包含119条轨迹和大约1720万个监督token。研究者在token窗口内对助手回复做微调，然后重复这一过程，进入第二代。这是有意义的证据，但起点范围偏窄。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 233.44,
+      "end": 267.0,
+      "en": "Evaluation covered three held-out synthetic research tasks and six public benchmarks, including ScienceAgentBench, M-L-R-Bench, D-S-Bench, AstaBench, Terminal-Bench 2.0, and S-W-E-bench Verified. On public benchmarks, the models used the same coding-agent scaffold, without a searched workflow. External judgments came from G-P-T five point five and Claude Opus 4.8, with three seeds per judge. Those judgments were withheld from the main search and training.",
+      "zh": "评估覆盖了三个留出的合成研究任务和六个公开基准，包括ScienceAgentBench、M-L-R-Bench、D-S-Bench、AstaBench、Terminal-Bench 2.0和S-W-E-bench Verified。在公开基准上，模型使用相同的编码智能体脚手架，没有搜索到的工作流。外部评判来自G-P-T五点五和Claude Opus 4.8，每个评判模型三个随机种子。这些评判结果在主搜索和训练中都被保留未用。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 267.0,
+      "end": 272.48,
+      "en": "Wait, do the benchmark gains mean the completed research reports themselves got better?",
+      "zh": "等等，基准上的提升是不是意味着完成的研究报告本身也变好了？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 273.4,
+      "end": 304.96,
+      "en": "Not necessarily. The second generation improved aggregate scores on ScienceAgentBench, M-L-R-Bench, AstaBench, and D-S-Bench, and reported 1.2 to 1.6 times higher score per output token across those four. But report completion also rose on M-L-R-Bench and AstaBench, while conditional scores among delivered reports fell. Terminal-Bench and S-W-E-bench declined. So the pattern is mixed, and higher completion can contribute to aggregate gains.",
+      "zh": "不一定。第二代在ScienceAgentBench、M-L-R-Bench、AstaBench和D-S-Bench上提升了总分，并报告在这四个基准上每个输出token的得分提高了1.2到1.6倍。但M-L-R-Bench和AstaBench上的报告完成率也上升了，而已交付报告的条件得分却下降了。Terminal-Bench和S-W-E-bench则出现了下滑。所以整体情况是喜忧参半的，完成率提高也可能对总分增长有贡献。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 305.88,
+      "end": 309.0,
+      "en": "How does this connect to harness-search work, and what seems to transfer?",
+      "zh": "这和harness搜索的工作有什么联系，又有什么看起来可以迁移？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 309.94,
+      "end": 343.6,
+      "en": "Recursive Harness Self-Improvement focuses on editing a harness, whereas this approach also fine-tunes the model on multi-agent traces. The paper reports transfer across roles: agreement with external evaluator judgments rose from 73% for the base model to 93% after two cycles. With the executor held fixed at the base model, workflows from the first trained model won 64% of comparisons against base-generated workflows. Those results suggest shared traces can benefit more than task solving.",
+      "zh": "递归式框架自我改进侧重于编辑框架，而这种方法还会在多智能体轨迹上微调模型。论文报告了跨角色的迁移效果：与外部评估者判断的一致率从基座模型的73%上升到两轮后的93%。在将执行器固定为基座模型的情况下，第一个训练模型生成的工作流在与基座生成的工作流的比较中赢得了64%。这些结果表明，共享轨迹带来的收益可能不止于任务求解。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 343.6,
+      "end": 376.72,
+      "en": "The trace audit also found more spontaneous coordination under bare prompts: delegation appeared in 87 of 110 second-generation trajectories, compared with 1 of 110 for the base model. Code handoffs rose similarly. Yet the base model could coordinate when explicitly prompted, so the evidence points to more reliable use, not a wholly new capability. The reported token-efficiency comparison favors multi-agent training, but its datasets and selection procedures were not fully matched.",
+      "zh": "轨迹审计还发现，在裸提示下出现了更多自发协调：在110条第二代轨迹中有87条出现了委派，而基座模型只有1条。代码交接也类似增加。不过基座模型在被明确提示时也能协调，所以这些证据指向的是更可靠的使用，而不是一种全新的能力。报告中的token效率比较支持多智能体训练，但其数据集和筛选流程并未完全对齐。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 377.78,
+      "end": 382.28,
+      "en": "What should researchers test before treating this as a dependable self-improvement loop?",
+      "zh": "在把它当作可靠的自我改进循环之前，研究者应该测试什么？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 383.0,
+      "end": 413.54,
+      "en": "They should test more base models, domains, and improvement cycles, and measure the full cost of searching, executing, and evaluating workflows. The study uses a small set of private training tasks, relies on model judgments in parts of the loop, and reports search instability. It does not establish that each cycle improves or that gains generalize broadly. Its useful implication is narrower: coordination traces are a plausible source of supervision worth examining carefully.",
+      "zh": "他们应该测试更多基础模型、领域和改进循环，并衡量搜索、执行和评估工作流的全部成本。这项研究使用了一小组私有训练任务，在循环的某些环节依赖模型判断，并报告了搜索不稳定性。它并不能证明每个循环都会带来改进，也不能证明收益能广泛泛化。它有用的启示更有限：协调轨迹是一种看似合理的监督来源，值得仔细研究。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 414.56,
+      "end": 444.055,
+      "en": "The memorable takeaway is that a model may learn not only from answers, but from how a team divided work, passed evidence, and combined results. This paper gives a concrete way to turn those interactions into training examples, while also showing why careful evaluation matters: completion, answer quality, and compute cost tell different parts of the story. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "zh": "最值得记住的一点是，模型不只能从答案里学习，还能从一个团队如何分工、如何传递证据、如何汇总结果中学习。这篇论文给出了一种具体方法，把这些交互变成训练样本，同时也说明了为什么认真评估很重要：完成情况、答案质量和计算成本，讲的是故事的不同侧面。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lee2026recursiveselfimprovementmultiagentselfsupervision,\n      title={Recursive Self-Improvement through Multi-Agent Self-Supervision}, \n      author={Hyunin Lee and Jinglue Xu and Jeffrey Seely and Donghyun Lee and Somayeh Sojoudi and Matei Zaharia and Yujin Tang},\n      year={2026},\n      eprint={2610.12176},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.12176}, \n}",
+  "topics": [
+    "AI"
+  ],
+  "peaks": [
+    0.506,
+    0.378,
+    0.258,
+    0.287,
+    0.282,
+    0.305,
+    0.467,
+    0.41,
+    0.476,
+    0.33,
+    0.37,
+    0.231,
+    0.729,
+    0.39,
+    0.593,
+    0.373,
+    0.539,
+    0.46,
+    0.38,
+    0.211,
+    0.398,
+    0.448,
+    0.894,
+    0.653,
+    0.421,
+    0.392,
+    0.269,
+    0.605,
+    0.371,
+    0.53,
+    0.424,
+    0.407,
+    0.688,
+    0.321,
+    0.519,
+    0.434,
+    0.409,
+    0.613,
+    0.535,
+    0.323,
+    0.308,
+    0.305,
+    0.266,
+    0.52,
+    0.535,
+    0.337,
+    0.413,
+    0.359,
+    0.227,
+    0.279,
+    0.429,
+    0.435,
+    0.312,
+    0.299,
+    0.2,
+    0.323,
+    0.574,
+    0.315,
+    0.334,
+    0.407,
+    0.234,
+    0.251,
+    0.51,
+    0.462,
+    0.404,
+    0.318,
+    0.35,
+    1.0,
+    0.43,
+    0.387,
+    0.245,
+    0.223
+  ],
+  "published": "2026-10-08",
+  "views": 281,
+  "license": "CC BY"
+}

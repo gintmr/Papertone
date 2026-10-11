@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 473.391,
+  "word_match_rate": 0.952,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course called Deep Reinforcement Learning Methods, today's lecture is on Can Jev Be Your Q or Policy in Reinforcement Learning? Recent work such as Toward Efficient Exploration by Large Language Model Agents and How to Train Your Deep Research Agent? Prompt, Reward, and Policy Optimization in Search R-1 reflects growing interest in using model knowledge to shape learning. This paper, by researchers including scholars at Shanxi University and The Chinese University of Hong Kong, tests a distinct idea: keeping a decision model fixed and using its judgments to guide a learner. Yes, Noah?",
+      "start": 0.0,
+      "end": 38.16
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does the paper train Jev, or is Jev already trained?",
+      "start": 39.2,
+      "end": 43.1
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Jev stays frozen throughout the study. It receives a description of the situation and a typed question, then returns a constrained answer, such as an action choice, a rubric score, or a probability. The central question is whether those compact judgments can help a separate reinforcement-learning agent learn more effectively. That differs from treating a foundation model as a trainable policy or repeatedly asking it to generate long plans during interaction.",
+      "start": 43.96,
+      "end": 71.16
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So Jev is more like an adviser than the agent being trained?",
+      "start": 72.18,
+      "end": 74.88
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The authors map Jev’s answer types onto familiar reinforcement-learning roles: policy, reward, transition model, and value-related judgment. A choice among actions can guide a policy, while a score on a consistent rubric can act as a reward. The paper’s contribution is not just to show that Jev can answer questions, but to test how those answers might be placed inside a learner’s training process.",
+      "start": 75.84,
+      "end": 102.14
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "One important distinction is between ranking and measuring. Jev can score states or actions and thereby rank them, but the authors argue that an ordered rubric score is not automatically a cardinal value. A ranking can tell us that one state seems more promising than another; it does not justify treating the gap between scores as a precise quantity for addition, discounting, or averaging. So Jev is not simply substituted for a conventional value function.",
+      "start": 102.14,
+      "end": 131.16
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify why that distinction matters in practice?",
+      "start": 131.16,
+      "end": 134.76
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "A conventional value function participates in arithmetic: a learner combines rewards across time and compares discounted returns. Ordinal scores only preserve an ordering, unless their numerical meaning is validated. Confusing the two could make an algorithm’s calculations look principled while relying on unsupported assumptions about score differences. The paper therefore focuses its experiments on roles that fit Jev’s answers more directly: policy guidance, exploration decisions, and replay prioritization.",
+      "start": 135.92,
+      "end": 166.68
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "For policy guidance, the paper tests three patterns. One trains a student to imitate Jev’s selected action. Another lets the student’s critics compare its own proposed action with Jev’s recommendation, so the recommendation can be rejected. A third substitutes Jev-preferred actions for random actions during exploration. These approaches use the same fixed adviser differently: as a target to copy, a candidate to evaluate, or a source of exploratory behavior.",
+      "start": 167.68,
+      "end": 198.54
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The other two channels address what the learner experiences and remembers. An exploration gate chooses between the learner’s greedy action and a random action; Jev can also score novelty in states, actions, or transitions, with scores converted into auxiliary reward bonuses. For replay, Jev rates stored transitions and those ratings influence sampling probabilities. A probability floor keeps every transition selectable, but no correction removes the deliberate change in sample influence.",
+      "start": 199.48,
+      "end": 229.66
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does that mean the novelty bonus is guaranteed to preserve the original task objective?",
+      "start": 230.52,
+      "end": 234.76
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No. The authors explicitly treat these bonuses as auxiliary objectives, not as potential-based shaping with a guarantee that the original optimal policy is preserved. That matters when interpreting results: a bonus can make exploration productive, but it may also change what the learner is rewarded for. The study evaluates learned policies without Jev or auxiliary rewards, which helps test whether any benefit carries over to the underlying task.",
+      "start": 234.76,
+      "end": 264.32
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The experiments cover nine MiniGrid tasks and three Atari games, using deep Q-learning as the common learner and prioritized experience replay as an additional replay comparison. Jev performs well on the tested MiniGrid tasks under direct control, while Atari outcomes are mixed. More importantly, policy guidance, exploration, and replay each help on selected tasks, but none is consistently best. Students can sometimes surpass Jev, suggesting its useful role may be guidance rather than a performance ceiling.",
+      "start": 265.28,
+      "end": 299.56
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How much do the results depend on what information Jev receives?",
+      "start": 300.54,
+      "end": 303.66
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Quite substantially on some navigation tasks. When candidate routes and related progress information are removed, success falls from 96% to 40% on FourRooms and from 100% to 38% on MultiRoom-N4. Other tasks change less. The interface is therefore part of the method: Jev’s apparent decision-making ability depends on the observations and engineered context it receives, so results should not be read as evidence that it independently discovers every route.",
+      "start": 304.66,
+      "end": 335.68
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "And do the replay ratings reliably beat standard replay methods?",
+      "start": 335.68,
+      "end": 339.9
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "No; replay results are mixed. Fixed-experience analyses suggest that intuitive importance ratings can help on MultiRoom-N2, but success-oriented ratings do not win across comparisons and can even underperform uniform sampling. These controls are valuable because they separate the quality of the collected experience from the effect of weighting it during learning. A useful judgment does not automatically become a useful sampling rule; its value depends on how it changes the learner’s updates.",
+      "start": 341.06,
+      "end": 369.68
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That distinction connects this work to broader research on model-guided learning. Papers such as Toward Efficient Exploration by Large Language Model Agents focus on how model knowledge can aid exploration, while this study also asks whether a frozen decision interface can influence data selection and replay. Its main shift is methodological: evaluate a model not only as a controller, but also as a component that shapes what a conventional learner tries, stores, and learns from.",
+      "start": 370.68,
+      "end": 399.72
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "What should researchers test next before applying this idea beyond benchmarks?",
+      "start": 400.74,
+      "end": 404.5
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "They should test how robust the judgments are to question wording, observation design, and task changes, while accounting for query cost and latency. This study uses benchmark environments, limited training seeds, structured inputs that sometimes contain engineered information, and an external model tied to a recorded version. It does not establish universal calibration or real-world safety. Those limits make careful ablations and transparent interfaces essential parts of future evaluation.",
+      "start": 405.68,
+      "end": 436.64
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The takeaway is that a decision model need not solve an entire task to contribute useful local judgments. Jev can offer action preferences, exploration signals, or replay ratings, but each channel has task-dependent benefits and assumptions that must be tested. For reinforcement-learning research, that opens a practical question: how can external knowledge improve a learner’s data and updates without being mistaken for a complete policy? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 437.68,
+      "end": 473.391
+    }
+  ]
+}
