@@ -1,0 +1,257 @@
+{
+  "id": "2610.02383",
+  "title": "The Surprising Effectiveness of Shared Memory in Looped Transformers",
+  "authors": [
+    "Giovanni Monea",
+    "Keshav Ramji",
+    "Yousef El-Kurdi",
+    "Luis A. Lastras",
+    "Yoav Artzi",
+    "Nathan Godey",
+    "Ramón Fernandez Astudillo"
+  ],
+  "abstract": "Looped Transformers apply the same layers several times per token, adding compute to improve quality without more parameters. Each recursion, however, writes its own key-value cache, so memory still grows with compute. Inference-time techniques can shrink this cache at a cost in quality. We pretrain looped language models to share memory: only the first recursion writes a cache, and later recursions read it while keeping a short window of their own. Surprisingly, we find that sharing memory does not cost quality and instead improves it. At 150M-1B parameters, our Looped Prediction Transformer (LPT) and its hybrid variant set a new quality-memory frontier for looped models: with five recursions, the hybrid lowers validation perplexity on FineWeb-Edu by 1.12-1.82 relative to a same-size standard Transformer while using 76-79% less context memory. Through an extensive analysis, we investigate why memory sharing helps. Shared and local memory develop different representations, and later recursions attend mostly to the shared memory, which also acts as a gradient highway to the first recursion.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.02383",
+    "arxiv": "https://arxiv.org/abs/2610.02383"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10a04-e5ca-7dd2-83d6-bb8837392947/podcast.mp3",
+  "duration": 486.452,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 42.36,
+      "en": "In our graduate course on Transformer Architectures, today's lecture is on “The Surprising Effectiveness of Shared Memory in Looped Transformers.” Researchers at Cornell University and IBM Research study how repeated Transformer computation can use less context memory. Recent work such as “Mixture-of-Recursions: Learning Dynamic Recursive Depths for Adaptive Token-Level Computation” and “Towards Looped Models Done Right, Part II: Rethinking at Fixed Points” reflects growing interest in recursion and memory reuse. This paper asks whether training with shared memory can make those repeated passes more useful. Yes, Noah?",
+      "zh": "在我们关于Transformer架构的研究生课程中，今天的讲座是“共享内存在循环Transformer中出人意料的有效性”。康奈尔大学和IBM Research的研究人员研究了重复的Transformer计算如何能使用更少的上下文内存。最近的工作，如“Mixture-of-Recursions: Learning Dynamic Recursive Depths for Adaptive Token-Level Computation”和“Towards Looped Models Done Right, Part II: Rethinking at Fixed Points”，反映了对递归和内存复用的兴趣日益增长。这篇论文问的是，用共享内存训练能否让那些重复传递变得更有用。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 43.4,
+      "end": 48.36,
+      "en": "Hi Professor, if recursion already reuses the same weights, why does it need so much memory?",
+      "zh": "教授您好，如果递归已经复用了同一套权重，那为什么还需要这么多内存呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 49.38,
+      "end": 80.26,
+      "en": "Reusing weights reduces the number of parameters, but a conventional looped model still keeps a separate K-V cache for each pass. Each cache stores representations of the preceding context, so memory can grow with both context length and recursion count. The authors propose changing that arrangement during training: let the first pass build a full-context cache, then let later passes consult it while retaining only a small local cache. The question is whether this saves memory without harming predictions.",
+      "zh": "复用权重确实能减少参数量，但传统的循环模型每一轮仍然要单独维护一份K-V缓存。每份缓存都存着前文上下文的表示，所以内存会随着上下文长度和递归次数一起增长。作者提出在训练时改变这种安排：让第一轮建立一份全上下文缓存，后续轮次参考这份缓存，自己只保留一小块局部缓存。问题在于，这样做能不能既省内存又不损害预测质量。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 80.26,
+      "end": 112.26,
+      "en": "A standard Looped Transformer repeats the same stack of layers, increasing effective depth and computation without adding a fresh set of weights at each pass. The Looped Prediction Transformer separates those passes into different roles. Its first, or state, recursion processes the sequence and writes a full causal cache. Later prediction recursions use that shared cache as context while refining the next-token prediction. Think of one pass preparing a reference notebook that the later passes can consult.",
+      "zh": "标准的循环Transformer会重复同一组层，从而增加有效深度和计算量，但不会在每次循环时新增一套权重。循环预测Transformer则把这些循环分成不同角色。它的第一次循环，也就是状态循环，负责处理整个序列并写入一份完整的因果缓存。之后的预测循环则把这份共享缓存当作上下文，同时不断精炼对下一个token的预测。可以把它想成第一次循环先准备好一本参考笔记，后面的循环随时可以查阅。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 113.42,
+      "end": 119.24,
+      "en": "So the later passes do not simply inherit the first pass’s output; they read its stored attention keys and values?",
+      "zh": "所以后面的几轮并不是简单继承第一轮的输出，而是去读取它存下来的注意力键和值？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 120.62,
+      "end": 151.12,
+      "en": "Exactly. Each later recursion combines entries from the shared cache with entries in its own local cache in one attention operation. That local cache is limited to a sliding window, 64 tokens by default. The model therefore preserves nearby information generated during the current recursion without maintaining a second full-context record. The hybrid version applies the same idea to a model with linear-attention layers, which keep a compact recurrent state, and full-attention layers, which use shared memory.",
+      "zh": "完全正确。之后的每一次递归都会在一次注意力操作中，把共享缓存里的条目和它自己本地缓存里的条目结合起来。本地缓存被限制在一个滑动窗口内，默认是64个token。因此，模型能保留当前递归过程中生成的邻近信息，又不必再维护一份完整的上下文记录。混合版本把同样的思路用在一个同时包含线性注意力层和全注意力层的模型上：线性注意力层维护一个紧凑的循环状态，全注意力层则使用共享记忆。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 152.12,
+      "end": 184.9,
+      "en": "The distinction from post-training cache tricks is important: the model learns with this memory arrangement in place. The authors train decoder-only models at roughly 150 million, 450 million, and 1 billion parameters, with a context length of 4,096 tokens. They compare several recursion counts and evaluate held-out language modeling and zero-shot tasks. Most proposed models receive next-token supervision at the final recursion, allowing the study to test whether shared memory supports training as well as inference.",
+      "zh": "和训练后缓存技巧的区别很重要：模型是在这种记忆安排已经就位的情况下训练的。作者训练了参数量大约为1.5亿、4.5亿和10亿的解码器模型，上下文长度为4096个token。他们比较了不同的递归次数，并评估了留出的语言建模任务和零样本任务。大多数提出的模型在最后一次递归时接受下一token监督，这让研究能够检验共享记忆是否既能支持训练，也能支持推理。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 185.94,
+      "end": 192.1,
+      "en": "Quick question: does a smaller cache translate into faster decoding, or does each extra recursion still cost time?",
+      "zh": "问个快问题：缓存变小到底能不能让解码更快，还是说每多一次递归照样得花时间？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 192.1,
+      "end": 225.72,
+      "en": "The cache reduction is substantial, but recursion is not computationally free. At a context length of 4,096 tokens, a 64-token local window, and five recursions, the proposed model uses about four point seven times less full-attention cache than a standard looped model. Yet five passes still require more decoding computation than one. In their implementation, the model takes 3% to 8% longer than the matched baseline at equal batch size, though lower memory can permit larger batches.",
+      "zh": "缓存减少的幅度确实很大，但递归并不是没有计算代价的。在上下文长度为4096个token、局部窗口为64个token、递归五次的情况下，所提出的模型使用的全注意力缓存大约比标准循环模型少4.7倍。但五遍计算仍然比一遍需要更多的解码计算量。在他们的实现中，相同批量大小下，该模型比匹配的基线慢3%到8%，不过更低的内存占用可以支持更大的批量。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 226.4,
+      "end": 262.3,
+      "en": "That larger-batch effect matters in serving. On one NVIDIA H100 with a 4,096-token context, measured peak throughput for the proposed model is 7% to 91% higher than for the standard looped baseline, depending on size and recursion count. The hybrid version is particularly memory-efficient; at three recursions, its reported throughput is 1.4 to 1.5 times that of a same-size standard Transformer. These results show why memory, latency, and throughput should be considered separately.",
+      "zh": "更大的批量效应在服务中很重要。在一块英伟达H100上，上下文长度为4096个token时，所提模型的实测峰值吞吐量比标准循环基线高出7%到91%，具体取决于规模和递归次数。混合版本尤其节省内存；在三次递归时，其报告的吞吐量是同规模标准Transformer的1.4到1.5倍。这些结果表明，为什么内存、延迟和吞吐量应该分开考虑。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 263.2,
+      "end": 269.86,
+      "en": "Can you clarify what evidence shows that sharing itself helps quality, rather than just reducing or rearranging the cache?",
+      "zh": "你能澄清一下，有什么证据表明共享本身有助于提升质量，而不只是减少或重新安排了缓存？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 270.72,
+      "end": 302.52,
+      "en": "The authors vary the local-window length, including a zero-length window, and still find an advantage over the standard looped model. They also retain an advantage when prediction recursions have full-context caches, suggesting that simply truncating the cache does not explain the result. In attention measurements, later recursions devote most of their attention to shared memory, with the share rising to 73% to 80% in the final recursion. The shared cache appears to be actively used, not merely present.",
+      "zh": "作者改变了局部窗口的长度，甚至把窗口设为零，结果仍然优于标准的循环模型。当预测递归使用全上下文缓存时，优势依然存在，说明仅仅截断缓存并不能解释这一结果。在注意力测量中，较晚的递归把大部分注意力放在共享内存上，最后一层递归的占比升到73%到80%。共享缓存似乎是被主动使用的，而不只是摆在那里。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 303.52,
+      "end": 336.96,
+      "en": "A second insight concerns learning dynamics. In the standard looped model, the gradient reaching early recursions weakens as depth increases. Reading the first recursion’s shared cache creates a more direct path from the final prediction loss back to that early computation. When the researchers detach the shared cache during later reads, preserving the forward computation but removing that gradient path, quality worsens and some deeper models fail to train. This supports a gradient-related benefit, though it does not isolate its precise cause.",
+      "zh": "第二个洞见跟学习动态有关。在标准的循环模型中，随着深度增加，传到早期循环的梯度会逐渐减弱。而读取第一次循环的共享缓存，相当于给最终预测损失开辟了一条更直接的路径，直通早期计算。当研究者让后续读取时断开共享缓存，也就是保留前向计算但切断那条梯度路径，质量就变差了，一些更深的模型甚至训不起来。这说明好处确实和梯度有关，不过还没能精确定位到具体原因。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 337.9,
+      "end": 343.46,
+      "en": "Hold on, does that mean the first recursion becomes a dedicated memory writer, while later ones specialize as readers?",
+      "zh": "等等，这是不是说第一次递归变成了专门写记忆的，而后面几次递归则专门负责读取？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 344.54,
+      "end": 376.44,
+      "en": "That is a reasonable interpretation, but the evidence suggests specialization rather than proving a strict division of labor. A key-representation analysis finds that shared and local keys become distinguishable, while attention measurements show later passes favor shared entries. Together, these observations fit a model in which the first recursion constructs broadly useful context and later recursions use it while predicting. The authors also find that the proposed model handles final-loss training more reliably at greater depth than their standard looped baseline.",
+      "zh": "这个理解是合理的，但证据更倾向于支持“专门化”，而不是证明存在严格的分工。对key表示的分析发现，共享key和局部key会变得可区分，而注意力测量则显示后续轮次更偏好共享条目。综合来看，这些观察结果符合这样一个模型：第一次递归构建出广泛有用的上下文，后续递归在预测时使用它。作者还发现，与标准的循环基线相比，所提出的模型在更大深度下进行最终损失训练时更可靠。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 377.42,
+      "end": 409.44,
+      "en": "The implications are relevant to current work on recursive computation, but the contribution is distinct. “Mixture-of-Recursions” varies recursion depth across tokens, whereas this study focuses on how recursions share memory. “Towards Looped Models Done Right, Part II” also explores cache sharing, but this paper tests a sequential design where an initial pass constructs the shared cache for later prediction passes. It suggests that memory organization can shape what a looped model learns, not only how much storage it needs.",
+      "zh": "这些发现对当前关于递归计算的研究有参考价值，但这项工作的贡献有所不同。“Mixture-of-Recursions”是在不同token上改变递归深度，而这项研究关注的是递归之间如何共享记忆。“Towards Looped Models Done Right, Part II”也探讨了缓存共享，但本文测试的是一种串行设计，即第一遍为后续的预测遍构建共享缓存。它表明，记忆的组织方式会影响循环模型学到什么，而不只是影响它需要多少存储。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 409.44,
+      "end": 415.84,
+      "en": "What should we be cautious about before treating this as a general recipe for larger models or longer contexts?",
+      "zh": "在把它当作适用于更大模型或更长上下文的通用方案之前，我们应该注意什么？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 416.96,
+      "end": 452.68,
+      "en": "The experiments reach 1 billion parameters, use one pretraining corpus, FineWeb-Edu, and evaluate a 4,096-token context; they do not establish behavior at larger scales or on long-context tasks. The models are parameter-matched, not matched to larger standard Transformers on decoding computation. Also, lower cache use does not remove the added latency of repeated passes. Future work should test longer contexts, other training settings, and adaptive recursion, which could decide when additional computation is worth its cost.",
+      "zh": "这些实验的规模达到10亿参数，只用了FineWeb-Edu这一个预训练语料，评估的是4,096个token的上下文；它们并不能说明在更大规模或长上下文任务上的表现。模型之间是参数对齐的，并没有在解码计算量上与更大的标准Transformer对齐。而且，降低缓存使用并不能消除重复前向传播带来的额外延迟。未来的工作应该测试更长的上下文、其他训练设置，以及自适应递归——也就是让模型自己决定什么时候值得多花这些计算。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 453.6,
+      "end": 486.452,
+      "en": "The central takeaway is that shared memory can be both a systems choice and a learning choice. In these experiments, training later recursions to consult an earlier full-context cache reduces memory and often improves quality, while the added computation remains a real deployment trade-off. For researchers, the useful question is not only how many times a model recurs, but how information moves between those recursions. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，共享内存既可以是一种系统层面的选择，也可以是一种学习层面的选择。在这些实验中，训练后续的递归去查询早期的全上下文缓存，可以减少内存占用，而且往往还能提升质量，但额外增加的计算量在部署时仍然是一个实实在在的权衡。对研究者来说，有用的问题不只是模型递归了多少次，而是信息在这些递归之间是如何流动的。感谢收听。如果还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{monea2026surprisingeffectivenesssharedmemory,\n      title={The Surprising Effectiveness of Shared Memory in Looped Transformers}, \n      author={Giovanni Monea and Keshav Ramji and Yousef El-Kurdi and Luis A. Lastras and Yoav Artzi and Nathan Godey and Ramón Fernandez Astudillo},\n      year={2026},\n      eprint={2610.02383},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.02383}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.528,
+    0.293,
+    0.21,
+    0.201,
+    0.237,
+    0.2,
+    0.499,
+    0.699,
+    0.407,
+    0.522,
+    0.475,
+    0.411,
+    0.645,
+    0.549,
+    0.418,
+    0.517,
+    0.437,
+    0.432,
+    0.468,
+    0.573,
+    0.344,
+    0.285,
+    0.472,
+    1.0,
+    0.705,
+    0.592,
+    0.548,
+    0.419,
+    0.461,
+    0.258,
+    0.279,
+    0.231,
+    0.219,
+    0.569,
+    0.452,
+    0.355,
+    0.362,
+    0.377,
+    0.434,
+    0.7,
+    0.908,
+    0.471,
+    0.481,
+    0.545,
+    0.416,
+    0.611,
+    0.532,
+    0.449,
+    0.507,
+    0.356,
+    0.706,
+    0.598,
+    0.439,
+    0.483,
+    0.457,
+    0.443,
+    0.441,
+    0.452,
+    0.358,
+    0.346,
+    0.444,
+    0.823,
+    0.525,
+    0.463,
+    0.453,
+    0.49,
+    0.284,
+    0.624,
+    0.688,
+    0.504,
+    0.514,
+    0.421
+  ],
+  "published": "2026-10-01",
+  "views": 495,
+  "license": "arXiv 默认许可"
+}

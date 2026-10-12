@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 486.452,
+  "word_match_rate": 0.9401,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Transformer Architectures, today's lecture is on “The Surprising Effectiveness of Shared Memory in Looped Transformers.” Researchers at Cornell University and IBM Research study how repeated Transformer computation can use less context memory. Recent work such as “Mixture-of-Recursions: Learning Dynamic Recursive Depths for Adaptive Token-Level Computation” and “Towards Looped Models Done Right, Part II: Rethinking at Fixed Points” reflects growing interest in recursion and memory reuse. This paper asks whether training with shared memory can make those repeated passes more useful. Yes, Noah?",
+      "start": 0.0,
+      "end": 42.36
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if recursion already reuses the same weights, why does it need so much memory?",
+      "start": 43.4,
+      "end": 48.36
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Reusing weights reduces the number of parameters, but a conventional looped model still keeps a separate K-V cache for each pass. Each cache stores representations of the preceding context, so memory can grow with both context length and recursion count. The authors propose changing that arrangement during training: let the first pass build a full-context cache, then let later passes consult it while retaining only a small local cache. The question is whether this saves memory without harming predictions.",
+      "start": 49.38,
+      "end": 80.26
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "A standard Looped Transformer repeats the same stack of layers, increasing effective depth and computation without adding a fresh set of weights at each pass. The Looped Prediction Transformer separates those passes into different roles. Its first, or state, recursion processes the sequence and writes a full causal cache. Later prediction recursions use that shared cache as context while refining the next-token prediction. Think of one pass preparing a reference notebook that the later passes can consult.",
+      "start": 80.26,
+      "end": 112.26
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the later passes do not simply inherit the first pass’s output; they read its stored attention keys and values?",
+      "start": 113.42,
+      "end": 119.24
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. Each later recursion combines entries from the shared cache with entries in its own local cache in one attention operation. That local cache is limited to a sliding window, 64 tokens by default. The model therefore preserves nearby information generated during the current recursion without maintaining a second full-context record. The hybrid version applies the same idea to a model with linear-attention layers, which keep a compact recurrent state, and full-attention layers, which use shared memory.",
+      "start": 120.62,
+      "end": 151.12
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The distinction from post-training cache tricks is important: the model learns with this memory arrangement in place. The authors train decoder-only models at roughly 150 million, 450 million, and 1 billion parameters, with a context length of 4,096 tokens. They compare several recursion counts and evaluate held-out language modeling and zero-shot tasks. Most proposed models receive next-token supervision at the final recursion, allowing the study to test whether shared memory supports training as well as inference.",
+      "start": 152.12,
+      "end": 184.9
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does a smaller cache translate into faster decoding, or does each extra recursion still cost time?",
+      "start": 185.94,
+      "end": 192.1
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The cache reduction is substantial, but recursion is not computationally free. At a context length of 4,096 tokens, a 64-token local window, and five recursions, the proposed model uses about four point seven times less full-attention cache than a standard looped model. Yet five passes still require more decoding computation than one. In their implementation, the model takes 3% to 8% longer than the matched baseline at equal batch size, though lower memory can permit larger batches.",
+      "start": 192.1,
+      "end": 225.72
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "That larger-batch effect matters in serving. On one NVIDIA H100 with a 4,096-token context, measured peak throughput for the proposed model is 7% to 91% higher than for the standard looped baseline, depending on size and recursion count. The hybrid version is particularly memory-efficient; at three recursions, its reported throughput is 1.4 to 1.5 times that of a same-size standard Transformer. These results show why memory, latency, and throughput should be considered separately.",
+      "start": 226.4,
+      "end": 262.3
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify what evidence shows that sharing itself helps quality, rather than just reducing or rearranging the cache?",
+      "start": 263.2,
+      "end": 269.86
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The authors vary the local-window length, including a zero-length window, and still find an advantage over the standard looped model. They also retain an advantage when prediction recursions have full-context caches, suggesting that simply truncating the cache does not explain the result. In attention measurements, later recursions devote most of their attention to shared memory, with the share rising to 73% to 80% in the final recursion. The shared cache appears to be actively used, not merely present.",
+      "start": 270.72,
+      "end": 302.52
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A second insight concerns learning dynamics. In the standard looped model, the gradient reaching early recursions weakens as depth increases. Reading the first recursion’s shared cache creates a more direct path from the final prediction loss back to that early computation. When the researchers detach the shared cache during later reads, preserving the forward computation but removing that gradient path, quality worsens and some deeper models fail to train. This supports a gradient-related benefit, though it does not isolate its precise cause.",
+      "start": 303.52,
+      "end": 336.96
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, does that mean the first recursion becomes a dedicated memory writer, while later ones specialize as readers?",
+      "start": 337.9,
+      "end": 343.46
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That is a reasonable interpretation, but the evidence suggests specialization rather than proving a strict division of labor. A key-representation analysis finds that shared and local keys become distinguishable, while attention measurements show later passes favor shared entries. Together, these observations fit a model in which the first recursion constructs broadly useful context and later recursions use it while predicting. The authors also find that the proposed model handles final-loss training more reliably at greater depth than their standard looped baseline.",
+      "start": 344.54,
+      "end": 376.44
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The implications are relevant to current work on recursive computation, but the contribution is distinct. “Mixture-of-Recursions” varies recursion depth across tokens, whereas this study focuses on how recursions share memory. “Towards Looped Models Done Right, Part II” also explores cache sharing, but this paper tests a sequential design where an initial pass constructs the shared cache for later prediction passes. It suggests that memory organization can shape what a looped model learns, not only how much storage it needs.",
+      "start": 377.42,
+      "end": 409.44
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "What should we be cautious about before treating this as a general recipe for larger models or longer contexts?",
+      "start": 409.44,
+      "end": 415.84
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The experiments reach 1 billion parameters, use one pretraining corpus, FineWeb-Edu, and evaluate a 4,096-token context; they do not establish behavior at larger scales or on long-context tasks. The models are parameter-matched, not matched to larger standard Transformers on decoding computation. Also, lower cache use does not remove the added latency of repeated passes. Future work should test longer contexts, other training settings, and adaptive recursion, which could decide when additional computation is worth its cost.",
+      "start": 416.96,
+      "end": 452.68
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The central takeaway is that shared memory can be both a systems choice and a learning choice. In these experiments, training later recursions to consult an earlier full-context cache reduces memory and often improves quality, while the added computation remains a real deployment trade-off. For researchers, the useful question is not only how many times a model recurs, but how information moves between those recursions. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 453.6,
+      "end": 486.452
+    }
+  ]
+}

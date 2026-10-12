@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 380.395,
+  "word_match_rate": 0.9485,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to our seminar on Advanced Topics in Machine Learning. We've seen a surge of interest in foundation models for structured data, with systems like TabPFN and TabICLv2 pushing the boundaries of in-context learning. These models are typically pretrained to predict a single target column. Today's lecture is on 'LimiX-2: A Contextual Mechanism Network Towards General Structured-Data Intelligence', a paper from researchers at Stable AI and Tsinghua University that takes a different approach. It suggests we should move beyond simple prediction.",
+      "start": 0.0,
+      "end": 30.3
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Yes, Noah?",
+      "start": 30.68,
+      "end": 31.16
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. When you say these other models are 'target-centric,' do you just mean they're trained for a single task like classification or regression on a predefined label column?",
+      "start": 31.52,
+      "end": 40.22
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Precisely. Their primary training objective is to estimate the probability of a label given the features and some context examples. LimiX-2 argues this is too narrow. The authors propose a framework they call Contextual Mechanism Networks, or CMNs. The goal isn't just to predict one target variable, but to model the entire joint structure of the data. Instead of learning to predict 'y' from 'x', it learns the relationships between all variables, allowing it to predict any unobserved quantity in the dataset, conditioned on the rest.",
+      "start": 40.22,
+      "end": 74.38
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So it's shifting from a supervised learning problem to something more like unsupervised or self-supervised density estimation?",
+      "start": 74.72,
+      "end": 80.3
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That's a good way to frame it. The core idea is that a truly general model for structured data shouldn't be limited to one prediction task. It should be able to handle missing value imputation, feature reconstruction, or even anomaly detection by scoring the likelihood of certain data points. LimiX-2 treats all of these as instances of the same general problem: conditional inference. This is all enabled by its pretraining objective, which they call Context-Conditional Masked Modeling. During training, it doesn't just mask the target; it masks arbitrary cells, columns, or blocks of entries and learns to reconstruct them, forcing it to understand the interdependencies across the entire table.",
+      "start": 80.88,
+      "end": 122.56
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Does training for this broader objective risk hurting its performance on a standard regression task, compared to a model that only ever trained to do regression?",
+      "start": 122.86,
+      "end": 130.18
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That's the critical question, and according to their results, it does not. In fact, LimiX-2 reports the highest Elo scores on several major benchmarks, including TabArena, TALENT, and BCCO, outperforming specialized models and other foundation models. For instance, on the TabArena regression subset, it achieves a very high Elo score of 2206. The results suggest that learning these richer, more general representations actually enhances its ability to perform specific prediction tasks.",
+      "start": 130.6,
+      "end": 161.34
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Let's look at how it works. A key architectural choice is its cell-level representation. Instead of embedding an entire row, each individual cell gets its own vector. This is what allows it to reason about missingness at a granular level. The model backbone is a dual-axis Transformer. One attention axis works across features within a row to model variable interactions, while the other works across samples to propagate information from the context examples. To train this, it relies entirely on synthetic data generated from Structural Causal Models, or SCMs. They built a sophisticated pipeline that generates directed acyclic graphs, applies complex functional mechanisms, and then applies various transformations to mimic the diversity of real-world data.",
+      "start": 161.72,
+      "end": 208.46
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "I have a question about that. Pretraining exclusively on synthetic data seems risky. How can we be sure the SCM generator covers the types of complex, messy distributions we find in real financial or medical datasets?",
+      "start": 208.8,
+      "end": 218.88
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "An excellent point. The success of this approach hinges entirely on the quality and diversity of the synthetic data distribution. The authors put significant effort into their generation pipeline, incorporating causal motifs, varied functional forms like periodic and piecewise functions, and numerous data transformations. The strong benchmark results suggest their synthetic data is effective, but this is a standing limitation. Generalization to out-of-distribution real-world mechanisms remains an open question that requires further study. The model's performance on these benchmarks is strong evidence, but not definitive proof of universal applicability.",
+      "start": 219.92,
+      "end": 261.42
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "The paper also mentions 'causal awareness'. They test whether the model can recover the causal skeleton. That feels related to what we discussed in the 'Causal Foundation Models' paper. How does LimiX-2 do this?",
+      "start": 261.92,
+      "end": 272.84
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Right, this is one of the more interesting implications. They use the feature-axis attention scores as a proxy for variable adjacency in the underlying causal graph. The idea is that if the model has truly learned the data-generating mechanism, variables that directly influence each other should attend to each other more strongly. Their experiments show it achieves a high F1 score in recovering these skeletons, outperforming other methods. Now, this is not a full causal discovery procedure. It's an indirect probe.",
+      "start": 273.08,
+      "end": 301.86
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "So, we should be cautious. We know from language models that attention doesn't always equal explanation or true dependency.",
+      "start": 302.28,
+      "end": 308.7
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Exactly. The authors present it as an operational test of whether the model's internal representations capture structural information. But it's a promising sign that pretraining on data from causal graphs can imbue these models with representations that are more aligned with the underlying mechanisms. It connects the world of tabular foundation models with causal representation learning. The paper also demonstrates clear scaling laws, showing that performance improves log-linearly with model size up to their largest 400-million-parameter model, suggesting there's still room to grow.",
+      "start": 309.64,
+      "end": 341.62
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "To summarize, LimiX-2 presents a compelling shift in the goal of pretraining for structured data. It moves away from single-task prediction and toward learning a general model of a dataset's internal mechanisms. It achieves this through a masked modeling objective on diverse, causally-inspired synthetic data. The results suggest this broader objective not only enables new capabilities like imputation and causal probing but also yields state-of-the-art performance on traditional predictive tasks. The main takeaway is that for tabular data, understanding the whole system may be the best way to predict any single part of it.",
+      "start": 341.86,
+      "end": 375.52
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 375.66,
+      "end": 380.395
+    }
+  ]
+}

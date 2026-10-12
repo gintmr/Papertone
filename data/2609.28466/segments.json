@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 473.782,
+  "word_match_rate": 0.9739,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Computer Vision and Generative Models, today's lecture is on The Past Frames the Future: Memory for Autoregressive Video Generation—A Survey. Long-context approaches such as Long-Context Autoregressive Video Modeling with Next-Frame Prediction and Long-Context State-Space Video World Models show how quickly the field is moving toward longer, more persistent video generation. This survey shifts attention from generating more frames to preserving the right information across them, a challenge that matters for interactive worlds and storytelling.",
+      "start": 0.0,
+      "end": 35.42
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Researchers affiliated with institutions including the Hong Kong University of Science and Technology and Carnegie Mellon University examine a problem that appears once video generation becomes sequential: the system's history grows, but its usable context and computing resources remain limited. Yes, Noah, go ahead; let's start with the basic question of what memory means here, because the paper's definition is broader than a particular cache or module.",
+      "start": 36.5,
+      "end": 63.02
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor, when the paper says memory, does it just mean keeping earlier frames available?",
+      "start": 64.18,
+      "end": 69.14
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Not necessarily. The survey defines memory by what it does over time: it preserves information from earlier observations or generated states, and that information can influence later output after the original evidence is no longer available in the active context. Earlier frames can serve as memory, but so can a recurrent state, a three-dimensional map, an entity record, or even adapted model parameters. The key is persistence and later influence, not a specific data structure.",
+      "start": 70.26,
+      "end": 98.64
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So a long context window alone does not automatically count as memory?",
+      "start": 99.72,
+      "end": 103.88
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Right. A large context can expose old evidence directly, whereas memory is the persistent representation that remains useful when that evidence falls out of the active context. The survey groups memory carriers into 4 forms: visual memory, implicit neural state, explicit structured state, and adaptive parametric memory. Think of these as different notebooks: one stores images, one compresses history into model state, one records facts in structured form, and one changes the model itself.",
+      "start": 104.86,
+      "end": 134.18
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Each form has a different trade-off. Visual records retain appearance and detail, but can be costly to store and may preserve artifacts. Implicit states fit naturally inside a generator, yet are difficult to inspect or edit. Explicit records can represent entities, geometry, motion, and causal relations clearly, but rely on accurate tracking. Adaptive parameters offer bounded persistence, though updates can interfere with one another or become hard to attribute.",
+      "start": 135.12,
+      "end": 163.12
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: what kinds of information should these systems prioritize?",
+      "start": 163.12,
+      "end": 167.78
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The survey identifies 5 preservation functions: identity, spatial layout, dynamics, semantics, and causality. A system may need to recognize a character after an occlusion, remember where a room's door is, track an object's motion, retain a character's goal, and preserve the result of an earlier action. These functions interact. If a person moves a cup, the memory should update its location and motion, while retaining that it is the same cup and that the action changed the scene.",
+      "start": 168.94,
+      "end": 201.06
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The paper also breaks memory into operations: writing, reading, updating, management, and integration. A system first decides what to store and how to label it; later it must retrieve the relevant record, revise it as the world changes, manage limited capacity, and make the retrieved information strong enough to affect generation. This decomposition helps diagnose failures: a fact may never be written, may be stored under the wrong address, or may be retrieved but have little effect on the output.",
+      "start": 201.86,
+      "end": 231.7
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How do the authors tell whether a system genuinely remembers, rather than simply generating a long video?",
+      "start": 232.72,
+      "end": 238.3
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "They call for memory-revealing evaluations: information must be learned earlier, become unavailable in the local context and prompt, and still affect a later output. Useful tests include a character disappearing and returning, revisiting a location, recalling a delayed narrative commitment, or checking an action's consequences after a time gap. Duration alone is not evidence. Paired-history controls, prerequisite checks, and component ablations can help establish that performance depends on memory.",
+      "start": 239.18,
+      "end": 269.78
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "That evaluation principle also connects to training. The survey distinguishes predicting outputs from supervising memory states or the dynamics of memory updates. Training may use teacher-forced histories, augmented histories, or the model's own rollouts. A model's own imperfect generations can create memory states unlike those seen under teacher forcing, extending exposure bias from the generated frames to the internal record that guides later frames.",
+      "start": 270.76,
+      "end": 298.36
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, if the retrieved record is correct, why might generation still ignore it?",
+      "start": 299.32,
+      "end": 304.0
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Retrieval is only one step. The model must integrate what it reads, perhaps through cross-attention, gating, key-value injection, geometric projection, or structured conditioning. If that channel is weak, local visual context can dominate and the remembered fact may not shape the next frame. There are resource trade-offs too: longer visual histories consume storage and attention computation, while compact states reduce cost but may discard details needed for identity or scene consistency.",
+      "start": 304.0,
+      "end": 335.72
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "These design choices matter in interactive video, games, simulation, robotics, and embodied agents. A user might move an object, open a door, or change a camera viewpoint, then return much later. A useful world model should preserve the consequences of those interventions rather than reset the scene. Hybrid designs look promising as a research direction: visual or implicit memory for appearance, explicit state for geometry and causal changes, and careful policies for updating and retrieving each.",
+      "start": 336.8,
+      "end": 367.6
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this survey relate to work like Mixture of Contexts for Long Video Generation?",
+      "start": 368.44,
+      "end": 373.38
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Mixture of Contexts focuses on enabling long video generation through context selection, while this survey asks a broader organizing question: what persistent historical information must remain available, in what form, and through which operations? The distinction is useful, not absolute; context selection can be part of a memory system's reading policy. Likewise, state-space approaches can provide implicit persistence, but the survey emphasizes testing whether that state preserves specific information after its original evidence disappears.",
+      "start": 374.62,
+      "end": 408.24
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The paper's larger implication is that memory should be evaluated as a capability distinct from general video quality. A visually convincing clip can still forget identity, violate spatial continuity, or undo an action. The survey does not present a new model, benchmark, or unified empirical comparison, and its evidence comes from studies with differing setups. Its contribution is instead a shared framework that can guide controlled comparisons and make trade-offs in capacity, correctness, accessibility, and influence explicit.",
+      "start": 408.24,
+      "end": 443.1
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The central takeaway is that persistent video generation is not just a matter of extending the timeline. A system must preserve accurate state, retrieve it when needed, revise it when the world changes, and let it causally shape what happens next. That perspective gives researchers a practical way to compare very different architectures and design more informative evaluations. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 444.18,
+      "end": 473.782
+    }
+  ]
+}

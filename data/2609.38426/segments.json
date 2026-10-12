@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 450.324,
+  "word_match_rate": 0.9458,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical course, Transformer Architectures for Multimodal Reasoning, today's lecture is on Loop V-L: Recurrent Visual Intelligence. Recent work such as Qwen two V-L has advanced visual perception across resolutions, while Open V-L Thinker explores iterative training for complex reasoning. Loop V-L asks a different question: can a vision-language model improve by repeatedly reusing the same computation? Researchers from Renmin University of China and Shanghai Jiao Tong University investigate that possibility. I see a hand—yes, Noah?",
+      "start": 0.0,
+      "end": 37.52
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say recurrent, does the model repeat the same layers rather than add new ones?",
+      "start": 38.7,
+      "end": 43.72
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. A recurrent Transformer applies shared parameters multiple times, separating the number of stored layers from the depth of computation actually performed. That distinction matters as models grow: repeated processing may offer additional computation without storing a separate layer for every step. Loop V-L extends this idea to vision and language together. Instead of treating image features as fixed inputs, it asks whether visual representations should evolve as the model reasons.",
+      "start": 44.76,
+      "end": 74.18
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper builds on a hierarchical recurrence framework, not an entirely new architecture. It has an L module for repeated lower-level updates and an H module for higher-level integration. The authors examine not only benchmark scores but also how attention moves across spatially located image patches. Since those patches correspond to image regions, changing attention can be mapped back to the picture and inspected across repeated computation.",
+      "start": 75.22,
+      "end": 103.58
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: are the visual features recalculated from the image at every loop?",
+      "start": 104.56,
+      "end": 108.7
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Not from the image encoder. Loop V-L freezes its Penguin Vision Encoder, which produces features for image patches. A trainable projector maps those features into the language model's representation space. Then the projected visual tokens and the text are processed together. The key distinction is that the encoder's original features stay fixed, while the projected visual representations inside the recurrent backbone can change from one call to the next.",
+      "start": 108.7,
+      "end": 137.64
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The default schedule is H-two-L-three: three L calls followed by one H call, repeated for two cycles. The L and H stacks each contain 16 Transformer layers, and each stack reuses its own parameters. Across the forward pass, this schedule makes 128 layer calls. At the start of the second cycle, the model also reintroduces an anchor based on the initial visual features, with a learned gate controlling its influence.",
+      "start": 137.64,
+      "end": 168.72
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify why the model needs both the anchor and the gate?",
+      "start": 169.82,
+      "end": 173.12
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The anchor provides a route back to the initial projected visual evidence, rather than allowing recurrent updates to drift without reference. The gate lets the model control how much of that information returns, conditioned on the query. In tests, attention shifts remain when the authors remove this mechanism, so the observed changes are not simply a direct effect of the anchor. Still, that ablation does not prove what causes the model to select any particular region.",
+      "start": 173.96,
+      "end": 201.32
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Training proceeds in stages: language-model pretraining, visual-language alignment, multimodal mid-training, supervised fine-tuning, and a final reinforcement-learning stage using G-R-P-O. During alignment, the backbone and image encoder are frozen while the projector is trained. Later stages update the backbone and projector, keeping the image encoder frozen. The default also uses selective backpropagation: all recurrent calls run forward, but gradients pass through a subset of later calls during training.",
+      "start": 202.24,
+      "end": 234.9
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does adding more recurrent steps at inference reliably improve the results?",
+      "start": 235.88,
+      "end": 239.56
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No. In inference tests, the schedule used during training performs best. Adding more L calls within the two H cycles can help, but adding H cycles beyond the training setup lowers scores. This is a useful implementation lesson: recurrence is not a free dial for improving performance. The model learns a particular pattern of state updates, and changing that pattern at test time can move it away from the computation it was trained to use.",
+      "start": 240.56,
+      "end": 268.02
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "On the same training-token budget, Loop V-L beats the paper's 1-billion-parameter dense Transformer baseline on reported tasks. MMStar rises from 55.33 to 63.47, RealWorldQA from 55.29 to 70.98, and ChartQA from 51.12 to 74.52. The model is also competitive with larger dense baselines in estimated training computation. These comparisons suggest shared layers can support useful executed depth, though they do not establish lower latency or deployment cost.",
+      "start": 268.86,
+      "end": 304.82
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How strong is the evidence that attention shifts actually help the model answer correctly?",
+      "start": 304.82,
+      "end": 310.26
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That is an important limitation. In a diagnostic set of 32 examples, visual attention becomes more concentrated in the second cycle, with mean Gini concentration rising from 0.405 to 0.858 at the cycle boundary. Some patches initially ranked low become highly ranked later. But attention allocation is not causal evidence: these measurements do not show that the newly emphasized regions produce correct answers, and the selected examples cannot establish how often this happens.",
+      "start": 311.1,
+      "end": 344.34
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The authors call the shift a Visual Aha Moment, but the term describes an observable pattern, not a complete account of reasoning. Other probes show visual states continue to change, rather than merely copying their earlier values. Meanwhile, the intermediate answer distribution moves most sharply toward the final one during the last H computation, consistent with H integrating information late in the pass. Taken together, these findings offer diagnostic clues, not proof of a specific reasoning mechanism.",
+      "start": 345.18,
+      "end": 374.6
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this fit with iterative approaches like Open V-L Thinker, and what should researchers test next?",
+      "start": 375.58,
+      "end": 380.96
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Open V-L Thinker emphasizes iterative supervised fine-tuning and reinforcement learning, whereas Loop V-L focuses on recurrence inside a forward pass and the evolution of visual representations. Both reflect interest in iterative computation, but at different levels of the system. Loop V-L's findings encourage researchers to study not just how many steps a model takes, but how those steps are organized. Broader tests could examine other recurrence designs, video, multiple images, and causal interventions on attended regions.",
+      "start": 382.76,
+      "end": 415.78
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The central takeaway is that parameter sharing can produce changing multimodal computation when the shared layers repeatedly process an evolving state. Loop V-L provides evidence that schedule design matters and that visual attention can shift across cycles, while leaving open whether those shifts cause better reasoning or generalize beyond this setup. For PhD researchers, the next step is to connect internal dynamics to controlled outcomes. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 415.78,
+      "end": 450.324
+    }
+  ]
+}

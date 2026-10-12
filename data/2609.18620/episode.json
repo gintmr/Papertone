@@ -1,0 +1,246 @@
+{
+  "id": "2609.18620",
+  "title": "DeformSmith: Physics Harness-Guided Hierarchical Generation of Deformable Assets for Robot Manipulation",
+  "authors": [
+    "Can Li",
+    "Jie Gu",
+    "Zishun Deng",
+    "Jingmin Chen",
+    "Lei Sun"
+  ],
+  "abstract": "Creating deformable assets for robot manipulation requires jointly specifying their geometry, appearance, and physical properties. This is especially challenging for deformable objects, since text and images provide limited evidence about how they deform and respond to contact, yet these responses directly affect their suitability for interaction. Automated generation therefore needs to resolve coupled physical requirements and use interaction evidence to guide construction and refinement. We present DeformSmith, a framework that enables automated generation of interactive, physically credible deformable assets from text or a single image. Through hierarchical agentic construction and a shared physics-grounded harness, it progressively builds, tests, and refines geometry, physical models, material behavior, and robot interaction until the resulting asset is ready for simulation and manipulation. Robot interaction closes the generation loop through manipulation feedback and replayable interaction data. Results show that DeformSmith generates assets with better visual quality and physical plausibility than state-of-the-art baselines, including PhysGen3D, PhysGM, and PhysX-Omni, while supporting the synthesis of data for robotic manipulation of deformable objects. Project page: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.18620",
+    "arxiv": "https://arxiv.org/abs/2609.18620"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0ad00-f4ef-787b-ac7c-246b4f3bff9f/podcast.mp3",
+  "duration": 367.125,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.28,
+      "en": "In our course on Simulation for Robotics, we've seen a surge in frameworks for automatically generating simulation-ready assets. Works like SceneSmith focus on entire indoor scenes, while PhysX-Omni aims for a unified approach to rigid, deformable, and articulated objects. Today's lecture is on 'DeformSmith', a paper from researchers at Nankai University that tackles a particularly challenging piece of this puzzle: generating high-quality deformable objects from just a text prompt or a single image. It challenges the idea that you can generate geometry and physics properties in one shot. Yes, Noah?",
+      "zh": "在我们这门机器人仿真课上，我们注意到自动生成仿真就绪资产的框架越来越多。像SceneSmith这样的工作聚焦于整个室内场景，而PhysX-Omni则想用一个统一的方案来处理刚体、可变形物体和铰接物体。今天的课讲的是“DeformSmith”，这是南开大学的研究人员发表的一篇论文，专门攻克这个难题中特别有挑战性的一环：仅凭一段文字提示或一张图片，就生成高质量的可变形物体。它挑战了那种认为可以一步到位同时生成几何结构和物理属性的想法。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.72,
+      "end": 47.96,
+      "en": "Hi Professor. So is the key difference here the specific focus on deformable objects, as opposed to the rigid or articulated scenes in something like SceneSmith? It seems like a much harder problem since the object's state space is infinite.",
+      "zh": "教授您好。所以这里的关键区别是不是在于专门聚焦可变形物体，而不是像SceneSmith那样处理刚性或铰接场景？这似乎是个难得多的问题，因为物体的状态空间是无限的。"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 48.42,
+      "end": 76.32,
+      "en": "Exactly. That's the core motivation. A plush toy that looks correct in a static render might behave like jelly or a brick in a physics simulation. DeformSmith's main contribution is to reframe asset creation not as a single prediction, but as an iterative construction and testing process. The goal is to generate objects that are visually consistent, geometrically sound, physically plausible, and actually usable in a simulated robotic manipulation task.",
+      "zh": "没错，这正是核心动机所在。一个毛绒玩具在静态渲染图里看着没问题，但放到物理仿真里可能表现得像果冻或者砖头。DeformSmith的主要贡献在于，把资产生成重新定义为一个迭代式的构建和测试过程，而不是一次性的预测。目标是生成既视觉一致、几何合理、物理上说得通，又能真正用于仿真机器人操作任务中的物体。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 76.32,
+      "end": 84.44,
+      "en": "So instead of just generating a 3D model and guessing some physics parameters for it, this system actively tests if those parameters make sense in a simulation?",
+      "zh": "所以它不是只生成一个3D模型、再猜一些物理参数，而是会主动在仿真里测试这些参数到底合不合理？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 84.78,
+      "end": 129.6,
+      "en": "Precisely. The authors introduce what they call a 'physics-grounded harness'. Think of it as a shared set of rules and validation criteria that guide the entire process. It's a hierarchy of language-model agents, geometric processing, and physical simulation that work together. This harness coordinates everything: proposing parameters, running tests, evaluating results, and deciding on revisions. It's a shift from one-shot physical asset prediction toward simulation-guided asset construction. This is fundamentally different from methods like PhysGen3D that infer properties from static visual information alone, which are essentially educated guesses.",
+      "zh": "正是如此。作者提出了一个他们称之为“物理锚定框架”的东西。你可以把它理解为一套贯穿整个流程的共享规则和验证标准。它是一个由语言模型智能体、几何处理和物理模拟组成的层级体系，三者协同工作。这个框架协调一切：提出参数、运行测试、评估结果，以及决定如何修改。这标志着从一次性物理资产预测，转向了模拟引导的资产构建。这与PhysGen3D之类仅从静态视觉信息推断属性的方法有本质区别，后者基本上就是靠猜。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 129.6,
+      "end": 132.92,
+      "en": "How does that construction process actually work? You mentioned a hierarchy.",
+      "zh": "那这个构建过程到底是怎么运作的？你刚才提到了一个层级结构。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 133.54,
+      "end": 147.86,
+      "en": "Right. The methodology is split into four distinct levels. It starts at L0 with geometry. Given text or an image, it generates a mesh and a visual representation using 3D Gaussian splatting. It also creates a collision proxy.",
+      "zh": "对，这套方法分为四个不同的层级。从L0的几何开始。给定文本或图像，它会生成一个网格，并用3D高斯泼溅生成视觉表示。同时还会创建一个碰撞代理。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 148.24,
+      "end": 154.62,
+      "en": "Quick question on that. By using Gaussian splatting, are they linking the rendered appearance directly to the underlying simulation particles?",
+      "zh": "我快速问一下，用高斯泼溅的话，他们是不是把渲染出来的外观直接跟底层的模拟粒子关联起来了？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 155.04,
+      "end": 194.34,
+      "en": "Yes, and that's a key detail. The motion of the simulation particles directly updates the positions of the linked Gaussians, so the rendered appearance deforms along with the physical model. After geometry at L0, L1 handles physical model initialization. It assigns mass and density and runs basic drop and slide tests just to make sure the object is stable and behaves reasonably as a rigid body. Then, L2 gets into the material properties. It proposes values for stiffness and damping using a neo-Hookean model and runs more sophisticated deformation tests using the Material Point Method, or MPM.",
+      "zh": "是的，这是个关键细节。仿真粒子的运动直接更新所关联高斯的位置，所以渲染出来的外观会随着物理模型一起变形。L0 处理完几何之后，L1 负责物理模型的初始化。它会分配质量和密度，跑一些基础的掉落和滑动测试，只是为了确认物体是稳定的，作为刚体表现得合理。然后 L2 进入材质属性。它会用 neo-Hookean 模型给出刚度和阻尼的候选值，并用物质点法，也就是 MPM，跑更复杂的形变测试。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 194.84,
+      "end": 198.8,
+      "en": "Why a neo-Hookean model? Isn't that a bit simplistic for complex, real-world materials?",
+      "zh": "为什么用新胡克模型？对于复杂的真实世界材料来说，这是不是有点太简单了？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 199.26,
+      "end": 229.7,
+      "en": "It is, and that's an important limitation the authors acknowledge. This approach works for homogeneous, isotropic objects—think plush toys or soft blocks—but wouldn't capture layered fabrics or anisotropic materials. It's a simplifying assumption to make the problem tractable. Finally, the most interesting part is L3: robot manipulation. The system simulates a full pick-and-place task with a robot arm. It checks if the object can be grasped, lifted, and released successfully.",
+      "zh": "确实如此，这也是作者承认的一个重要局限。这种方法适用于均质、各向同性的物体，比如毛绒玩具或软积木，但没法刻画分层织物或各向异性材料。这是一个为了把问题变得可解而做的简化假设。最后，最有意思的部分是L3：机器人操作。系统会模拟一个完整的抓取放置任务，用机械臂来完成。它会检查物体能否被成功抓取、抬起和放下。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 230.32,
+      "end": 238.14,
+      "en": "So if the robot's fingers crush the object or it slips through the grasp, the system can flag that as a failure and go back to revise the material properties at L2?",
+      "zh": "所以如果机器人的手指把物体捏碎了，或者物体从抓取中滑掉了，系统就能把它标记为失败，然后回到L2去修改材质属性？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 238.14,
+      "end": 268.16,
+      "en": "That's exactly what the manipulation-guided refinement loop does. A failure at the manipulation stage provides concrete evidence that the material parameters, while passing basic drop tests, are not suitable for interaction. This closes the loop, connecting visual generation to physical behavior and then to robotic function. This is a significant step beyond simply creating plausible-looking assets. The ablation studies show this refinement stage is critical, boosting robot task success from 40% to 67%.",
+      "zh": "这正是操作引导的细化循环所做的事。操作阶段的失败提供了具体证据，说明这些材质参数虽然通过了基本的掉落测试，却不适合交互。这就闭合了循环，把视觉生成、物理行为再到机器人功能串联起来。这比单纯生成看起来合理的资产是重要得多的一步。消融实验表明，这个细化阶段至关重要，把机器人任务成功率从40%提升到了67%。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 268.16,
+      "end": 278.2,
+      "en": "That makes sense. But on the evaluation, the paper says they used GPT-6 Astra to score physical realism. How reliable can an LLM be for judging physics, even qualitatively?",
+      "zh": "这说得通。但关于评估，论文里说他们用GPT-6 Astra来给物理真实感打分。让一个大语言模型来评判物理，哪怕是定性的，这能有多可靠？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 278.42,
+      "end": 314.02,
+      "en": "That's an excellent point, and it reflects a broader challenge in the field: how do we evaluate generated physical content at scale? The authors seem to use it as a proxy for human perception. To their credit, they also ran a blinded pairwise human comparison study with 40 participants, which is more robust. The human preferences strongly favored DeformSmith's outputs over baselines like PhysGen3D and PhysX-Omni, especially for physical plausibility and visual quality. Still, you're right to be critical. These evaluations assess perceived quality, not quantitative accuracy against real-world ground truth.",
+      "zh": "这个问题提得非常好，也反映了这个领域一个更广泛的挑战：我们怎么大规模地评估生成出来的物理内容？作者似乎是把它当作人类感知的一个代理指标来用的。值得肯定的是，他们还做了一个40人参与的盲测成对比较研究，这个就更靠谱一些。人类偏好明显更倾向于DeformSmith的输出，而不是PhysGen3D和PhysX-Omni这些基线，尤其是在物理合理性和视觉质量方面。不过你说得对，确实该批判性地看。这些评估衡量的是感知质量，而不是对照真实世界基准的定量准确性。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 314.02,
+      "end": 318.0,
+      "en": "And the dataset of 39 cases seems quite small for drawing broad conclusions.",
+      "zh": "而且39个案例的数据集对于得出广泛结论来说似乎太小了。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 318.56,
+      "end": 329.9,
+      "en": "It is a limitation. This work should be viewed as a proof-of-concept for the framework's architecture rather than a definitive, large-scale solution. The core idea is the integration of generation and testing.",
+      "zh": "这确实是个局限。这项工作应该被看作是对该框架架构的概念验证，而不是一个定论性的大规模解决方案。其核心思想在于将生成与测试整合在一起。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 330.38,
+      "end": 367.125,
+      "en": "So to wrap up, the main takeaway from DeformSmith is its conceptual shift. It treats creating a simulation-ready deformable asset not as a one-shot prediction problem, but as an iterative, experimental construction process. By integrating geometry, physics, and robotic interaction into a closed loop governed by a 'physics-grounded harness,' it produces assets that don't just look right, but behave plausibly under manipulation. It shows that testing an asset's behavior is a crucial part of creating it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "总结一下，DeformSmith 最核心的贡献在于概念上的转变。它不再把创建可仿真的可变形资产当作一次性的预测问题，而是看作一个迭代的、实验性的构建过程。通过把几何、物理和机器人交互整合进一个由“物理约束框架”驱动的闭环中，它生成的资产不仅看起来对，在操作下也能表现出合理的行为。它表明，测试资产的行为是创建资产的关键一环。感谢收听。如果还有问题，可以问我们的 AI 助手或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026deformsmithphysicsharnessguidedhierarchical,\n      title={DeformSmith: Physics Harness-Guided Hierarchical Generation of Deformable Assets for Robot Manipulation}, \n      author={Can Li and Jie Gu and Zishun Deng and Jingmin Chen and Lei Sun},\n      year={2026},\n      eprint={2609.18620},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.18620}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    0.961,
+    0.552,
+    0.554,
+    0.561,
+    0.45,
+    0.439,
+    0.567,
+    0.529,
+    0.491,
+    0.468,
+    0.497,
+    0.507,
+    0.436,
+    0.607,
+    0.476,
+    0.576,
+    0.686,
+    0.524,
+    0.234,
+    0.678,
+    0.262,
+    0.524,
+    0.376,
+    0.604,
+    0.441,
+    0.369,
+    0.416,
+    0.582,
+    0.402,
+    0.52,
+    0.629,
+    0.478,
+    0.395,
+    0.383,
+    0.277,
+    0.308,
+    0.593,
+    0.418,
+    0.588,
+    0.516,
+    0.331,
+    0.454,
+    0.443,
+    0.507,
+    0.346,
+    0.465,
+    0.442,
+    0.385,
+    0.468,
+    0.57,
+    0.427,
+    0.597,
+    0.471,
+    0.468,
+    0.487,
+    0.379,
+    0.349,
+    0.283,
+    0.316,
+    0.2,
+    0.304,
+    0.403,
+    0.503,
+    0.478,
+    1.0,
+    0.462,
+    0.384,
+    0.351,
+    0.426,
+    0.451,
+    0.295,
+    0.387
+  ],
+  "published": "2026-09-16",
+  "views": 474,
+  "license": "CC BY"
+}

@@ -1,0 +1,258 @@
+{
+  "id": "2609.36322",
+  "title": "Periodic Weak Spots: Phase Sensitivity from Chunked KV-Cache Compression",
+  "authors": [
+    "Xingyu Zhu",
+    "Ziheng Cheng",
+    "Ang Lv",
+    "Jing Liu",
+    "Lexing Ying",
+    "Yiyuan Ma",
+    "Xin Dong"
+  ],
+  "abstract": "Chunked KV-cache compression reduces the memory and attention costs of long-context inference by compressing windows of consecutive tokens into fewer cache entries at a fixed stride. Such compression also introduces a new positional coordinate: a token's phase, or its position relative to compression-window boundaries. We uncover a systematic asymmetry in models using such compression: the same information can be easy to retrieve at one phase and difficult at another. We call this periodic variation in retrieval performance phase sensitivity. In large open-weight models with such compression, long-context retrieval accuracy can differ by up to 40 percentage points across phases, revealing periodic weak spots that average benchmark scores can conceal.\nTo investigate this behavior, we pretrain a family of transformers from scratch across multiple KV-compression designs, reproducing phase sensitivity across the variants. Mechanistic analysis using causal interventions in these models reveals phase specialization: different attention components contribute asymmetrically to retrieving information at different source phases. We further analyze idealized retrieval models, showing how gradient flow dynamics may favor sharp phase specialization. Evaluating models with chunked KV-cache compression thus requires measuring across compression phases: high average accuracy can coexist with systematic positional failures.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.36322",
+    "arxiv": "https://arxiv.org/abs/2609.36322"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f0c8-5191-7c05-bac1-3b4124742127/podcast.mp3",
+  "duration": 471.771,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 39.08,
+      "en": "In our graduate course, Transformer Architectures, today’s lecture is on “Periodic Weak Spots: Phase Sensitivity from Chunked K-V-Cache Compression.” Long-context systems increasingly compress their K-V cache to reduce memory and attention costs. Recent work such as “RazorAttention: Efficient KV Cache Compression Through Retrieval Heads” and “PyramidKV: Dynamic KV Cache Compression based on Pyramidal Information Funneling” explores how to retain useful information efficiently. This paper asks whether compression creates positional weaknesses. Yes, Noah?",
+      "zh": "在我们研究生课程《Transformer架构》里，今天的讲座主题是“周期性弱点：分块K-V缓存压缩带来的相位敏感性”。长上下文系统越来越多地压缩K-V缓存，以降低内存和注意力开销。最近的工作，比如“RazorAttention：通过检索头实现高效KV缓存压缩”和“PyramidKV：基于金字塔信息漏斗的动态KV缓存压缩”，都在探索如何高效保留有用信息。这篇论文要问的是，压缩会不会造成位置上的弱点。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 40.24,
+      "end": 43.62,
+      "en": "Hi Professor, what exactly do you mean by a source token’s phase?",
+      "zh": "教授您好，您说的源token的相位具体是什么意思？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.62,
+      "end": 78.54,
+      "en": "Phase means a token’s position within the repeating compression window. Imagine a moving walkway that groups items into batches: shifting an item a few steps can place it in a different spot within its batch, even though the item itself has not changed. The authors, affiliated with ByteDance Seed and universities including Stanford and Princeton, find that this small shift can affect retrieval. Their work adds a new question to efficiency research: not only how much context survives compression, but which positions survive best.",
+      "zh": "相位指的是token在重复压缩窗口中的位置。想象一条传送带，把物品分批打包：把某个物品挪几步，它就可能落到这一批里的不同位置，尽管物品本身没变。作者来自字节跳动Seed以及斯坦福、普林斯顿等高校，他们发现这种小小的位移会影响检索。他们的工作给效率研究加了一个新问题：不只是压缩后有多少上下文能存活，而是哪些位置存活得最好。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 78.54,
+      "end": 108.66,
+      "en": "The central claim is that chunked compression can produce periodic retrieval weaknesses. When a system compresses tokens in groups, a source detail may be represented differently depending on its location relative to the group’s boundaries. The paper calls that relative location its phase. If a model repeatedly struggles with one phase, average accuracy can obscure a practical problem: some otherwise equivalent source details become less accessible at regular intervals.",
+      "zh": "核心主张是，分块压缩会带来周期性的检索弱点。当系统按组压缩 token 时，同一个源细节可能因为相对于组边界的位置不同而得到不同的表示。论文把这种相对位置称为相位。如果模型反复在某个相位上表现不佳，平均准确率就会掩盖一个实际问题：一些本来等价的源细节，会以固定间隔变得不那么容易取用。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 109.74,
+      "end": 114.52,
+      "en": "So is this just the usual effect where models forget information in the middle of a long prompt?",
+      "zh": "那这是不是就是那种常见现象，模型会忘记长提示中间的信息？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 115.44,
+      "end": 147.42,
+      "en": "That is a useful distinction. The authors control for absolute position, keeping query position fixed and matching target-position statistics across phase groups. They evaluate 128,000-token prompts with 16,000 key-value pairs, then compare retrieval according to the target key’s position within the compression stride. This is different from simply asking whether the beginning or middle is harder. The question is whether changing the source’s alignment with compression windows changes performance.",
+      "zh": "这是个有用的区分。作者对绝对位置做了控制，保持查询位置固定，并让各相位组之间的目标位置统计量保持一致。他们评估了128,000个token的提示，包含16,000个键值对，然后根据目标键在压缩步长内的位置来比较检索效果。这和简单地问开头还是中间更难不是一回事。真正的问题是，改变源与压缩窗口的对齐方式是否会影响性能。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 148.52,
+      "end": 179.76,
+      "en": "The authors first examine DeepSeek V-four models using chunked K-V compression. In a code-completion example, they vary only the length of a decorative prompt prefix before fixed code. Small shifts periodically reverse the model’s preference between two continuations, with a recurrence matching the compression stride. They then run controlled pretraining experiments using models derived from quen three, zero point six B, comparing compressed architectures against full-attention baselines.",
+      "zh": "作者首先考察了使用分块键值压缩的DeepSeek V-four模型。在一个代码补全的例子中，他们只改变固定代码前面装饰性提示前缀的长度。小幅度的变化会周期性地逆转模型在两个续写选项之间的偏好，而且这种周期性出现的规律与压缩步长一致。随后，他们用基于quen three、zero point six B衍生出的模型进行了受控预训练实验，将压缩架构与全注意力基线进行比较。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 180.72,
+      "end": 185.66,
+      "en": "Quick question: how do they know the effect comes from compression rather than the prompt padding itself?",
+      "zh": "问个快问题：他们怎么知道这个效应来自压缩，而不是提示词填充本身呢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 185.66,
+      "end": 221.84,
+      "en": "They use two padding protocols in the controlled experiments. Prefix padding shifts records together, while in-sequence padding changes the gaps between records so distractors do not move in lockstep with the target. Both are designed to control query position and target-depth statistics across phases. Across the tested configurations, every compressed model shows periodic variation, while full-attention baselines show little comparable periodicity. The reported gaps reach 78 percentage points in compressed models and at most 6.1 points in the baselines.",
+      "zh": "他们在控制实验中用了两种填充方案。前缀填充把记录整体平移，而序列内填充则改变记录之间的间隔，这样干扰项就不会和目标同步移动。两种方案都是为了在各相位之间控制查询位置和目标深度统计量。在所有测试配置中，每个压缩模型都表现出周期性波动，而全注意力基线几乎没有类似的周期性。报告中的差距在压缩模型中高达78个百分点，在基线中最多只有6.1个百分点。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 222.84,
+      "end": 253.96,
+      "en": "The period follows the compression stride, including when windows overlap. Neither removing rotary positional encoding nor replacing learned gates with uniform averaging eliminates the effect. Nor can window boundaries alone explain it: in an eight-token, non-overlapping setup, large differences appear even among phases where the key and its associated value remain inside the same window. That points to both boundary effects and differences in how positions are encoded or later retrieved.",
+      "zh": "这个周期与压缩步长一致，即使窗口有重叠时也是如此。无论是去掉旋转位置编码，还是把学习到的门控换成均匀平均，都无法消除这一效应。单靠窗口边界也解释不了：在一个八token、不重叠的设置里，即使key和它对应的value始终处在同一个窗口内，不同阶段之间仍然会出现很大差异。这说明既有边界效应，也有位置编码方式或后续取用方式上的差异。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 254.9,
+      "end": 259.68,
+      "en": "Can you clarify how the authors connect those accuracy differences to particular model components?",
+      "zh": "你能说明一下作者是如何把这些准确率差异和特定模型组件联系起来的吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 260.78,
+      "end": 290.02,
+      "en": "They use mean-replacement knockouts. For a selected component, they replace its prompt-specific output with its average output from calibration prompts, then measure how retrieval accuracy changes at each source phase. In controlled models, they intervene on query-head outputs reading a selected K-V head; for DeepSeek V-four Flash-Base, they intervene on layer outputs over the query suffix. Some components matter more for particular phases, and those effects recur with the stride.",
+      "zh": "他们用的是均值替换消融。对选定的组件，把它针对特定提示的输出替换成它在校准提示上的平均输出，然后测量每个源阶段的检索准确率如何变化。在受控模型中，他们干预读取选定K-V头的查询头输出；对于DeepSeek V-four Flash-Base，他们干预查询后缀上的层输出。有些组件对特定阶段更重要，而且这些效应会随步幅重复出现。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 290.02,
+      "end": 322.7,
+      "en": "The authors call this pattern phase specialization. They also inspect compression gates, which assign weights to positions within a window. In the reference model, some gates consistently favor particular offsets, and their knockout effects are strongest near the favored phases. Cycling gate parameters shifts many accuracy patterns in the predicted direction, supporting a causal role for gate preferences. But this does not repair every weak phase, especially the boundary phase, and the effect is less consistent in some model configurations.",
+      "zh": "作者把这个模式叫做相位专门化。他们还检查了压缩门，也就是给窗口内各个位置分配权重的东西。在参考模型里，有些门会稳定地偏好某些特定的偏移量，而且它们的消融效应在偏好的相位附近最强。循环调整门参数会让很多准确率模式朝着预测的方向移动，这支持了门偏好具有因果作用。但这并不能修复所有薄弱的相位，尤其是边界相位，而且在某些模型配置下效果也没那么一致。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 323.8,
+      "end": 329.08,
+      "en": "Does the theory explain why gates develop those persistent preferences, or is that still an open question?",
+      "zh": "这个理论是否解释了门控为什么会形成这些持续性的偏好，还是说这仍然是一个未解的问题？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 329.98,
+      "end": 362.9,
+      "en": "The paper studies an idealized induction task in which the optimal compressor selects a key position and its successor value rather than averaging every position evenly. In simplified gradient-flow analysis, gates starting from small random values can develop persistent preferences for one adjacent key-value route. This provides a possible mechanism, not a general explanation for large language models: the analysis relies on regular embedding geometry and training only the gates, and it does not guarantee that different heads choose different routes.",
+      "zh": "这篇论文研究了一个理想化的归纳任务，其中最优压缩器会选择某个关键位置及其后继值，而不是对所有位置一视同仁地取平均。在简化的梯度流分析中，从较小随机值出发的门控可以逐渐形成对某一条相邻键值路径的持续偏好。这提供了一种可能的机制，但并非对大语言模型的普遍解释：该分析依赖于规则的嵌入几何结构，并且只训练门控，它并不能保证不同的头会选择不同的路径。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 363.86,
+      "end": 398.52,
+      "en": "For deployment, the practical lesson is to test retrieval across compression phases, not just across context lengths or average accuracy. The code-completion examples suggest that realistic predictions can shift when only prompt alignment changes, while the controlled tests show why synthetic evaluations are useful for isolating that effect. Compared with approaches such as RazorAttention, which selects cache treatment by retrieval-head behavior, this work highlights another design concern: even useful retrieval components may have uneven access to information across phases.",
+      "zh": "对于部署来说，实际的经验是：要在压缩的不同阶段测试检索能力，而不只是测试上下文长度或平均准确率。代码补全的例子表明，仅仅改变提示对齐方式，现实预测就可能发生变化；而受控实验则说明了为什么合成评测有助于隔离这一效应。与RazorAttention等方法根据检索头的行为来选择缓存处理方式相比，这项工作凸显了另一个设计关注点：即便是有用的检索组件，在不同阶段获取信息的机会也可能不均衡。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 398.52,
+      "end": 402.84,
+      "en": "How should this change future compression benchmarks and system design?",
+      "zh": "这该如何改变未来的压缩基准和系统设计？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 404.32,
+      "end": 436.66,
+      "en": "Benchmarks should vary source phase while controlling other positional factors, and compression methods should report whether performance is balanced across those offsets. Designers might coordinate heads or layers across phases, but this paper does not establish a general fix that preserves both accuracy and compression efficiency. It also leaves open whether phase shifts affect safety or compliance behavior. The measured results support a narrower conclusion: compressed-cache reliability can have a periodic structure that ordinary averages conceal.",
+      "zh": "基准测试应该改变源相位，同时控制其他位置因素，压缩方法也应该报告性能在这些偏移上是否均衡。设计者或许可以跨相位协调多头或层，但这篇论文并没有给出一个既能保持准确率又能保持压缩效率的通用修复方案。它也留下了一个未解问题：相位偏移是否会影响安全或合规行为。测量结果支持的结论更窄：压缩缓存的可靠性可能具有一种周期性结构，而普通平均值会把它掩盖掉。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 437.62,
+      "end": 471.771,
+      "en": "The broader shift is from treating compression as a single memory-budget decision to examining how its internal structure shapes access to particular details. Chunked compression remains useful for long-context inference, but a model’s effective context may depend on where relevant information falls within its compression cycle. The memorable takeaway is simple: with compressed K-V caches, position can matter not only in the prompt, but also within the compression window. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的转变在于，不再把压缩当成一个单一的内存预算决策，而是去考察它的内部结构如何影响对特定细节的获取。分块压缩对长上下文推理仍然有用，但模型的有效上下文可能取决于相关信息落在压缩周期的哪个位置。最值得记住的一点很简单：使用压缩的K-V缓存时，位置不仅在提示中重要，在压缩窗口内也同样重要。感谢收听。如果还有任何问题，可以询问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhu2026periodicweakspotsphase,\n      title={Periodic Weak Spots: Phase Sensitivity from Chunked KV-Cache Compression}, \n      author={Xingyu Zhu and Pu and Yi and Ziheng Cheng and Ang Lv and Jing Liu and Lexing Ying and Yiyuan Ma and Xin Dong},\n      year={2026},\n      eprint={2609.36322},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.36322}, \n}",
+  "topics": [
+    "Attention Mechanisms",
+    "Causal Inference",
+    "Transformers"
+  ],
+  "peaks": [
+    1.0,
+    0.53,
+    0.538,
+    0.504,
+    0.521,
+    0.466,
+    0.747,
+    0.723,
+    0.676,
+    0.641,
+    0.509,
+    0.343,
+    0.625,
+    0.583,
+    0.551,
+    0.502,
+    0.539,
+    0.792,
+    0.576,
+    0.62,
+    0.508,
+    0.529,
+    0.656,
+    0.647,
+    0.838,
+    0.521,
+    0.539,
+    0.541,
+    0.595,
+    0.304,
+    0.359,
+    0.28,
+    0.292,
+    0.2,
+    0.697,
+    0.519,
+    0.481,
+    0.298,
+    0.398,
+    0.681,
+    0.382,
+    0.38,
+    0.309,
+    0.343,
+    0.57,
+    0.504,
+    0.478,
+    0.377,
+    0.457,
+    0.528,
+    0.831,
+    0.529,
+    0.757,
+    0.633,
+    0.628,
+    0.604,
+    0.738,
+    0.815,
+    0.743,
+    0.407,
+    0.38,
+    0.889,
+    0.805,
+    0.933,
+    0.623,
+    0.775,
+    0.585,
+    0.397,
+    0.283,
+    0.349,
+    0.312,
+    0.315
+  ],
+  "published": "2026-09-28",
+  "views": 382,
+  "license": "CC BY"
+}
