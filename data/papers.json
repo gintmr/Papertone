@@ -23,7 +23,7 @@
       "cover": "cover.png",
       "path": "2610.12465",
       "published": "2026-10-08",
-      "views": 270,
+      "views": 1401,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11ee7-8b5c-7a9a-9b63-5b1dd4764982/podcast.mp3"
     },
     {
@@ -53,7 +53,7 @@
       "cover": "cover.png",
       "path": "2610.12374",
       "published": "2026-10-08",
-      "views": 538,
+      "views": 597,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e71-19f6-7078-ac45-009929888b8c/podcast.mp3"
     },
     {
@@ -73,8 +73,33 @@
       "cover": "cover.png",
       "path": "2610.12325",
       "published": "2026-10-08",
-      "views": 530,
+      "views": 601,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11ed0-2fcb-7a7a-844a-31737e11451e/podcast.mp3"
+    },
+    {
+      "id": "2610.12242",
+      "title": "TokenRouter: Efficient Serving System for Token-Level LLM Routing",
+      "authors": [
+        "Tianyu Fu",
+        "Tengxuan Liu",
+        "Ruoxi Wang",
+        "Yixin Dong",
+        "Yi Ge",
+        "Yichen You",
+        "Yu Wang"
+      ],
+      "duration": 484.597063,
+      "license": "CC BY",
+      "topics": [
+        "Inference Optimization",
+        "ML Systems",
+        "Model Deployment Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2610.12242",
+      "published": "2026-10-08",
+      "views": 279,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e87-7266-7be2-8909-72d122b0dc13/podcast.mp3"
     },
     {
       "id": "2610.12176",
@@ -96,7 +121,7 @@
       "cover": "cover.png",
       "path": "2610.12176",
       "published": "2026-10-08",
-      "views": 697,
+      "views": 1134,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e72-228b-76cc-a8f1-153ecb357d97/podcast.mp3"
     },
     {
@@ -121,7 +146,7 @@
       "cover": "cover.png",
       "path": "2610.12126",
       "published": "2026-10-08",
-      "views": 312,
+      "views": 354,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e76-5f31-7652-b393-21f079c3c24e/podcast.mp3"
     },
     {
@@ -286,8 +311,29 @@
       "cover": "cover.png",
       "path": "2610.11959",
       "published": "2026-10-08",
-      "views": 1008,
+      "views": 1213,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e91-3354-72bd-a842-ede8ee416ea3/podcast.mp3"
+    },
+    {
+      "id": "2610.11765",
+      "title": "Thinking Inertia: LLMs Keep Thinking When Told Not To",
+      "authors": [
+        "Dianqiao Lei",
+        "Kevin Qinghong Lin",
+        "Pan Lu",
+        "Philip Torr",
+        "James Zou"
+      ],
+      "duration": 387.526,
+      "license": "CC0",
+      "topics": [
+        "NLP"
+      ],
+      "cover": "cover.png",
+      "path": "2610.11765",
+      "published": "2026-10-08",
+      "views": 434,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11ea8-723e-791f-9c92-e433d403132a/podcast.mp3"
     },
     {
       "id": "2610.11692",
@@ -309,7 +355,7 @@
       "cover": "cover.png",
       "path": "2610.11692",
       "published": "2026-10-08",
-      "views": 389,
+      "views": 546,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e65-6461-7b6b-a1f9-66db18316170/podcast.mp3"
     },
     {
@@ -339,7 +385,7 @@
       "cover": "cover.png",
       "path": "2610.10515",
       "published": "2026-10-07",
-      "views": 1176,
+      "views": 1286,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11964-c995-7e6a-9b1e-b477da634deb/podcast.mp3"
     },
     {
@@ -378,7 +424,7 @@
       "cover": "cover.png",
       "path": "2610.10478",
       "published": "2026-10-07",
-      "views": 284,
+      "views": 311,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11962-6ed2-7ecd-b9ab-623a8ecb5942/podcast.mp3"
     },
     {
@@ -407,7 +453,7 @@
       "cover": "cover.png",
       "path": "2610.10429",
       "published": "2026-10-07",
-      "views": 230,
+      "views": 258,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1194d-2a18-762b-83a4-7fe526779d92/podcast.mp3"
     },
     {
@@ -457,7 +503,7 @@
       "cover": "cover.png",
       "path": "2610.10409",
       "published": "2026-10-07",
-      "views": 189,
+      "views": 200,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1194d-72a4-7a30-9ebb-477c1de1c16e/podcast.mp3"
     },
     {
@@ -482,7 +528,7 @@
       "cover": "cover.png",
       "path": "2610.10310",
       "published": "2026-10-07",
-      "views": 617,
+      "views": 667,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11964-f456-7972-bfc2-218f88d03d85/podcast.mp3"
     },
     {
@@ -517,7 +563,7 @@
       "cover": "cover.png",
       "path": "2610.09426",
       "published": "2026-10-07",
-      "views": 301,
+      "views": 344,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a119a0-755e-7583-a0ba-bfb663aaa6f8/podcast.mp3"
     },
     {
@@ -540,8 +586,33 @@
       "cover": "cover.png",
       "path": "2610.09411",
       "published": "2026-10-07",
-      "views": 317,
+      "views": 390,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11a0f-425d-7c29-bf8a-3a102233f31b/podcast.mp3"
+    },
+    {
+      "id": "2610.09254",
+      "title": "RoboRender: Robot-Oriented Video Generation for Visual Sim-to-Real Transfer",
+      "authors": [
+        "Huang Huang",
+        "Wensi Ai",
+        "Ziyu Chen",
+        "Youhui Wang",
+        "Zijian Du",
+        "Yang Liu",
+        "Jiaolong Yang",
+        "Li Fei-Fei",
+        "Jiajun Wu"
+      ],
+      "duration": 446.510438,
+      "license": "CC BY",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2610.09254",
+      "published": "2026-10-07",
+      "views": 296,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11977-ff07-79cb-a2dd-242d5a947ed2/podcast.mp3"
     },
     {
       "id": "2610.a-call-for-an-open-tokenizer-benchmark",
@@ -558,8 +629,34 @@
       "cover": "cover.png",
       "path": "2610.a-call-for-an-open-tokenizer-benchmark",
       "published": "2026-10-06",
-      "views": 351,
+      "views": 360,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a112ea-7959-7c50-8009-c418115425f7/podcast.mp3"
+    },
+    {
+      "id": "2610.08790",
+      "title": "Building Rome from a Single Image",
+      "authors": [
+        "Jiraphon Yenphraphai",
+        "Fang Li",
+        "Tianshuo Xu",
+        "Depu Meng",
+        "Quentin Herau",
+        "Yihan Hu",
+        "Raymond A. Yeh",
+        "Wei Zhan"
+      ],
+      "duration": 466.546313,
+      "license": "CC BY",
+      "topics": [
+        "Generative Models",
+        "Geometric Deep Learning",
+        "Image Generation"
+      ],
+      "cover": "cover.png",
+      "path": "2610.08790",
+      "published": "2026-10-06",
+      "views": 268,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11466-dd65-781f-a674-d577a6853516/podcast.mp3"
     },
     {
       "id": "2610.08789",
@@ -585,7 +682,7 @@
       "cover": "cover.png",
       "path": "2610.08789",
       "published": "2026-10-06",
-      "views": 605,
+      "views": 636,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11444-83cb-7b02-8107-46a34eab3298/podcast.mp3"
     },
     {
@@ -608,7 +705,7 @@
       "cover": "cover.png",
       "path": "2610.08781",
       "published": "2026-10-06",
-      "views": 203,
+      "views": 213,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1144e-6fd6-727b-ac98-f6ccb0f47f78/podcast.mp3"
     },
     {
@@ -630,7 +727,7 @@
       "cover": "cover.png",
       "path": "2610.08778",
       "published": "2026-10-06",
-      "views": 262,
+      "views": 291,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11470-7a13-7a8f-b81c-e1283f3d18b3/podcast.mp3"
     },
     {
@@ -661,7 +758,7 @@
       "cover": "cover.png",
       "path": "2610.08761",
       "published": "2026-10-06",
-      "views": 262,
+      "views": 292,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1145a-a51f-7e26-8e35-25004ab6e86c/podcast.mp3"
     },
     {
@@ -685,7 +782,7 @@
       "cover": "cover.png",
       "path": "2610.08735",
       "published": "2026-10-06",
-      "views": 239,
+      "views": 248,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11476-8d7a-7bd4-8f67-74b4d96860ef/podcast.mp3"
     },
     {
@@ -707,7 +804,7 @@
       "cover": "cover.png",
       "path": "2610.08621",
       "published": "2026-10-06",
-      "views": 237,
+      "views": 254,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11426-2415-70ab-a7d5-a0d38f5f4e6a/podcast.mp3"
     },
     {
@@ -735,7 +832,7 @@
       "cover": "cover.png",
       "path": "2610.07922",
       "published": "2026-10-06",
-      "views": 508,
+      "views": 548,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11438-3b18-7932-97d3-f25904232bca/podcast.mp3"
     },
     {
@@ -753,7 +850,7 @@
       "cover": "cover.png",
       "path": "2610.kolibri-sovereign-european-model",
       "published": "2026-10-05",
-      "views": 1664,
+      "views": 1703,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10d86-5e08-73d8-bf61-e6a373368d64/podcast.mp3"
     },
     {
@@ -777,7 +874,7 @@
       "cover": "cover.png",
       "path": "2610.06851",
       "published": "2026-10-05",
-      "views": 1097,
+      "views": 1185,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f76-cd0d-71eb-826e-fd479a71a6bf/podcast.mp3"
     },
     {
@@ -806,7 +903,7 @@
       "cover": "cover.png",
       "path": "2610.06850",
       "published": "2026-10-05",
-      "views": 217,
+      "views": 226,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f6a-37ba-7a95-b812-5a19e14b6d80/podcast.mp3"
     },
     {
@@ -829,7 +926,7 @@
       "cover": "cover.png",
       "path": "2610.06805",
       "published": "2026-10-05",
-      "views": 5446,
+      "views": 5966,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fc1-2bb7-7dd1-a9eb-1cbf81ca8df9/podcast.mp3"
     },
     {
@@ -855,7 +952,7 @@
       "cover": "cover.png",
       "path": "2610.06647",
       "published": "2026-10-05",
-      "views": 261,
+      "views": 304,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f1d-d267-7122-be9a-841c660ac24f/podcast.mp3"
     },
     {
@@ -881,7 +978,7 @@
       "cover": "cover.png",
       "path": "2610.05816",
       "published": "2026-10-05",
-      "views": 465,
+      "views": 497,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f93-0605-73c2-ba86-5d0936bb9bd0/podcast.mp3"
     },
     {
@@ -903,7 +1000,7 @@
       "cover": "cover.png",
       "path": "2610.05622",
       "published": "2026-10-04",
-      "views": 792,
+      "views": 815,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10fce-9fdb-7d27-b142-1348dc322d3c/podcast.mp3"
     },
     {
@@ -924,7 +1021,7 @@
       "cover": "cover.png",
       "path": "2610.04976",
       "published": "2026-10-04",
-      "views": 425,
+      "views": 457,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f19-8ea7-7eba-aa19-b7a26406a915/podcast.mp3"
     },
     {
@@ -968,7 +1065,7 @@
       "cover": "cover.png",
       "path": "2610.04906",
       "published": "2026-10-04",
-      "views": 242,
+      "views": 265,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10eea-317a-77a6-8281-fbdabd8485f8/podcast.mp3"
     },
     {
@@ -1002,8 +1099,36 @@
       "cover": "cover.png",
       "path": "2610.04074",
       "published": "2026-10-02",
-      "views": 380,
+      "views": 440,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a10f17-118c-7418-a9ba-889604f3762b/podcast.mp3"
+    },
+    {
+      "id": "2610.03710",
+      "title": "EyeRobot 2.0: Active Gaze for Precise Manipulation without Wrist Cameras",
+      "authors": [
+        "Kush Hari",
+        "Justin Kerr",
+        "Nidhya Shivakumar",
+        "Samarth Mahapatra",
+        "Carmelo Sferrazza",
+        "Jiahui Lei",
+        "Jitendra Malik",
+        "C. Karen Liu",
+        "Ken Goldberg",
+        "Angjoo Kanazawa"
+      ],
+      "duration": 398.732688,
+      "license": "CC0",
+      "topics": [
+        "Attention Mechanisms",
+        "Reinforcement Learning",
+        "Imitation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.03710",
+      "published": "2026-10-02",
+      "views": 358,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a10a69-33e5-76b0-b67f-84f4d4a3ce5c/podcast.mp3"
     },
     {
       "id": "2610.03695",
@@ -1023,7 +1148,7 @@
       "cover": "cover.png",
       "path": "2610.03695",
       "published": "2026-10-02",
-      "views": 572,
+      "views": 576,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a109e2-27ff-73ed-985a-c4d4d1ffbe8d/podcast.mp3"
     },
     {

@@ -1,0 +1,258 @@
+{
+  "id": "2610.12242",
+  "title": "TokenRouter: Efficient Serving System for Token-Level LLM Routing",
+  "authors": [
+    "Tianyu Fu",
+    "Tengxuan Liu",
+    "Ruoxi Wang",
+    "Yixin Dong",
+    "Yi Ge",
+    "Yichen You",
+    "Yu Wang"
+  ],
+  "abstract": "Large language model (LLM) routing distributes inference work across different models, advancing the cost-quality Pareto frontier of LLM serving. While coarse-grained routing at the session or query level has been widely adopted in production systems, recent algorithmic work shows that fine-grained token-level routing can yield substantial efficiency and quality gains. However, efficiently serving token-level routed inference poses significant challenges to existing systems. Built on single-LLM assumptions, current systems suffer from severe step desynchronization and frequent batch admission delays under token-level routing, and they also impose high implementation complexity on developers. To address these challenges, we design TokenRouter, an efficient and developer-friendly serving system for token-level routed LLM inference. TokenRouter follows the principle of request-centric programming, model-centric execution: developers describe routing logic from the perspective of a single request, while the runtime launches a subserver for each LLM and dispatches requests asynchronously. Each subserver employs a delayed-batching scheduler, whose optimal hyperparameters are derived from a mathematical throughput model of the system. Across diverse routing algorithms, workloads, and model pairs, TokenRouter achieves 2.01-64.15x higher decoding throughput than existing systems, substantially advancing the serving efficiency of token-level LLM routing. Our code is available at this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12242",
+    "arxiv": "https://arxiv.org/abs/2610.12242"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e87-7266-7be2-8909-72d122b0dc13/podcast.mp3",
+  "duration": 484.597,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 40.14,
+      "en": "Imagine a response that begins with a small language model, then hands only its uncertain tokens to a larger one. In a graduate course on language-model systems, that is our starting point. Today's lecture is on TokenRouter: Efficient Serving System for Token-Level L-L-M Routing. Work such as DistServe, which separates prefill and decoding, and Sarathi-Serve, which studies throughput and latency, reflects a field focused on serving efficiency. This paper, from researchers at Tsinghua University and Carnegie Mellon University, asks how to serve requests that switch models mid-generation. I see Noah has a hand up; go ahead, Noah.",
+      "zh": "想象一下，一个回答先由小语言模型开头，然后只把它不确定的token交给更大的模型处理。在一门关于语言模型系统的研究生课程里，这就是我们的出发点。今天的讲座讲的是TokenRouter：面向token级L-L-M路由的高效服务系统。像DistServe这样把预填充和解码分开的工作，以及Sarathi-Serve这样研究吞吐量和延迟的工作，都反映出这个领域对服务效率的关注。这篇论文来自清华大学和卡内基梅隆大学的研究人员，探讨的是如何服务那些在生成过程中切换模型的请求。我看到Noah举手了，请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 41.46,
+      "end": 48.68,
+      "en": "Hi Professor, is the main difference that TokenRouter switches models during a response, rather than choosing one model for the whole request?",
+      "zh": "教授您好，主要区别是不是在于TokenRouter会在生成回复的过程中切换模型，而不是为整个请求只选一个模型？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 49.58,
+      "end": 80.3,
+      "en": "Exactly. Most deployed routers select a model per conversation or query, then leave generation to that model. Token-level routing can allocate expensive computation only where it may help: perhaps a difficult token goes to a larger model, while easier tokens stay with a smaller one. The challenge is that ordinary serving systems assume each request stays with one model. TokenRouter focuses on that systems gap, rather than proposing a new routing policy.",
+      "zh": "没错。大多数已部署的路由器是按对话或查询来选一个模型，然后整个生成过程都交给它。而token级路由可以把昂贵的计算只花在真正可能有帮助的地方：也许一个难的token交给更大的模型，而简单的token就留给小模型。挑战在于，普通的服务系统都假设每个请求只由一个模型处理。TokenRouter关注的正是这个系统层面的缺口，而不是提出一种新的路由策略。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 80.3,
+      "end": 112.32,
+      "en": "The paper’s first contribution is a request-centric programming interface built around route, send, and receive. After a decoding step, route decides whether a request stays put or moves. Send packages its identifier, relevant token suffix, status, and any algorithm-specific information. Receive turns the incoming message back into a request the destination model can continue. The goal is to let researchers express different routing rules without implementing cross-model scheduling themselves.",
+      "zh": "这篇论文的第一个贡献是一个以请求为中心的编程接口，围绕route、send和receive三个操作构建。解码一步之后，route决定一个请求是留在原地还是迁移。send打包请求的标识符、相关的token后缀、状态以及任何算法特定的信息。receive把收到的消息还原成目标模型可以继续处理的请求。目标是让研究者能表达不同的路由规则，而不必自己去实现跨模型调度。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 113.32,
+      "end": 117.0,
+      "en": "Quick question: does that interface support only one kind of routing signal?",
+      "zh": "问个快问题：这个接口只支持一种路由信号吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 117.98,
+      "end": 150.82,
+      "en": "No. The authors implement five different methods, including CITER, R2R, R-Stitch, Co-LLM, and ME. Their decisions can depend on signals such as confidence, predicted divergence, entropy, deferral, or ensemble weights. The methods differ, but they share the same request lifecycle. That separation is useful experimentally: a researcher can change the policy while relying on a common runtime, making comparisons less entangled with bespoke serving code.",
+      "zh": "不是。作者实现了五种不同的方法，包括CITER、R2R、R-Stitch、Co-LLM和ME。它们的决策可以依赖置信度、预测分歧、熵、延迟或集成权重等信号。方法各有不同，但共享同一个请求生命周期。这种分离在实验上很有用：研究者可以在依赖通用运行时的同时更换策略，使比较不至于和定制的服务代码纠缠在一起。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 150.82,
+      "end": 180.1,
+      "en": "The runtime takes a model-centric approach. Each model runs in its own subserver, with its own scheduler, inference runner, and key-value cache pool. A single external server accepts client requests and forwards them to an entry model, so clients do not need to coordinate several endpoints. Crucially, the subservers progress independently. When one request leaves a model, the remaining requests can continue decoding instead of waiting at a cross-model barrier.",
+      "zh": "这个运行时采用的是以模型为中心的方式。每个模型都跑在自己的子服务器里，各自有调度器、推理执行器和键值缓存池。外部只有一个服务器接收客户端请求，然后转发给入口模型，所以客户端不需要自己去协调多个端点。关键在于，这些子服务器是各自独立推进的。当一个请求离开某个模型时，剩下的请求可以继续解码，而不用在跨模型的屏障处等着。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 181.1,
+      "end": 185.06,
+      "en": "Wait, when a request comes back, does the system treat it as new and rebuild its cache?",
+      "zh": "等等，当一个请求返回时，系统会把它当成新请求并重建缓存吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 186.38,
+      "end": 213.54,
+      "en": "It aims to avoid that costly reset. TokenRouter marks a transferred request as pending, then restores it to a running or finished state when it returns. The scheduler resumes it by appending the returned tokens and readmitting it, rather than treating it as a fresh request. That matters because repeated prefix matching and cache bookkeeping can add substantial per-step overhead. The request’s serving state is preserved across the handoff.",
+      "zh": "它的目的就是避免这种代价高昂的重置。TokenRouter会把转移出去的请求标记为待处理，等它返回后再恢复成运行或已完成状态。调度器通过追加返回的token并重新接纳它来恢复执行，而不是把它当成一个全新请求。这一点很关键，因为反复做前缀匹配和缓存记账会带来可观的单步开销。请求的服务状态在整个交接过程中都得以保留。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 215.64,
+      "end": 246.42,
+      "en": "Asynchronous execution removes model-to-model waiting, but it can leave each model with small batches when routed requests arrive irregularly. TokenRouter addresses this with delayed batching: it buffers arrivals until a threshold is reached, allowing more requests to join a batch. A threshold that is too small creates frequent, thin batches; one that is too large leaves requests waiting. The system estimates throughput for candidate thresholds and selects a feasible combination predicted to perform best.",
+      "zh": "异步执行消除了模型之间的等待，但当被路由的请求不规则到达时，每个模型可能只能拿到很小的批次。TokenRouter 通过延迟批处理来解决这个问题：它会把到达的请求先缓冲起来，直到达到某个阈值，从而让更多请求能加入同一个批次。阈值太小会导致批次频繁但很薄；阈值太大又会让请求一直等着。系统会为候选阈值估算吞吐量，然后选出一个预测表现最好的可行组合。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 247.36,
+      "end": 252.78,
+      "en": "Can you clarify what the throughput estimate assumes, and whether that could limit which routing algorithms it supports?",
+      "zh": "你能说明一下吞吐量估计做了哪些假设，以及这是否会限制它支持哪些路由算法吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 253.8,
+      "end": 284.16,
+      "en": "The estimate models the system as a discrete-time Markov chain, tracking queue length, active batch size, and remaining batch execution time for each model. It uses factors such as concurrency, model step latencies, routing probabilities, and committed output tokens. One stated limitation is that the model assumes tokens generated between routing events follow a geometric distribution. Methods that violate that assumption may need changes to the analytical model.",
+      "zh": "这个估算把系统建模成一个离散时间马尔可夫链，跟踪每个模型的队列长度、活跃批次大小和剩余批次执行时间。它用到并发度、模型单步延迟、路由概率、已提交输出token这些因素。文中提到的一个局限是，该模型假设路由事件之间生成的token服从几何分布。违反这一假设的方法可能需要修改这个分析模型。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 285.06,
+      "end": 322.78,
+      "en": "The evaluation uses five routing algorithms, three workload types, and an eight-G-P-U A100 server. Workloads include short and longer mathematical reasoning, plus multi-turn software-agent trajectories. Across 15 algorithm-and-workload combinations at concurrency four, TokenRouter reports 2.01 to 64.15 times the throughput of the stronger baseline. It reports 2.03 to 63.64 times lower end-to-end latency than the standard serving baseline, though gains vary widely by setting.",
+      "zh": "评估用了五种路由算法、三类工作负载，以及一台八卡A100服务器。工作负载包括较短的数学推理、较长的数学推理，还有多轮软件智能体轨迹。在并发数为四的15种算法与工作负载组合下，TokenRouter报告的吞吐量是更强基线的2.01到64.15倍。它报告的端到端延迟比标准服务基线低2.03到63.64倍，不过提升幅度因设置不同差异很大。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 323.68,
+      "end": 329.22,
+      "en": "Those are large ranges; how much comes from the runtime components rather than the routing policies themselves?",
+      "zh": "这些范围跨度很大，其中有多少来自运行时组件，而不是路由策略本身呢？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 330.18,
+      "end": 369.98,
+      "en": "The ablation suggests several components contribute. At concurrency eight, graph-capture optimizations increase throughput from 132.78 to 230.79 tokens per second. Asynchronous execution raises it to 296.86, and delayed batching brings it to 372.48. That is 2.76 times the throughput of the official R2R implementation in that comparison. At concurrency one, the scheduling additions do not increase throughput, which indicates their value depends on having enough concurrent requests to group.",
+      "zh": "消融实验表明，有几个组件在起作用。在并发数为8时，图捕获优化把吞吐量从每秒132.78个token提升到230.79个。异步执行把它提高到296.86，而延迟批处理又把它带到372.48。在这一对比中，这是官方R2R实现吞吐量的2.76倍。在并发数为1时，调度方面的新增并没有提高吞吐量，这说明它们的价值取决于是否有足够多的并发请求可以分组。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 370.92,
+      "end": 405.48,
+      "en": "The results also show why routing policies cannot be evaluated independently of serving infrastructure. TokenRouter’s throughput stays relatively steady across the tested short- and long-reasoning workloads, while the standard serving baseline loses 58.1% to 85.2% of its throughput. At concurrency 16, the authors report 18.58 times R2R’s throughput at concurrency one, while retaining 1.13 times its per-user speed. These are results for the evaluated models and workloads, not a guarantee for every deployment.",
+      "zh": "结果还说明，为什么路由策略不能脱离服务基础设施单独评估。在被测的短推理和长推理负载上，TokenRouter 的吞吐量保持相对稳定，而标准服务基线的吞吐量则下降了 58.1% 到 85.2%。在并发为 16 时，作者报告其吞吐量是 R2R 在并发为 1 时的 18.58 倍，同时每用户速度仍保持在它的 1.13 倍。这些结果只针对所评估的模型和负载，并不保证适用于所有部署场景。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 406.58,
+      "end": 411.44,
+      "en": "How does this fit with systems such as DistServe, and what should we test before generalizing the findings?",
+      "zh": "这和DistServe这类系统是什么关系？在推广这些发现之前，我们应该测试什么？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 412.52,
+      "end": 445.48,
+      "en": "DistServe addresses a different source of inefficiency by disaggregating prefill and decoding; TokenRouter addresses requests moving among models during decoding. Both illustrate how serving architecture must adapt to workload structure. TokenRouter also reports gains across several model pairs and evaluated cross-node settings, but its experiments center on one GPU platform, one model family, and a limited set of routing methods. Broader deployments and routing behaviors deserve further study.",
+      "zh": "DistServe解决的是另一类低效问题，它把预填充和解码拆开处理；TokenRouter解决的则是解码过程中请求在不同模型之间迁移的问题。两者都说明，服务架构必须随负载结构而调整。TokenRouter还报告了在多组模型组合和跨节点设置下的收益，但它的实验集中在单一GPU平台、单一模型家族和有限的几种路由方法上。更广泛的部署场景和路由行为值得进一步研究。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 445.48,
+      "end": 484.597,
+      "en": "The broader implication is that fine-grained routing needs more than a clever policy: it needs scheduling, batching, and cache handling designed for irregular handoffs. TokenRouter offers a shared framework for studying those interactions and reducing the engineering burden of comparing methods. Its analytical scheduler also makes assumptions that may not fit every workload, so future work can refine the model alongside expanding the evaluation. The memorable takeaway is simple: a model switch is also a serving-system event. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的启示是，细粒度路由不只需要一个聪明的策略，还需要针对不规则交接设计的调度、批处理和缓存处理机制。TokenRouter 提供了一个共享框架，用来研究这些相互作用，并减轻比较不同方法时的工程负担。它的分析式调度器也做了一些未必适合所有工作负载的假设，因此未来的工作可以在扩展评估的同时改进这一模型。最值得记住的一点很简单：模型切换同时也是服务系统事件。感谢收听。如果还有问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{fu2026tokenrouterefficientservingtokenlevel,\n      title={TokenRouter: Efficient Serving System for Token-Level LLM Routing}, \n      author={Tianyu Fu and Tengxuan Liu and Ruoxi Wang and Yixin Dong and Yi Ge and Yichen You and Yu Wang},\n      year={2026},\n      eprint={2610.12242},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.12242}, \n}",
+  "topics": [
+    "Inference Optimization",
+    "ML Systems",
+    "Model Deployment Systems"
+  ],
+  "peaks": [
+    0.602,
+    0.439,
+    0.267,
+    0.382,
+    0.239,
+    0.285,
+    0.648,
+    0.852,
+    0.761,
+    0.616,
+    0.485,
+    0.489,
+    0.446,
+    0.255,
+    0.204,
+    0.234,
+    0.219,
+    0.682,
+    0.396,
+    0.243,
+    0.311,
+    0.289,
+    0.467,
+    0.646,
+    0.677,
+    0.504,
+    0.527,
+    0.846,
+    0.828,
+    0.372,
+    0.2,
+    0.278,
+    0.974,
+    0.831,
+    0.831,
+    0.533,
+    0.535,
+    1.0,
+    0.529,
+    0.432,
+    0.544,
+    0.519,
+    0.807,
+    0.69,
+    0.57,
+    0.44,
+    0.391,
+    0.44,
+    0.544,
+    0.992,
+    0.578,
+    0.64,
+    0.52,
+    0.718,
+    0.48,
+    0.908,
+    0.815,
+    0.448,
+    0.613,
+    0.505,
+    0.574,
+    0.58,
+    0.567,
+    0.498,
+    0.329,
+    0.343,
+    0.612,
+    0.283,
+    0.306,
+    0.291,
+    0.317,
+    0.205
+  ],
+  "published": "2026-10-08",
+  "views": 279,
+  "license": "CC BY"
+}

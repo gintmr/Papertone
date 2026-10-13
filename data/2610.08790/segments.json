@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 466.546,
+  "word_match_rate": 0.9273,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Computer Vision and 3D Scene Generation, today’s lecture is on “Building Rome from a Single Image.” The paper asks how to turn one photograph into a complete, explorable mesh, including what the camera cannot see. Work such as “S-A-M 3D: 3Dfy Anything in Images” and “SynCity: Training-Free Generation of 3D Worlds” reflects growing interest in 3D creation, but this paper focuses specifically on image-grounded scene geometry. I see your hand, Noah.",
+      "start": 0.0,
+      "end": 34.1
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why is one image such a difficult starting point for building a whole scene?",
+      "start": 35.08,
+      "end": 39.56
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because a photograph gives strong evidence about visible surfaces but little direct evidence about what lies behind them. A scene also spans very different scales: a nearby doorway needs detail, while a distant street or hillside needs broad coverage. The authors, whose institutions include Applied Intuition and Purdue University, adapt an object-focused generator to address both problems. That matters for creating environments for visualization, virtual reality, and robotics without capturing every location from many angles.",
+      "start": 40.52,
+      "end": 74.34
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The starting point is Trellis 2, a 3D generator that predicts geometry through two stages. First, a sparse-structure model decides which voxel locations should contain geometry. Then a structured-latent model predicts features at those locations, which a decoder turns into a mesh. The authors retain this learned shape prior but adapt the system for scenes using low-rank adaptation and newly trained conditioning components. In effect, they reuse an object generator while changing how it understands space and images.",
+      "start": 75.24,
+      "end": 108.44
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: why not just generate the entire scene inside the model’s usual volume?",
+      "start": 108.44,
+      "end": 113.9
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That volume is a canonical cube with a side length of 3 metres in the model’s coordinate system. A large scene squeezed into it loses useful detail; dividing everything into equally small pieces can require too many generations. Instead, the method uses overlapping chunks whose physical size changes with distance. Nearby chunks stay small, while distant chunks grow to cover more ground. Taller structures can also use larger chunks, letting one generator operate across a range of scene scales.",
+      "start": 114.8,
+      "end": 146.24
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So the chunk boundaries overlap to keep neighboring pieces from looking disconnected?",
+      "start": 147.34,
+      "end": 151.08
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Exactly. The chunks are generated from near to far, and the overlap gives the system shared geometry to work with. When a new chunk is generated, it reuses latent information from the neighboring region and constrains that information during denoising. If adjacent chunks use different physical scales, their latents are resampled to match. Think of assembling a map from tiles, except the tile size changes with distance and the shared edges help maintain continuity.",
+      "start": 152.16,
+      "end": 180.82
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "How does the model know which parts of a chunk should match the photograph and which parts are hidden?",
+      "start": 181.94,
+      "end": 186.28
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The authors estimate camera intrinsics and a 3D point map from the image, then extract visual features using D-I-N-O-v3. They project 3D tokens into the image so that tokens near an observed surface receive supporting image features. Separately, the sparse-structure model receives each voxel’s signed depth difference from the observed surface. That signal distinguishes free space in front, the visible surface itself, and regions behind it where hidden geometry may plausibly be completed.",
+      "start": 187.12,
+      "end": 219.08
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Training data is another key part of the method. The authors use indoor scenes from SAGE-10k, including scenes generated with Infinigen versions 1.0 and 2.0, and render 16 views per scene. To broaden outdoor coverage, they construct about 4,000 synthetic scenes across 20 categories. A pipeline creates descriptions, identifies objects and spatial relations, builds meshes, solves layouts, and adds procedural terrain. Rendered images and target meshes are kept geometrically consistent, even when the synthetic scene does not exactly match its reference image.",
+      "start": 219.08,
+      "end": 260.2
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Does that synthetic data improve outdoor results without hurting performance indoors?",
+      "start": 261.14,
+      "end": 265.2
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "In the reported validation results, it improves both. For outdoor scenes, the C-D falls from 10.75 to 6.90, while F one rises from 0.317 to 0.501. Indoors, C-D falls from 3.99 to 3.54 and F one rises from 0.784 to 0.793. These results suggest that carefully constructed synthetic scenes can help beyond their target domain, though they do not establish that every kind of synthetic data will transfer equally well.",
+      "start": 266.14,
+      "end": 303.16
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "What does the adaptive chunk design buy in practice, beyond improved detail?",
+      "start": 304.08,
+      "end": 307.96
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "It can reduce both compute and memory demands. In the chunking ablation, adaptive chunks take 5 minutes, compared with 15 minutes for fixed-size chunks, while achieving the best reported F one indoors and the best C-D and F one outdoors. The authors also describe a large scene that exceeded an 80-gigabyte G-P-U’s memory capacity with fixed chunks. Adaptive chunking covered it using 15 chunks. The practical point is that scale choices affect whether a scene can be generated at all.",
+      "start": 308.88,
+      "end": 340.2
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How strong is the evidence that the completed scenes are actually more accurate?",
+      "start": 340.82,
+      "end": 344.4
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The scan-based tests cover 7 Tanks and Temples scenes and 32 ScanNet++ scenes, measuring C-D and F one after alignment. The method leads those comparisons, though the ScanNet++ margin over the next-best result is modest. For 121 in-the-wild images, the authors report perceptual metrics and blind pairwise preferences; participants preferred their method over each baseline in at least 73% of comparisons. Those judgments are informative, but they are not a substitute for ground-truth geometry.",
+      "start": 344.4,
+      "end": 379.08
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Could you connect this approach to other scene-generation directions, and say what remains uncertain?",
+      "start": 380.04,
+      "end": 384.72
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Some methods create extra views with image or video generators before reconstructing a scene; others repeatedly render, inpaint, and lift missing regions into 3D. This paper instead adapts an object-trained generator, with scale-adaptive chunks and explicit image-to-3D alignment. That is a useful contrast with approaches such as “SynCity,” which targets training-free world generation. Still, results depend on estimated depth and camera intrinsics, and errors in early chunks can propagate through reused overlap latents.",
+      "start": 385.7,
+      "end": 419.28
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The broader implication is a shift from treating a scene as one oversized object toward coordinating geometry at multiple physical scales. The method offers a practical way to reuse object-generation priors while conditioning them on where image evidence exists and where completion is needed. Its meshes are untextured and not guaranteed to be watertight, and the in-the-wild evaluation lacks ground-truth geometry. Future work could test multiple images, improve geometric reliability, and add textures. For now, the central takeaway is that scale and visibility must be designed together. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 420.56,
+      "end": 466.546
+    }
+  ]
+}

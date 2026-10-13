@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 484.597,
+  "word_match_rate": 0.9148,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Imagine a response that begins with a small language model, then hands only its uncertain tokens to a larger one. In a graduate course on language-model systems, that is our starting point. Today's lecture is on TokenRouter: Efficient Serving System for Token-Level L-L-M Routing. Work such as DistServe, which separates prefill and decoding, and Sarathi-Serve, which studies throughput and latency, reflects a field focused on serving efficiency. This paper, from researchers at Tsinghua University and Carnegie Mellon University, asks how to serve requests that switch models mid-generation. I see Noah has a hand up; go ahead, Noah.",
+      "start": 0.0,
+      "end": 40.14
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the main difference that TokenRouter switches models during a response, rather than choosing one model for the whole request?",
+      "start": 41.46,
+      "end": 48.68
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. Most deployed routers select a model per conversation or query, then leave generation to that model. Token-level routing can allocate expensive computation only where it may help: perhaps a difficult token goes to a larger model, while easier tokens stay with a smaller one. The challenge is that ordinary serving systems assume each request stays with one model. TokenRouter focuses on that systems gap, rather than proposing a new routing policy.",
+      "start": 49.58,
+      "end": 80.3
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper’s first contribution is a request-centric programming interface built around route, send, and receive. After a decoding step, route decides whether a request stays put or moves. Send packages its identifier, relevant token suffix, status, and any algorithm-specific information. Receive turns the incoming message back into a request the destination model can continue. The goal is to let researchers express different routing rules without implementing cross-model scheduling themselves.",
+      "start": 80.3,
+      "end": 112.32
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does that interface support only one kind of routing signal?",
+      "start": 113.32,
+      "end": 117.0
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. The authors implement five different methods, including CITER, R2R, R-Stitch, Co-LLM, and ME. Their decisions can depend on signals such as confidence, predicted divergence, entropy, deferral, or ensemble weights. The methods differ, but they share the same request lifecycle. That separation is useful experimentally: a researcher can change the policy while relying on a common runtime, making comparisons less entangled with bespoke serving code.",
+      "start": 117.98,
+      "end": 150.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The runtime takes a model-centric approach. Each model runs in its own subserver, with its own scheduler, inference runner, and key-value cache pool. A single external server accepts client requests and forwards them to an entry model, so clients do not need to coordinate several endpoints. Crucially, the subservers progress independently. When one request leaves a model, the remaining requests can continue decoding instead of waiting at a cross-model barrier.",
+      "start": 150.82,
+      "end": 180.1
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Wait, when a request comes back, does the system treat it as new and rebuild its cache?",
+      "start": 181.1,
+      "end": 185.06
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It aims to avoid that costly reset. TokenRouter marks a transferred request as pending, then restores it to a running or finished state when it returns. The scheduler resumes it by appending the returned tokens and readmitting it, rather than treating it as a fresh request. That matters because repeated prefix matching and cache bookkeeping can add substantial per-step overhead. The request’s serving state is preserved across the handoff.",
+      "start": 186.38,
+      "end": 213.54
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Asynchronous execution removes model-to-model waiting, but it can leave each model with small batches when routed requests arrive irregularly. TokenRouter addresses this with delayed batching: it buffers arrivals until a threshold is reached, allowing more requests to join a batch. A threshold that is too small creates frequent, thin batches; one that is too large leaves requests waiting. The system estimates throughput for candidate thresholds and selects a feasible combination predicted to perform best.",
+      "start": 215.64,
+      "end": 246.42
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify what the throughput estimate assumes, and whether that could limit which routing algorithms it supports?",
+      "start": 247.36,
+      "end": 252.78
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The estimate models the system as a discrete-time Markov chain, tracking queue length, active batch size, and remaining batch execution time for each model. It uses factors such as concurrency, model step latencies, routing probabilities, and committed output tokens. One stated limitation is that the model assumes tokens generated between routing events follow a geometric distribution. Methods that violate that assumption may need changes to the analytical model.",
+      "start": 253.8,
+      "end": 284.16
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The evaluation uses five routing algorithms, three workload types, and an eight-G-P-U A100 server. Workloads include short and longer mathematical reasoning, plus multi-turn software-agent trajectories. Across 15 algorithm-and-workload combinations at concurrency four, TokenRouter reports 2.01 to 64.15 times the throughput of the stronger baseline. It reports 2.03 to 63.64 times lower end-to-end latency than the standard serving baseline, though gains vary widely by setting.",
+      "start": 285.06,
+      "end": 322.78
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Those are large ranges; how much comes from the runtime components rather than the routing policies themselves?",
+      "start": 323.68,
+      "end": 329.22
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The ablation suggests several components contribute. At concurrency eight, graph-capture optimizations increase throughput from 132.78 to 230.79 tokens per second. Asynchronous execution raises it to 296.86, and delayed batching brings it to 372.48. That is 2.76 times the throughput of the official R2R implementation in that comparison. At concurrency one, the scheduling additions do not increase throughput, which indicates their value depends on having enough concurrent requests to group.",
+      "start": 330.18,
+      "end": 369.98
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The results also show why routing policies cannot be evaluated independently of serving infrastructure. TokenRouter’s throughput stays relatively steady across the tested short- and long-reasoning workloads, while the standard serving baseline loses 58.1% to 85.2% of its throughput. At concurrency 16, the authors report 18.58 times R2R’s throughput at concurrency one, while retaining 1.13 times its per-user speed. These are results for the evaluated models and workloads, not a guarantee for every deployment.",
+      "start": 370.92,
+      "end": 405.48
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this fit with systems such as DistServe, and what should we test before generalizing the findings?",
+      "start": 406.58,
+      "end": 411.44
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "DistServe addresses a different source of inefficiency by disaggregating prefill and decoding; TokenRouter addresses requests moving among models during decoding. Both illustrate how serving architecture must adapt to workload structure. TokenRouter also reports gains across several model pairs and evaluated cross-node settings, but its experiments center on one GPU platform, one model family, and a limited set of routing methods. Broader deployments and routing behaviors deserve further study.",
+      "start": 412.52,
+      "end": 445.48
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The broader implication is that fine-grained routing needs more than a clever policy: it needs scheduling, batching, and cache handling designed for irregular handoffs. TokenRouter offers a shared framework for studying those interactions and reducing the engineering burden of comparing methods. Its analytical scheduler also makes assumptions that may not fit every workload, so future work can refine the model alongside expanding the evaluation. The memorable takeaway is simple: a model switch is also a serving-system event. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 445.48,
+      "end": 484.597
+    }
+  ]
+}

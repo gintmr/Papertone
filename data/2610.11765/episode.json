@@ -1,0 +1,238 @@
+{
+  "id": "2610.11765",
+  "title": "Thinking Inertia: LLMs Keep Thinking When Told Not To",
+  "authors": [
+    "Dianqiao Lei",
+    "Kevin Qinghong Lin",
+    "Pan Lu",
+    "Philip Torr",
+    "James Zou"
+  ],
+  "abstract": "Large Language Models (LLMs) increasingly ship with explicit \"thinking modes\", yet their counterpart, \"no-thinking\", has received far less attention. We study LLMs' no-thinking behavior along two axes. a. How to measure no-thinking? Prior work typically defines no-thinking through proxies such as a disabled thinking mode or the absence of long traces. These proxies are unreliable: disabled thinking modes may still emit reasoning, while long traces may contain filler rather than genuine inference. We instead normalize each response into a pre-answer trace and final answer, and evaluate it at three levels: (i) Empty-Thinking Rate for strict answer-only compliance; (ii) instruction-aware Question-Pre-answer Relevance for similarity between the question and pre-answer trace; and (iii) LLM-as-judge Explicit Inference Rate for visible explicit inference. Together, these metrics distinguish answer-only output, relevant but non-inferential text, and explicit inference. b. How does no-thinking vary across tasks and models? We evaluate six prompting interventions on six LLMs across Boolean, multiple-choice, and open-ended questions. We find that explicit no-think controls cannot reliably eliminate visible inference. Models instead exhibit \"Thinking Inertia\": explicit inference persists even under strict controls and becomes more prevalent as the answer space opens. Accuracy remains stable on Boolean and multiple-choice tasks, whereas open-ended tasks reveal a trade-off between answer-only compliance and task accuracy. Rewriting the same questions across answer spaces shows that supplying candidate answers makes answer-only responses easier to produce. These findings establish no-thinking as a non-trivial capability: stopping explicit reasoning cannot be assumed from model settings or instructions alone and deserves systematic evaluation alongside reasoning ability.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.11765",
+    "arxiv": "https://arxiv.org/abs/2610.11765"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11ea8-723e-791f-9c92-e433d403132a/podcast.mp3",
+  "duration": 387.526,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.72,
+      "en": "In a graduate course on Language Model Reasoning and Control, today's lecture is on Thinking Inertia: L-L-Ms Keep Thinking When Told Not To. Researchers at Tsinghua, Oxford, and Stanford examine a growing question: as models gain explicit reasoning controls, can they reliably answer without showing their reasoning? Work such as The Illusion of Thinking and When Thinking Fails has studied reasoning behavior and its tradeoffs. This paper turns toward controlling reasoning’s visible absence. I see you raising your hand, Noah; go ahead.",
+      "zh": "在一门关于语言模型推理与控制的研究生课程上，今天的讲座主题是思维惯性：大语言模型在被要求停止思考时仍会继续思考。来自清华、牛津和斯坦福的研究者探讨了一个日益突出的问题：随着模型获得显式的推理控制能力，它们能否在不展示推理过程的情况下可靠地给出答案？像《思维的幻觉》和《当思考失败时》这类工作已经研究了推理行为及其权衡。这篇论文则转向如何控制推理在表面上的缺失。我看到你举手了，Noah，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.84,
+      "end": 42.0,
+      "en": "Hi Professor, does “not thinking” here mean the model does no internal reasoning at all?",
+      "zh": "教授您好，这里的“不思考”是指模型内部完全不做任何推理吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.6,
+      "end": 71.12,
+      "en": "That distinction is central. The paper evaluates only what a user can see in the response; it does not claim to detect hidden computation. The authors define no-thinking as a response-level behavior, not a property guaranteed by a disabled setting or a short answer. They call the persistence of visible inference under no-thinking controls “thinking inertia,” especially when a task allows many possible answers rather than a small set of choices.",
+      "zh": "这个区分很关键。论文只评估用户在回答里能看到的东西，并不声称能检测隐藏的计算过程。作者把“不思考”定义为一种回答层面的行为，而不是某个被关闭的设置或简短回答就能保证的属性。他们把在“不思考”控制下仍然出现可见推理的现象叫做“思维惯性”，尤其是当任务允许很多可能答案、而不是只有一小撮选项的时候。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 72.16,
+      "end": 76.66,
+      "en": "Quick question: what counts as visible inference, rather than just a sentence before the answer?",
+      "zh": "问个简单的问题：什么才算可见的推理，而不只是答案前面多了一句话？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 77.58,
+      "end": 109.8,
+      "en": "The researchers separate three behaviors. E-T-R measures strict answer-only compliance: the response must contain a parseable answer in the permitted format, with no substantive extra text. Question relevance measures whether any pre-answer text relates to the question, but it does not identify reasoning. E-I-R measures explicit inference, such as a calculation, comparison, deduction, or evidence-to-conclusion step. This separation prevents a relevant restatement from being mislabeled as reasoning.",
+      "zh": "研究者把行为分成了三类。E-T-R衡量的是严格的只给答案的合规性：回答必须包含一个符合允许格式、可解析的答案，不能有多余的实质性文字。问题相关性衡量的是答案之前的文字是否和问题有关，但它并不能识别出推理。E-I-R衡量的则是显式推理，比如计算、比较、演绎，或者从证据到结论的推理步骤。这样区分可以避免把相关的复述误判成推理。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 110.76,
+      "end": 113.58,
+      "en": "Can you clarify how they checked that these judgments were reliable?",
+      "zh": "你能说明一下他们是怎么检验这些判断是否可靠的吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 114.58,
+      "end": 150.8,
+      "en": "They tested 6 models across Boolean, multiple-choice, and open-ended math benchmarks, using 6 response modes, from native thinking settings to strict answer-only instructions. The full corpus contained 572,688 successful outputs. For a human check, 5 annotators reviewed 600 sampled responses without seeing model identity, prompt mode, final answer, or correctness. Their labels supported the automated measures, including strong agreement on whether pre-answer text contained explicit inference.",
+      "zh": "他们测试了6个模型，覆盖布尔、多项选择和开放式数学基准，用了6种回答模式，从原生思考设置到严格的只给答案指令。完整语料包含572,688条成功输出。人工检查方面，5位标注员审阅了600条抽样回答，过程中看不到模型身份、提示模式、最终答案或正确性。他们的标注支持了自动化指标，包括在答案前文本是否包含显式推理这一点上高度一致。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 151.84,
+      "end": 155.9,
+      "en": "So the answer format itself changes how likely a model is to explain its answer?",
+      "zh": "所以答案格式本身就会影响模型解释答案的可能性吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 155.9,
+      "end": 191.36,
+      "en": "Yes. Under native think-off settings, explicit inference appeared in 5.15% of Boolean responses, 45.57% of multiple-choice responses, and 99.69% of open-ended responses. Strict answer-only prompting reduced those figures to 0.12%, 25.39%, and 62%. The direction is clear, but the open-ended result matters: even a strong instruction did not reliably remove visible reasoning when the answer space was broad.",
+      "zh": "是的。在原生关闭思考的设置下，显式推理出现在5.15%的布尔题回答、45.57%的选择题回答和99.69%的开放题回答中。严格的只给答案提示将这些数字分别降至0.12%、25.39%和62%。方向很明确，但开放题的结果很关键：即便指令很强，当答案空间很宽时，也无法可靠地消除可见的推理。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 192.3,
+      "end": 225.54,
+      "en": "The practical tradeoff is that compliance and accuracy can move in different directions. Across 5 models with a fully disabled-thinking condition, strict prompting raised mean answer-only compliance on open-ended tasks from near zero to roughly 40%, while mean accuracy fell by about 15 percentage points. Boolean and multiple-choice accuracy remained comparatively stable. So a concise answer constraint may be suitable for some straightforward tasks, but can penalize problems that benefit from multi-step computation.",
+      "zh": "实际的权衡在于，合规性和准确率可能朝不同方向变化。在5个完全禁用思考的模型上，严格提示把开放式任务的平均仅答案合规率从接近零提升到大约40%，而平均准确率下降了约15个百分点。布尔题和选择题的准确率则相对稳定。所以简洁作答的约束可能适合一些直接的任务，但对那些需要多步计算的问题反而会造成损失。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 226.6,
+      "end": 230.74,
+      "en": "Hold on, could that pattern just come from the benchmarks having different difficulty levels?",
+      "zh": "等等，这种模式会不会只是因为不同基准的难度不一样？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 231.68,
+      "end": 268.22,
+      "en": "The authors addressed that concern by rewriting matched questions while keeping their underlying content fixed. For one model, a multiple-choice version had 77.8% accuracy and 10.5% answer-only compliance; a Boolean rewrite had 78.9% accuracy and 62.5% compliance. An open-ended rewrite had 52.6% accuracy and no answer-only responses. This comparison suggests that visible candidate answers make direct responding easier, although subject matter also affects behavior.",
+      "zh": "作者通过重写匹配的问题、同时保持其底层内容不变，来回应这一担忧。对某个模型来说，多选题版本准确率为77.8%，仅作答合规率为10.5%；布尔改写版本准确率为78.9%，合规率为62.5%。开放式改写版本准确率为52.6%，且没有任何仅作答回复。这一比较表明，可见的候选答案让直接作答更容易，不过主题内容也会影响行为。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 269.2,
+      "end": 273.8,
+      "en": "And does disabling the model’s reasoning setting prevent a prompt from bringing reasoning back?",
+      "zh": "那关掉模型的推理设置，能不能防止提示词把推理又带回来？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 274.68,
+      "end": 305.1,
+      "en": "No. A step-by-step instruction could elicit visible reasoning even with the native thinking interface disabled, so settings alone do not determine what users see. The prefix intervention also complicates simple assumptions: forcing an answer template did not consistently improve compliance and sometimes coincided with more relevant pre-answer text and explicit inference. For real systems, that means prompt design, answer format, and task type all need evaluation rather than relying on one switch.",
+      "zh": "不能。即使原生思考界面被禁用，分步指令仍可能引出可见的推理，所以仅靠设置并不能决定用户看到什么。前缀干预也让简单假设变得更复杂：强制套用答案模板并没有稳定提升遵从度，有时反而伴随更多相关的答题前文本和显式推理。对真实系统而言，这意味着提示设计、答案格式和任务类型都需要评估，而不能只依赖一个开关。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 306.06,
+      "end": 337.76,
+      "en": "This work shifts evaluation from asking whether a model was placed in a no-thinking mode to checking whether its actual response meets a defined answer-only boundary. That complements research on reasoning quality and instruction following, including When Thinking Fails, but focuses on visible output rather than whether reasoning helps or harms in general. It also warns against treating an answer with no explanation as proof that no internal computation occurred; the study makes no claim about hidden inference cost.",
+      "zh": "这项研究把评估的重点从“模型是否被置于无思考模式”转向“它的实际回答是否满足明确的只给答案这一边界”。这补充了关于推理质量和指令遵循的研究，包括《当思考失败时》，但关注的是可见输出，而不是推理总体上是有帮助还是有害。它同时提醒我们，不要把一个没有解释的答案当作没有发生内部计算的证据；这项研究并未对隐藏的推理成本作出任何断言。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 338.68,
+      "end": 343.52,
+      "en": "What should researchers test next to see whether this behavior generalizes beyond these benchmarks?",
+      "zh": "研究人员接下来应该测试什么，才能看出这种行为是否能推广到这些基准之外？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 343.52,
+      "end": 387.526,
+      "en": "The evidence is informative but bounded: 6 models and 6 English-language benchmarks do not settle behavior in multilingual settings, code, tool use, multi-turn exchanges, or stochastic decoding. Relevance scoring is not a reasoning detector, and explicit-inference judgments depend on visible text and judge calibration, despite human and cross-family checks. A useful next step is testing task-aware controls that preserve accuracy while limiting unnecessary disclosure. The memorable takeaway is simple: measure the response, not the setting. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这些证据有参考价值，但也有局限：6个模型和6个英语基准并不能说明在多语言环境、代码、工具使用、多轮对话或随机解码下的行为。相关性打分不是推理检测器，而显式推理判断依赖于可见文本和评判者的校准，尽管有人工和跨模型家族的检查。下一步有用的做法是测试任务感知的控制手段，在保持准确率的同时限制不必要的披露。最值得记住的一点很简单：衡量响应，而不是设定。感谢收听。如果还有问题，可以问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lei2026thinkinginertiallmsthinking,\n      title={Thinking Inertia: LLMs Keep Thinking When Told Not To}, \n      author={Dianqiao Lei and Kevin Qinghong Lin and Pan Lu and Philip Torr and James Zou},\n      year={2026},\n      eprint={2610.11765},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.11765}, \n}",
+  "topics": [
+    "NLP"
+  ],
+  "peaks": [
+    0.896,
+    0.387,
+    0.608,
+    0.372,
+    0.514,
+    0.399,
+    0.358,
+    0.866,
+    0.738,
+    0.613,
+    0.441,
+    0.5,
+    0.439,
+    0.511,
+    0.671,
+    0.614,
+    0.373,
+    0.305,
+    0.291,
+    0.394,
+    0.376,
+    0.583,
+    0.455,
+    0.471,
+    0.334,
+    0.438,
+    0.536,
+    0.233,
+    0.664,
+    0.443,
+    0.43,
+    0.3,
+    0.334,
+    0.326,
+    0.392,
+    0.247,
+    0.393,
+    0.251,
+    0.337,
+    0.366,
+    0.216,
+    0.2,
+    0.474,
+    1.0,
+    0.626,
+    0.439,
+    0.357,
+    0.44,
+    0.45,
+    0.357,
+    0.955,
+    0.457,
+    0.411,
+    0.292,
+    0.333,
+    0.279,
+    0.421,
+    0.464,
+    0.276,
+    0.215,
+    0.348,
+    0.347,
+    0.238,
+    0.651,
+    0.741,
+    0.387,
+    0.39,
+    0.357,
+    0.269,
+    0.42,
+    0.322,
+    0.268
+  ],
+  "published": "2026-10-08",
+  "views": 434,
+  "license": "CC0"
+}

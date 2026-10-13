@@ -1,0 +1,267 @@
+{
+  "id": "2610.08790",
+  "title": "Building Rome from a Single Image",
+  "authors": [
+    "Jiraphon Yenphraphai",
+    "Fang Li",
+    "Tianshuo Xu",
+    "Depu Meng",
+    "Quentin Herau",
+    "Yihan Hu",
+    "Raymond A. Yeh",
+    "Wei Zhan"
+  ],
+  "abstract": "Single-image scene generation aims to produce a complete 3D scene mesh from a single image, including surfaces the camera did not observe. While pretrained 3D object generators encode a strong shape prior, they are mainly designed for isolated objects in a fixed canonical volume and focus mostly on indoor scenes, since diverse 3D data for outdoor scenes are quite limited. In this work, we present a method that redesigns such an object-centric generator, e.g., Trellis 2, to work on both indoor and outdoor scenes while retaining its prior. We accomplish this by (a) partitioning the scene into adaptive chunks that scale relative to the distance to the camera; nearby chunks have a smaller size to keep the finer detail, while distant structures, e.g., buildings, are covered by large chunks; (b) making the generator capture explicit 2D-3D correspondence by lifting image features and making the model aware of the free space, observed surface, and unobserved region; (c) synthesizing around 4,000 outdoor scenes to broaden the training data, as existing scene datasets are largely indoor. Experiments on Tanks and Temples, ScanNet++, and in-the-wild images show that our method outperforms all baselines in geometric accuracy and perceptual quality across both indoor and outdoor scenes.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.08790",
+    "arxiv": "https://arxiv.org/abs/2610.08790"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11466-dd65-781f-a674-d577a6853516/podcast.mp3",
+  "duration": 466.546,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.1,
+      "en": "In Computer Vision and 3D Scene Generation, today’s lecture is on “Building Rome from a Single Image.” The paper asks how to turn one photograph into a complete, explorable mesh, including what the camera cannot see. Work such as “S-A-M 3D: 3Dfy Anything in Images” and “SynCity: Training-Free Generation of 3D Worlds” reflects growing interest in 3D creation, but this paper focuses specifically on image-grounded scene geometry. I see your hand, Noah.",
+      "zh": "在计算机视觉和3D场景生成领域，今天的讲座主题是“从单张图像构建罗马”。这篇论文探讨的是如何把一张照片变成一个完整、可探索的网格，包括相机看不到的部分。“S-A-M 3D：让图像中的任何东西3D化”和“SynCity：无需训练的3D世界生成”这类工作反映了人们对3D创作日益增长的兴趣，但这篇论文特别关注的是基于图像的场景几何。我看到你举手了，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.08,
+      "end": 39.56,
+      "en": "Hi Professor, why is one image such a difficult starting point for building a whole scene?",
+      "zh": "教授您好，为什么用一张图像作为构建整个场景的起点会这么难？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.52,
+      "end": 74.34,
+      "en": "Because a photograph gives strong evidence about visible surfaces but little direct evidence about what lies behind them. A scene also spans very different scales: a nearby doorway needs detail, while a distant street or hillside needs broad coverage. The authors, whose institutions include Applied Intuition and Purdue University, adapt an object-focused generator to address both problems. That matters for creating environments for visualization, virtual reality, and robotics without capturing every location from many angles.",
+      "zh": "因为一张照片能提供关于可见表面的有力证据，但几乎无法直接说明它们背后有什么。一个场景还涉及差异极大的尺度：近处的门口需要细节，而远处的街道或山坡则需要大范围覆盖。作者所在机构包括Applied Intuition和普渡大学，他们把原本专注于物体的生成器加以改造，来解决这两个问题。这对于为可视化、虚拟现实和机器人创建环境很重要，因为不必从许多角度拍摄每个位置。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 75.24,
+      "end": 108.44,
+      "en": "The starting point is Trellis 2, a 3D generator that predicts geometry through two stages. First, a sparse-structure model decides which voxel locations should contain geometry. Then a structured-latent model predicts features at those locations, which a decoder turns into a mesh. The authors retain this learned shape prior but adapt the system for scenes using low-rank adaptation and newly trained conditioning components. In effect, they reuse an object generator while changing how it understands space and images.",
+      "zh": "起点是Trellis 2，一个通过两个阶段预测几何形状的3D生成器。首先，一个稀疏结构模型决定哪些体素位置应该包含几何形状。然后一个结构化潜在模型预测这些位置上的特征，再由解码器转化为网格。作者保留了这种学习到的形状先验，但通过低秩适应和新训练的条件组件，将系统改造用于场景。实际上，他们复用了物体生成器，同时改变了它理解空间和图像的方式。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 108.44,
+      "end": 113.9,
+      "en": "Quick question: why not just generate the entire scene inside the model’s usual volume?",
+      "zh": "问个简单的问题：为什么不直接在模型通常的那个体积里生成整个场景呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 114.8,
+      "end": 146.24,
+      "en": "That volume is a canonical cube with a side length of 3 metres in the model’s coordinate system. A large scene squeezed into it loses useful detail; dividing everything into equally small pieces can require too many generations. Instead, the method uses overlapping chunks whose physical size changes with distance. Nearby chunks stay small, while distant chunks grow to cover more ground. Taller structures can also use larger chunks, letting one generator operate across a range of scene scales.",
+      "zh": "这个体积是模型坐标系中一个边长为3米的标准立方体。把一个大场景硬塞进去会丢失有用的细节；而把一切平均切成小块又可能需要太多次生成。于是，这个方法改用相互重叠的块，其物理尺寸随距离变化。近处的块保持较小，远处的块则变大以覆盖更多范围。更高的结构也可以使用更大的块，让同一个生成器能在多种场景尺度上工作。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 147.34,
+      "end": 151.08,
+      "en": "So the chunk boundaries overlap to keep neighboring pieces from looking disconnected?",
+      "zh": "所以这些块的边界会重叠，是为了让相邻的部分看起来不会脱节吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 152.16,
+      "end": 180.82,
+      "en": "Exactly. The chunks are generated from near to far, and the overlap gives the system shared geometry to work with. When a new chunk is generated, it reuses latent information from the neighboring region and constrains that information during denoising. If adjacent chunks use different physical scales, their latents are resampled to match. Think of assembling a map from tiles, except the tile size changes with distance and the shared edges help maintain continuity.",
+      "zh": "没错。这些块是从近到远生成的，重叠部分让系统有共享的几何信息可用。生成新块时，它会复用相邻区域的潜在信息，并在去噪过程中对这些信息加以约束。如果相邻块使用不同的物理尺度，它们的潜在表示会被重采样以匹配。可以想象成用一块块瓷砖拼出一张地图，只不过瓷砖的大小会随距离变化，而共享的边缘有助于保持连续性。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 181.94,
+      "end": 186.28,
+      "en": "How does the model know which parts of a chunk should match the photograph and which parts are hidden?",
+      "zh": "模型怎么知道一个块里哪些部分该跟照片对上，哪些部分是被遮住的？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 187.12,
+      "end": 219.08,
+      "en": "The authors estimate camera intrinsics and a 3D point map from the image, then extract visual features using D-I-N-O-v3. They project 3D tokens into the image so that tokens near an observed surface receive supporting image features. Separately, the sparse-structure model receives each voxel’s signed depth difference from the observed surface. That signal distinguishes free space in front, the visible surface itself, and regions behind it where hidden geometry may plausibly be completed.",
+      "zh": "作者从图像中估计相机内参和3D点图，然后用D-I-N-O-v3提取视觉特征。他们把3D token投影到图像上，这样靠近已观测表面的token就能获得对应的图像特征支持。另外，稀疏结构模型会接收每个体素相对于已观测表面的带符号深度差。这个信号能区分前方的自由空间、可见表面本身，以及表面后方那些可能合理补全隐藏几何的区域。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 219.08,
+      "end": 260.2,
+      "en": "Training data is another key part of the method. The authors use indoor scenes from SAGE-10k, including scenes generated with Infinigen versions 1.0 and 2.0, and render 16 views per scene. To broaden outdoor coverage, they construct about 4,000 synthetic scenes across 20 categories. A pipeline creates descriptions, identifies objects and spatial relations, builds meshes, solves layouts, and adds procedural terrain. Rendered images and target meshes are kept geometrically consistent, even when the synthetic scene does not exactly match its reference image.",
+      "zh": "训练数据也是这个方法的关键部分。作者使用了SAGE-10k中的室内场景，包括用Infinigen 1.0和2.0版本生成的场景，每个场景渲染16个视角。为了扩大户外覆盖范围，他们构建了约4000个合成场景，涵盖20个类别。一条流水线负责生成描述、识别物体和空间关系、构建网格、求解布局，并添加程序化地形。渲染图像和目标网格在几何上保持一致，即使合成场景与其参考图像并不完全匹配。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 261.14,
+      "end": 265.2,
+      "en": "Does that synthetic data improve outdoor results without hurting performance indoors?",
+      "zh": "这些合成数据在提升室外效果的同时，会不会损害室内的表现？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 266.14,
+      "end": 303.16,
+      "en": "In the reported validation results, it improves both. For outdoor scenes, the C-D falls from 10.75 to 6.90, while F one rises from 0.317 to 0.501. Indoors, C-D falls from 3.99 to 3.54 and F one rises from 0.784 to 0.793. These results suggest that carefully constructed synthetic scenes can help beyond their target domain, though they do not establish that every kind of synthetic data will transfer equally well.",
+      "zh": "在报告的验证结果里，这两方面都有提升。室外场景中，C-D从10.75降到6.90，而F1从0.317升到0.501。室内场景中，C-D从3.99降到3.54，F1从0.784升到0.793。这些结果表明，精心构建的合成场景能带来超出目标领域的帮助，不过它们并不能证明每一种合成数据都能同样好地迁移。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 304.08,
+      "end": 307.96,
+      "en": "What does the adaptive chunk design buy in practice, beyond improved detail?",
+      "zh": "自适应分块设计在实践中除了提升细节之外，还能带来什么好处？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 308.88,
+      "end": 340.2,
+      "en": "It can reduce both compute and memory demands. In the chunking ablation, adaptive chunks take 5 minutes, compared with 15 minutes for fixed-size chunks, while achieving the best reported F one indoors and the best C-D and F one outdoors. The authors also describe a large scene that exceeded an 80-gigabyte G-P-U’s memory capacity with fixed chunks. Adaptive chunking covered it using 15 chunks. The practical point is that scale choices affect whether a scene can be generated at all.",
+      "zh": "它能同时降低计算和内存需求。在分块消融实验中，自适应分块只需5分钟，而固定大小分块需要15分钟，同时在室内取得了报告的最佳F1，在室外取得了最佳的C-D和F1。作者还描述了一个大型场景，用固定分块会超出80GB GPU的显存容量。自适应分块用15个块就覆盖了它。实际意义在于，规模选择会影响一个场景到底能不能生成。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 340.82,
+      "end": 344.4,
+      "en": "How strong is the evidence that the completed scenes are actually more accurate?",
+      "zh": "已完成场景确实更准确的证据有多强？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 344.4,
+      "end": 379.08,
+      "en": "The scan-based tests cover 7 Tanks and Temples scenes and 32 ScanNet++ scenes, measuring C-D and F one after alignment. The method leads those comparisons, though the ScanNet++ margin over the next-best result is modest. For 121 in-the-wild images, the authors report perceptual metrics and blind pairwise preferences; participants preferred their method over each baseline in at least 73% of comparisons. Those judgments are informative, but they are not a substitute for ground-truth geometry.",
+      "zh": "基于扫描的测试覆盖了7个Tanks and Temples场景和32个ScanNet++场景，在对齐后测量C-D和F1。该方法在这些对比中领先，不过在ScanNet++上对次优结果的领先幅度不大。对于121张真实场景图像，作者报告了感知指标和盲测成对偏好；参与者在至少73%的对比中更偏好他们的方法而非各基线。这些判断有参考价值，但不能替代真实几何。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 380.04,
+      "end": 384.72,
+      "en": "Could you connect this approach to other scene-generation directions, and say what remains uncertain?",
+      "zh": "你能把这个方法和其他场景生成方向联系起来吗，并说说还有哪些不确定的地方？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 385.7,
+      "end": 419.28,
+      "en": "Some methods create extra views with image or video generators before reconstructing a scene; others repeatedly render, inpaint, and lift missing regions into 3D. This paper instead adapts an object-trained generator, with scale-adaptive chunks and explicit image-to-3D alignment. That is a useful contrast with approaches such as “SynCity,” which targets training-free world generation. Still, results depend on estimated depth and camera intrinsics, and errors in early chunks can propagate through reused overlap latents.",
+      "zh": "有些方法会先用图像或视频生成器造出额外视角，再去重建场景；另一些则反复渲染、修补，再把缺失区域提升到3D。这篇论文则不同，它改造了一个在物体上训练过的生成器，用尺度自适应的块和显式的图像到3D对齐。这和“SynCity”这类面向免训练世界生成的方法形成了有用的对比。不过，结果仍依赖估计出的深度和相机内参，而且早期块里的误差会通过复用的重叠潜变量传播下去。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 420.56,
+      "end": 466.546,
+      "en": "The broader implication is a shift from treating a scene as one oversized object toward coordinating geometry at multiple physical scales. The method offers a practical way to reuse object-generation priors while conditioning them on where image evidence exists and where completion is needed. Its meshes are untextured and not guaranteed to be watertight, and the in-the-wild evaluation lacks ground-truth geometry. Future work could test multiple images, improve geometric reliability, and add textures. For now, the central takeaway is that scale and visibility must be designed together. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的意义在于，从把整个场景当成一个超大物体来处理，转向在多个物理尺度上协调几何结构。这个方法提供了一条实用的路径，既能复用物体生成的先验，又能根据图像证据在哪里、哪里需要补全来对这些先验进行条件化。它生成的网格没有纹理，也不保证是水密的，而且在真实场景中的评估缺少真值几何。未来的工作可以尝试多张图像、提升几何可靠性，并加上纹理。就目前而言，核心结论是：尺度和可见性必须一起设计。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yenphraphai2026buildingromesingleimage,\n      title={Building Rome from a Single Image}, \n      author={Jiraphon Yenphraphai and Fang Li and Tianshuo Xu and Depu Meng and Quentin Herau and Yihan Hu and Raymond A. Yeh and Wei Zhan},\n      year={2026},\n      eprint={2610.08790},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.08790}, \n}",
+  "topics": [
+    "Generative Models",
+    "Geometric Deep Learning",
+    "Image Generation"
+  ],
+  "peaks": [
+    0.752,
+    0.423,
+    0.482,
+    0.244,
+    0.278,
+    0.429,
+    0.468,
+    0.295,
+    0.289,
+    0.245,
+    0.258,
+    0.413,
+    0.674,
+    0.479,
+    0.644,
+    0.359,
+    0.364,
+    0.625,
+    0.34,
+    0.246,
+    0.284,
+    0.281,
+    0.434,
+    0.624,
+    0.548,
+    0.344,
+    0.345,
+    0.2,
+    1.0,
+    0.549,
+    0.587,
+    0.325,
+    0.349,
+    0.41,
+    0.615,
+    0.358,
+    0.423,
+    0.201,
+    0.225,
+    0.208,
+    0.514,
+    0.533,
+    0.376,
+    0.409,
+    0.469,
+    0.262,
+    0.291,
+    0.533,
+    0.277,
+    0.334,
+    0.318,
+    0.209,
+    0.437,
+    0.595,
+    0.344,
+    0.343,
+    0.281,
+    0.218,
+    0.468,
+    0.729,
+    0.447,
+    0.363,
+    0.247,
+    0.389,
+    0.352,
+    0.552,
+    0.346,
+    0.267,
+    0.272,
+    0.238,
+    0.296,
+    0.254
+  ],
+  "published": "2026-10-06",
+  "views": 268,
+  "license": "CC BY"
+}
