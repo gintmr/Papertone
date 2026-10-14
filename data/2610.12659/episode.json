@@ -1,0 +1,263 @@
+{
+  "id": "2610.12659",
+  "title": "MagicBeanStalk: Escaping the RLVR Zero Advantage Trap with Recursive Data Synthesis",
+  "authors": [
+    "Ximing Lu",
+    "Aviral Kumar",
+    "Jan Kautz",
+    "Yejin Choi",
+    "David Acuna"
+  ],
+  "abstract": "Data-centric scaling of RLVR has focused on collecting or generating verifiable training problems. However, corpus size alone does not determine whether the dataset provides a useful learning signal for a target policy. To guide the synthesis of effective RLVR data, we experimentally characterize dataset effectiveness as a function of its problems, the target policy, and the training rollout budget. Under this characterization, we show that a large open-source math corpus pooled from widely used RLVR datasets falls almost entirely into a zero-advantage trap: for a fixed target policy and rollout budget, roughly 88% of its problems are solved in every rollout or failed in every rollout. Filtering concentrates what remains, but it can only select, discarding the hard problems. Effective synthetic problems should therefore require the reasoning operations and compositions required to solve those hard problems. Yet their difficulty must be calibrated, so that some rollouts succeed, some fail, and at least one correct solution fits within the training budget. Prompting a teacher to vary hard problems directly does not achieve this. Guided by these empirical principles, we introduce MagicBeanStalk, a top-down decomposition and bottom-up recursive data-synthesis algorithm that grows seed problems into families of substantively new, policy- and budget-calibrated training problems while preserving the seeds' reasoning blueprints. Across 8 math benchmarks, continual RLVR on MagicBeanStalk problems improves gpt-oss-120b from 61.2 to 69.8 (+8.6) and DeepSeek v4Flash from 72.4 to 77.9 (+5.4) on a 16K-token budget. Training on the full 78K source corpus improves by only +1.1 and its best filtered real data subset by +5.8. In finance, we synthesize over 14K verifiable problems from only 340 solutions and improve over base by 6.9 and 2.4 points on SecQue and FinanceBench, respectively.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12659",
+    "arxiv": "https://arxiv.org/abs/2610.12659"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a12dc6-a1ce-762f-af5d-0ae9f86e775e/podcast.mp3",
+  "duration": 469.838,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.34,
+      "en": "In a hypothetical graduate course called Deep Reinforcement Learning Methods, today's lecture is on MagicBeanStalk. Recent work such as DeepMath-103K expands the supply of verifiable math problems, while Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability explores curricula near the limits of what models can learn. Researchers from the University of Washington, Carnegie Mellon, NVIDIA, and Stanford take a different angle: not just how much data we have, but how much useful learning signal it offers. Yes, Noah?",
+      "zh": "在一门假设叫深度强化学习方法的研讨课上，今天讲的是MagicBeanStalk。最近像DeepMath-103K这样的工作扩大了可验证数学题的供给，而《教模型自己教自己：在可学习性边缘推理》则探索了接近模型学习能力极限的课程设计。来自华盛顿大学、卡内基梅隆大学、英伟达和斯坦福的研究者换了个角度：不光看我们有多少数据，还要看这些数据能提供多少有用的学习信号。诺亚，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.52,
+      "end": 39.08,
+      "en": "Hi Professor, why isn’t a bigger set of verified problems automatically better for training?",
+      "zh": "教授您好，为什么更大规模的已验证问题集不一定会让训练效果更好呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.04,
+      "end": 72.26,
+      "en": "Because a problem can be verified yet still provide no useful training signal to a particular model. In reinforcement learning with verifiable rewards, or R-L-V-R, the model tries a problem several times, and each response receives a correct-or-incorrect reward. If all attempts succeed, or all fail, the group has no contrast in outcomes. The authors call this the zero-advantage trap; problems with a mix of successes and failures fall into the useful Goldilocks band.",
+      "zh": "因为一个问题即使能被验证，也可能对某个特定模型提供不了有用的训练信号。在带可验证奖励的强化学习（R-L-V-R）中，模型会对一个问题尝试多次，每个回答都会收到正确或错误的奖励。如果所有尝试都成功，或者都失败，这一组结果就没有对比。作者把这叫做零优势陷阱；成功和失败混合的问题才落在有用的“金发姑娘”区间。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 73.46,
+      "end": 76.72,
+      "en": "Quick question: does that mean a problem’s difficulty depends on the model?",
+      "zh": "问个简单的问题：这是不是说，一道题的难度取决于模型？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 77.64,
+      "end": 106.76,
+      "en": "Exactly. Difficulty depends on the target policy, the number of sampled responses, and the response-length budget, not only on the question itself. In a corpus of about 78,000 math problems, around 88% were outside the observed Goldilocks band for G-P-T oss one hundred twenty B, using 8 attempts and a 32-thousand-token limit. That finding describes this specific setup; it is not a universal label for those problems.",
+      "zh": "没错。难度取决于目标策略、采样响应的数量以及响应长度预算，而不只是问题本身。在大约78000道数学题的数据集中，大约88%的问题超出了GPT-oss-120B在8次尝试和32000 token限制下的黄金区间。这个发现描述的是这个特定设置，并不是对那些问题的通用标签。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.76,
+      "end": 138.4,
+      "en": "The central idea is to treat hard problems as specifications, rather than simply throwing them away. A verified solution can reveal the reasoning operations a model needs, which the paper calls a reasoning blueprint. The authors first tested this premise on 98 hard problems: showing the model one solved, simpler subproblem based on the blueprint produced at least one correct answer on 78 problems and raised average accuracy on the originals from 0% to 46.9%.",
+      "zh": "核心思路是把难题当作规格说明，而不是直接丢掉。一个经过验证的解法可以揭示模型所需的推理操作，论文称之为推理蓝图。作者首先在98道难题上验证了这个前提：给模型展示一个基于蓝图解出的、更简单的子问题，就能在78道题上至少产生一个正确答案，并把原题的平均准确率从0%提升到46.9%。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 140.76,
+      "end": 145.24,
+      "en": "So the blueprint preserves the reasoning, while the new question changes the surface?",
+      "zh": "所以蓝图保留的是推理过程，而新问题只是换了表层？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 146.22,
+      "end": 175.62,
+      "en": "That is the intention, and MagicBeanStalk operationalizes it in stages. Teacher models generate solutions, which are kept only when their answers pass verification. They then propose easier, self-contained subproblems for each hard seed. The system checks both the subproblems and their solutions, then tests whether those solved examples actually help the target model with the original problem. Ineffective decompositions are retried and eventually dropped.",
+      "zh": "这正是我们的初衷，而MagicBeanStalk把它分阶段落地了。教师模型生成解答，只有答案通过验证的才会被保留。然后它们会针对每个难题种子提出更简单、自成一体的子问题。系统会同时检查子问题及其解答，再测试这些已解决的样例是否真的能帮助目标模型解决原始问题。无效的分解会被重试，最终被丢弃。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 176.58,
+      "end": 181.44,
+      "en": "Can you clarify how the system turns those subproblems into genuinely new training tasks?",
+      "zh": "你能说明一下，系统是如何把这些子问题转化成真正新的训练任务的？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 182.48,
+      "end": 213.74,
+      "en": "Once a decomposition works, the system builds a parallel tree from its leaves upward. Teachers create harder variants of leaf problems, then combine synthetic children into new parent problems using the original structure as a guide. This aims to retain the reasoning dependencies without merely changing names or numbers. Finally, target-policy rollouts filter candidates: retained math problems need both correct and incorrect responses, plus at least one complete correct response within the training budget.",
+      "zh": "一旦某个分解方式有效，系统就会从叶子节点向上构建一棵并行树。教师模型会生成叶子问题的更难变体，然后以原始结构为参照，把合成的子问题组合成新的父问题。这样做的目的是保留推理依赖关系，而不只是改个名字或数字。最后，用目标策略的轨迹来筛选候选问题：保留下来的数学问题既要有正确回答，也要有错误回答，并且至少有一次在训练预算内完整正确的回答。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 213.74,
+      "end": 249.44,
+      "en": "That final filter matters because a problem that appears hard only due to truncation may not demonstrate that the model can solve it in budget. The math qualification test used 8 attempts and a 16-thousand-token limit. From roughly 1,250 seeds where the target scored 0 out of 8, the method generated 3,370 descendants; 42.8% qualified, and 74.7% of seeds produced at least one qualified descendant.",
+      "zh": "最后这道过滤很关键，因为一个问题如果只是因为被截断才显得难，那并不能说明模型能在预算内解决它。数学资格测试用了8次尝试和16000个token的上限。从大约1250个目标模型8次全错的种子出发，这个方法生成了3370个衍生问题；其中42.8%通过了筛选，74.7%的种子至少产出了一个合格的衍生问题。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 250.3,
+      "end": 254.18,
+      "en": "How much better was that than just asking a teacher to vary each seed directly?",
+      "zh": "这比直接让老师对每个种子做变化要好多少呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 255.2,
+      "end": 289.74,
+      "en": "In a matched comparison, direct seed synthesis produced 2,494 descendants, with 31.7% qualifying and 43.8% of seeds yielding a qualified item. A blinded judging study also rated 19.7% of MagicBeanStalk candidates at least 4 out of 5 for both blueprint preservation and substantive novelty, versus 3% for direct synthesis. These results suggest that decomposition helps improve both training suitability and the likelihood of producing meaningfully new problems.",
+      "zh": "在一次匹配对比中，直接合成种子产生了2494个衍生题，其中31.7%合格，43.8%的种子能产出至少一道合格题。一项盲评研究还显示，MagicBeanStalk候选中有19.7%在蓝图保持和实质新颖性两方面都至少拿到5分中的4分，而直接合成只有3%。这些结果表明，分解有助于同时提升训练适用性和产出有意义新题的可能性。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 289.74,
+      "end": 326.5,
+      "en": "The training results are substantial within the tested settings, but they should be read as specific experimental evidence. On 8 math benchmarks, continual training on the synthesized data raised G-P-T oss one hundred twenty B’s average from 61.2 to 69.8. The full source mixture gained 1.1 points, while an in-budget Goldilocks subset gained 5.8. The synthesized data also transferred to DeepSeek V four Flash, which improved from 72.4 to 77.9 without regenerating the examples.",
+      "zh": "训练结果在测试的设定下是显著的，但应将其视为特定实验证据。在8个数学基准上，用合成数据持续训练使G-P-T oss 120B的平均分从61.2提升到69.8。完整来源混合数据提升了1.1分，而预算内的Goldilocks子集提升了5.8分。合成数据还迁移到了DeepSeek V4 Flash上，无需重新生成样本，其表现就从72.4提升到了77.9。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 327.56,
+      "end": 331.82,
+      "en": "Does the method apply beyond math, or is the finance result only a small demonstration?",
+      "zh": "这个方法能用在数学以外的领域吗，还是说金融方面的结果只是个小演示？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 332.88,
+      "end": 368.62,
+      "en": "The finance experiment is an initial demonstration beyond math. Starting from 340 expert questions grounded in 17 corporate credit agreements, the researchers generated about 25,000 candidates and retained around 14,200 Goldilocks problems. Training Qwen three four B Instruct on this data improved pass at one by 6.9 points on SecQue and 2.4 points on FinanceBench. For this domain, synthesis also retrieves supporting documents so questions and answers are grounded in text.",
+      "zh": "金融实验是数学之外的初步验证。研究者从17份企业信贷协议中提炼出340道专家问题，生成了约25000道候选题目，最终保留了约14200道难度适中的问题。用这批数据训练Qwen3-4B-Instruct，在SecQue上的pass@1提升了6.9个百分点，在FinanceBench上提升了2.4个百分点。在这个领域，合成过程还会检索支撑文档，让问题和答案都有文本依据。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 368.62,
+      "end": 403.16,
+      "en": "The broader contribution is a shift in how we describe data quality for R-L-V-R: usefulness depends on the model and its training conditions, not simply corpus size. Filtering can concentrate examples that currently produce informative outcomes, but it cannot fill capability gaps represented only by the hardest problems. MagicBeanStalk connects adaptive difficulty and curriculum design with synthetic task generation, using difficult examples to guide what to create and rollouts to decide what is ready to train on.",
+      "zh": "更广泛的贡献在于，它改变了我们描述R-L-V-R数据质量的方式：有用性取决于模型及其训练条件，而不只是语料库的大小。过滤可以把当前能产生有信息量结果的样本集中起来，但无法填补那些只有最难问题才能代表的能力缺口。MagicBeanStalk把自适应难度和课程设计与合成任务生成连接起来，用困难样本来指导该生成什么，用轨迹来决定什么已经准备好用于训练。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 403.9,
+      "end": 406.94,
+      "en": "How should we weigh that contribution against its costs and assumptions?",
+      "zh": "我们该如何权衡这一贡献与其成本和假设？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 408.2,
+      "end": 438.16,
+      "en": "There are important limits. Synthesis requires capable teachers, answer verification, student rollouts, and repeated generation, all of which consume compute and model access. The Goldilocks classification can change with the target model, rollout count, or response budget, and transfer was shown for one additional model rather than broadly established. Model-based quality judges can miss errors, too, while the reported evidence is concentrated in math and one financial setting.",
+      "zh": "当然，这也有重要的局限。合成数据需要有能力强的教师模型、答案验证、学生轨迹以及反复生成，这些都会消耗算力和模型访问权限。刚刚好的分类也可能随着目标模型、轨迹数量或响应预算而变化，而且迁移性只在一个额外模型上得到验证，并没有被广泛确立。基于模型的质量评判也可能漏掉错误，同时报告中的证据主要集中在数学和一个金融场景上。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 439.0,
+      "end": 469.838,
+      "en": "The useful takeaway is not that hard problems should always be transformed, or that one filtering rule works everywhere. It is that scarce difficult examples can serve two roles: they reveal reasoning capabilities worth targeting, and they can seed new tasks that are then tested against a particular learner and budget. Future work should examine other domains, models, and construction costs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "真正有用的结论并不是说难题就该一律改造，也不是说某条筛选规则放之四海而皆准。而是说，稀缺的困难样本可以发挥两种作用：它们既能揭示值得重点攻克的推理能力，也能催生新的任务，再针对特定的学习者和预算进行检验。未来的工作应该考察更多领域、模型和构建成本。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lu2026magicbeanstalkescapingrlvrzero,\n      title={MagicBeanStalk: Escaping the RLVR Zero Advantage Trap with Recursive Data Synthesis}, \n      author={Ximing Lu and Aviral Kumar and Jan Kautz and Yejin Choi and David Acuna},\n      year={2026},\n      eprint={2610.12659},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.12659}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.578,
+    0.365,
+    0.427,
+    0.322,
+    0.2,
+    0.545,
+    0.673,
+    0.733,
+    0.46,
+    0.687,
+    0.517,
+    0.429,
+    0.496,
+    0.55,
+    0.286,
+    0.217,
+    0.583,
+    0.812,
+    0.76,
+    0.557,
+    0.358,
+    0.609,
+    0.606,
+    0.532,
+    0.477,
+    0.417,
+    0.278,
+    0.674,
+    0.673,
+    0.468,
+    0.52,
+    0.604,
+    0.435,
+    0.856,
+    0.619,
+    0.652,
+    0.679,
+    0.424,
+    0.478,
+    0.84,
+    0.689,
+    0.782,
+    0.563,
+    0.592,
+    0.655,
+    0.53,
+    0.509,
+    0.707,
+    0.451,
+    0.551,
+    0.533,
+    0.648,
+    0.455,
+    0.458,
+    0.429,
+    0.399,
+    0.406,
+    0.378,
+    0.316,
+    0.272,
+    0.201,
+    0.347,
+    0.851,
+    1.0,
+    0.875,
+    0.761,
+    0.824,
+    0.497,
+    0.51,
+    0.303,
+    0.269,
+    0.28
+  ],
+  "published": "2026-10-08",
+  "views": 392,
+  "license": "arXiv 默认许可"
+}

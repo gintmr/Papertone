@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 531.983,
+  "word_match_rate": 0.9435,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Simulation and Physical AI, today's lecture is on Towards Physically Grounded Articulated 3D Assets: A Multi-Agent Pipeline and Benchmark. Work such as Articraft and PhysX-Anything reflects a growing trend: generating objects that can do more than look convincing. Researchers from Nanyang Technological University, Oxford, and other institutions take that goal further by testing whether articulated assets behave usefully in simulation. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.78
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does physically grounded mean here?",
+      "start": 33.98,
+      "end": 36.62
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It means the asset has to function as a physical object, not merely resemble one in an image. Its parts need sensible connections, materials, and masses; its joints should move as specified; and its motion should avoid collisions or unwanted tipping. That matters for robotics and simulation because a visually convincing cabinet with a door that clips through its frame is not a reliable training environment. Artisan treats those properties as part of generation, then tests them.",
+      "start": 37.46,
+      "end": 67.12
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper represents each asset as rigid parts arranged in a kinematic tree, with joints, motion limits, materials, and mass. Its central contribution is a three-agent pipeline: a Design Agent specifies what the object should contain and do, a Coding Agent builds it as a program, and a Review Agent checks the result against the design and evidence. Think of this as a design studio where construction and independent inspection have different responsibilities.",
+      "start": 67.86,
+      "end": 96.24
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the design agent work from images, or only text?",
+      "start": 97.46,
+      "end": 101.3
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It can use natural-language prompts and, optionally, reference images. The Design Agent turns them into a blueprint describing parts, motion, materials, and functional requirements. An image-generation model then creates a design board with views such as exploded or articulated depictions. That board gives the Coding Agent a visual reference, much as an engineering drawing helps a fabricator interpret a written specification.",
+      "start": 101.3,
+      "end": 129.78
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The Coding Agent converts that plan into a Python program using an extended toolkit. Parameterized hinges, slide rails, and rotary connectors make common joints easier to create, while anchor-based placement aligns parts through geometric features instead of hand-calculated coordinates. The Review Agent independently compares the built asset with the blueprint, images, and simulation report. It returns scored criteria and repair instructions, but does not edit the program itself, helping limit self-review bias.",
+      "start": 129.78,
+      "end": 164.08
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the key difference is that the asset gets tested in a simulator, not just inspected visually?",
+      "start": 165.14,
+      "end": 169.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. Artisan runs candidate assets in MuJoCo and checks collisions across single-joint motion, pairs of moving parts, and configurations involving multiple joints. Convex decomposition supplies collision geometry, and the system records which parts intersect, at what representative poses, and how deeply. It also tests stability under gravity. A cabinet door, for example, may pass a visual comparison yet fail when its hinge path carries it through the cabinet body.",
+      "start": 170.96,
+      "end": 200.96
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The simulator results become feedback for revision, rather than a final score alone. The Coding Agent can adjust geometry or joints, then run the asset again; the Review Agent can identify which requirement remains unmet. The benchmark also separates generation-time checks from stricter evaluation: for stability, it simulates assets for 10 seconds in resting and articulated states, considering tilt, drift, and rotation. That distinction makes the reported tests more interpretable.",
+      "start": 201.92,
+      "end": 234.04
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How broad is the benchmark, and does it measure more than collisions?",
+      "start": 234.94,
+      "end": 237.8
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Yes. It covers visual appearance, whole-object and part geometry, articulated states, materials, mass, collision rates, and stability. It also tests whether assets support robotic tasks and includes a human study where participants view and manipulate anonymized objects. The evaluation draws on ArtVIP and LightWheel objects, stability prompts, articulated ABO objects, and tasks from RoboTwin 2.0 and RoboCasa365. In other words, it asks both whether an asset looks right and whether it can be used.",
+      "start": 239.08,
+      "end": 276.16
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The strongest physical results illustrate why the feedback loop matters. On ArtVIP, Artisan reports collision rates of 1.7% for single-joint tests, 3.7% for double-joint tests, and 13% for multi-joint tests. Stability reaches 98% at rest and 96% when open. Without physical validation, the corresponding collision rates rise to 35.7%, 54.1%, and 73.2%. This comparison suggests that simulator feedback can catch defects that visual generation alone leaves behind.",
+      "start": 277.06,
+      "end": 314.42
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does passing those checks mean the assets are ready for robot training?",
+      "start": 315.48,
+      "end": 318.58
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Not automatically. Policies trained on Artisan-generated data average 63% success on RoboTwin 2.0 and 27% on RoboCasa365, compared with 60% and 5% using Articraft-generated assets. But only 35 of 76 Artisan assets that passed an initial RoboCasa qualification step supported successful demonstration generation. Simulator plausibility is therefore not the same as compatibility with a complete data pipeline. The tests measure useful properties, but they cannot guarantee success in every downstream workflow.",
+      "start": 319.64,
+      "end": 355.28
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "A second practical insight is that physical attributes require their own reasoning. The system estimates mass at the part level, and the GPT-6 Astra configuration has a reported absolute percentage mass error of 0.260. It does not lead every mass metric, however. Estimating mass only from material density and volume can miss hollow or composite construction. This is a reminder that an asset’s physical description is not always recoverable from its outer shape.",
+      "start": 356.16,
+      "end": 387.12
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should we compare this with Articraft, then?",
+      "start": 388.06,
+      "end": 390.34
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Articraft also uses a coding model to construct and repair articulated assets, but Artisan adds separate design and review roles and direct physics-simulator feedback. That changes the emphasis from checking whether a program builds or geometry looks plausible to testing how the resulting object moves and settles. The methods are related responses to the same need for scalable asset creation, while Artisan’s benchmark makes physical behavior and downstream utility more explicit.",
+      "start": 391.16,
+      "end": 421.1
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The broader shift is from treating 3D generation as production of a static visual output to treating it as creation of an interactive simulation component. The benchmark helps make that shift measurable by combining geometry with mechanics and task performance. Still, its tests use selected motions and simplified simulation conditions, and the paper notes that real-world robotics needs further validation. At about 34 minutes and US$5.79 to US$7.35 per asset, the pipeline also has meaningful time and cost constraints.",
+      "start": 422.04,
+      "end": 460.2
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "Could this approach eventually support larger asset libraries?",
+      "start": 461.36,
+      "end": 464.24
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "Potentially, if generation becomes more efficient and tests cover a wider range of contacts, materials, and tasks. The key research question is not only whether agents can build more objects, but whether each object carries enough reliable structure to support the intended use. Artisan offers a useful framework for asking that question, while its RoboCasa results show why qualification must continue beyond basic physical checks.",
+      "start": 465.36,
+      "end": 491.22
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The takeaway is that a convincing 3D asset and a usable physical asset are different achievements. Artisan connects language-guided design, programmatic construction, independent review, and simulation feedback, then evaluates results across appearance, mechanics, and robotics. Its successes are encouraging but bounded: simulator readiness is evidence of usefulness, not proof of real-world readiness. For future work, the most valuable progress may come from making validation broader and generation cheaper. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 492.14,
+      "end": 531.983
+    }
+  ]
+}

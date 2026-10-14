@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 375.588,
+  "word_match_rate": 0.9467,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Transformer architectures, today's lecture is on Recurrent Looped Transformer. Recent work such as Full-Bandwidth Transformer and The Recurrent Transformer: Greater Effective Depth and Efficient Decoding explores feedback and persistent memory. This paper, by researchers at Princeton University and the University of Pennsylvania, asks where feedback belongs when a model must track state across long sequences. The field is exploring hybrid and looped designs, but this study tests them on controlled algorithmic tasks, not language modeling. That distinction matters. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.76
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say feedback, do you mean the model carries information from one token to the next?",
+      "start": 38.94,
+      "end": 44.4
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. A standard Transformer processes each token through a fixed stack of layers, while a recurrent model can carry an evolving state forward. R-L-T combines these ideas: it computes token representations in parallel with a causal encoder, then uses a decoder whose output feeds into the next token’s computation. The central question is whether this growing path of recurrent computation helps models generalize to sequence lengths they did not see during training.",
+      "start": 45.3,
+      "end": 72.84
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The architecture separates two jobs. The encoder builds causal representations and key-value memory for the observed tokens, so a known prefix can be encoded in parallel. The decoder then reads that memory and incorporates a state derived from the preceding token’s final output. In effect, the encoder prepares a shared record of the input, while the decoder carries forward a working state that changes as the sequence unfolds.",
+      "start": 73.78,
+      "end": 100.94
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the encoder can work in parallel, but the decoder still processes tokens sequentially?",
+      "start": 101.32,
+      "end": 105.66
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That’s right. Each token passes through the encoder and decoder layers, but only the decoder depth is repeated along the recurrent path. This gives the model an increasing chain of state updates as more tokens arrive. The authors vary how many of the eight total layers belong to each side. More decoder layers make each update deeper; more encoder layers allocate more capacity to parallel representations.",
+      "start": 107.1,
+      "end": 132.02
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The authors also vary how often the state is updated. R-L-T one feeds back after every token. Chunked R-L-T holds the state fixed for a group of tokens, then updates it at the boundary; the main experiment uses groups of 4. R-L-T zero removes feedback altogether. These versions help distinguish the benefit of recurrence from the benefit of simply changing the architecture or adding layers.",
+      "start": 132.02,
+      "end": 159.52
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does chunking just make the model faster, or can it also change what the model learns?",
+      "start": 159.52,
+      "end": 165.78
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It can do both. Within a chunk, the decoder can process known tokens together at each layer, reducing sequential work. But those tokens do not each receive a fresh recurrent update, so chunking also changes the information path. In the experiments, parity remains strong with groups of 4, while swap-based permutation tracking is much more sensitive to less frequent updates. The right interval appears to depend on the task.",
+      "start": 166.78,
+      "end": 192.24
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The clearest results come from tasks that require tracking a compact state. Trained on strings no longer than 40 bits, the five-encoder, three-decoder R-L-T achieves 100% parity accuracy at 256 bits across all 3 seeds; the Transformer baseline is near chance. For swap-based S-five tracking, the four-encoder, four-decoder model reaches 97.3% at 256 operations, compared with 0.85% for the baseline. At 512 operations, its mean drops to 55.7%, so extrapolation has limits.",
+      "start": 193.2,
+      "end": 231.5
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How should we interpret those comparisons, given that the models are not matched exactly for parameters or compute?",
+      "start": 232.48,
+      "end": 237.68
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "As evidence that recurrent feedback can help on selected state-tracking problems, not as a clean estimate of its advantage under equal resources. The R-L-T variants have somewhat more parameters, and layer count alone does not equalize compute. Results also vary by task: standard S-five remains near chance, addition generalizes poorly to much longer operands, and modular arithmetic improves in some settings but declines at longer lengths. The pattern is promising but uneven.",
+      "start": 237.68,
+      "end": 268.8
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "This work fits a broader interest in letting processed information re-enter a Transformer’s computation. Full-Bandwidth Transformer studies latent feedback, while The Recurrent Transformer: Greater Effective Depth and Efficient Decoding uses persistent key-value memory. R-L-T makes a distinct design choice: it separates parallel encoder memory from decoder feedback, then treats both layer allocation and update frequency as variables. That gives researchers a way to study not just whether recurrence helps, but where it should be placed.",
+      "start": 269.76,
+      "end": 303.4
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Could these results tell us whether recurrent Transformers will improve language models or reasoning systems?",
+      "start": 304.32,
+      "end": 309.66
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Not yet. The experiments use small models and synthetic tasks, with 3 seeds for most comparisons, and the timing results come from a specific C-P-U setup. The paper does not test language-model pretraining, natural-language reasoning, or reinforcement-learning outcomes. Its contribution is a controlled framework for probing state updates and length generalization. Larger studies would need compute-matched baselines, accelerator-aware measurements, and broader tasks before drawing conclusions about real-world language systems.",
+      "start": 310.72,
+      "end": 342.3
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The takeaway is that recurrence is not a universal switch that automatically solves long-context problems. Its value depends on how many layers perform recurrent updates, how often those updates occur, and what kind of state the task demands. R-L-T makes those choices explicit while retaining parallel encoding where possible. For researchers, the next step is to test whether this balance survives at scale and under fair resource comparisons. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 343.24,
+      "end": 375.588
+    }
+  ]
+}

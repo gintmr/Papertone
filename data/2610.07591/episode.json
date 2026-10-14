@@ -1,0 +1,232 @@
+{
+  "id": "2610.07591",
+  "title": "Recurrent Looped Transformer",
+  "authors": [
+    "Yifan Zhang",
+    "Jichen Feng",
+    "Shihan Qin",
+    "Sun-Yuan Kung",
+    "Mengdi Wang"
+  ],
+  "abstract": "State tracking requires an update at every input, but the depth a Transformer applies to each token is fixed regardless of sequence length. We introduce the Recurrent Looped Transformer (RLT), which splits its layers between a parallel causal encoder and a recurrent decoder. At each token, the decoder merges the encoder output with the previous token's final decoder state, so the computation path grows with sequence length at a fixed per-token cost. On six algorithmic tasks, we compare five splits of eight layers with an eight-layer Transformer over three seeds. Trained on at most 40 bits, two RLT splits generalize parity to 256 bits with 100% accuracy in every seed, while the Transformer stays at chance. On swap-based $S_5$ permutation tracking at eight times the training length, RLT reaches 97% final-state accuracy versus under 1% for the Transformer, and accuracy increases with decoder depth. On modular arithmetic beyond the training lengths, RLT reaches up to 93% versus 33\\% for the Transformer. Ablations show that these gains depend on the feedback: removing it drops parity and swap-based $S_5$ to chance at every split. Updating the feedback once per four-token chunk lets known tokens in a chunk run in parallel and keeps 64-bit parity at 99%, while permutation tracking depends on per-token feedback: chunking lowers length-64 swap-based $S_5$ from 100% to 20%.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.07591",
+    "arxiv": "https://arxiv.org/abs/2610.07591"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1146c-25fe-7fa2-9ed8-72b21c7dab06/podcast.mp3",
+  "duration": 375.588,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.76,
+      "en": "In our graduate course on Transformer architectures, today's lecture is on Recurrent Looped Transformer. Recent work such as Full-Bandwidth Transformer and The Recurrent Transformer: Greater Effective Depth and Efficient Decoding explores feedback and persistent memory. This paper, by researchers at Princeton University and the University of Pennsylvania, asks where feedback belongs when a model must track state across long sequences. The field is exploring hybrid and looped designs, but this study tests them on controlled algorithmic tasks, not language modeling. That distinction matters. Yes, Noah?",
+      "zh": "在我们关于Transformer架构的研究生课程里，今天的讲座讲的是循环回环Transformer。最近的一些工作，比如全带宽Transformer和循环Transformer：更大的有效深度与高效解码，探索了反馈和持久记忆。这篇论文由普林斯顿大学和宾夕法尼亚大学的研究人员完成，问的是当模型必须在长序列中跟踪状态时，反馈应该放在哪里。这个领域正在探索混合和回环设计，但这项研究是在受控的算法任务上测试它们，而不是语言建模。这个区别很重要。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.94,
+      "end": 44.4,
+      "en": "Hi Professor, when you say feedback, do you mean the model carries information from one token to the next?",
+      "zh": "教授您好，您说的反馈，是指模型把一个token的信息带到下一个token吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.3,
+      "end": 72.84,
+      "en": "Exactly. A standard Transformer processes each token through a fixed stack of layers, while a recurrent model can carry an evolving state forward. R-L-T combines these ideas: it computes token representations in parallel with a causal encoder, then uses a decoder whose output feeds into the next token’s computation. The central question is whether this growing path of recurrent computation helps models generalize to sequence lengths they did not see during training.",
+      "zh": "完全正确。标准Transformer通过固定的层堆叠来处理每个token，而循环模型则可以把一个不断演化的状态向前传递。R-L-T把这两种思路结合了起来：它用因果编码器并行计算token表示，然后用一个解码器，把它的输出馈入下一个token的计算。核心问题在于，这条不断增长的循环计算路径，能否帮助模型泛化到训练时没见过的序列长度。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.78,
+      "end": 100.94,
+      "en": "The architecture separates two jobs. The encoder builds causal representations and key-value memory for the observed tokens, so a known prefix can be encoded in parallel. The decoder then reads that memory and incorporates a state derived from the preceding token’s final output. In effect, the encoder prepares a shared record of the input, while the decoder carries forward a working state that changes as the sequence unfolds.",
+      "zh": "这个架构把两项任务分开处理。编码器为已观察到的token构建因果表示和键值记忆，因此已知的前缀可以并行编码。解码器则读取这份记忆，并融入一个从前一个token最终输出中推导出的状态。实际上，编码器为输入准备了一份共享记录，而解码器则携带一个随着序列展开而不断变化的工作状态。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 101.32,
+      "end": 105.66,
+      "en": "So the encoder can work in parallel, but the decoder still processes tokens sequentially?",
+      "zh": "所以编码器可以并行处理，但解码器还是得按顺序逐个处理token？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.1,
+      "end": 132.02,
+      "en": "That’s right. Each token passes through the encoder and decoder layers, but only the decoder depth is repeated along the recurrent path. This gives the model an increasing chain of state updates as more tokens arrive. The authors vary how many of the eight total layers belong to each side. More decoder layers make each update deeper; more encoder layers allocate more capacity to parallel representations.",
+      "zh": "没错。每个token都会经过编码器和解码器层，但只有解码器的深度会沿着循环路径重复。这样一来，随着token不断到来，模型就获得了一条不断增长的状态更新链。作者调整了总共八层里两边各占多少。解码器层越多，每次更新就越深；编码器层越多，就有更多容量分配给并行表示。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 132.02,
+      "end": 159.52,
+      "en": "The authors also vary how often the state is updated. R-L-T one feeds back after every token. Chunked R-L-T holds the state fixed for a group of tokens, then updates it at the boundary; the main experiment uses groups of 4. R-L-T zero removes feedback altogether. These versions help distinguish the benefit of recurrence from the benefit of simply changing the architecture or adding layers.",
+      "zh": "作者还改变了状态更新的频率。R-L-T one 每处理一个 token 就反馈一次。分块的 R-L-T 则在一组 token 内保持状态不变，到边界处才更新；主实验用的是每组 4 个 token。R-L-T zero 干脆完全去掉了反馈。这些版本有助于区分循环带来的好处，和单纯改变架构或增加层数带来的好处。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 159.52,
+      "end": 165.78,
+      "en": "Quick question: does chunking just make the model faster, or can it also change what the model learns?",
+      "zh": "问个快问题：分块只是让模型更快，还是也会改变模型学到的东西？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 166.78,
+      "end": 192.24,
+      "en": "It can do both. Within a chunk, the decoder can process known tokens together at each layer, reducing sequential work. But those tokens do not each receive a fresh recurrent update, so chunking also changes the information path. In the experiments, parity remains strong with groups of 4, while swap-based permutation tracking is much more sensitive to less frequent updates. The right interval appears to depend on the task.",
+      "zh": "两者都可以。在一个块内，解码器可以在每一层把已知的token一起处理，从而减少串行的工作量。但这些token并不会各自获得一次新的循环更新，所以分块也会改变信息的传递路径。在实验中，分组大小为4时，奇偶校验仍然表现很强，而基于交换的排列跟踪对更新频率降低则敏感得多。合适的间隔似乎取决于具体任务。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 193.2,
+      "end": 231.5,
+      "en": "The clearest results come from tasks that require tracking a compact state. Trained on strings no longer than 40 bits, the five-encoder, three-decoder R-L-T achieves 100% parity accuracy at 256 bits across all 3 seeds; the Transformer baseline is near chance. For swap-based S-five tracking, the four-encoder, four-decoder model reaches 97.3% at 256 operations, compared with 0.85% for the baseline. At 512 operations, its mean drops to 55.7%, so extrapolation has limits.",
+      "zh": "最清晰的结果来自那些需要跟踪紧凑状态的任务。在长度不超过40位的字符串上训练后，五编码器、三解码器的R-L-T在256位时于全部3个随机种子下都达到了100%的奇偶校验准确率；而Transformer基线则接近随机水平。对于基于交换的S-five跟踪，四编码器、四解码器模型在256次操作时达到97.3%，而基线仅为0.85%。在512次操作时，其均值降至55.7%，因此外推能力存在局限。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 232.48,
+      "end": 237.68,
+      "en": "How should we interpret those comparisons, given that the models are not matched exactly for parameters or compute?",
+      "zh": "既然这些模型在参数量和计算量上并没有完全对齐，我们该怎么理解这些对比结果呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 237.68,
+      "end": 268.8,
+      "en": "As evidence that recurrent feedback can help on selected state-tracking problems, not as a clean estimate of its advantage under equal resources. The R-L-T variants have somewhat more parameters, and layer count alone does not equalize compute. Results also vary by task: standard S-five remains near chance, addition generalizes poorly to much longer operands, and modular arithmetic improves in some settings but declines at longer lengths. The pattern is promising but uneven.",
+      "zh": "这只能说明循环反馈在部分状态追踪问题上可能有帮助，不能当作同等资源下其优势的精确估计。R-L-T 的各个变体参数略多，而且光看层数并不能让计算量对等。结果也因任务而异：标准的 S-five 基本还在随机水平，加法在操作数长得多时泛化很差，模运算在某些设定下有提升，但在更长长度上反而下降。这个趋势有前景，但并不均衡。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 269.76,
+      "end": 303.4,
+      "en": "This work fits a broader interest in letting processed information re-enter a Transformer’s computation. Full-Bandwidth Transformer studies latent feedback, while The Recurrent Transformer: Greater Effective Depth and Efficient Decoding uses persistent key-value memory. R-L-T makes a distinct design choice: it separates parallel encoder memory from decoder feedback, then treats both layer allocation and update frequency as variables. That gives researchers a way to study not just whether recurrence helps, but where it should be placed.",
+      "zh": "这项工作契合了一个更广泛的兴趣，也就是让处理过的信息重新进入Transformer的计算过程。Full-Bandwidth Transformer研究的是潜在反馈，而The Recurrent Transformer: Greater Effective Depth and Efficient Decoding用的是持久化的键值记忆。R-L-T做出了一个不同的设计选择：把并行的编码器记忆和解码器反馈分开，然后把层数分配和更新频率都当作变量来对待。这样一来，研究者不仅能研究循环到底有没有用，还能研究它应该放在哪里。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 304.32,
+      "end": 309.66,
+      "en": "Could these results tell us whether recurrent Transformers will improve language models or reasoning systems?",
+      "zh": "这些结果能告诉我们循环Transformer是否会改进语言模型或推理系统吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 310.72,
+      "end": 342.3,
+      "en": "Not yet. The experiments use small models and synthetic tasks, with 3 seeds for most comparisons, and the timing results come from a specific C-P-U setup. The paper does not test language-model pretraining, natural-language reasoning, or reinforcement-learning outcomes. Its contribution is a controlled framework for probing state updates and length generalization. Larger studies would need compute-matched baselines, accelerator-aware measurements, and broader tasks before drawing conclusions about real-world language systems.",
+      "zh": "还不能。这些实验用的是小模型和合成任务，大多数对比只跑了3个随机种子，时间结果也来自特定的CPU配置。论文没有测试语言模型预训练、自然语言推理或强化学习的结果。它的贡献在于提供了一个受控框架，用来探究状态更新和长度泛化。要得出关于真实语言系统的结论，还需要更大规模的研究，包括算力匹配的基线、针对加速器优化的测量方式，以及更广泛的任务。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 343.24,
+      "end": 375.588,
+      "en": "The takeaway is that recurrence is not a universal switch that automatically solves long-context problems. Its value depends on how many layers perform recurrent updates, how often those updates occur, and what kind of state the task demands. R-L-T makes those choices explicit while retaining parallel encoding where possible. For researchers, the next step is to test whether this balance survives at scale and under fair resource comparisons. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，循环并不是一个能自动解决长上下文问题的万能开关。它的价值取决于有多少层执行循环更新、这些更新发生的频率，以及任务需要什么样的状态。R-L-T把这些选择显式化，同时尽可能保留并行编码。对研究者来说，下一步是测试这种平衡能否在更大规模下、在公平的资源比较下依然成立。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026recurrentloopedtransformer,\n      title={Recurrent Looped Transformer}, \n      author={Yifan Zhang and Jichen Feng and Shihan Qin},\n      year={2026},\n      eprint={2610.07591},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.07591}, \n}",
+  "topics": [
+    "Reasoning",
+    "Representation Learning",
+    "Sequence Modeling"
+  ],
+  "peaks": [
+    0.937,
+    0.514,
+    0.445,
+    0.48,
+    0.552,
+    0.464,
+    0.278,
+    0.618,
+    0.728,
+    0.766,
+    0.668,
+    0.671,
+    0.623,
+    0.436,
+    0.723,
+    0.553,
+    0.563,
+    0.44,
+    0.454,
+    0.562,
+    0.579,
+    0.871,
+    0.59,
+    0.988,
+    0.674,
+    0.795,
+    0.607,
+    0.566,
+    0.573,
+    0.509,
+    0.299,
+    0.648,
+    1.0,
+    0.776,
+    0.693,
+    0.762,
+    0.36,
+    0.67,
+    0.715,
+    0.418,
+    0.41,
+    0.526,
+    0.365,
+    0.343,
+    0.428,
+    0.771,
+    0.364,
+    0.327,
+    0.326,
+    0.353,
+    0.328,
+    0.457,
+    0.365,
+    0.434,
+    0.229,
+    0.392,
+    0.2,
+    0.286,
+    0.57,
+    0.559,
+    0.271,
+    0.263,
+    0.311,
+    0.313,
+    0.388,
+    0.296,
+    0.517,
+    0.589,
+    0.423,
+    0.539,
+    0.377,
+    0.235
+  ],
+  "published": "2026-10-06",
+  "views": 184,
+  "license": "arXiv 默认许可"
+}

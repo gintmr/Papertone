@@ -1,0 +1,300 @@
+{
+  "id": "2609.22069",
+  "title": "OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation",
+  "authors": [
+    "Wenxue Li",
+    "Peiyan Guan",
+    "Haoyang Jiang",
+    "Junxian Cai",
+    "Hualuo Liu",
+    "Chunjie Zhang",
+    "Chong Guan",
+    "Kai Huang",
+    "Songlian Li",
+    "Taiyi Wu",
+    "Yongjian Yu",
+    "Xiaotong Zhao",
+    "Alan Zhao",
+    "Quande Liu",
+    "Xi Chen",
+    "Yu Liu",
+    "Lei Zhu"
+  ],
+  "abstract": "Omni reference-to-video (R2V) generation is emerging as a general paradigm that enables flexible video customization from diverse and compositional visual references. However, existing benchmarks fall short of these emerging capabilities: their test cases cover only a limited range of reference types and compositions, and their evaluation protocols largely assess holistic reference consistency, overlooking whether reference factors are properly preserved, disentangled, and routed. Meanwhile, the high cost of constructing omni R2V training data makes suitable training resources scarce. To address these gaps, we introduce OmniVBench and the Omni-R2V Dataset, establishing a shared foundation for evaluating and training omni R2V models. OmniVBench expands R2V evaluation across broader reference types, richer reference compositions, and more flexible instruction-driven customization, covering 7 task families and 18 fine-grained tasks. Complementing this task design, we introduce factor-grounded evaluation with 12,172 case-specific checklist items, explicitly assessing whether intended reference factors are faithfully preserved, correctly disentangled and bound to their targets, and realized according to the instruction. We further introduce the Omni-R2V Dataset, bringing industrial-grade training resources for diverse R2V tasks to the broader research community. Drawing primarily on a large-scale corpus of professional video footage, it comprises 340K processed training samples spanning diverse reference types and multi-reference compositions. Specifically, we develop task-specific pipelines for reference-target pair construction, offering a practical and scalable recipe for omni R2V data construction. Extensive evaluation of advanced open- and closed-source R2V models reveals substantial performance variation across diverse tasks and distinct capability patterns across evaluation dimensions.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.22069",
+    "arxiv": "https://arxiv.org/abs/2609.22069"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0c1d1-b161-7744-8120-14a914fee3d6/podcast.mp3",
+  "duration": 441.103,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.12,
+      "en": "Welcome to Advanced Topics in Generative AI. Today's lecture is on 'OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation'. We've seen a number of evaluation suites emerge recently, like VBench for general quality and FilmBench for cinematic standards. This paper, from researchers at Tencent and The Hong Kong University of Science and Technology, pushes in a different direction. It argues that as reference-to-video models become more complex, our benchmarks need to become more granular to keep up. Go ahead, Noah?",
+      "zh": "欢迎来到生成式AI进阶专题。今天我们要讲的是“OmniVBench：面向全模态参考生视频的基准与大规模数据集”。最近我们看到了不少评估套件冒出来，比如衡量通用质量的VBench，还有针对电影级标准的FilmBench。而这篇来自腾讯和香港科技大学研究人员的论文，走的是一个不同的方向。它认为，随着参考生视频模型变得越来越复杂，我们的基准也需要变得更精细，才能跟得上。诺亚，你来说？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.48,
+      "end": 40.08,
+      "en": "Excuse me, Professor. You mentioned VBench. Is OmniVBench intended to replace it, or does it serve a different purpose?",
+      "zh": "不好意思，教授。您提到了VBench。OmniVBench是要取代它，还是有别的用途？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.4,
+      "end": 63.0,
+      "en": "Good question. It serves a more specialized purpose. VBench offers a comprehensive, broad evaluation. OmniVBench drills down specifically into reference-based generation, particularly scenarios where you're combining multiple, different types of references, like a character image and a motion clip. It's designed to test a model's ability to disentangle and combine these inputs, which is where the field is clearly headed.",
+      "zh": "问得好。它其实有更专门的用途。VBench提供的是全面、广泛的评估，而OmniVBench则专门深入基于参考的生成，尤其是你要组合多种不同类型参考的场景，比如一张角色图加一段动作片段。它的设计目标是测试模型拆解并组合这些输入的能力，而这正是这个领域明显的发展方向。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 63.28,
+      "end": 107.74,
+      "en": "The authors identify two main problems with existing resources. First, most benchmarks overemphasize content and subject consistency. They check if the character looks right, but don't adequately test control over motion, artistic style, or narrative continuity. Second, evaluations tend to produce a single, holistic score for reference consistency. This score can't tell you if a model succeeded by correctly transferring a character's identity or if it just lazily copied the entire reference image, background and all. To address this, the paper introduces two key contributions: OmniVBench, the evaluation framework itself, and the Omni-R2V Dataset, a large-scale collection of processed training examples.",
+      "zh": "作者指出了现有资源的两个主要问题。第一，大多数基准过度强调内容和主体一致性。它们会检查角色看起来对不对，但没有充分测试对运动、艺术风格或叙事连贯性的控制能力。第二，评估往往只给出一个针对参考一致性的单一整体分数。这个分数无法告诉你模型到底是成功迁移了角色的身份特征，还是只是偷懒把整张参考图连背景一起照搬了过来。为了解决这个问题，论文提出了两个关键贡献：OmniVBench，也就是评估框架本身，以及Omni-R2V数据集，一个经过处理的大规模训练样本集合。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 108.2,
+      "end": 113.16,
+      "en": "So, is the Omni-R2V Dataset just a collection of videos? Or is it processed in a specific way?",
+      "zh": "那Omni-R2V数据集就只是一堆视频的集合吗？还是说它经过了特定的处理？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 113.16,
+      "end": 139.5,
+      "en": "It's highly processed. It contains approximately 340,000 instances, but each instance is a triplet: a reference, a textual instruction, and a target video. For example, a reference might be a still image of a person, the instruction might say 'make this person run', and the target video would show that. This structure is designed to train models specifically for these fine-grained, compositional tasks.",
+      "zh": "它是经过高度处理的。里面大约有34万个实例，但每个实例都是一个三元组：一个参考、一条文本指令和一个目标视频。比如，参考可能是一张人物的静态图像，指令可能是“让这个人跑起来”，而目标视频就会展示这个动作。这种结构是专门为了训练模型处理这些细粒度、组合式的任务而设计的。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 139.5,
+      "end": 145.86,
+      "en": "That makes sense. It sounds like the key idea is 'disentanglement'—the model needs to know which part of the reference to use and which to ignore.",
+      "zh": "这就说得通了。听起来核心思路就是“解耦”——模型得知道该用参考里的哪部分、忽略哪部分。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 146.3,
+      "end": 171.84,
+      "en": "Precisely. The paper calls it factor disentanglement. It’s the core challenge. A user might provide a character image, a motion clip, a style image, and a storyboard. The model must be able to extract only the identity from the first, only the movement from the second, only the aesthetic from the third, and only the spatial layout from the fourth, then combine them correctly. That’s what they mean by 'omni' R2V generation.",
+      "zh": "正是如此。论文里把这叫做因子解耦。这是核心挑战。用户可能会提供一张角色图像、一段动作片段、一张风格图和一份分镜。模型必须能够只从第一张里提取身份，只从第二段里提取动作，只从第三张里提取美学风格，只从第四份里提取空间布局，然后把它们正确地组合起来。这就是他们所说的“全能”R2V生成。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.2,
+      "end": 196.96,
+      "en": "To measure this, the benchmark is built on a detailed taxonomy. It has seven task families: content, motion, style, structure, narrative, and then two multi-reference families called multi-content and cross-aspect. Each of these is broken down into fine-grained subtasks. For instance, motion isn't just one category; it's separated into subject actions and specific camera movements like dolly, pan, and orbit.",
+      "zh": "为了衡量这一点，这个基准建立在一套细致的分类体系上。它有七个任务族：内容、运动、风格、结构、叙事，然后还有两个多参考任务族，分别叫多内容和跨维度。每一个任务族又会被拆解成更细粒度的子任务。比如运动不只是一个类别，它被分成了主体动作和具体的镜头运动，像推轨、摇镜和环绕。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 197.3,
+      "end": 201.22,
+      "en": "Can you give an example of a cross-aspect task? I'm having trouble visualizing that.",
+      "zh": "你能举个例子说明什么是跨方面任务吗？我有点想象不出来。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 201.54,
+      "end": 225.74,
+      "en": "Certainly. A typical cross-aspect case would involve providing the model with an image of a character for identity, a video clip of someone dancing for the motion, and an image of a painting for the artistic style. The prompt would then instruct the model to generate a video of that specific character dancing in that particular artistic style. This forces the model to synthesize information from three different sources, each providing a different factor.",
+      "zh": "当然可以。一个典型的跨维度案例是，给模型提供一张角色图像来确定身份，一段某人跳舞的视频片段来确定动作，以及一幅画作来确定艺术风格。然后提示词会指示模型生成一段该特定角色以那种特定艺术风格跳舞的视频。这就迫使模型综合来自三个不同来源的信息，而每个来源提供不同的要素。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 226.08,
+      "end": 248.48,
+      "en": "The evaluation itself is also factor-grounded. They separate performance into three dimensions: Reference Fidelity, or RF, which is whether the reference information was preserved; Instruction Realization, or IR, which checks if the requested operations were executed correctly; and standard Video Quality, VQ. This is where it gets interesting.",
+      "zh": "评估本身也是基于这些因素的。他们把表现分成三个维度：参考保真度，也就是RF，看参考信息有没有被保留下来；指令实现度，也就是IR，检查要求的操作有没有被正确执行；还有标准的视频质量，VQ。有意思的地方来了。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 248.48,
+      "end": 253.9,
+      "en": "Hold on, how are RF and IR measured? It sounds subjective. Are they relying entirely on human evaluators?",
+      "zh": "等一下，RF和IR是怎么测量的？听起来挺主观的。他们是完全依赖人工评估吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 254.38,
+      "end": 284.28,
+      "en": "They use a detailed, factor-grounded checklist with over 12,000 specific questions. For each evaluation case, there are checklist items with scoring scales—a 1 to 5 scale for RF and a 1 to 3 scale for IR. They did validate this against human judgments and found strong correlations, with Pearson coefficients around 0.8. So while it's not fully automated for RF and IR, it's a structured, repeatable process. They do use automated metrics like DOVER++ for the video quality component.",
+      "zh": "他们用的是一个很细的、基于具体因素的清单，里面有超过12000个具体问题。每个评估案例都有对应的清单项和评分量表——RF用的是1到5分，IR用的是1到3分。他们确实拿这个跟人工判断做了验证，发现相关性很强，皮尔逊系数大概在0.8左右。所以虽然RF和IR不是完全自动化的，但它是一个结构化、可复现的流程。视频质量那部分他们确实用了DOVER++这样的自动化指标。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 284.72,
+      "end": 291.14,
+      "en": "So the IR score specifically checks if the model copies unwanted things from the reference? Like the background along with the character?",
+      "zh": "所以IR分数具体就是检查模型有没有从参考图里复制一些不想要的东西？比如把背景也连着角色一起搬过来了？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 291.68,
+      "end": 312.88,
+      "en": "Exactly. That's a key part of the IR dimension, what they call reference-factor disentanglement and routing. It explicitly penalizes a model for what they term 'identity leakage' or applying a factor to the wrong target. It distinguishes between a model that successfully applies the character’s face versus one that just pastes the entire reference image into the new scene.",
+      "zh": "没错，这正是IR维度的关键部分，他们称之为参考因素的解耦与路由。它会明确惩罚模型出现所谓的“身份泄漏”，也就是把某个因素用到了错误的目标上。它能区分模型是成功应用了角色的脸，还是只是把整张参考图直接贴到了新场景里。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 313.14,
+      "end": 341.88,
+      "en": "The main implication here is that this work provides a much richer vocabulary for diagnosing model failures. Instead of saying a video is 'bad', a researcher can say it has high content fidelity but low instruction realization due to poor factor routing. This is crucial for targeted model improvement. The results confirmed their hypothesis: most models are reasonably good at content preservation but struggle significantly with motion, style, and especially multi-reference composition.",
+      "zh": "这里的主要意义在于，这项工作提供了一套丰富得多的词汇来诊断模型失败。研究者不再只能说一个视频“不好”，而是可以说它内容保真度高，但由于因子路由不佳导致指令实现度低。这对有针对性地改进模型至关重要。结果也验证了他们的假设：大多数模型在内容保持上还算不错，但在运动、风格，尤其是多参考组合方面明显吃力。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 342.28,
+      "end": 352.54,
+      "en": "This factor-grounded approach reminds me of the agent-based system in VideoGen-Eval, where they also try to break down evaluation into sub-tasks. Is this kind of structured, fine-grained evaluation becoming the new standard?",
+      "zh": "这种基于因素的思路让我想起VideoGen-Eval里那个基于智能体的系统，他们也是试图把评估拆解成子任务。这种结构化、细粒度的评估是不是正在成为新的标准？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 352.94,
+      "end": 379.68,
+      "en": "It's a strong and necessary trend. Holistic scores are proving insufficient for these complex generative tasks. We've seen a similar push for granularity in MVBench for temporal understanding and H2VU-Benchmark for hierarchical reasoning. OmniVBench applies that same principle to the unique challenges of compositional, reference-based control. It shows that high video quality doesn't imply good reference control, a distinction that previous benchmarks might miss.",
+      "zh": "这是一个强劲且必要的趋势。整体评分对于这些复杂的生成任务来说已经不够用了。我们在MVBench中看到了对时间理解粒度的类似追求，在H2VU-Benchmark中则是对分层推理的细化。OmniVBench把同样的原则应用到了基于参考的组合式控制这一独特挑战上。它表明，高视频质量并不意味着好的参考控制，而这一区别可能是之前的基准所忽略的。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 380.02,
+      "end": 396.22,
+      "en": "Ultimately, the paper’s primary contribution isn't a new state-of-the-art model but the infrastructure to build and measure the next generation of them. The benchmark and dataset are tools designed to push the field beyond simple subject animation towards truly compositional and controllable video synthesis.",
+      "zh": "归根结底，这篇论文最主要的贡献并不是一个新的最先进模型，而是用来构建和衡量下一代模型的基础设施。这个基准和数据集是工具，目的是推动这个领域超越简单的主题动画，走向真正可组合、可控的视频合成。"
+    },
+    {
+      "i": 20,
+      "speaker": "Noah",
+      "start": 396.74,
+      "end": 402.24,
+      "en": "The dataset still comes from an internal Tencent corpus, right? So there could be some inherent biases in the content?",
+      "zh": "这个数据集还是来自腾讯内部的语料库，对吧？所以内容上可能存在一些固有的偏差？"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 402.8,
+      "end": 420.88,
+      "en": "Yes, that's a valid limitation they acknowledge. Like any large dataset sourced from a single ecosystem, there's a risk of stylistic or content biases. However, the structured approach and the procedural methods they used for generating references are steps toward creating a reusable methodology, which is a positive.",
+      "zh": "是的，这确实是他们承认的一个局限。任何来自单一生态的大型数据集，都可能存在风格或内容上的偏差。不过，他们生成参考时采用的结构化方法和流程化手段，是在朝着建立一套可复用方法论的方向努力，这一点是值得肯定的。"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 421.34,
+      "end": 441.103,
+      "en": "The key takeaway here is that as video generation moves towards complex, user-driven workflows, our evaluation methods must evolve from simple similarity metrics to nuanced, factor-based assessments. This work provides a solid framework for that. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这里的关键结论是，随着视频生成走向复杂的、用户驱动的工作流，我们的评估方法也必须从简单的相似度指标，演进为更细致的、基于因素的评估。这项工作为此提供了一个扎实的框架。感谢收听。如果还有更多问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026omnivbenchbenchmarklargescaledataset,\n      title={OmniVBench: A Benchmark and Large-Scale Dataset for Omni Reference-to-Video Generation}, \n      author={Wenxue Li and Peiyan Guan and Haoyang Jiang and Junxian Cai and Hualuo Liu and Chunjie Zhang and Chong Guan and Songlian Li and Taiyi Wu and Yongjian Yu and Xiaotong Zhao and Alan Zhao and Eric Liu and Xi Chen and Yu Liu and Lei Zhu},\n      year={2026},\n      eprint={2609.22069},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.22069}, \n}",
+  "topics": [
+    "Data Curation",
+    "Generative Models",
+    "Multimodal Learning"
+  ],
+  "peaks": [
+    0.617,
+    0.466,
+    0.2,
+    0.266,
+    0.362,
+    0.311,
+    0.551,
+    0.727,
+    0.401,
+    0.542,
+    0.607,
+    0.311,
+    0.298,
+    0.318,
+    0.417,
+    0.231,
+    0.381,
+    0.327,
+    0.353,
+    0.404,
+    0.458,
+    0.378,
+    0.267,
+    0.564,
+    0.507,
+    0.433,
+    0.669,
+    0.492,
+    0.791,
+    0.608,
+    0.313,
+    0.468,
+    0.5,
+    0.581,
+    0.462,
+    0.313,
+    0.694,
+    0.625,
+    0.948,
+    0.738,
+    0.449,
+    0.754,
+    0.349,
+    0.585,
+    0.621,
+    0.339,
+    0.463,
+    0.495,
+    0.584,
+    0.484,
+    0.28,
+    1.0,
+    0.457,
+    0.298,
+    0.364,
+    0.347,
+    0.515,
+    0.392,
+    0.484,
+    0.533,
+    0.401,
+    0.207,
+    0.92,
+    0.466,
+    0.496,
+    0.357,
+    0.516,
+    0.411,
+    0.404,
+    0.738,
+    0.385,
+    0.323
+  ],
+  "published": "2026-09-18",
+  "views": 156,
+  "license": "arXiv 默认许可"
+}

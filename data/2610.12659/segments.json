@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 469.838,
+  "word_match_rate": 0.9145,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Deep Reinforcement Learning Methods, today's lecture is on MagicBeanStalk. Recent work such as DeepMath-103K expands the supply of verifiable math problems, while Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability explores curricula near the limits of what models can learn. Researchers from the University of Washington, Carnegie Mellon, NVIDIA, and Stanford take a different angle: not just how much data we have, but how much useful learning signal it offers. Yes, Noah?",
+      "start": 0.0,
+      "end": 33.34
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why isn’t a bigger set of verified problems automatically better for training?",
+      "start": 34.52,
+      "end": 39.08
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because a problem can be verified yet still provide no useful training signal to a particular model. In reinforcement learning with verifiable rewards, or R-L-V-R, the model tries a problem several times, and each response receives a correct-or-incorrect reward. If all attempts succeed, or all fail, the group has no contrast in outcomes. The authors call this the zero-advantage trap; problems with a mix of successes and failures fall into the useful Goldilocks band.",
+      "start": 40.04,
+      "end": 72.26
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: does that mean a problem’s difficulty depends on the model?",
+      "start": 73.46,
+      "end": 76.72
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. Difficulty depends on the target policy, the number of sampled responses, and the response-length budget, not only on the question itself. In a corpus of about 78,000 math problems, around 88% were outside the observed Goldilocks band for G-P-T oss one hundred twenty B, using 8 attempts and a 32-thousand-token limit. That finding describes this specific setup; it is not a universal label for those problems.",
+      "start": 77.64,
+      "end": 106.76
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The central idea is to treat hard problems as specifications, rather than simply throwing them away. A verified solution can reveal the reasoning operations a model needs, which the paper calls a reasoning blueprint. The authors first tested this premise on 98 hard problems: showing the model one solved, simpler subproblem based on the blueprint produced at least one correct answer on 78 problems and raised average accuracy on the originals from 0% to 46.9%.",
+      "start": 107.76,
+      "end": 138.4
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So the blueprint preserves the reasoning, while the new question changes the surface?",
+      "start": 140.76,
+      "end": 145.24
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That is the intention, and MagicBeanStalk operationalizes it in stages. Teacher models generate solutions, which are kept only when their answers pass verification. They then propose easier, self-contained subproblems for each hard seed. The system checks both the subproblems and their solutions, then tests whether those solved examples actually help the target model with the original problem. Ineffective decompositions are retried and eventually dropped.",
+      "start": 146.22,
+      "end": 175.62
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Can you clarify how the system turns those subproblems into genuinely new training tasks?",
+      "start": 176.58,
+      "end": 181.44
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Once a decomposition works, the system builds a parallel tree from its leaves upward. Teachers create harder variants of leaf problems, then combine synthetic children into new parent problems using the original structure as a guide. This aims to retain the reasoning dependencies without merely changing names or numbers. Finally, target-policy rollouts filter candidates: retained math problems need both correct and incorrect responses, plus at least one complete correct response within the training budget.",
+      "start": 182.48,
+      "end": 213.74
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That final filter matters because a problem that appears hard only due to truncation may not demonstrate that the model can solve it in budget. The math qualification test used 8 attempts and a 16-thousand-token limit. From roughly 1,250 seeds where the target scored 0 out of 8, the method generated 3,370 descendants; 42.8% qualified, and 74.7% of seeds produced at least one qualified descendant.",
+      "start": 213.74,
+      "end": 249.44
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How much better was that than just asking a teacher to vary each seed directly?",
+      "start": 250.3,
+      "end": 254.18
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "In a matched comparison, direct seed synthesis produced 2,494 descendants, with 31.7% qualifying and 43.8% of seeds yielding a qualified item. A blinded judging study also rated 19.7% of MagicBeanStalk candidates at least 4 out of 5 for both blueprint preservation and substantive novelty, versus 3% for direct synthesis. These results suggest that decomposition helps improve both training suitability and the likelihood of producing meaningfully new problems.",
+      "start": 255.2,
+      "end": 289.74
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The training results are substantial within the tested settings, but they should be read as specific experimental evidence. On 8 math benchmarks, continual training on the synthesized data raised G-P-T oss one hundred twenty B’s average from 61.2 to 69.8. The full source mixture gained 1.1 points, while an in-budget Goldilocks subset gained 5.8. The synthesized data also transferred to DeepSeek V four Flash, which improved from 72.4 to 77.9 without regenerating the examples.",
+      "start": 289.74,
+      "end": 326.5
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "Does the method apply beyond math, or is the finance result only a small demonstration?",
+      "start": 327.56,
+      "end": 331.82
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The finance experiment is an initial demonstration beyond math. Starting from 340 expert questions grounded in 17 corporate credit agreements, the researchers generated about 25,000 candidates and retained around 14,200 Goldilocks problems. Training Qwen three four B Instruct on this data improved pass at one by 6.9 points on SecQue and 2.4 points on FinanceBench. For this domain, synthesis also retrieves supporting documents so questions and answers are grounded in text.",
+      "start": 332.88,
+      "end": 368.62
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The broader contribution is a shift in how we describe data quality for R-L-V-R: usefulness depends on the model and its training conditions, not simply corpus size. Filtering can concentrate examples that currently produce informative outcomes, but it cannot fill capability gaps represented only by the hardest problems. MagicBeanStalk connects adaptive difficulty and curriculum design with synthetic task generation, using difficult examples to guide what to create and rollouts to decide what is ready to train on.",
+      "start": 368.62,
+      "end": 403.16
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How should we weigh that contribution against its costs and assumptions?",
+      "start": 403.9,
+      "end": 406.94
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "There are important limits. Synthesis requires capable teachers, answer verification, student rollouts, and repeated generation, all of which consume compute and model access. The Goldilocks classification can change with the target model, rollout count, or response budget, and transfer was shown for one additional model rather than broadly established. Model-based quality judges can miss errors, too, while the reported evidence is concentrated in math and one financial setting.",
+      "start": 408.2,
+      "end": 438.16
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The useful takeaway is not that hard problems should always be transformed, or that one filtering rule works everywhere. It is that scarce difficult examples can serve two roles: they reveal reasoning capabilities worth targeting, and they can seed new tasks that are then tested against a particular learner and budget. Future work should examine other domains, models, and construction costs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 439.0,
+      "end": 469.838
+    }
+  ]
+}

@@ -1,0 +1,274 @@
+{
+  "id": "2609.37250",
+  "title": "V-JEPA Policy: Building Effective World-Action Models on Predictive Visual Latents",
+  "authors": [
+    "Yang Zhang",
+    "Jiangyuan Zhao",
+    "Chenyou Fan",
+    "Jiayu Hu",
+    "Xiu Yuan",
+    "Chenjia Bai",
+    "Xiu Li"
+  ],
+  "abstract": "World-action models (WAMs) couple future visual-state prediction with action generation. By adapting video generators or image-editing models pretrained at scale, a prominent line of recent WAMs inherits both predictive knowledge and the models in which it was learned. We ask whether a predictive visual latent space induced by large-scale predictive pretraining can instead provide a sufficient foundation for effective WAM learning without inheriting a complete pretrained visual generative model. To answer this question, we introduce V-JEPA Policy, a simple framework that builds a WAM on the latent space of a frozen V-JEPA 2.1 encoder. An instruction-conditioned future-latent predictor and a flow-matching action expert are jointly learned from scratch in a single downstream stage, with the predictor's future-informed context key--value states conditioning action generation. With 0.9B total parameters, of which 0.6B are trainable, V-JEPA Policy achieves competitive performance with representative WAM and vision-language-action baselines across LIBERO, LIBERO-Plus, and RoboCasa-GR1. Comparing visual foundations under the same downstream framework and training budget identifies V-JEPA latents as more effective than the discriminative, reconstructive, and video-understanding-oriented alternatives, particularly under distribution shifts. Beyond task-specific learning, pretraining the predictor on DROID video--instruction pairs without action labels and adapting it into a WAM yields substantial gains in downstream control and out-of-distribution generalization. Together, these findings establish predictive visual latents as a foundation for effective WAM learning from task-specific demonstrations and for transferring future-modeling knowledge acquired from broader in-the-wild videos. Project page: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.37250",
+    "arxiv": "https://arxiv.org/abs/2609.37250"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f021-d2c5-7b32-83d7-aba6817f72ac/podcast.mp3",
+  "duration": 528.744,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.44,
+      "en": "In a graduate course on Robot Learning and Predictive Models, today's lecture is on V-JEPA Policy: Building Effective World-Action Models on Predictive Visual Latents. Recent work such as Fast-WAM and VLA-JEPA reflects a shift toward policies that model how scenes change, not just map images to actions. This paper takes a latent-prediction route, rather than keeping a full visual generator. The authors include researchers affiliated with Tsinghua University and Shanghai Jiao Tong University. I see your hand, Noah; go ahead.",
+      "zh": "在一门关于机器人学习与预测模型的研究生课程中，今天的讲座主题是V-JEPA策略：在预测性视觉潜变量上构建有效的世界-动作模型。最近像Fast-WAM和VLA-JEPA这样的工作反映出一种转变，即策略不再只是把图像映射到动作，而是开始建模场景如何变化。这篇论文走的是潜变量预测路线，而不是保留一个完整的视觉生成器。作者中包括来自清华大学和上海交通大学的研究人员。我看到你举手了，Noah，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.36,
+      "end": 40.52,
+      "en": "Hi Professor, what does a world-action model predict that a regular robot policy does not?",
+      "zh": "教授您好，世界-动作模型预测的东西，和普通的机器人策略相比，多了什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.32,
+      "end": 68.18,
+      "en": "A regular policy can learn to map the current camera view, instruction, and robot state directly to an action. A world-action model also represents a likely future visual state, so the policy can use an estimate of what its actions may cause. Think of it as planning with a sketch of the next scene, rather than reacting only to the scene in front of it. The paper asks whether that sketch can live in learned features instead of generated pixels.",
+      "zh": "普通的策略可以直接学会把当前摄像头画面、指令和机器人状态映射成动作。而世界-动作模型还会表示一个可能的未来视觉状态，这样策略就能利用对自身动作可能造成什么结果的估计。你可以把它理解成用下一幕的草图来做规划，而不是只对眼前这一幕做反应。这篇论文要问的是，这张草图能不能存在于学到的特征里，而不是生成出来的像素里。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 69.34,
+      "end": 73.92,
+      "en": "So the future image is an internal guide, not necessarily something the robot has to render?",
+      "zh": "所以未来的图像只是一种内部指引，并不一定需要机器人把它渲染出来？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.96,
+      "end": 107.5,
+      "en": "Exactly. V-JEPA Policy uses a frozen V-JEPA 2.1 visual encoder to map observed and future frames into a shared latent space. During training, future frames provide target features, while the predictor sees the current context and learns to estimate those targets. The system predicts feature representations rather than reconstructing pixels. That design draws on jepa: learning useful structure by predicting representations, instead of requiring a model to reproduce every visual detail.",
+      "zh": "没错。V-JEPA策略用一个冻结的V-JEPA 2.1视觉编码器，把观测帧和未来帧映射到同一个潜在空间里。训练时，未来帧提供目标特征，而预测器看到的是当前上下文，学着去估计那些目标。这个系统预测的是特征表示，而不是重建像素。这个设计借鉴了jepa的思路：通过预测表示来学习有用的结构，而不是要求模型复现每一个视觉细节。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.5,
+      "end": 138.24,
+      "en": "The predictor also receives task instructions, robot proprioception, and learned queries for future positions. It uses a transformer to process these inputs and produces future-latent estimates in one pass. An important choice is that the action module uses intermediate predictor states, not only the final forecast. Those states have already combined observed context with future queries, so they can carry information about anticipated changes into the control process.",
+      "zh": "预测器还会接收任务指令、机器人本体感知信息，以及针对未来位置的学习查询。它用一个Transformer来处理这些输入，并在一次前向传播中生成对未来潜变量的估计。一个重要的设计选择是，动作模块使用的是预测器的中间状态，而不只是最终的预测结果。这些中间状态已经将观测到的上下文与未来查询结合在一起，因此能够把关于预期变化的信息带入控制过程。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 139.16,
+      "end": 143.88,
+      "en": "Quick question: why use intermediate states instead of conditioning actions on the final prediction?",
+      "zh": "问个快问题：为什么用中间状态，而不是让动作以最终预测为条件？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 144.8,
+      "end": 177.46,
+      "en": "The intermediate states offer a representation shaped by the predictor's processing at several layers, rather than a single finished forecast. The action expert attends to those context representations while generating actions, but the predictor itself does not attend to action tokens. This creates a one-way information flow: future-oriented context informs control, while action generation does not alter the predictor's representation during that pass. It is a way to couple forecasting and acting without merging them into one undifferentiated module.",
+      "zh": "中间状态提供的是一种由预测器在多个层级的处理所塑造的表征，而不是一个单一的最终预测结果。动作专家在生成动作时会关注这些上下文表征，但预测器本身并不关注动作 token。这就形成了一种单向的信息流：面向未来的上下文为控制提供信息，而动作生成在这一过程中不会改变预测器的表征。这是一种将预测与行动耦合起来、又不把它们合并成一个无差别模块的方式。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 178.4,
+      "end": 207.52,
+      "en": "Training gives both modules complementary jobs. The predictor learns future features with an L one loss, while a diffusion-transformer-style action expert learns to generate action chunks through conditional flow matching. Action-loss gradients also pass through the predictor's context interface, encouraging it to provide useful control information. The visual and text encoders stay frozen; the downstream predictor and action expert are trained from scratch in the default setup.",
+      "zh": "训练让两个模块各司其职、互为补充。预测器用L1损失学习未来特征，而一个扩散Transformer风格的行动专家则通过条件流匹配学习生成动作块。动作损失的梯度也会穿过预测器的上下文接口，促使它提供有用的控制信息。视觉和文本编码器保持冻结；在默认设置下，下游的预测器和行动专家从头开始训练。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 208.54,
+      "end": 213.78,
+      "en": "Does the future-prediction objective actually improve control, or is the query pathway alone enough?",
+      "zh": "未来预测目标真的能提升控制效果吗，还是说光有查询通路就够了？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 213.78,
+      "end": 251.62,
+      "en": "The ablations suggest the objective matters. The full model reaches 97.25% on LIBERO and 79.25% on LIBERO-Plus. Removing future queries lowers those results to 92.55% and 65.86%; keeping the queries but removing future-prediction loss gives 91.65% and 68.81%. So merely adding a future-query pathway does not explain the reported gains. The explicit training signal for predicting future features appears to contribute, especially under distribution shift.",
+      "zh": "消融实验表明这个目标确实重要。完整模型在LIBERO上达到97.25%，在LIBERO-Plus上达到79.25%。去掉未来查询后，这两个数字分别降到92.55%和65.86%；保留查询但去掉未来预测损失，则得到91.65%和68.81%。所以仅仅加一条未来查询通路并不能解释报告中的提升。预测未来特征的显式训练信号似乎有贡献，尤其是在分布偏移的情况下。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 252.48,
+      "end": 291.3,
+      "en": "For practical task performance, the from-scratch policy averages 97.25% across four LIBERO suites and reaches 79.25% on LIBERO-Plus, which tests seven kinds of distribution shift without fine-tuning. On the 24-task RoboCasa-GR1 humanoid benchmark, it reaches 50.92%. In controlled comparisons, the visual encoder changes while downstream architecture, demonstrations, and optimization budget stay fixed. V-JEPA 2.1 features outperform tested alternatives overall, including DINOv2 and a representation from a video-generative model.",
+      "zh": "在实际任务表现上，从零训练的策略在四个LIBERO套件上平均达到97.25%，并在不微调的情况下于LIBERO-Plus上达到79.25%，后者测试了七种分布偏移。在24项任务的RoboCasa-GR1人形机器人基准上，它达到50.92%。在受控对比中，视觉编码器发生变化，而下游架构、演示数据和优化预算保持不变。V-JEPA 2.1特征整体上优于所测试的替代方案，包括DINOv2和来自视频生成模型的表示。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 291.3,
+      "end": 296.14,
+      "en": "How does the model gain useful experience from videos that have no action labels?",
+      "zh": "模型是如何从没有动作标签的视频中获得有用经验的？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 297.1,
+      "end": 337.6,
+      "en": "The authors pretrain the predictor on DROID video-instruction pairs for 100,000 updates, using future-latent prediction but no action labels and no action expert. They then use that predictor to initialize downstream training, while training the action expert from scratch. LIBERO-Plus rises from 79.25% to 91.50%, and LIBERO rises from 97.25% to 98.70%. This points to video as a source of transferable knowledge about how scenes evolve, even without demonstrations of what action caused each change.",
+      "zh": "作者在DROID的视频-指令对上预训练预测器，训练了10万次更新，只用未来潜在预测，不用动作标签，也不用动作专家。然后他们用这个预测器来初始化下游训练，同时从头训练动作专家。LIBERO-Plus从79.25%提升到91.50%，LIBERO从97.25%提升到98.70%。这说明视频可以作为可迁移知识的来源，帮助模型理解场景如何演变，即便没有演示每个变化是由什么动作引起的。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 338.42,
+      "end": 374.56,
+      "en": "The transfer pattern also appears beyond those benchmarks: the pretrained-predictor version reaches 55.58% on RoboCasa-GR1, and succeeds in 75% of Table Cleanup trials and 85% of Saucer Racking trials on a dual-arm robot. Each real-world task had 20 trials. For inference, the model predicts latent futures and generates an action chunk using ten Euler steps. On an RTX 4090, its reported mean latency is 178.17 milliseconds, with peak memory use of 4.66 GiB.",
+      "zh": "这种迁移规律在其他基准上也成立：预训练预测器版本在RoboCasa-GR1上达到55.58%，在双臂机器人上，清理桌面任务的成功率为75%，摆放碟架任务的成功率为85%。每个真实世界任务做了20次试验。推理时，模型预测潜在未来，并用十步欧拉法生成一个动作块。在RTX 4090上，报告的平均延迟为178.17毫秒，峰值内存占用为4.66 GiB。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 377.22,
+      "end": 380.74,
+      "en": "How should we interpret the real-world results and the efficiency comparison?",
+      "zh": "我们该怎么理解这些真实世界的结果和效率对比呢？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 381.68,
+      "end": 416.4,
+      "en": "They are encouraging evidence, but narrow evidence: two real-world tasks and 20 trials per task cannot establish broad reliability. The latency and memory figures cover the action-prediction core, not camera acquisition, preprocessing, or motor execution. The paper reports lower peak memory use than compared world-action models, including Fast-WAM, but these measurements should be read within their stated scope. Likewise, predictor pretraining adds upstream computation, so the transfer comparison matches downstream budgets rather than total training cost.",
+      "zh": "这些结果固然令人鼓舞，但证据范围仍然有限：两个真实世界任务、每个任务20次试验，不足以确立广泛的可靠性。延迟和内存数据只覆盖了动作预测核心，不包括摄像头采集、预处理或电机执行。论文报告其峰值内存占用低于所比较的世界动作模型，包括Fast-WAM，但这些测量应在其所述范围内解读。同样，预测器预训练增加了上游计算，因此迁移比较匹配的是下游预算，而非总训练成本。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 417.3,
+      "end": 452.5,
+      "en": "Conceptually, the work adds a useful point between reactive vision-language-action policies and approaches that adapt complete visual generators. Fast-WAM and ImageWAM also explore ways to avoid generating future video during deployment, but V-JEPA Policy centers its design on a frozen predictive visual representation and a separately trained future predictor. Its results suggest that representation quality and future-prediction training can matter for robustness, while leaving open how broadly such benefits transfer across robot types and environments.",
+      "zh": "从概念上看，这项工作在反应式视觉-语言-动作策略与适配完整视觉生成器的方法之间补充了一个有用的中间点。Fast-WAM 和 ImageWAM 也探索了在部署时避免生成未来视频的方式，但 V-JEPA Policy 的设计核心是一个冻结的预测性视觉表示和一个单独训练的未来预测器。其结果提示，表示质量和未来预测训练可能对鲁棒性有影响，但这些收益能在多大范围内迁移到不同机器人类型和环境，仍未有定论。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 453.54,
+      "end": 459.12,
+      "en": "Could the same idea help when instructions or visual appearances change in ways absent from robot demonstrations?",
+      "zh": "同样的思路，在指令或视觉外观以机器人演示中从未出现过的方式发生变化时，还能不能帮上忙？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 460.36,
+      "end": 493.82,
+      "en": "That is a central motivation, and the LIBERO-Plus and video-pretraining results provide evidence in that direction. Still, the tests do not show that action-free video solves generalization by itself: the method depends on substantial pretrained visual and text encoders, and the evaluated tasks remain limited. A next step is to test more embodiments, longer-horizon tasks, and broader deployment conditions, while tracking the full cost of data collection and pretraining. The important question is which learned visual transitions remain useful when the robot changes.",
+      "zh": "这是一个核心动机，而LIBERO-Plus和视频预训练的结果提供了朝这个方向的证据。不过，这些测试并未表明无动作视频本身就能解决泛化问题：该方法依赖于大量预训练的视觉和文本编码器，而且所评估的任务仍然有限。下一步是测试更多具身形态、更长时域的任务和更广泛的部署条件，同时追踪数据收集和预训练的完整成本。重要的问题是，当机器人发生变化时，哪些学到的视觉转换仍然有用。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 493.82,
+      "end": 528.744,
+      "en": "The takeaway is that a robot policy may benefit from anticipating visual change without generating a future video in pixels. V-JEPA Policy combines a predictive latent representation, a future-feature predictor, and an action expert, then shows that action-free video can improve downstream control in its tested settings. Its evidence is promising but bounded by the benchmarks, real-world trial count, and added pretraining cost. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，机器人策略或许能从预判视觉变化中获益，而不必真的生成未来视频的像素。V-JEPA策略把预测性潜在表示、未来特征预测器和动作专家结合起来，然后证明无动作视频在其测试设定下能改善下游控制。它的证据很有前景，但受限于基准、真实世界试验次数以及额外的预训练成本。感谢收听。如果还有问题，可以问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhang2026vjepapolicybuildingeffective,\n      title={V-JEPA Policy: Building Effective World-Action Models on Predictive Visual Latents}, \n      author={Yang Zhang and Jiangyuan Zhao and Chenyou Fan and Jiayu Hu and Xiu Yuan and Chenjia Bai and Xiu Li},\n      year={2026},\n      eprint={2609.37250},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.37250}, \n}",
+  "topics": [
+    "Imitation Learning",
+    "Multimodal Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.51,
+    0.302,
+    0.365,
+    0.288,
+    0.944,
+    0.699,
+    0.465,
+    0.471,
+    0.452,
+    0.48,
+    0.369,
+    0.249,
+    0.371,
+    0.466,
+    0.572,
+    0.447,
+    0.492,
+    0.259,
+    0.463,
+    0.341,
+    0.251,
+    0.59,
+    0.309,
+    0.594,
+    0.523,
+    0.414,
+    0.341,
+    0.419,
+    0.51,
+    0.546,
+    0.372,
+    0.345,
+    0.21,
+    0.302,
+    0.263,
+    0.224,
+    0.235,
+    0.222,
+    0.342,
+    0.492,
+    0.289,
+    0.256,
+    0.343,
+    0.35,
+    0.2,
+    0.557,
+    0.373,
+    0.611,
+    0.522,
+    0.35,
+    0.525,
+    0.703,
+    0.374,
+    0.482,
+    0.313,
+    0.246,
+    0.593,
+    0.428,
+    0.251,
+    0.338,
+    0.43,
+    0.626,
+    0.925,
+    0.532,
+    0.634,
+    0.345,
+    0.415,
+    0.203,
+    0.222,
+    0.281,
+    0.2
+  ],
+  "published": "2026-09-29",
+  "views": 270,
+  "license": "CC BY"
+}

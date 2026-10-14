@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 383.529,
+  "word_match_rate": 0.949,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate seminar called Interactive Robotics and Language Models, today's lecture is on pie-roo-ah lean. Work such as Code as Policies and Harness V-L-A shows a field exploring how language models can direct existing robot skills. This paper asks whether the interface between model and robot can reduce repeated planning without training a new policy. The distinction matters when every dependent step triggers another model call. Yes, Noah?",
+      "start": 0.0,
+      "end": 29.56
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the central contribution a new robot skill or a different way of coordinating existing ones?",
+      "start": 30.66,
+      "end": 36.24
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It is the latter. Imagine a simulated robot placing a bowl on a plate. In one recorded example, the tool-calling baseline takes four model turns to locate the bowl, sample its base, lower it, and release it. Pie-roo-ah lean replaces those turns with one executable Python cell. That cell makes several decisions, checks outcomes, and asks for an image only if the task is still unfinished. This is one successful example, not a guarantee.",
+      "start": 37.2,
+      "end": 64.78
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So what exactly counts as a robot skill in this comparison?",
+      "start": 65.84,
+      "end": 68.68
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The paper calls these operations primitives: existing actions such as moving, sensing, gripping, or invoking a learned vision-language-action policy. With ordinary tool calling, the model selects a primitive, receives its result, and must call again to choose a dependent action. Motion calls also return images and state automatically. The important point is that the robot’s underlying operations stay the same; what changes is how the model can combine them.",
+      "start": 69.62,
+      "end": 100.14
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "In pie-roo-ah lean, the model writes a Python cell that can call those same primitives, keep variables and helper functions, branch on results, and retry locally. Intermediate information can remain inside the program rather than returning to the model after every step. At the end, the cell returns requested printed output and images. In the bowl example, the cell computes a target from scene geometry, conditionally lowers and releases, and prints five lines without returning an image.",
+      "start": 100.82,
+      "end": 129.78
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: does the comparison isolate which of those interface features produces the improvement?",
+      "start": 130.66,
+      "end": 135.66
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "No. It compares the complete interfaces, not primitive composition, retained state, and selective feedback one feature at a time. The main evaluation uses the same G-P-T six Astra planner, robot stack, and frozen V-L-A policies for both agents. It covers 700 simulated task instances across three benchmarks, with benchmark-specific success checks and equal call budgets: generally 40 calls per episode, or 100 for RoboCasa365 composite tasks.",
+      "start": 136.96,
+      "end": 170.04
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Under those conditions, benchmark-checked success is 71.7% for pie-roo-ah lean and 63.1% for R-Pent tool calling, an 8.6-percentage-point difference. Efficiency is measured on the instances both agents solved: there, mean model calls fall from 17 to 8.7, and mean input tokens fall from 788,000 to 276,000. Those token means include cached and post-success input, and are not averages over every attempt.",
+      "start": 170.94,
+      "end": 204.4
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Why might combining actions reduce input tokens, and does that mean the system runs faster?",
+      "start": 205.42,
+      "end": 210.22
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Combining dependent steps can reduce how often the model must receive context and plan again. On jointly solved Libero Pro instances, the accounting separates 2.55 times fewer calls from 1.76 times fewer input tokens per call; together, those factors correspond to 4.48 times fewer total input tokens. That is an accounting decomposition, not a causal test. Fewer calls or tokens do not establish lower elapsed time or total computation.",
+      "start": 211.22,
+      "end": 241.6
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A useful stress test asks whether fewer returned images alone explain the gains. On Libero Pro, a modified tool-calling baseline that received images only on request fell from 83% to 68.5% success. This supports the view that image selectivity alone does not reproduce the result. But it does not isolate selective feedback inside pie-roo-ah lean or prove composition is the sole cause; the intervention changes the baseline’s observation delivery.",
+      "start": 241.6,
+      "end": 273.48
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How does this relate to Code as Policies, which also lets a model write robot programs?",
+      "start": 274.6,
+      "end": 279.38
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Code as Policies had already demonstrated language-model-generated robot programs with feedback logic and geometric computation, so executable robot code itself is not the new claim. The narrower contribution here is an interactive Python interface over R-Pent’s existing primitives, where intermediate results can stay in program state and only selected outputs return to the model. The findings therefore shift attention toward interface design, while leaving each interface component’s independent effect unresolved.",
+      "start": 280.34,
+      "end": 312.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "There are clear boundaries to the evidence. The evaluation uses simulated robot stacks, one run per agent per instance, and one planner setup. It does not test physical robots, other planners, repeated-run reliability, or execution latency. Even the token savings vary by task type: on RoboCasa365 atomic tasks, code uses more input tokens per call on average, though fewer calls still yield fewer total input tokens.",
+      "start": 313.72,
+      "end": 343.5
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What should researchers test next to learn whether this interface generalizes?",
+      "start": 343.5,
+      "end": 348.26
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "A useful next step would be to vary the planner, robot primitives, and feedback controls independently, then repeat tasks to measure reliability and elapsed time on both simulated and physical systems. For now, the lesson is precise: a model that can compose existing actions and keep intermediate checks inside a program may need fewer planning exchanges. The evidence supports that possibility on these simulated tasks, not a universal performance claim. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 349.12,
+      "end": 383.529
+    }
+  ]
+}

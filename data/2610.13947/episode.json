@@ -1,0 +1,283 @@
+{
+  "id": "2610.13947",
+  "title": "Towards Physically Grounded Articulated 3D Assets: A Multi-Agent Pipeline and Benchmark",
+  "authors": [
+    "Xudong Cai",
+    "Ruijie Zhu",
+    "Haoliang Shang",
+    "Ruining Li",
+    "Marc Pollefeys",
+    "Shangzhe Wu",
+    "Andrea Vedaldi",
+    "Chuanxia Zheng"
+  ],
+  "abstract": "In this paper, we study physically grounded articulated 3D asset generation---moving the goal from reproducing how objects look to capturing how they move and function. Inspired by the literature on procedural and agentic generation, we present Artisan, a system that extends the latest method Articraft by introducing a multi-agent pipeline with physical simulation feedback, enabling comprehensive attributes beyond geometry, appearance, and physically plausible articulation, such as collision-free motion, stability under gravity, and accurate mass and material properties. Furthermore, we construct a unified benchmark spanning four key aspects: spatial fidelity, physical plausibility, downstream task performance, and overall quality. The benchmark encompasses 100 reference assets from ArtVIP and LightWheel, 50 stability prompts, and 50 ABO objects with reference masses, with protocols evaluating various metrics. Through extensive evaluation of more than 10 representative models, Artisan achieves competitive spatial fidelity while attaining the lowest collision rates and highest stability rates among the evaluated methods. Together, our system and benchmark establish insights for advancing 3D generation towards physically plausible, functionally usable assets.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.13947",
+    "arxiv": "https://arxiv.org/abs/2610.13947"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a12dc5-73e4-701a-a35d-726ebc352ee8/podcast.mp3",
+  "duration": 531.983,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.78,
+      "en": "In our graduate course on Simulation and Physical AI, today's lecture is on Towards Physically Grounded Articulated 3D Assets: A Multi-Agent Pipeline and Benchmark. Work such as Articraft and PhysX-Anything reflects a growing trend: generating objects that can do more than look convincing. Researchers from Nanyang Technological University, Oxford, and other institutions take that goal further by testing whether articulated assets behave usefully in simulation. Yes, Noah?",
+      "zh": "在我们研究生课程“仿真与物理AI”里，今天的讲座主题是迈向物理落地的铰接式3D资产：一个多智能体流水线与基准。像Articraft和PhysX-Anything这样的工作反映了一个日益增长的趋势：生成的对象不只是看起来逼真。来自南洋理工大学、牛津大学和其他机构的研究人员把这个目标又推进了一步，去测试铰接式资产在仿真中是否能发挥有用的作用。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.98,
+      "end": 36.62,
+      "en": "Hi Professor, what does physically grounded mean here?",
+      "zh": "教授您好，这里的“物理落地”是什么意思？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 37.46,
+      "end": 67.12,
+      "en": "It means the asset has to function as a physical object, not merely resemble one in an image. Its parts need sensible connections, materials, and masses; its joints should move as specified; and its motion should avoid collisions or unwanted tipping. That matters for robotics and simulation because a visually convincing cabinet with a door that clips through its frame is not a reliable training environment. Artisan treats those properties as part of generation, then tests them.",
+      "zh": "意思是，这个资产必须能作为一个物理对象真正运作，而不只是在图像里看起来像。它的各个部件需要有合理的连接、材质和质量；关节要按设定方式运动；运动过程中还要避免碰撞或意外翻倒。这对机器人学和仿真很重要，因为一个视觉上很逼真的柜子，如果门会穿过柜框，那就不是一个可靠的训练环境。Artisan 把这些物理属性当作生成过程的一部分，然后再对它们进行测试。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 67.86,
+      "end": 96.24,
+      "en": "The paper represents each asset as rigid parts arranged in a kinematic tree, with joints, motion limits, materials, and mass. Its central contribution is a three-agent pipeline: a Design Agent specifies what the object should contain and do, a Coding Agent builds it as a program, and a Review Agent checks the result against the design and evidence. Think of this as a design studio where construction and independent inspection have different responsibilities.",
+      "zh": "这篇论文把每个资产表示成一棵运动学树里排列的刚性部件，带有铰链、运动限制、材质和质量。它的核心贡献是一个三智能体流水线：设计智能体规定物体应该包含什么、能做什么，编码智能体把它构建成一个程序，审查智能体则对照设计和证据来检查结果。可以把它想象成一个设计工作室，建造和独立检查各自承担不同的职责。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 97.46,
+      "end": 101.3,
+      "en": "Quick question: does the design agent work from images, or only text?",
+      "zh": "快速问一下：设计智能体是根据图像来工作的，还是只靠文本？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 101.3,
+      "end": 129.78,
+      "en": "It can use natural-language prompts and, optionally, reference images. The Design Agent turns them into a blueprint describing parts, motion, materials, and functional requirements. An image-generation model then creates a design board with views such as exploded or articulated depictions. That board gives the Coding Agent a visual reference, much as an engineering drawing helps a fabricator interpret a written specification.",
+      "zh": "它可以使用自然语言提示，也可以选择性地参考图像。设计智能体将这些内容转化为一份蓝图，描述部件、运动、材料和功能需求。随后，一个图像生成模型会创建一块设计板，包含爆炸图或关节活动图等视图。这块设计板为编码智能体提供了视觉参考，就像工程图纸帮助制造者理解书面规格一样。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 129.78,
+      "end": 164.08,
+      "en": "The Coding Agent converts that plan into a Python program using an extended toolkit. Parameterized hinges, slide rails, and rotary connectors make common joints easier to create, while anchor-based placement aligns parts through geometric features instead of hand-calculated coordinates. The Review Agent independently compares the built asset with the blueprint, images, and simulation report. It returns scored criteria and repair instructions, but does not edit the program itself, helping limit self-review bias.",
+      "zh": "编码智能体利用一套扩展工具包，把这份方案转换成Python程序。参数化的铰链、滑轨和旋转连接件让常见关节的创建更简单，而基于锚点的放置方式则通过几何特征来对齐零件，不再需要手工计算坐标。审查智能体独立地将构建出的资产与蓝图、图像和仿真报告进行比对。它会返回各项评分标准和修复指令，但不会直接修改程序本身，这有助于限制自我审查带来的偏差。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 165.14,
+      "end": 169.94,
+      "en": "So the key difference is that the asset gets tested in a simulator, not just inspected visually?",
+      "zh": "所以关键区别在于，资产是在模拟器里测试的，而不只是靠肉眼检查？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 170.96,
+      "end": 200.96,
+      "en": "Exactly. Artisan runs candidate assets in MuJoCo and checks collisions across single-joint motion, pairs of moving parts, and configurations involving multiple joints. Convex decomposition supplies collision geometry, and the system records which parts intersect, at what representative poses, and how deeply. It also tests stability under gravity. A cabinet door, for example, may pass a visual comparison yet fail when its hinge path carries it through the cabinet body.",
+      "zh": "没错。Artisan 会在 MuJoCo 里运行候选资产，检查单关节运动、成对运动部件以及涉及多个关节的配置下的碰撞情况。凸分解提供碰撞几何体，系统会记录哪些部件相交、在哪些代表性姿态下相交，以及相交有多深。它还会测试重力下的稳定性。比如一扇柜门，视觉对比可能通过，但当铰链路径带着它穿过柜体时就会失败。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 201.92,
+      "end": 234.04,
+      "en": "The simulator results become feedback for revision, rather than a final score alone. The Coding Agent can adjust geometry or joints, then run the asset again; the Review Agent can identify which requirement remains unmet. The benchmark also separates generation-time checks from stricter evaluation: for stability, it simulates assets for 10 seconds in resting and articulated states, considering tilt, drift, and rotation. That distinction makes the reported tests more interpretable.",
+      "zh": "模拟器的结果会作为修改的反馈，而不只是最终评分。编码智能体可以调整几何形状或关节，然后重新运行资产；审查智能体可以指出哪项要求仍未满足。这个基准还把生成时的检查与更严格的评估区分开来：在稳定性方面，它会在静止和关节活动状态下对资产进行10秒的模拟，考虑倾斜、漂移和旋转。这种区分让所报告的测试更具可解释性。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 234.94,
+      "end": 237.8,
+      "en": "How broad is the benchmark, and does it measure more than collisions?",
+      "zh": "这个基准的范围有多广，它衡量的仅仅是碰撞吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 239.08,
+      "end": 276.16,
+      "en": "Yes. It covers visual appearance, whole-object and part geometry, articulated states, materials, mass, collision rates, and stability. It also tests whether assets support robotic tasks and includes a human study where participants view and manipulate anonymized objects. The evaluation draws on ArtVIP and LightWheel objects, stability prompts, articulated ABO objects, and tasks from RoboTwin 2.0 and RoboCasa365. In other words, it asks both whether an asset looks right and whether it can be used.",
+      "zh": "是的。它涵盖视觉外观、整体和部件几何、关节状态、材质、质量、碰撞率和稳定性。它还测试资产是否支持机器人任务，并包含一项人类研究，让参与者查看和操作匿名物体。评估使用了ArtVIP和LightWheel物体、稳定性提示、关节式ABO物体，以及来自RoboTwin 2.0和RoboCasa365的任务。换句话说，它既问资产看起来对不对，也问它能不能用。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 277.06,
+      "end": 314.42,
+      "en": "The strongest physical results illustrate why the feedback loop matters. On ArtVIP, Artisan reports collision rates of 1.7% for single-joint tests, 3.7% for double-joint tests, and 13% for multi-joint tests. Stability reaches 98% at rest and 96% when open. Without physical validation, the corresponding collision rates rise to 35.7%, 54.1%, and 73.2%. This comparison suggests that simulator feedback can catch defects that visual generation alone leaves behind.",
+      "zh": "最有说服力的物理验证结果说明了这个反馈闭环为什么重要。在ArtVIP上，Artisan报告单关节测试的碰撞率为1.7%，双关节测试为3.7%，多关节测试为13%。静止状态下的稳定性达到98%，打开状态下为96%。如果不做物理验证，相应的碰撞率会升到35.7%、54.1%和73.2%。这一对比表明，模拟器反馈能捕捉到纯视觉生成所遗漏的缺陷。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 315.48,
+      "end": 318.58,
+      "en": "Does passing those checks mean the assets are ready for robot training?",
+      "zh": "通过那些检查就意味着这些资产可以直接用于机器人训练了吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 319.64,
+      "end": 355.28,
+      "en": "Not automatically. Policies trained on Artisan-generated data average 63% success on RoboTwin 2.0 and 27% on RoboCasa365, compared with 60% and 5% using Articraft-generated assets. But only 35 of 76 Artisan assets that passed an initial RoboCasa qualification step supported successful demonstration generation. Simulator plausibility is therefore not the same as compatibility with a complete data pipeline. The tests measure useful properties, but they cannot guarantee success in every downstream workflow.",
+      "zh": "不一定。用Artisan生成的数据训练出的策略，在RoboTwin 2.0上平均成功率为63%，在RoboCasa365上为27%，而使用Articraft生成的资产时分别为60%和5%。但在76个通过了RoboCasa初步资格筛选的Artisan资产中，只有35个能够支持成功生成演示。因此，仿真器中的合理性并不等同于与完整数据管线的兼容性。这些测试衡量的是有用的属性，但无法保证在每个下游工作流中都能成功。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 356.16,
+      "end": 387.12,
+      "en": "A second practical insight is that physical attributes require their own reasoning. The system estimates mass at the part level, and the GPT-6 Astra configuration has a reported absolute percentage mass error of 0.260. It does not lead every mass metric, however. Estimating mass only from material density and volume can miss hollow or composite construction. This is a reminder that an asset’s physical description is not always recoverable from its outer shape.",
+      "zh": "第二个实用洞见是，物理属性需要单独的推理。系统在零件级别估计质量，而GPT-6 Astra配置报告的质量绝对百分比误差为0.260。不过它并非在所有质量指标上都领先。仅根据材料密度和体积来估计质量，可能会忽略中空或复合材料结构。这提醒我们，一个资产的物理描述并不总能从其外形中还原出来。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 388.06,
+      "end": 390.34,
+      "en": "How should we compare this with Articraft, then?",
+      "zh": "那么，我们该如何把它和Articraft进行比较呢？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 391.16,
+      "end": 421.1,
+      "en": "Articraft also uses a coding model to construct and repair articulated assets, but Artisan adds separate design and review roles and direct physics-simulator feedback. That changes the emphasis from checking whether a program builds or geometry looks plausible to testing how the resulting object moves and settles. The methods are related responses to the same need for scalable asset creation, while Artisan’s benchmark makes physical behavior and downstream utility more explicit.",
+      "zh": "Articraft同样用编码模型来构建和修复关节化资产，但Artisan增加了独立的设计和审查角色，以及来自物理模拟器的直接反馈。这就把重点从检查程序能否跑通、几何形状是否合理，转向了测试生成出来的物体如何运动和稳定下来。这两种方法都是对同一个需求的回应，那就是可扩展的资产创建，只不过Artisan的基准让物理行为和下游实用性变得更加明确。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 422.04,
+      "end": 460.2,
+      "en": "The broader shift is from treating 3D generation as production of a static visual output to treating it as creation of an interactive simulation component. The benchmark helps make that shift measurable by combining geometry with mechanics and task performance. Still, its tests use selected motions and simplified simulation conditions, and the paper notes that real-world robotics needs further validation. At about 34 minutes and US$5.79 to US$7.35 per asset, the pipeline also has meaningful time and cost constraints.",
+      "zh": "更广泛的转变在于，不再把3D生成看作产出静态视觉结果，而是把它当作创建可交互的仿真组件。这个基准通过把几何、力学和任务表现结合起来，让这种转变变得可衡量。不过，它的测试使用的是选定动作和简化后的仿真条件，论文也指出，真实世界的机器人应用还需要进一步验证。此外，每个资产大约需要34分钟、花费5.79到7.35美元，这条流水线在时间和成本上也有明显的限制。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 461.36,
+      "end": 464.24,
+      "en": "Could this approach eventually support larger asset libraries?",
+      "zh": "这种方法最终能否支持更大的资产库？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 465.36,
+      "end": 491.22,
+      "en": "Potentially, if generation becomes more efficient and tests cover a wider range of contacts, materials, and tasks. The key research question is not only whether agents can build more objects, but whether each object carries enough reliable structure to support the intended use. Artisan offers a useful framework for asking that question, while its RoboCasa results show why qualification must continue beyond basic physical checks.",
+      "zh": "有可能，前提是生成变得更高效，测试也能覆盖更广泛的接触、材料和任务。关键的研究问题不只是智能体能否造出更多物体，而是每个物体是否带有足够可靠的结构来支撑预期用途。Artisan 提供了一个有用的框架来追问这个问题，而它在 RoboCasa 上的结果则说明，为什么资格验证必须超越基本的物理检查。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 492.14,
+      "end": 531.983,
+      "en": "The takeaway is that a convincing 3D asset and a usable physical asset are different achievements. Artisan connects language-guided design, programmatic construction, independent review, and simulation feedback, then evaluates results across appearance, mechanics, and robotics. Its successes are encouraging but bounded: simulator readiness is evidence of usefulness, not proof of real-world readiness. For future work, the most valuable progress may come from making validation broader and generation cheaper. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键在于，一个看起来逼真的3D资产和一个真正能用的物理资产，是两码事。Artisan把语言引导的设计、程序化构建、独立审查和仿真反馈串了起来，然后从外观、力学和机器人三个维度评估结果。它取得的成绩令人鼓舞，但也有局限：在仿真器里跑得通，只能说明有用，不等于在真实世界里也能用。未来的工作里，最有价值的进展可能来自两方面：让验证覆盖得更广，让生成成本更低。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{cai2026physicallygroundedarticulated3d,\n      title={Towards Physically Grounded Articulated 3D Assets: A Multi-Agent Pipeline and Benchmark}, \n      author={Xudong Cai and Ruijie Zhu and Haoliang Shang and Ruining Li and Marc Pollefeys and Shangzhe Wu and Andrea Vedaldi and Chuanxia Zheng},\n      year={2026},\n      eprint={2610.13947},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.13947}, \n}",
+  "topics": [
+    "Agents",
+    "Generative Models",
+    "Geometric Deep Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.641,
+    0.854,
+    0.551,
+    0.312,
+    0.527,
+    0.23,
+    0.301,
+    0.2,
+    0.704,
+    0.609,
+    0.628,
+    0.39,
+    0.389,
+    0.21,
+    0.209,
+    0.203,
+    0.523,
+    0.468,
+    0.265,
+    0.301,
+    0.201,
+    0.644,
+    0.576,
+    0.437,
+    0.323,
+    0.326,
+    0.611,
+    0.843,
+    0.466,
+    0.44,
+    0.392,
+    0.801,
+    0.452,
+    0.456,
+    0.47,
+    0.52,
+    0.485,
+    0.533,
+    0.332,
+    0.455,
+    0.249,
+    0.471,
+    0.965,
+    0.331,
+    0.431,
+    0.336,
+    0.25,
+    0.418,
+    0.49,
+    0.572,
+    0.459,
+    0.406,
+    0.864,
+    0.341,
+    0.389,
+    0.206,
+    0.633,
+    0.434,
+    0.318,
+    0.511,
+    0.306,
+    0.372,
+    0.538,
+    0.432,
+    0.327,
+    0.485,
+    0.577,
+    0.532,
+    0.553,
+    0.653,
+    0.374
+  ],
+  "published": "2026-10-09",
+  "views": 303,
+  "license": "arXiv 默认许可"
+}

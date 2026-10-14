@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 430.393,
+  "word_match_rate": 0.941,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course called Long-Horizon A-I Research Systems, today’s lecture is on Stateless Language Agents: Scaling Long-Horizon Automated Research. Recent work such as Beyond Final Scores: A Systematic Evaluation of Agents for Long-Horizon AI Research and Development and Toward Generalist Autonomous Research via Hypothesis-Tree Refinement reflects growing interest in capable, persistent research agents. This paper, by researchers including teams at Stanford and Carnegie Mellon, asks how to sustain useful search over time. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 36.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes a long research run difficult if the model can simply remember the conversation?",
+      "start": 37.24,
+      "end": 42.26
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The difficulty is that a conversation is a poor substitute for a research record. As it grows, agents spend more tokens reviewing old messages, may repeat experiments, and can keep talking without testing anything. The paper proposes separating durable evidence from temporary agent context: preserve candidates and measured outcomes in an external harness, but start each agent invocation with a fresh, tailored brief. The goal is to make additional computation produce new evidence rather than more rereading.",
+      "start": 43.28,
+      "end": 73.84
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That distinction is the central design idea: stateful search with stateless agents. The harness owns the persistent state, while an Advisor reviews a compact summary and assigns experiments to parallel Workers. Each Worker gets its own task context and does not see the full history or other Workers’ workspaces. Think of a laboratory notebook managed by a coordinator, rather than every researcher carrying around an ever-expanding transcript.",
+      "start": 75.32,
+      "end": 103.08
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if Workers cannot see each other’s work, how can they build on useful discoveries?",
+      "start": 104.1,
+      "end": 108.96
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "They do not build on one another by browsing shared workspaces. Instead, the harness records results, and the Advisor can direct a Worker to extend a measured improvement from another Worker. Each Worker also retains its own candidate, even when that candidate is not the global best. If the Advisor sends it in a new direction, it restarts from the best-known solution. This preserves promising alternatives while keeping coordination explicit and controlled.",
+      "start": 108.96,
+      "end": 137.58
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify what counts as evidence, especially when an experiment fails?",
+      "start": 137.58,
+      "end": 142.58
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The record includes candidate solutions, evaluator scores, recent attempts grouped by search direction, Worker status, and task-specific diagnostics. Importantly, it distinguishes a measured non-improvement from an inconclusive failure caused by a bug, runtime issue, or correctness problem. That distinction matters: a failed implementation should not be treated as proof that an idea is unproductive. The harness checkpoints this state, so researchers can inspect it and compare design choices from shared starting points.",
+      "start": 143.66,
+      "end": 175.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The evaluation compares the framework with EvoX, CORAL, and SwarmResearch across software engineering, G-P-U kernel optimization, and algorithm design tasks. Rather than counting calls or iterations alone, the authors track cumulative input and output tokens, then compare both best-so-far quality and tokens needed to reach a shared target. The longest kernel experiments run to one billion tokens. This budget-based view makes systems with different agent counts and context sizes easier to compare.",
+      "start": 175.94,
+      "end": 210.66
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "So a method that leads early might still lose after a much longer run?",
+      "start": 211.68,
+      "end": 215.62
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Exactly. On four FrontierSWE tasks, the framework trails the strongest baseline at one-quarter of the token budget, but leads on all four at the full budget. On the kernel task, it reaches the strongest baseline’s final result using 67.9 million tokens, compared with 986.3 million for that baseline. The key insight is that a short evaluation can reward quick early gains while missing a system’s ability to keep finding useful experiments.",
+      "start": 216.34,
+      "end": 248.1
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A second critical insight is that coordination quality depends on what the Advisor sees and how Workers are separated. Ablations from shared checkpoints show lower mean progress when context reconstruction, Worker isolation, or Advisor assignments are removed. Without assignments, Workers can independently implement the same feature from the same starting point. With assignments, the Advisor can ask one Worker to extend an improvement another has already measured, reducing duplicated effort.",
+      "start": 249.26,
+      "end": 279.42
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Does the coordination layer cost much, and does adding more Workers always help?",
+      "start": 279.42,
+      "end": 284.24
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The Advisor uses a small share of resources in the reported comparisons: 0.24% to 0.51% of tokens and 1.2% to 2.3% of estimated model cost. Expanding from one to fifteen Workers reduces elapsed time by 6.6 times on the kernel task and an average of 7.3 times on FrontierSWE, but the best pool size varies by task. More parallelism can shorten the wait; it does not guarantee better final quality or lower total cost.",
+      "start": 285.12,
+      "end": 319.44
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The paper’s broader contribution is a way to reason about long-running research systems: keep research evidence persistent, but make agent context temporary and decision-specific. This complements work such as CORAL, which uses coding agents to guide evolutionary search, while emphasizing controlled context construction and token-budget evaluation. It also gives researchers a more inspectable record than conversation history alone. In that sense, the harness is not just plumbing; it shapes which evidence can influence the next experiment.",
+      "start": 320.46,
+      "end": 354.2
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How far can we generalize these results beyond tasks with automatic evaluators?",
+      "start": 355.24,
+      "end": 359.48
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "That remains an open question. The evaluated tasks have executable scoring, so they do not establish performance on research goals that are ambiguous or slow to judge. Many configurations also rely on a single run because experiments are expensive, and token efficiency is not the same as total compute cost. The authors further note that candidate code could exploit weaknesses in an evaluator. The design is promising for measurable tasks, but broader claims need more varied benchmarks and repeated trials.",
+      "start": 359.48,
+      "end": 390.92
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "For PhD researchers, the practical takeaway is to evaluate not only what an agent discovers, but how its discoveries accumulate across a long budget. Durable evidence does not require durable conversations, and fresh contexts can make coordination more deliberate. Still, the system’s gains depend on reliable evaluators, useful summaries, and well-chosen experiments. A concise way to remember the paper is this: preserve the evidence, reset the conversation, and measure progress over the horizon that matters. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 391.92,
+      "end": 430.393
+    }
+  ]
+}
