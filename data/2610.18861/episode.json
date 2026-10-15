@@ -1,0 +1,267 @@
+{
+  "id": "2610.18861",
+  "title": "Hybrid Reasoning Agents",
+  "authors": [
+    "Jiaru Zou",
+    "Yunzhe Qi",
+    "Sirui Chen",
+    "Federico Bianchi",
+    "Shang Zhu",
+    "Pan Lu",
+    "Jingrui He",
+    "James Zou"
+  ],
+  "abstract": "How can we build an agent that thinks beyond human language, yet still acts through it in the external environment? Modern LLM agents still reason and interact through text, while latent reasoning offers an efficient internal medium but lacks native tool access and reasoning transparency. We bridge these two directions with Hybrid Reasoning Agents (HybridAgents), which dynamically navigate between latent reasoning and text-based interaction throughout a unified generation process. Architecturally, a lightweight HybridLink enables seamless transitions between text and latent modes, while the agent's continuous working memory preserves lossless hybrid context across multiple turns. These designs preserve tool-integrated agentic capabilities while making latent thoughts directly inspectable. Building on this architecture, we further develop dedicated post-training algorithms for hybrid reasoning: HybridSFT stabilizes tool-integrated hybrid generation by teaching the backbone to coordinate with HybridLink, then HybridRL scales reasoning by learning when to think in latent space and when to act through text. We evaluate HybridAgent at 3 model scales across 11 benchmarks covering mathematics, science, medicine, search, and agentic reasoning. Compared with frontier LLM Agents and agentic frameworks spanning both text-based and latent methods, HybridAgent consistently improves performance by 10.4%, while delivering 35.5%-54.7% token reduction, 1.8x-2.6x faster inference, and 2.7x-3.7x cost savings. Code and data are available at this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.18861",
+    "arxiv": "https://arxiv.org/abs/2610.18861"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a138dc-8d7d-7d16-90ce-58dfef8fb294/podcast.mp3",
+  "duration": 492.669,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.96,
+      "en": "In our hypothetical graduate course on Language Model Agents, today’s lecture is on HybridAgent. Recent work such as Thinkless: LLM Learns When to Think and Latent Collaboration in Multi-Agent Systems reflects a broader interest in adaptive reasoning and latent computation. HybridAgent takes that trend into tool use: it lets an agent reason in continuous hidden states but return to text when it needs to act or communicate. That matters because real tasks often require both private computation and evidence gathered from the outside world. I see your hand, Noah; go ahead.",
+      "zh": "在我们那门假设开设的研究生课程《语言模型智能体》里，今天的讲座讲的是HybridAgent。最近的一些工作，比如Thinkless: LLM Learns When to Think，以及Latent Collaboration in Multi-Agent Systems，都反映出大家对自适应推理和隐式计算越来越感兴趣。HybridAgent把这一趋势带进了工具使用：它让智能体在连续的隐藏状态里做推理，但在需要行动或交流时又回到文本。这一点很重要，因为真实任务往往既需要私下的计算，也需要从外部世界收集证据。我看到Noah举手了，你来说吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.02,
+      "end": 43.48,
+      "en": "Hi Professor, if hidden reasoning saves words, why not keep the whole agent latent?",
+      "zh": "教授您好，如果隐藏推理能省字，那为什么不把整个智能体都保持为潜在状态呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.66,
+      "end": 78.82,
+      "en": "Because tools and people need an interface they can read. Conventional agents often generate text for intermediate reasoning as well as tool calls, which can use many tokens. A purely latent reasoner can avoid spelling out each step, but it lacks a straightforward way to make text-based tool calls or expose decisions. HybridAgent addresses that tension. On WebWalker, its 14-billion-parameter model reports an average score of 49.5, compared with 40.5 for ARPO; that is one benchmark result, not a guarantee across all tasks.",
+      "zh": "因为工具和人需要一个能读懂的接口。传统智能体在中间推理和工具调用时往往都要生成文本，这会消耗大量token。纯隐空间的推理器可以省去把每一步都写出来，但它没法直接发起基于文本的工具调用，也没法把决策暴露出来。HybridAgent 解决的正是这个矛盾。在 WebWalker 上，它的 140 亿参数模型平均得分 49.5，而 ARPO 是 40.5；这只是一个基准上的结果，并不保证在所有任务上都成立。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 78.82,
+      "end": 112.98,
+      "en": "The basic mechanism is an alternation within one generation process. In text mode, the model emits ordinary tokens and can start a latent span with the marker <latent>. In latent mode, it repeatedly computes using continuous hidden representations rather than decoding each step into words. A component called HybridLink maps the current hidden state into a representation the model can use for its next step. The span ends when a nearest-token readout matches the exit marker, </latent>, and text generation resumes.",
+      "zh": "基本机制是在一次生成过程中交替切换。在文本模式下，模型输出普通token，并可以用标记<latent>开启一段潜在跨度。在潜在模式下，它反复使用连续的隐藏表示进行计算，而不是把每一步都解码成词。一个叫HybridLink的组件会把当前的隐藏状态映射成模型下一步可以使用的表示。当最近token读出结果匹配到退出标记</latent>时，这段跨度结束，文本生成随即恢复。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 114.0,
+      "end": 118.08,
+      "en": "Quick question: does the model follow a fixed schedule for switching between modes?",
+      "zh": "问个快问题：模型在模式之间切换是遵循固定时间表的吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 119.12,
+      "end": 147.6,
+      "en": "No. The model generates the lengths and frequency of its latent spans dynamically; the method does not prescribe a fixed pattern like one latent step followed by one text step. HybridLink is a lightweight residual adapter: a learned projection aligns the hidden state with the model’s input-embedding space, while the residual preserves much of the original representation. Think of it as a bridge between two coordinate systems, not a separate reasoning engine.",
+      "zh": "不是。模型会动态生成其潜在片段的长度和频率；该方法并没有规定一种固定模式，比如一个潜在步骤后面跟一个文本步骤。HybridLink 是一个轻量级的残差适配器：一个学习到的投影将隐藏状态与模型的输入嵌入空间对齐，而残差则保留了大部分原始表示。可以把它看作两个坐标系之间的桥梁，而不是一个独立的推理引擎。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 148.66,
+      "end": 181.24,
+      "en": "Multi-turn tool use creates another challenge: the full history includes text, hidden states, and tool observations, and it cannot all be reconstructed from a text transcript. HybridAgent retains the Transformer attention cache, called the K-V entries, across turns and continues from that working memory. For inspection, it can map each latent state to its nearest token embedding. Those displayed words are pseudo-text readouts, not tokens generated during latent reasoning, and they are not a complete explanation of the internal state.",
+      "zh": "多轮工具使用带来了另一个挑战：完整的历史记录包含文本、隐藏状态和工具观察结果，无法仅从文本记录中完整重建。HybridAgent 会跨轮次保留 Transformer 的注意力缓存，也就是 K-V 条目，并从这份工作记忆继续推进。为了便于检查，它可以把每个潜在状态映射到最接近的 token 嵌入。这些显示出来的词是伪文本读数，并不是潜在推理过程中生成的 token，也不能完整解释内部状态。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 182.1,
+      "end": 186.18,
+      "en": "Can you clarify how they train a bridge that the model will actually use at inference?",
+      "zh": "你能说清楚他们是怎么训练出一个模型在推理时真正会用的桥接机制的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 186.18,
+      "end": 217.36,
+      "en": "That is the purpose of HybridSFT. Ordinary teacher-forced training supplies ground-truth embeddings, while inference feeds back the model’s own HybridLink outputs; those inputs can differ. HybridSFT first generates its own latent inputs, then makes a second pass conditioned on those predictions. It trains text positions with next-token supervision and latent positions with a regression loss. The authors propose this to reduce the mismatch, but it does not establish that every mismatch disappears.",
+      "zh": "这就是HybridSFT的用意所在。普通的教师强制训练提供的是真实嵌入，而推理时喂回去的是模型自己HybridLink的输出，这两者的输入可能不一样。HybridSFT先自己生成潜在输入，再基于这些预测做第二遍前向。它对文本位置用下一token预测做监督，对潜在位置用回归损失来训练。作者提出这个方法来缩小这种不匹配，但这并不等于说所有不匹配都消失了。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 218.44,
+      "end": 250.82,
+      "en": "The reinforcement-learning stage has to account for a different issue: latent vectors are not sampled tokens with token-level likelihoods. HybridRL therefore optimizes policy likelihoods at sampled text positions. During updates, it records and replays the exact latent inputs and tool observations, while keeping HybridLink fixed. Rewards cover answer correctness, format, and multi-tool use. There is no explicit reward for choosing a particular reasoning mode, so the model learns when to use each mode under the training setup.",
+      "zh": "强化学习阶段要处理的是另一个问题：潜在向量不是按token级似然采样出来的token。所以HybridRL只在采样到的文本位置上优化策略似然。更新时，它会记录并回放精确的潜在输入和工具观测，同时保持HybridLink不变。奖励涵盖答案正确性、格式和多工具使用。并没有针对选择某种特定推理模式的显式奖励，所以模型是在训练设置下自己学会何时使用每种模式。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 251.9,
+      "end": 258.2,
+      "en": "So if I imagine an agent searching for evidence, it reasons privately, then switches to text for the search call?",
+      "zh": "所以如果我设想一个智能体在寻找证据，它会先私下推理，然后切换到文本去发起搜索调用？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 258.96,
+      "end": 291.68,
+      "en": "Exactly: text is the channel for actions the tool can receive and observations it returns, while latent spans can handle internal steps between those interactions. The reported efficiency measures need to be kept separate. The authors report 2.7 times fewer text tokens and up to 54% fewer total generation steps, counting text and latent steps. Their main text summarizes inference-time speedup as 2.1 times. A latent step still runs the backbone, so fewer visible words do not mean computation is free.",
+      "zh": "正是如此：文本是工具能接收的动作和返回的观察结果之间的通道，而潜在表示片段则可以处理这些交互之间的内部步骤。报告出来的效率指标需要分开来看。作者报告说文本token减少了2.7倍，总生成步骤最多减少了54%，这里把文本步骤和潜在步骤都算进去了。他们正文里把推理时的加速总结为2.1倍。潜在步骤仍然要跑主干网络，所以可见的词少了并不意味着计算就是免费的。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 292.52,
+      "end": 297.04,
+      "en": "Does the adapter itself make a measurable difference, rather than simply reusing hidden states?",
+      "zh": "适配器本身是否带来了可测量的差异，而不只是简单地复用隐藏状态？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 297.88,
+      "end": 334.02,
+      "en": "The HybridLink ablation gives a useful comparison. In the 14-billion-parameter setup, direct hidden-state reuse scores 71.4 on math five hundred, 73.7 on MedQA, and 24.5 on MuSiQue. The proposed two-layer residual adapter scores 88.2, 81.7, and 34.5 on those same tasks. These are the scores reported by the paper; the comparison supports the value of the proposed bridge, but it does not isolate residual alignment from every other design choice.",
+      "zh": "HybridLink的消融实验提供了一个有用的对比。在140亿参数的设置下，直接复用隐藏状态在math five hundred上得分71.4，在MedQA上得分73.7，在MuSiQue上得分24.5。而提出的两层残差适配器在相同任务上分别得分88.2、81.7和34.5。这些是论文中报告的分数；这一对比支持了所提出的桥接机制的价值，但并没有将残差对齐与其他所有设计选择隔离开来。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 334.98,
+      "end": 369.0,
+      "en": "The authors also intervene on latent spans to test whether their content matters. On math five hundred, the 8-billion-parameter model scores 84.6 without intervention. Replacing its span with one from another problem lowers the score to 44.8 at relative perturbation strength 1.4; stronger Gaussian noise at 2.0 leaves a score of 66.4. This supports the authors’ interpretation that latent content matters in this test. It does not prove that semantic content is the only cause of the performance differences.",
+      "zh": "作者还对潜在片段做了干预，测试它们的内容是否重要。在math five hundred上，80亿参数模型不做干预时得分84.6。把它的片段替换成另一道题的片段后，在相对扰动强度1.4时得分降到44.8；强度2.0的更强高斯噪声下得分是66.4。这支持了作者的解释，即在这个测试里潜在内容确实重要。但这并不能证明语义内容是性能差异的唯一原因。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 370.06,
+      "end": 373.8,
+      "en": "How does that compare with Coconut, and what can we conclude about the field’s direction?",
+      "zh": "这和Coconut相比如何，我们又能对领域的方向得出什么结论？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 374.74,
+      "end": 411.94,
+      "en": "Coconut, or Chain of Continuous Thought, feeds a model’s last hidden state back as its next input and studies continuous reasoning. HybridAgent builds on the idea of latent computation but targets a different setting: multi-turn agents that use tools. Its representation bridge, retained attention cache, and text-mediated tool interactions address that setting. The result suggests one direction for agent research: rather than choosing between verbose text reasoning and opaque latent reasoning, systems can try to divide work between internal computation and an external action channel.",
+      "zh": "Coconut，也就是连续思维链，把模型最后的隐藏状态作为下一步输入反馈回去，研究的是连续推理。HybridAgent 建立在隐式计算这个思路上，但瞄准的是另一种场景：使用工具的多轮智能体。它的表示桥接、保留的注意力缓存，以及以文本为中介的工具交互，都是针对这个场景设计的。这个结果指向了智能体研究的一个方向：与其在冗长的文本推理和不可见的隐式推理之间二选一，系统可以尝试在内部计算和外部行动通道之间分工。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 412.82,
+      "end": 418.7,
+      "en": "And the efficiency results don’t mean the method is automatically cheaper in every deployment, right?",
+      "zh": "那效率结果也不代表这个方法在任何部署场景下都自动更便宜，对吧？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 419.18,
+      "end": 453.72,
+      "en": "Right. The paper evaluates Qwen3-Base models at 4, 8, and 14 billion parameters on 11 benchmarks, so its findings do not establish gains for every model or task. Its separate 14-billion-parameter cost analysis estimates lower decoding compute and cost under specified assumptions. It counts each latent or text step as a backbone forward pass, but excludes prompt prefill, context-dependent attention, and external tool execution. Those boundaries matter when translating benchmark findings into deployment expectations.",
+      "zh": "对。这篇论文在11个基准上评估了40亿、80亿和140亿参数的Qwen3-Base模型，所以它的发现并不能证明在所有模型或任务上都有提升。它另外做的140亿参数成本分析，在特定假设下估计了解码计算量和成本的降低。它把每个潜在步骤或文本步骤都算作一次主干网络前向传播，但排除了提示预填充、依赖上下文的注意力以及外部工具执行。在把基准结果转化为部署预期时，这些边界很重要。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 454.92,
+      "end": 492.669,
+      "en": "The central design principle is a division of labor: continuous states can support internal steps, while text remains available for actions, observations, and answers that an environment or observer needs to see. The benchmark and ablation results support the proposed approach within the tested settings; the pseudo-text readout and efficiency estimates have narrower interpretations than a complete explanation or a guaranteed cost saving. The lasting question is how to build reliable interfaces between internal computation and tool-mediated action. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心设计原则是分工：连续状态可以支撑内部步骤，而文本则用于动作、观察以及环境或观察者需要看到的回答。基准和消融实验的结果在测试范围内支持了所提出的方法；伪文本读出和效率估计的解释范围比完整解释或保证成本节省要窄。持久的问题是，如何在内部计算和工具介导的动作之间建立可靠的接口。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zou2026hybridreasoningagents,\n      title={Hybrid Reasoning Agents}, \n      author={Jiaru Zou and Yunzhe Qi and Sirui Chen and Federico Bianchi and Shang Zhu and Pan Lu and Jingrui He and James Zou},\n      year={2026},\n      eprint={2610.18861},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.18861}, \n}",
+  "topics": [
+    "Agents",
+    "Chain Of Thought",
+    "Fine Tuning"
+  ],
+  "peaks": [
+    1.0,
+    0.893,
+    0.637,
+    0.505,
+    0.441,
+    0.569,
+    0.661,
+    0.719,
+    0.838,
+    0.712,
+    0.597,
+    0.53,
+    0.584,
+    0.359,
+    0.423,
+    0.353,
+    0.276,
+    0.402,
+    0.25,
+    0.377,
+    0.323,
+    0.327,
+    0.442,
+    0.269,
+    0.3,
+    0.321,
+    0.697,
+    0.662,
+    0.526,
+    0.497,
+    0.416,
+    0.579,
+    0.514,
+    0.35,
+    0.256,
+    0.559,
+    0.477,
+    0.528,
+    0.476,
+    0.35,
+    0.303,
+    0.309,
+    0.608,
+    0.913,
+    0.419,
+    0.263,
+    0.323,
+    0.216,
+    0.35,
+    0.85,
+    0.815,
+    0.616,
+    0.482,
+    0.338,
+    0.592,
+    0.315,
+    0.485,
+    0.2,
+    0.396,
+    0.233,
+    0.737,
+    0.479,
+    0.264,
+    0.289,
+    0.224,
+    0.247,
+    0.377,
+    0.431,
+    0.326,
+    0.404,
+    0.331,
+    0.243
+  ],
+  "published": "2026-10-13",
+  "views": 276,
+  "license": "CC BY"
+}

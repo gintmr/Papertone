@@ -1,0 +1,239 @@
+{
+  "id": "2610.12818",
+  "title": "LeWAM: End-to-End World and Action Modeling with JEPAs",
+  "authors": [
+    "Minghao Fu",
+    "Tavis Siebert",
+    "Eryk Halicki",
+    "Randall Balestriero"
+  ],
+  "abstract": "Joint-embedding predictive architectures (JEPAs) learn compact latent world models without pixel reconstruction. Existing JEPA pipelines typically train visual representations and action-conditioned dynamics before adding a control policy or solver. We introduce LeWAM, an end-to-end JEPA for control with: (1) a joint training objective over next latent state prediction and action flow matching, and (2) an isotropic Gaussian constraint on the latent state, enabling a single model to support direct policy execution and efficient planning by evaluating sampled actions with its learned latent dynamics. Compared with prior JEPAs in visual planning, LeWAM improves success rate from 28.6% to 89.7% on contact-rich tasks and from 10.9% to 46.2% on long-horizon tasks, and plans 32.3 times faster. On behavior cloning tasks in simulation and physical robots, LeWAM is also competitive with established methods. Interpretability analyses show that LeWAM learns control-relevant representations and action distributions effectively guiding test-time planning and control.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12818",
+    "arxiv": "https://arxiv.org/abs/2610.12818"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a12dd7-1402-7233-958f-7c08b1650e59/podcast.mp3",
+  "duration": 459.102,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 26.0,
+      "en": "In a hypothetical course called Deep Reinforcement Learning Methods, today’s lecture is on LeWAM: Learning World Action Models. Consider a robot asked to arrange objects like a picture. A tiny difference in a push or grasp can change the contact, so searching for a successful action sequence is difficult. LeWAM’s central idea is to learn both how actions change a scene and which actions are plausible. Yes, Noah?",
+      "zh": "在一门假设叫深度强化学习方法的课上，今天的讲座讲的是LeWAM：学习世界动作模型。假设让一个机器人按照图片来摆放物体。推一下或者抓一下，哪怕只有一点点差别，接触方式就会变，所以要搜索出一个成功的动作序列很难。LeWAM的核心思想是同时学习两件事：动作如何改变场景，以及哪些动作是合理的。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 27.12,
+      "end": 31.56,
+      "en": "Hi Professor, is this part of the trend toward learning visual world models for planning?",
+      "zh": "教授您好，这是不是属于学习视觉世界模型来做规划的那个趋势？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 32.32,
+      "end": 73.04,
+      "en": "Yes. LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels learns action-conditioned visual dynamics, while H-JEPA: End-to-End Learning of Hierarchical World Models for Visual Planning explores planning across predictive levels. LeWAM builds on this direction but joins action prediction with world modeling in a shared representation. The motivation is practical: a model that can both assess imagined actions and suggest plausible ones may reduce reliance on broad, expensive searches. The paper reports improved goal-reaching across 10 simulated tasks.",
+      "zh": "是的。LeWorldModel：从像素中稳定端到端联合嵌入预测架构，学习以动作为条件的视觉动态，而H-JEPA：面向视觉规划的层次化世界模型端到端学习，则探索跨预测层级的规划。LeWAM沿着这个方向构建，但把动作预测和世界建模结合在共享表示中。动机很实际：一个既能评估想象动作、又能提出合理动作的模型，或许能减少对广泛而昂贵搜索的依赖。论文报告在10个模拟任务中提升了目标达成能力。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.82,
+      "end": 112.62,
+      "en": "A joint-embedding predictive architecture, or J-E-P-A, predicts future observations in a compact latent representation rather than reconstructing the pixels. LeWAM uses a shared visual encoder and a mixture-of-transformers predictor to learn two related jobs: predict the next latent state from history and clean actions, and predict action chunks from noisy inputs. A latent-distribution regularizer encourages the representations to follow an isotropic Gaussian distribution. The shared representation is meant to connect what the model expects to happen with actions it could take.",
+      "zh": "联合嵌入预测架构，也就是JEPA，是在紧凑的潜在表示中预测未来的观测，而不是重建像素。LeWAM用一个共享的视觉编码器和一个混合Transformer预测器来学习两项相关的任务：根据历史和干净的动作预测下一个潜在状态，以及从带噪声的输入预测动作块。一个潜在分布正则化器促使这些表示服从各向同性高斯分布。共享表示的目的是把模型预期会发生的事情和它可以采取的动作连接起来。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 112.62,
+      "end": 118.08,
+      "en": "Quick question: how does it learn to suggest actions instead of just predicting what happens?",
+      "zh": "问个快问题：它是怎么学会给出动作建议，而不是只预测会发生什么的？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 119.1,
+      "end": 150.84,
+      "en": "For action learning, the model uses flow matching: it learns to transform noisy action chunks toward actions recorded in offline demonstrations. At test time, that action head samples candidate chunks, while the dynamics head predicts their consequences. A masking rule prevents clean action tokens in the history from leaking into the action-prediction branch. These details matter because the proposal mechanism is trained alongside the dynamics, not bolted on as an independent policy after the world model is complete.",
+      "zh": "在动作学习方面，模型采用流匹配：它学习把带噪的动作片段逐步变换为离线演示中记录的动作。测试时，动作头采样候选动作片段，而动力学头预测这些候选带来的后果。一条掩码规则防止历史中干净的动作token泄漏进动作预测分支。这些细节很关键，因为提议机制是与动力学一起训练的，而不是在世界模型完成后再作为独立策略外挂上去。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 151.84,
+      "end": 181.96,
+      "en": "Planning then uses the model’s two capabilities together. LeWAM rolls candidate action chunks through its learned dynamics, and gradient descent refines the candidates to reduce the difference between the predicted final latent state and the goal. It keeps the best-cost candidate, executes its first 5 actions, observes the new scene, and replans. This is receding-horizon control: plan ahead, act briefly, then use fresh evidence. The learned dynamics remain available to judge proposals throughout this process.",
+      "zh": "规划阶段则把模型的两项能力结合起来用。LeWAM 让候选动作块在学到的动力学中走一遍，再用梯度下降对候选做细化，缩小预测出的最终潜状态与目标之间的差距。它保留代价最低的候选，执行前 5 个动作，观察新场景，然后重新规划。这就是滚动时域控制：往前规划，短暂行动，再用新证据更新。整个过程中，学到的动力学始终可以用来评判候选动作。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 182.88,
+      "end": 188.1,
+      "en": "So the proposals help initialize the search, but the planner still improves them against predicted outcomes?",
+      "zh": "所以这些候选方案是用来给搜索做初始化的，但规划器还是会根据预测结果对它们做进一步优化？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 189.08,
+      "end": 224.62,
+      "en": "Exactly. That distinction is central to interpreting the results. Across 10 simulated tasks, LeWAM averages 93.5% success, compared with 50.9% for LeWM using cross-entropy method search. Success is averaged across the named tasks, rather than pooling all trials together. Most tasks set the goal 25 environment steps ahead and allow 50 actions; Two-Room uses a 100-step offset and 150 actions. LeWAM beats that baseline on every task, with large gaps on ToolHang and Transport.",
+      "zh": "正是如此。这个区别是解读结果的关键。在10个模拟任务上，LeWAM平均成功率为93.5%，而使用交叉熵方法搜索的LeWM为50.9%。成功率是在各命名任务上取平均，而不是把所有试验混在一起算。大多数任务把目标设在25个环境步之后，并允许50个动作；Two-Room用的是100步偏移和150个动作。LeWAM在每个任务上都超过了基线，在ToolHang和Transport上差距尤其大。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 225.7,
+      "end": 262.3,
+      "en": "The contact-rich ToolHang task illustrates the difference: success is 94.7% for LeWAM and 35.4% for LeWM with cross-entropy method search. A separate horizon sweep averages Push-T, Cube, Scene, and Puzzle. At a 100-step goal offset, that four-task mean is 46.2% for LeWAM versus 10.9% for the baseline. But Puzzle is a serious qualification: at that offset, its success is only 3.3% for LeWAM and 0.7% for the baseline.",
+      "zh": "接触密集的ToolHang任务很能说明差异：LeWAM的成功率是94.7%，而用交叉熵方法搜索的LeWM只有35.4%。另一项单独的时间跨度扫描对Push-T、Cube、Scene和Puzzle取平均。在100步的目标偏移下，这四个任务的平均成功率是LeWAM 46.2%，基线只有10.9%。但Puzzle是个重要的限定条件：在那个偏移下，LeWAM的成功率只有3.3%，基线只有0.7%。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 263.26,
+      "end": 266.52,
+      "en": "Can we tell whether flow matching itself explains the planning improvement?",
+      "zh": "我们能判断流匹配本身是否解释了规划上的提升吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 266.52,
+      "end": 301.0,
+      "en": "The paper offers evidence, but not a clean causal answer. On Push-T, LeWAM’s direct policy succeeds 82.7% of the time and planning raises that to 97.3%, a 14.7-point gain. A variant with a mean-squared-error action head goes from 90% directly to 95.3% with planning, a 5.3-point gain. Since their direct baselines differ, comparing those gains is consistent with a greater planning benefit from flow matching, but it does not establish a nine-point causal effect.",
+      "zh": "这篇论文提供了证据，但并没有给出一个干净的因果答案。在Push-T上，LeWAM的直接策略成功率为82.7%，加上规划后提升到97.3%，涨了14.7个百分点。而换成均方误差动作头的变体，直接从90%到加规划后的95.3%，只涨了5.3个百分点。由于两者的直接基线不同，比较这两个增益只能说与“流匹配带来更大规划收益”这一说法一致，但并不能确立一个九个百分点的因果效应。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 301.9,
+      "end": 341.12,
+      "en": "The authors suggest that flow matching can represent multiple plausible action modes, whereas a deterministic mean-squared-error head may average distinct actions into an unhelpful middle. That is a plausible explanation, not a proven cause of the manipulation results. Efficiency also needs careful wording: under the reported settings, planning throughput averages 52.5 versus 1.62 planner calls per second across Scene, Puzzle, Cube, and Push-T. That is a 32.3-times throughput difference on the same H-one-hundred graphics processor, not evidence of fewer robot actions or faster task completion.",
+      "zh": "作者提出，流匹配能够表示多种可能的动作模式，而确定性的均方误差头则可能把不同的动作平均成一个没用的中间值。这个解释听起来合理，但并不能证明它就是操作结果的原因。效率方面的表述也得谨慎：在报告设置下，Scene、Puzzle、Cube 和 Push-T 这几个任务上，规划吞吐量平均是每秒 52.5 次，而规划器调用是每秒 1.62 次。在同样的 H100 图形处理器上，这是 32.3 倍的吞吐量差距，并不能说明机器人动作更少或任务完成更快。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 342.04,
+      "end": 346.0,
+      "en": "Does that result mean the same model transfers readily to new robots or objects?",
+      "zh": "这个结果是否意味着同一个模型可以轻松迁移到新的机器人或物体上？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 347.96,
+      "end": 380.02,
+      "en": "No. The evidence is goal-reaching from offline data in task-specific settings, not broad transfer to new objects, cameras, or embodiments. The authors note limited data coverage and train or adapt models separately for tasks and embodiments. LeWAM also supports direct behavior cloning, but its simulation comparison with Diffusion Policy is mixed: average completion is 64.7% versus 61.6% across DrawerCleanup, Transport, and ToolHang, with LeWAM winning Transport but not the other two.",
+      "zh": "不是。证据仅限于特定任务场景下基于离线数据的目标达成，而非对新物体、新相机或新本体的广泛迁移。作者也指出数据覆盖范围有限，并且针对不同任务和本体分别训练或适配模型。LeWAM 同样支持直接行为克隆，但它与 Diffusion Policy 在仿真中的对比结果好坏参半：在 DrawerCleanup、Transport 和 ToolHang 三个任务上，平均完成率为 64.7% 对 61.6%，LeWAM 只在 Transport 上胜出，另外两个任务上没有优势。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 381.46,
+      "end": 416.48,
+      "en": "Physical-robot results are similarly bounded. Across 3 tasks and 30 trials per task, LeWAM averages 33.3% success, compared with 38.9% for Diffusion Policy and 28.9% for pi zero point five. So this is not evidence that it generally outperforms robot-policy baselines. The broader contribution is a design connection: a world model can provide candidate actions as well as evaluate imagined actions. That shifts attention from asking only how to improve search toward learning useful proposals jointly with predictive dynamics.",
+      "zh": "实体机器人上的结果同样有限。在3个任务、每个任务30次试验中，LeWAM平均成功率为33.3%，而Diffusion Policy为38.9%，pi zero point five为28.9%。所以这并不能证明它总体上优于机器人策略基线。更广泛的贡献在于一种设计上的关联：世界模型既能提供候选动作，也能评估想象出的动作。这就把注意力从只问如何改进搜索，转向了与预测动力学联合学习有用的候选动作。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 417.54,
+      "end": 459.102,
+      "en": "For researchers, the next questions concern coverage, transfer, and when learned proposals help beyond a strong direct policy. LeWAM suggests that action generation and world modeling can share representations without making the planner redundant: the model proposes, predicts, and then supports refinement. But results vary with task and horizon, and the action-head comparison leaves causal questions open. The memorable takeaway is simple: a useful world model should not only imagine what an action might do; it can also help decide which actions are worth imagining. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "对研究者来说，接下来的问题涉及覆盖范围、迁移能力，以及学习到的候选动作在什么情况下能超越一个强大的直接策略。LeWAM 表明，动作生成和世界建模可以共享表示，而不会让规划器变得多余：模型提出动作、预测结果，然后支持进一步优化。但结果会因任务和预测范围而异，而且动作头的对比留下了因果性问题尚未解答。最值得记住的结论很简单：一个有用的世界模型不应只想象某个动作可能带来什么结果，它还能帮助判断哪些动作值得去想象。感谢收听。如果还有任何问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{fu2026lewamendtoendworldaction,\n      title={LeWAM: End-to-End World and Action Modeling with JEPAs}, \n      author={Minghao Fu and Tavis Siebert and Eryk Halicki and Randall Balestriero},\n      year={2026},\n      eprint={2610.12818},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.12818}, \n}",
+  "topics": [
+    "Generative Models",
+    "Imitation Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    0.875,
+    0.821,
+    0.349,
+    0.454,
+    0.46,
+    0.912,
+    0.461,
+    0.667,
+    0.552,
+    0.474,
+    0.546,
+    0.673,
+    0.598,
+    0.849,
+    0.591,
+    0.406,
+    0.61,
+    0.367,
+    0.632,
+    0.466,
+    0.364,
+    0.205,
+    0.331,
+    0.486,
+    0.678,
+    0.2,
+    0.312,
+    0.493,
+    0.497,
+    0.627,
+    0.543,
+    0.32,
+    0.451,
+    0.448,
+    0.421,
+    0.781,
+    0.91,
+    0.59,
+    0.811,
+    0.411,
+    0.466,
+    0.564,
+    1.0,
+    0.533,
+    0.742,
+    0.382,
+    0.517,
+    0.58,
+    0.55,
+    0.414,
+    0.442,
+    0.244,
+    0.318,
+    0.458,
+    0.573,
+    0.513,
+    0.419,
+    0.313,
+    0.217,
+    0.77,
+    0.55,
+    0.362,
+    0.427,
+    0.833,
+    0.606,
+    0.441,
+    0.904,
+    0.534,
+    0.561,
+    0.601,
+    0.515,
+    0.543
+  ],
+  "published": "2026-10-08",
+  "views": 296,
+  "license": "CC BY"
+}

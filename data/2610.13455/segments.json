@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 448.992,
+  "word_match_rate": 0.9611,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Imagine a graduate course called Language Models and Intelligent Agents. Today's lecture is on Agentic Large Language Models. Recent work such as Agentic Large Language Models, a survey, and Advances and Challenges in Foundation Agents: From Brain-Inspired Intelligence to Evolutionary, Collaborative, and Safe Systems reflects a field moving from text generation toward systems that act and interact. This Leiden University course text matters because those systems can influence real decisions. Yes, Noah?",
+      "start": 0.0,
+      "end": 31.24
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes a language model agentic rather than just a chatbot?",
+      "start": 32.2,
+      "end": 36.12
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The key difference is not simply that the model gives a longer answer. An agent uses a surrounding system to maintain state, access tools, and respond to what happens after an action. The manuscript is a book-length educational review, not one new experiment. Its purpose is to help graduate students understand both the model and the software that lets it operate in an environment, and to judge what evidence supports claims about its abilities.",
+      "start": 37.0,
+      "end": 63.88
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper’s organizing idea is “L-L-M plus harness.” The L-L-M provides language skills and learned representations; the harness manages prompts, memory, tools, outputs, and the interaction loop. Think of the model as a capable colleague and the harness as the workspace, records, and procedures that let that colleague complete a task. This distinction helps researchers locate failures: an inaccurate answer might reflect the model, missing context, a faulty tool call, or poor state management.",
+      "start": 64.96,
+      "end": 97.52
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the harness just pass prompts back and forth, or does it do more?",
+      "start": 98.54,
+      "end": 102.9
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It does considerably more. A harness may retrieve information, choose a tool, store intermediate results, interpret tool outputs, and decide whether to continue or stop. The text surveys interaction styles ranging from simple prompts and few-shot examples to reasoning prompts, reflective systems, and reinforcement fine-tuning. These are not guaranteed upgrades in a fixed sequence. Their value depends on the task, the model, and how success is evaluated.",
+      "start": 102.9,
+      "end": 131.32
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify what the paper says about reasoning and self-reflection?",
+      "start": 131.32,
+      "end": 135.24
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Structured reasoning can help with some multi-step problems. The reviewed studies report gains from chain-of-thought prompting, and self-consistency can compare several proposed reasoning paths. But longer explanations or repeated self-reflection do not reliably improve every task. An important practical insight is to use external checks where possible: running code or consulting a tool can test a calculation more directly than asking the same model to judge its own answer.",
+      "start": 137.02,
+      "end": 165.56
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "So memory is also part of the harness, rather than something the model automatically keeps?",
+      "start": 166.48,
+      "end": 170.82
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Exactly. A standard L-L-M does not carry information from one separate call to the next unless the system supplies it again or stores it externally. The text examines context windows, compression, retrieval, fine-tuning, and explicit memory management as ways to handle this limitation. State matters especially in tasks that evolve over time. A model may describe a sound strategy yet lose track of changing variables when it must actually carry that strategy through.",
+      "start": 171.64,
+      "end": 205.04
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "These design choices matter in practical applications. The manuscript reviews assistants for research, coding, medicine, finance, shopping, and aviation. Retrieval-augmented generation, or R-A-G, can provide information beyond a model’s training data, while tools such as browsing and code execution can enable useful actions. Yet access to a tool is not proof of reliability. Retrieval quality, faithful use of sources, and recovery from errors all affect the result.",
+      "start": 205.84,
+      "end": 239.22
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How does the text suggest evaluating a tool-using assistant in a high-stakes setting?",
+      "start": 240.16,
+      "end": 244.58
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "It argues for testing the system’s components and behavior, not just its fluent final answer. Researchers should examine whether retrieved evidence supports a response, whether the tool call was appropriate, and whether the system handles failures safely. In consequential areas, logging, access controls, verification, and human oversight are important. The case studies also illustrate component-level evaluation, such as separating a planner’s mistakes from a classifier’s mistakes in a diagnostic workflow.",
+      "start": 245.48,
+      "end": 277.3
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "And what about agents interacting with one another—does adding roles solve coordination?",
+      "start": 278.34,
+      "end": 282.5
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Roles and protocols can help organize multi-agent work, but they also shape what agents do and may distort their behavior. The manuscript reviews systems for behavioral testing and social simulation, where agents may cooperate or appear to form conventions. Evidence remains mixed: agents can produce plausible social judgments yet fail to act consistently on predictions about others. It can also be hard to tell whether a simulated norm emerged through interaction or was reproduced from training data.",
+      "start": 284.08,
+      "end": 314.1
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The four teaching case studies connect these ideas to implementation: building a small language model, testing reasoning and reflection in a game benchmark, creating a multi-agent diagnostic workflow, and simulating a small society. They are exercises for readers, not a unified experiment with one overall result. That distinction is important: the book synthesizes prior studies and examples, so its conclusions depend on the range and quality of evidence it reviews.",
+      "start": 315.0,
+      "end": 344.24
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this framework connect to the broader surveys of agent research?",
+      "start": 345.24,
+      "end": 348.48
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Surveys such as Agentic Large Language Models, a survey, and the work on foundation agents map a rapidly expanding landscape. This manuscript adds an educational structure that keeps the model, harness, and environment distinct while connecting tools, memory, reinforcement learning, and social behavior. That framing encourages more precise evaluation than model benchmarks alone can provide. It also leaves open hard questions about bias, privacy, security, energy costs, and synthetic data quality.",
+      "start": 349.46,
+      "end": 382.5
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "Does successful performance in these examples show that an agent understands its environment like a person?",
+      "start": 383.4,
+      "end": 388.64
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "No. The authors caution against treating task success as proof of human-like understanding or cognition. Observable behavior, internal representations, and the mechanisms producing behavior are different kinds of evidence, and the latter two remain limited for agentic systems. Future work needs robust testing, reproducible reporting, and careful study of how interaction data is collected and reused, including risks of bias, privacy loss, and model collapse.",
+      "start": 389.58,
+      "end": 419.04
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The main takeaway is that agentic capability belongs to the whole system, not to the language model alone. A model may reason, but the harness determines what information it sees, which actions it can take, and how outcomes alter the next step. Treating those parts separately helps us build and assess systems more responsibly. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 419.04,
+      "end": 448.992
+    }
+  ]
+}

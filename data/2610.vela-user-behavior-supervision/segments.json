@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 440.111,
+  "word_match_rate": 0.9033,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate seminar on Personalized Language Models, today's lecture is on Vela: User Behavior as Supervision Sparks L-L-M Intelligence. Work such as Collab L-L-M: From Passive Responders to Active Collaborators and From 1,000,000 Users to Every User: Scaling Up Personalized Preference for User-level Alignment reflects a growing interest in personalized systems. Vela, from the AllSpark Team, asks a broader question: can real user behavior train a general-purpose model, not merely customize its answers?",
+      "start": 0.0,
+      "end": 35.58
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "I see your hand, Noah. Go ahead. The direction of this field matters because personalization depends on understanding an individual over time, not just matching a prompt to a general pattern. Vela shifts attention from user histories as information supplied at inference to user histories as sources of training supervision. That distinction could affect assistants and recommendation systems, but it also raises questions about evidence quality, privacy, and whether improvements transfer beyond personalization.",
+      "start": 36.46,
+      "end": 67.68
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor, does Vela train on what people did, rather than only what they said they prefer?",
+      "start": 68.78,
+      "end": 73.64
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Exactly. The authors define a user dimension of intelligence as inferring a particular person’s preferences, intent, and likely actions from their history. They use anonymized records from 100,000 users of a large social-media platform, spanning several weeks to years. Instead of asking a model to imitate generic descriptions of users, they turn sequences of actual views, searches, purchases, posts, follows, and dislikes into examples about specific histories.",
+      "start": 74.6,
+      "end": 105.48
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how do they keep future actions from leaking into the model’s context?",
+      "start": 105.48,
+      "end": 110.46
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Each history segment contains roughly 72,000 to 120,000 tokens. The earlier portion, about two thirds, is visible to the model, while the remaining actions are held out as future behavior. Those later actions can then serve as targets for prediction. Vela builds 91 question templates in two broad families: predictive tasks about future behavior, and rubric tasks that ask for profiles, interests, writing style, or evidence-based explanations.",
+      "start": 111.58,
+      "end": 142.76
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The predictive tasks include questions with candidate items and open-ended predictions. Objective selections can be compared with the held-out record; free-form predictions are evaluated through semantic matching. Rubric tasks use criteria such as factual support, coverage, and appropriate uncertainty, rather than requiring one exact wording. A useful analogy is an exam with both answer-key questions and short essays graded against a transparent rubric. The construction process produces 100,000 candidate tasks.",
+      "start": 144.02,
+      "end": 177.42
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How do they decide which examples are useful enough to train on?",
+      "start": 178.46,
+      "end": 181.52
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They first have a strong model generate four responses per task, then average the scores. Tasks scoring between 0.2 and 0.8 are retained, aiming for intermediate difficulty rather than examples that are trivial or nearly impossible. For each retained task, they generate candidate trajectories and accept the best one only if it beats the task’s average filtering score. This produces a curated set, not simply a dump of every interaction.",
+      "start": 181.52,
+      "end": 211.58
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The main instruction corpus, Vela-Instruct, contains about 75,000 accepted examples; a smaller corpus, Vela-RFT, contains 9,375. The researchers fine-tune the same 35-billion-parameter base model on each. Evaluation then checks three things: held-out tasks from the same templates, four user-related benchmarks from different settings, and five general benchmarks. This design tests whether the method helps beyond the exact questions used to construct its training examples.",
+      "start": 212.62,
+      "end": 247.04
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So does that training transfer, or does it only help on the Vela tasks?",
+      "start": 248.08,
+      "end": 250.64
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The larger instruction-tuned model reaches 63.0 on VelaBench, up from 51.5 for the base model. It also gains an average of 6.2 points across four user-related out-of-distribution benchmarks, including 11.2 points on ad recommendation and 10.1 on profile summarization. Purchase-intent prediction changes very little. That uneven pattern matters: the approach helps several user-focused tasks, but it does not improve every capability equally.",
+      "start": 252.26,
+      "end": 284.3
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "There is also transfer to general benchmarks: the average rises from 54.2 to 58.2, with notable gains in instruction following and long-context learning. More training data is associated with better scores: scaling Vela-Instruct from 4,700 to 75,000 examples lifts VelaBench from 59.2 to 63.0. Yet the smaller self-generated corpus has weaker results, and some individual scores decline. So the effect depends on the training recipe, not just the presence of behavior data.",
+      "start": 284.3,
+      "end": 322.58
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Could this be a better starting point for reinforcement learning, too?",
+      "start": 323.42,
+      "end": 326.74
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "In the reported comparison, yes. Under the same reinforcement-learning setup, starting from the Vela checkpoint yields 66.2 on VelaBench, versus 58.5 from the base model, and 37.6 on profile summarization, versus 29.9. This suggests behavior-derived training can provide a useful initialization. Still, these are results under specific configurations; they do not prove that the advantage will hold for different platforms, populations, or deployment conditions.",
+      "start": 327.38,
+      "end": 360.12
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader connection is to personalization research, including user-level preference alignment and long-term interaction benchmarks. Vela adds a complementary idea: observed behavior can supervise model training directly, rather than appearing only as an embedding or context at inference. Its evidence is promising but bounded by one platform and by model-generated task composition and scoring. Anonymization removes direct identifiers, but responsible use would still require careful decisions about consent, retention, access, and sensitive inferences.",
+      "start": 361.18,
+      "end": 395.92
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "For PhD researchers, the central takeaway is methodological: interaction histories can be transformed into diverse prediction and reasoning tasks, then tested for both task-specific gains and broader transfer. The results motivate more work on cross-platform replication, privacy-preserving data practices, and independent evaluation of rubric-based scores. Vela does not settle whether behavior-trained personalization is reliable or appropriate in every setting. It gives us a concrete framework for asking when real actions can teach models something that text alone may miss. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 395.92,
+      "end": 440.111
+    }
+  ]
+}

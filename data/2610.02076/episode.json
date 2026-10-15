@@ -1,0 +1,277 @@
+{
+  "id": "2610.02076",
+  "title": "LLM-as-Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them",
+  "authors": [
+    "Yinheng Li",
+    "Justin Wagle"
+  ],
+  "abstract": "Jev-style decision models have gained surging traction by making decision-making dramatically faster and more efficient, returning categorical probability distributions over predefined options without generating free-form text. However, because Jev's architecture and training methodologies remain proprietary, how to replicate these capabilities effectively remains an open question. In this work, we investigate the extent to which general-purpose LLMs already possess this capability out of the box, and when fine-tuning is actually necessary. We present LLM-as-Jev, an architecture-preserving framework offering both a training-free inference recipe and a fine-tuning objective with KL-divergence anchors. Across Qwen3.5-4B and Qwen3-0.6B, we find that modern LLMs are inherently effective decision models: off the shelf, frozen models match or exceed existing training-free readouts on the same 4B backbone, scale to arbitrary option counts, and natively handle multimodal decisions. They also seamlessly inherit the backbone's thinking mode: while Jev was introduced as a System 1 model, \"Thinking Jev\" leverages budgeted test-time reasoning to boost accuracy on challenging tasks without training. Fine-tuning provides targeted gains for smaller models and complex routing, while our KL anchors prevent behavioral degradation in general text generation.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.02076",
+    "arxiv": "https://arxiv.org/abs/2610.02076"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0fabe-8516-794e-b230-1553c93fa741/podcast.mp3",
+  "duration": 429.008,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.8,
+      "en": "In Deep Learning Systems, today’s lecture is on L-L-M-as-Jev: L-L-Ms Are Already Jev-Style Decision Models—When and How to Fine-Tune Them. Recent work such as Improving L-L-M-as-a-Judge Inference with the Judgment Distribution studies how probabilities can improve model judgments, while Can Jev be Your Q or Policy in Reinforcement Learning? explores Jev in decision-making systems. This paper, by Yinheng Li and Justin Wagle, who list Microsoft email addresses, asks whether ordinary language models can make structured choices directly. Yes, Noah?",
+      "zh": "在深度学习系统课上，今天的讲座是关于“大语言模型即评判器”：大语言模型已经是评判器风格的决策模型——何时以及如何对它们进行微调。最近的工作，比如《利用判断分布改进大语言模型作为评判器的推理》，研究了概率如何改进模型判断，而《评判器能否成为强化学习中的Q函数或策略？》则探索了评判器在决策系统中的应用。这篇论文由Yinheng Li和Justin Wagle撰写，他们列出了微软的邮箱地址，探讨普通语言模型能否直接做出结构化选择。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.78,
+      "end": 44.74,
+      "en": "Hi Professor, why use a decision model instead of asking the L-L-M to generate an answer in text?",
+      "zh": "教授您好，为什么要用决策模型，而不是让大语言模型直接用文本生成答案呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.64,
+      "end": 72.88,
+      "en": "Text generation can solve classification and routing tasks, but it adds a parsing step: the system must interpret what the model wrote, and formatting mistakes can cause failures. A Jev-style model instead assigns probabilities to a fixed set of choices. The authors test whether a standard causal language model can do that using its existing next-token probabilities, without adding a classification head or training a separate decision model.",
+      "zh": "文本生成确实能解决分类和路由任务，但它多了一个解析步骤：系统必须解读模型写出的内容，而格式上的错误就可能导致失败。而Jev风格的模型则是直接给一组固定选项分配概率。作者想验证的是，一个标准的因果语言模型能否利用它现有的下一token概率来完成这件事，而不需要额外加一个分类头，也不用单独训练一个决策模型。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 73.74,
+      "end": 77.7,
+      "en": "So the main question is whether a general model already knows how to choose reliably?",
+      "zh": "所以核心问题是，一个通用模型是不是本来就知道该怎么可靠地做选择？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 78.52,
+      "end": 104.46,
+      "en": "Exactly. Their interface numbers each option and ends the prompt with “Best answer: [”. The model scores the continuation for each candidate, such as “1]”, and those scores form a probability distribution. The closing bracket makes candidate endings prefix-free: “1]” cannot be mistaken for the beginning of “12]”. This supports larger choice sets than letter labels typically allow, while keeping the model’s ordinary text-generation ability.",
+      "zh": "没错。他们的界面会给每个选项编号，并在提示词末尾加上“最佳答案：[”。模型会为每个候选续写打分，比如“1]”，这些分数就构成一个概率分布。右括号让各个候选结尾互不为前缀：“1]”不会被误认为是“12]”的开头。这样一来，能支持的选项集比字母标签通常允许的更大，同时又保留了模型原本的文本生成能力。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 105.42,
+      "end": 108.26,
+      "en": "Can you clarify how that works for a list with many options?",
+      "zh": "你能解释一下，如果选项很多，这种方法是怎么运作的吗？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 109.26,
+      "end": 136.46,
+      "en": "The candidate endings form a trie, a branching structure that shares common prefixes. After processing the prompt once, the model can score the branches in parallel rather than separately generating an answer for every option. The method requires no new vocabulary items, parameters, or labeled training data. That makes it a practical baseline: researchers can check how well an existing model handles a decision task before investing in fine-tuning.",
+      "zh": "候选结尾会组成一棵字典树，这是一种共享公共前缀的分支结构。处理完提示词之后，模型可以并行给各个分支打分，而不必为每个选项单独生成一个答案。这个方法不需要新的词表项、参数或标注训练数据。因此它是一个很实用的基线：研究人员可以先检查现有模型在决策任务上的表现，再决定要不要投入去做微调。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 138.1,
+      "end": 140.76,
+      "en": "What changes when the authors do fine-tune the model?",
+      "zh": "如果作者真的对模型做微调，会发生什么变化？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 141.48,
+      "end": 172.96,
+      "en": "They train with a listwise decision loss that focuses on selecting the correct candidate. But optimizing only the answer could disrupt other behavior, so they also anchor the tuned model to its frozen base. These penalties preserve probability mass on legal answer tokens, the distribution over irrelevant tokens, and next-token behavior outside the answer. The authors test full-parameter tuning and lora adapters, and shuffle option order to reduce learned associations between labels and answers.",
+      "zh": "他们用一个列表式决策损失来训练，重点是选出正确的候选答案。但只优化答案可能会破坏其他行为，所以他们还把微调后的模型锚定到冻结的基座模型上。这些惩罚项会保住合法答案token上的概率质量、无关token上的分布，以及答案之外的下一个token行为。作者测试了全参数微调和lora适配器，并打乱选项顺序，以减少标签和答案之间学到的关联。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 173.98,
+      "end": 176.66,
+      "en": "Why preserve probabilities for tokens that are not answers?",
+      "zh": "为什么要保留那些不是答案的token的概率呢？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 177.6,
+      "end": 206.58,
+      "en": "Because a decision prompt is only one use of the model. If tuning changes unrelated token behavior, it could affect conversation or cause the model to keep generating after its selected answer. The anchors are a form of behavioral regularization: they let the model learn the decision task while discouraging broad drift. In their experiments, the default anchor strength prevents many malformed or unfinished outputs that appear when the model is tuned without those constraints.",
+      "zh": "因为决策提示只是模型的一种用途。如果微调改变了无关token的行为，就可能影响对话，或者让模型在给出选定答案后还继续生成。这些锚点是一种行为正则化：让模型学会决策任务，同时抑制大范围的漂移。在他们的实验里，默认的锚点强度避免了很多畸形或未完成的输出，而这些问题在不加约束微调时就会出现。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 207.64,
+      "end": 210.04,
+      "en": "How strong is the training-free result compared with fine-tuning?",
+      "zh": "和微调相比，免训练的结果有多强？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 211.56,
+      "end": 245.86,
+      "en": "The frozen 4-billion-parameter quen three point five model gets 81.4% accuracy on the 231 public JevBench items, with an E-C-E of 0.057. It also reaches 69% on Banking77, a task with 77 choices. That illustrates the interface’s ability to handle high-cardinality decisions. For this model, parallel candidate scoring and ordinary autoregressive generation produce the same JevBench predictions, with no reported parsing failures.",
+      "zh": "冻结的40亿参数Qwen3.5模型在231道公开JevBench题目上达到了81.4%的准确率，ECE为0.057。它在Banking77上也达到了69%，而这是一个有77个选项的任务。这说明该接口有能力处理高基数决策。对这个模型来说，并行候选打分和普通的自回归生成在JevBench上给出的预测完全一致，也没有报告任何解析失败。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 246.9,
+      "end": 248.6,
+      "en": "Does that mean fine-tuning is unnecessary?",
+      "zh": "这是否意味着微调没有必要？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 249.86,
+      "end": 280.68,
+      "en": "Not in general. Fine-tuning improves Banking77 for both tested model sizes, and it especially helps the smaller quen three, zero point six B model, whose frozen accuracy is only 22.2% on that task. But improvements depend on the data and method. Full fine-tuning does not beat the larger model’s frozen JevBench score, while lora with the default anchor reaches 84%. So adaptation is most compelling where the base model has a clear weakness.",
+      "zh": "一般来说不是这样。微调对两种测试规模的模型都能提升 Banking77 的表现，尤其是对较小的 quen 3 0.6B 模型帮助更大，它在该任务上的冻结准确率只有 22.2%。但提升效果取决于数据和方法。全量微调并没有超过较大模型在 JevBench 上的冻结分数，而使用默认锚点的 lora 达到了 84%。所以当基础模型存在明显短板时，适配最有价值。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 280.68,
+      "end": 285.52,
+      "en": "What practical risks should teams watch for when choosing training data?",
+      "zh": "团队在选择训练数据时，应该注意哪些实际风险？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 286.38,
+      "end": 317.02,
+      "en": "The authors find that data composition shapes behavior beyond headline accuracy. Intent-focused training can improve routing but also encourage “yes” answers on binary questions, suppress “none of the above,” and increase overconfidence. Adding varied verification and reasoning examples reduces these tendencies. Context length matters too: short examples can hurt performance on long inputs, while adding long-context data helps recover it, particularly for the smaller model.",
+      "zh": "作者发现，数据构成不仅影响整体准确率，还会塑造模型的行为倾向。以意图为核心的训练可以改善路由，但也会让模型在二选一问题上更倾向于回答“是”，抑制“以上都不是”的选择，并加剧过度自信。加入多样化的验证和推理示例可以减轻这些倾向。上下文长度同样重要：短示例可能损害模型在长输入上的表现，而加入长上下文数据有助于恢复性能，对较小的模型尤其如此。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 317.92,
+      "end": 351.56,
+      "en": "The results also extend beyond text. Without multimodal fine-tuning, the larger model reaches 82.4% on M-M-Bench under a circular option-rotation evaluation and 64.6% on M-M-Star. Removing images sharply reduces accuracy, suggesting the model uses visual input; text-only fine-tuning retains this capability. For deployment, that means one decision interface may cover text and image choices, though teams should still test it on their own formats and inputs.",
+      "zh": "结果还不止于文本。没做多模态微调的情况下，大模型在循环选项轮换评估下，M-M-Bench上达到82.4%，M-M-Star上达到64.6%。去掉图像后准确率大幅下降，说明模型确实在用视觉输入；纯文本微调也能保留这个能力。对部署来说，这意味着一个决策接口可能同时覆盖文本和图像选择，不过团队还是得拿自己的格式和输入测一测。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 352.6,
+      "end": 354.92,
+      "en": "How broadly can we generalize from these evaluations?",
+      "zh": "我们能从这些评估中推广到什么程度？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 356.14,
+      "end": 387.72,
+      "en": "Carefully. The study covers two Qwen models, and JevBench results use only 231 public items, not the sealed evaluation set. Some fine-tuning comparisons are single-seed, and the reference implementation’s latency is not optimized. Still, the central shift is useful: structured decisions need not automatically require a custom head or a specialized model. This connects to work on judgment distributions, but focuses on extracting choices from a general model and preserving its other capabilities.",
+      "zh": "要谨慎。这项研究覆盖了两个Qwen模型，而JevBench的结果只用了231个公开条目，并不是密封的评测集。有些微调对比只跑了单种子，参考实现的延迟也没有优化。不过，核心的转变仍然有价值：结构化决策不一定非得需要一个专门的头或者一个专用模型。这和判断分布方面的研究有关联，但重点在于从通用模型中提取选择，同时保留它的其他能力。"
+    },
+    {
+      "i": 20,
+      "speaker": "Noah",
+      "start": 388.48,
+      "end": 393.34,
+      "en": "So the key is to tune only when there is a measured gap, and check more than accuracy?",
+      "zh": "所以关键在于，只有当测出明显差距时才去微调，而且要检查的不只是准确率，对吧？"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 394.42,
+      "end": 429.008,
+      "en": "That is the practical takeaway. Start with the frozen model and a clear probability-based interface; fine-tune when evidence shows a task-specific weakness and suitable labeled data are available. Then evaluate calibration, output stability, context length, and behavior beyond the target task. The paper’s memorable lesson is that a capable decision model may already be inside a general-purpose language model—but careful measurement determines when adaptation helps. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这就是实用的结论。先从冻结的模型和一个清晰的基于概率的接口开始；当有证据表明存在特定任务的弱点，并且有合适的标注数据时，再进行微调。然后评估校准、输出稳定性、上下文长度，以及在目标任务之外的行为。这篇论文让人印象深刻的一课是：一个能力很强的决策模型可能已经存在于通用语言模型之中——但只有通过细致的测量，才能判断什么时候适配真的有帮助。感谢收听。如果还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026llm2jevllmsjevstyledecision,\n      title={LLM2Jev: LLMs Are Already Jev-Style Decision Models -- When and How to Fine-Tune Them}, \n      author={Yinheng Li and Justin Wagle},\n      year={2026},\n      eprint={2610.02076},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.02076}, \n}",
+  "topics": [
+    "Fine Tuning",
+    "Multimodal Learning",
+    "Optimization Methods"
+  ],
+  "peaks": [
+    0.718,
+    0.853,
+    0.506,
+    0.319,
+    0.362,
+    0.33,
+    0.557,
+    0.781,
+    0.845,
+    0.915,
+    0.59,
+    0.439,
+    0.588,
+    0.554,
+    0.709,
+    0.429,
+    0.361,
+    0.571,
+    0.391,
+    0.42,
+    0.468,
+    0.2,
+    0.291,
+    0.851,
+    0.547,
+    0.475,
+    0.484,
+    0.46,
+    0.474,
+    0.805,
+    0.699,
+    0.604,
+    0.862,
+    0.456,
+    0.456,
+    1.0,
+    0.433,
+    0.324,
+    0.259,
+    0.329,
+    0.325,
+    0.532,
+    0.754,
+    0.714,
+    0.623,
+    0.896,
+    0.564,
+    0.603,
+    0.453,
+    0.383,
+    0.44,
+    0.212,
+    0.288,
+    0.607,
+    0.394,
+    0.227,
+    0.343,
+    0.379,
+    0.216,
+    0.513,
+    0.706,
+    0.678,
+    0.44,
+    0.584,
+    0.468,
+    0.712,
+    0.903,
+    0.649,
+    0.726,
+    0.568,
+    0.337,
+    0.419
+  ],
+  "published": "2026-10-01",
+  "views": 228,
+  "license": "CC BY"
+}

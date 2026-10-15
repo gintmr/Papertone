@@ -1,0 +1,233 @@
+{
+  "id": "2609.40134",
+  "title": "Tactile Curiosity Drives Robot Interaction",
+  "authors": [
+    "Klemens Iten",
+    "Alexander Proshkin",
+    "Bhavya Sukhija",
+    "Stelian Coros",
+    "Andreas Krause",
+    "Pieter Abbeel",
+    "Carmelo Sferrazza"
+  ],
+  "abstract": "Mastering robot manipulation skills via reinforcement learning (RL) remains largely sample-inefficient. The most common RL algorithms rely on random action sampling to discover new strategies, resulting in agents that allocate most of their training budget to motions in free space, away from the contacts from which manipulation skills emerge. Existing intrinsic motivation methods based on model disagreement or epistemic uncertainty improve on isotropic noise, but they can also reward uncertainty in functionally irrelevant transitions, such as erratic motions in free space. In this work, we argue that tactile feedback provides a natural signal for exploration, and introduce TacEx, a framework that incorporates touch into epistemic uncertainty-driven exploration by decomposing model uncertainty across sensory modalities and directing curiosity toward the tactile channel. By anchoring curiosity to the sense of touch, TacEx drives the robot to discover complex contact dynamics, learning to manipulate and grasp objects without task rewards or expert demonstrations during exploration. The interaction-dense dataset collected through this tactile-driven curiosity supports offline learning of downstream pick-and-place policies without additional environment interaction. We further use tactile-driven exploration to post-train vision-language-action (VLA) models. Although the VLAs are initially pre-trained without tactile feedback, post-training with TacEx substantially improves downstream performance while remaining highly sample-efficient.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.40134",
+    "arxiv": "https://arxiv.org/abs/2609.40134"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f56c-11d6-7c19-902f-96042295e064/podcast.mp3",
+  "duration": 402.625,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 29.48,
+      "en": "In a hypothetical graduate course called Deep Reinforcement Learning for Robot Manipulation, today’s lecture is on Tactile Curiosity Drives Robot Interaction. The paper comes from researchers at ETH Zürich and the University of California, Berkeley. Current work includes T-Rex: Tactile-Reactive Dexterous Manipulation and TouchGuide, reflecting a growing interest in using touch for contact-rich control. I see Noah has a question; go ahead, Noah.",
+      "zh": "在一门假设的研究生课程“深度强化学习与机器人操作”中，今天的讲座主题是“触觉好奇心驱动机器人交互”。这篇论文来自苏黎世联邦理工学院和加州大学伯克利分校的研究人员。当前的相关工作包括T-Rex：触觉反应式灵巧操作和TouchGuide，反映出人们越来越关注利用触觉进行富接触控制。我看到Noah有问题，请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 30.44,
+      "end": 33.34,
+      "en": "Hi Professor, what problem is this paper trying to solve?",
+      "zh": "教授您好，这篇论文想解决什么问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 34.16,
+      "end": 68.7,
+      "en": "The core problem is that a robot can spend a great deal of reinforcement learning time moving through empty space, even though manipulation depends on making contact. Ordinary exploration bonuses may favor any unfamiliar outcome, including uncertain motion that teaches little about objects. This paper asks whether uncertainty in tactile predictions can give exploration a more useful direction: toward uncertain contact outcomes. That matters as the field adds tactile sensing to robot learning, but still needs efficient ways to make contact data useful.",
+      "zh": "核心问题在于，机器人可能会花大量强化学习时间在空荡荡的空间里移动，尽管操作任务的关键其实是发生接触。普通的探索奖励可能会偏向任何不熟悉的结果，包括那些对物体几乎没什么了解的不确定运动。这篇论文想问的是，触觉预测中的不确定性能否为探索提供更有用的方向：指向那些不确定的接触结果。这一点很重要，因为现在这个领域正在把触觉感知加入机器人学习，但仍然需要高效的方法让接触数据真正发挥作用。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 69.62,
+      "end": 104.12,
+      "en": "The method, called Tacex, builds on uncertainty-driven exploration. An ensemble of learned dynamics models predicts what will happen next; disagreement among those models signals epistemic uncertainty, meaning the system lacks a settled prediction. Tacex estimates disagreement separately for latent, visual, and tactile representations, then weights those signals to form an exploration bonus. The key design choice is that curiosity can be aimed at a particular sensory modality, rather than treating all uncertainty as equally relevant to manipulation.",
+      "zh": "这套方法叫Tacex，建立在不确定性驱动的探索之上。它用一组学习到的动力学模型来预测接下来会发生什么，模型之间的分歧就代表认知不确定性，也就是系统对预测结果还没有定论。Tacex会分别估计潜在表示、视觉表示和触觉表示上的分歧，然后对这些信号加权，形成一个探索奖励。关键的设计选择在于，好奇心可以被引导到特定的感官模态上，而不是把所有不确定性都当成对操作同等重要。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 105.14,
+      "end": 109.98,
+      "en": "Quick question: does prioritizing tactile uncertainty mean the robot stops using vision?",
+      "zh": "快速问一下：优先考虑触觉不确定性，是不是意味着机器人就不再用视觉了？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 109.98,
+      "end": 140.48,
+      "en": "No. The weights determine which uncertainty contributes most to the exploration reward; they do not decide which observations the policy receives. The robot can still use visual, tactile, and latent information. The tactile input represents spatial force maps, including local pressure and shear, so the model can be uncertain about both the presence and distribution of contact. This is different from simply rewarding a large force: the signal is about how poorly the outcome is predicted.",
+      "zh": "不是。权重决定的是哪种不确定性对探索奖励贡献最大，而不是决定策略接收哪些观测。机器人仍然可以使用视觉、触觉和潜在信息。触觉输入表示的是空间力分布图，包括局部压力和剪切力，因此模型可以对接触是否存在以及接触的分布感到不确定。这和单纯奖励大力气不一样：这个信号关注的是结果被预测得有多差。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 141.48,
+      "end": 173.14,
+      "en": "The first set of experiments separates exploration from task learning. During data collection, the robot receives no task reward. The researchers compare tactile-focused and combined uncertainty signals with other exploration settings, including random exploration. They then freeze the collected experience, relabel it for sparse-reward pick-and-place, and train an S-A-C policy offline. Because that learner gets no further environment interaction, its performance tests whether exploration gathered data that can support a later task.",
+      "zh": "第一组实验把探索和任务学习分开。在数据收集阶段，机器人不获得任何任务奖励。研究者把以触觉为中心的以及组合的不确定性信号，与其他探索设置进行比较，包括随机探索。然后他们冻结收集到的经验，为稀疏奖励的抓取放置任务重新打标签，并离线训练一个S-A-C策略。由于这个学习器不再与环境交互，它的表现检验的是探索所收集的数据能否支撑后续任务。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 174.12,
+      "end": 179.72,
+      "en": "So the offline learner is a test of the exploration data, rather than the exploration policy itself?",
+      "zh": "所以离线学习器检验的是探索数据，而不是探索策略本身？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 180.58,
+      "end": 215.48,
+      "en": "Exactly. In the single-object setting, tactile-disagreement variants interact with and attempt to grasp the object more often than variants without that signal. The resulting data supports strong offline pick-and-place performance, reported above the online D-R-Q comparison. In a four-object scene, tactile-plus-visual uncertainty yields more varied grasps, corresponding to about two effectively explored objects, while tactile-only exploration tends to focus on about one. For a single-object task, that narrower focus can slightly help downstream performance.",
+      "zh": "完全正确。在单物体设定下，带触觉分歧信号的变体会更频繁地与物体交互并尝试抓取，而不带该信号的变体则不会。由此产生的数据支撑了很强的离线抓取放置表现，报告结果优于在线D-R-Q对比。在四物体场景中，触觉加视觉的不确定性会带来更多样的抓取，大约相当于有效探索了两个物体，而仅靠触觉的探索往往只聚焦于大约一个物体。对于单物体任务，这种更窄的聚焦反而可能略微有助于下游表现。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 216.6,
+      "end": 252.26,
+      "en": "A second application is post-training a frozen vision-language-action policy on 8 contact-rich simulation tasks. The pretrained policy keeps its original visual, proprioceptive, and language inputs. A separate learned M-L-P predicts a latent diffusion-noise action that steers the policy’s output, and S-A-C trains this steering component. Tacex adds tactile observations and an ensemble-disagreement bonus to that learner. This design tests whether touch can improve contact behavior without retraining the large pretrained policy itself.",
+      "zh": "第二个应用是在8个接触密集的仿真任务上对一个冻结的视觉-语言-动作策略做后训练。预训练策略保留原有的视觉、本体感觉和语言输入。一个单独学习的MLP预测一个潜在的扩散噪声动作来引导策略的输出，然后用SAC训练这个引导组件。Tacex给这个学习器加上触觉观测和一个集成分歧奖励。这个设计测试的是，在不重新训练大型预训练策略本身的情况下，触觉能否改善接触行为。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 253.1,
+      "end": 258.38,
+      "en": "Can you clarify what the tactile bonus adds beyond simply giving the steering policy tactile observations?",
+      "zh": "你能澄清一下，除了直接给策略提供触觉观测之外，触觉奖励项还额外带来了什么吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 259.5,
+      "end": 294.84,
+      "en": "The ablations distinguish those contributions. Tactile observations can improve the steering policy’s state representation, helping it know what contact is occurring. Tactile uncertainty adds another role: it rewards actions whose tactile consequences remain poorly predicted, encouraging informative interaction. Across the reported post-training tasks, Tacex often improves on the visual-and-proprioceptive baseline, but not uniformly. On five tasks, combining tactile and visual uncertainty has the highest reported mean final return, suggesting that the two signals can complement each other.",
+      "zh": "消融实验区分了这些贡献。触觉观测可以改善引导策略的状态表示，帮助它了解正在发生什么接触。触觉不确定性则增加了另一个作用：它会奖励那些触觉后果仍然预测不佳的动作，鼓励有信息量的交互。在报告的后训练任务中，Tacex 往往优于视觉加本体感觉的基线，但并非一致如此。在五个任务上，结合触觉和视觉不确定性取得了报告中最高的平均最终回报，说明这两种信号可以互补。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 294.84,
+      "end": 327.74,
+      "en": "This shifts the exploration question from “How uncertain is the whole state?” to “Which uncertainty is useful for this kind of learning?” That is a practical contribution because manipulation data is often sparse precisely where contact matters. The results also connect to newer efforts such as T-Rex and TouchGuide, which bring touch into dexterous control or policy steering. Tacex differs by using spatially resolved tactile prediction uncertainty as an exploration signal, rather than treating touch only as a direct control cue.",
+      "zh": "这就把探索的问题从“整个状态有多不确定”变成了“哪种不确定性对这类学习有用”。这是一个很实际的贡献，因为操作数据往往恰恰在接触最关键的地方很稀疏。这些结果也和T-Rex、TouchGuide等较新的工作有关联，它们把触觉引入灵巧控制或策略引导。Tacex的不同之处在于，它把空间分辨的触觉预测不确定性用作探索信号，而不是只把触觉当作直接的控制线索。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 328.54,
+      "end": 332.68,
+      "en": "Hold on, how much confidence should we place in these results given the simulation setting?",
+      "zh": "等一下，考虑到这是模拟环境，我们该对这些结果抱多大信心呢？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 333.6,
+      "end": 367.58,
+      "en": "The simulation results are promising but leave important questions open. They do not establish performance on physical robots, where tactile noise, calibration drift, sensor wear, and safe force limits matter. The modality weights are fixed rather than learned, and the approach has not been demonstrated with fragile objects or dexterous hands. Its intrinsic reward may also distract a pretrained policy that already explores effectively. Real-hardware tests and adaptive weighting would help clarify when tactile curiosity is useful and how to deploy it safely.",
+      "zh": "仿真结果很有前景，但也留下了重要的问题没有回答。这些结果并不能证明在真实机器人上的表现，因为真实机器人上触觉噪声、校准漂移、传感器磨损和安全力限制都很重要。模态权重是固定的，而不是学出来的，而且这个方法还没有在易碎物体或灵巧手上验证过。它的内在奖励也可能干扰一个已经能有效探索的预训练策略。真实硬件测试和自适应加权将有助于厘清触觉好奇心何时有用，以及如何安全地部署它。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 368.52,
+      "end": 402.625,
+      "en": "The memorable takeaway is that curiosity can be shaped by the sense that matters most for a task. Here, uncertainty about touch steers exploration toward contact, and the resulting experience can support offline manipulation learning or help steer a frozen pretrained policy. The findings do not show that tactile curiosity helps everywhere, but they offer a clear way to test and design modality-specific exploration. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "最值得记住的一点是，好奇心可以被对任务最重要的那种感知塑造。在这里，对触觉的不确定性会把探索引向接触，而由此获得的经验可以支持离线操作学习，或者帮助引导一个冻结的预训练策略。这些发现并不表明触觉好奇心在所有情况下都有用，但它们提供了一种清晰的方法来测试和设计特定模态的探索。感谢收听。如果还有任何问题，可以询问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{iten2026tactilecuriositydrivesrobot,\n      title={Tactile Curiosity Drives Robot Interaction}, \n      author={Klemens Iten and Alexander Proshkin and Bhavya Sukhija and Stelian Coros and Andreas Krause and Pieter Abbeel and Carmelo Sferrazza},\n      year={2026},\n      eprint={2609.40134},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.40134}, \n}",
+  "topics": [
+    "Robotics",
+    "AI"
+  ],
+  "peaks": [
+    0.453,
+    0.393,
+    0.276,
+    0.211,
+    0.213,
+    0.453,
+    1.0,
+    0.849,
+    0.77,
+    0.497,
+    0.594,
+    0.426,
+    0.589,
+    0.435,
+    0.427,
+    0.232,
+    0.205,
+    0.359,
+    0.2,
+    0.829,
+    0.86,
+    0.757,
+    0.492,
+    0.573,
+    0.572,
+    0.432,
+    0.484,
+    0.266,
+    0.262,
+    0.42,
+    0.227,
+    0.639,
+    0.953,
+    0.735,
+    0.851,
+    0.75,
+    0.615,
+    0.662,
+    0.452,
+    0.724,
+    0.564,
+    0.68,
+    0.439,
+    0.505,
+    0.433,
+    0.647,
+    0.516,
+    0.592,
+    0.638,
+    0.501,
+    0.453,
+    0.271,
+    0.314,
+    0.671,
+    0.571,
+    0.487,
+    0.329,
+    0.504,
+    0.556,
+    0.815,
+    0.443,
+    0.316,
+    0.545,
+    0.47,
+    0.59,
+    0.443,
+    0.458,
+    0.532,
+    0.567,
+    0.385,
+    0.407,
+    0.377
+  ],
+  "published": "2026-09-30",
+  "views": 204,
+  "license": "CC BY"
+}

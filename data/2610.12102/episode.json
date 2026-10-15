@@ -1,0 +1,231 @@
+{
+  "id": "2610.12102",
+  "title": "Few-Step Generation via Data-Space Iteration",
+  "authors": [
+    "Shanchuan Lin",
+    "Yansong Peng",
+    "Fu-Yun Wang",
+    "Haoqi Fan"
+  ],
+  "abstract": "Flow matching has emerged as a scalable paradigm for training high-quality generative models, but sampling from the learned probability flow requires many network evaluations. Distillation can reduce this cost to one or a few evaluations; however, one-step generation often sacrifices quality, making few-step generation the practical operating regime. Existing few-step methods perform their iterative computation along the probability flow and therefore require a fixed, manually chosen timestep discretization. This discretization is often chosen heuristically and is expensive to tune; it may also be restrictive when refinement difficulty differs across samples or spatial locations. We introduce data-space iteration, a few-step generation framework that removes flow discretization altogether. Starting from noise, a shared generator directly refines its prediction in data space, with every iteration trained to produce the best sample permitted by its capacity. Our formulation integrates with distribution matching distillation (DMD) with minimal changes, enabling a controlled comparison between iteration methods under matched training settings. On class-conditional ImageNet 256x256, data-space iteration outperforms standard discretization baselines and matches or improves upon variants selected through schedule search, without requiring schedule-specific training. These results show that data-space iteration provides a simple and effective alternative to discretized flow-space iteration for fast generation.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12102",
+    "arxiv": "https://arxiv.org/abs/2610.12102"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e71-f056-7394-932b-2b82679d07ca/podcast.mp3",
+  "duration": 406.151,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.92,
+      "en": "In our graduate course on Generative Modeling and Efficient Inference, today’s lecture is on “Few-Step Generation via Data-Space Iteration.” Recent work such as “Progressive Distillation for Fast Sampling of Diffusion Models” and “One Step Diffusion via Shortcut Models” reflects a broad effort to reduce the number of evaluations needed for image generation. This paper, from researchers at ByteDance Seed, asks whether few-step refinement should follow noise levels at all. The question matters because sampling schedules can be costly to search and may constrain what a generator learns. Yes, Noah?",
+      "zh": "在我们这门关于生成建模与高效推理的研究生课上，今天的讲座主题是“通过数据空间迭代实现少步生成”。最近的一些工作，比如《用于扩散模型快速采样的渐进式蒸馏》和《通过捷径模型实现一步扩散》，都反映出大家在广泛努力减少图像生成所需的评估次数。而这篇来自字节跳动Seed研究人员的论文则提出，少步细化到底该不该沿着噪声水平走。这个问题之所以重要，是因为采样调度不仅搜索成本高，还可能限制生成器能学到什么。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.94,
+      "end": 41.88,
+      "en": "Hi Professor, if the usual approach moves through noise levels, what does this paper use instead?",
+      "zh": "教授您好，如果通常的做法是按噪声水平一步步来，那这篇论文用的是什么替代方案呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.72,
+      "end": 74.2,
+      "en": "It repeatedly refines a prediction directly in data space. The generator starts from a zero estimate and, at each evaluation, receives its current estimate, the original noise sample, and a refinement index. It outputs another data prediction. The process does not re-noise that prediction or step through prescribed intermediate flow times. Think of revising a draft using the original prompt as context, rather than returning to an earlier stage of a fixed production pipeline.",
+      "zh": "它在数据空间里直接反复精炼一个预测结果。生成器从零估计出发，每次评估时接收当前估计、原始噪声样本和一个精炼索引，然后输出一个新的数据预测。这个过程不会对这个预测重新加噪，也不会按预设的中间流时间逐步推进。可以把它想成是拿着原始提示作为上下文来修改一版草稿，而不是回到固定生产流程的某个早期阶段。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 75.16,
+      "end": 106.78,
+      "en": "The authors adapt distribution matching distillation, or D-M-D, rather than proposing a wholly separate training framework. They retain a frozen real flow model, an auxiliary fake flow model, and self-rollout training, while changing how the generator’s states are organized. The fake model learns from the generator’s own outputs at different refinement stages. This lets the experiment focus on the effect of data-space iteration instead of changing several major ingredients at once.",
+      "zh": "作者没有提出一个全新的训练框架，而是对分布匹配蒸馏（D-M-D）做了改造。他们保留了冻结的真实流模型、一个辅助的虚假流模型，以及自轨迹训练，只是改变了生成器状态的组织方式。虚假模型从生成器在不同细化阶段的自身输出中学习。这样一来，实验就能聚焦于数据空间迭代的效果，而不是同时改动好几个主要成分。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 107.74,
+      "end": 111.7,
+      "en": "So the refinement index still tells the shared generator which step it is performing?",
+      "zh": "所以这个细化索引仍然会告诉共享生成器它当前在执行哪一步吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 112.58,
+      "end": 144.3,
+      "en": "Exactly. The shared generator is conditioned on that index, which helps it make different updates at different stages. Training samples a refinement step, runs earlier rollout steps without gradient tracking, and updates the selected step. The generated prediction is mixed with fresh noise at a sampled distillation time; the real and fake flow models then provide a stop-gradient direction. The fake model also receives the refinement index, so it can track the generator’s changing distributions across steps.",
+      "zh": "没错。共享生成器以这个索引为条件，这有助于它在不同阶段做出不同的更新。训练时会采样一个细化步骤，先运行之前的轨迹步骤但不跟踪梯度，然后更新选中的步骤。生成的预测会在采样得到的蒸馏时间点上与新的噪声混合；随后真实和虚假的流模型会提供一个停止梯度的方向。虚假模型也会接收细化索引，因此它能跟踪生成器在不同步骤间不断变化的分布。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 145.24,
+      "end": 181.24,
+      "en": "The reported setup uses class-conditional ImageNet generation at 256 by 256 resolution in latent space. A pretrained S-I-T extra-large teacher and a D-I-T extra-large architecture are used; training runs for 40 epochs, with 4 fake-model updates per generator update. The main metric is F-I-D on 50,000 class-balanced samples, and sampling cost is counted in N-F-E. These choices make quality and inference cost visible together, though they do not cover every generation setting.",
+      "zh": "实验设置是在潜在空间做256乘256分辨率的类别条件ImageNet生成。用了一个预训练的S-I-T超大教师模型和一个D-I-T超大架构；训练跑40个epoch，每次生成器更新对应4次假模型更新。主要指标是5万张类别均衡样本上的F-I-D，采样开销按N-F-E计算。这些选择让质量和推理成本能同时被看到，不过并没有覆盖所有生成场景。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 182.08,
+      "end": 187.66,
+      "en": "Quick question: does data-space iteration win at every evaluation count and on every quality measure?",
+      "zh": "快速问一下：数据空间迭代是不是在每种评估次数和每个质量指标上都赢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 188.68,
+      "end": 223.11,
+      "en": "No, and that distinction is important. Without classifier-free guidance, data-space D-M-D reaches F-I-D 3.85 at one evaluation and 2.46 at four, compared with 4.45 and 2.75 for the uniform flow-renoise baseline. At four evaluations, it is also close to the best schedule-searched flow-map result of 2.48. Yet precision is lower than the D-M-D comparison, while recall is higher. The gains are not uniform across metrics.",
+      "zh": "不，这个区别很重要。在没有无分类器引导的情况下，数据空间的D-M-D在单次评估时F-I-D达到3.85，四次评估时为2.46，而均匀流重噪基线分别为4.45和2.75。在四次评估时，它也接近调度搜索流图的最佳结果2.48。但精确率低于D-M-D对比，而召回率更高。这些提升在不同指标上并不一致。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 224.17,
+      "end": 261.33,
+      "en": "With the tested limited-range C-F-G configuration, data-space iteration scores F-I-D 2.29 at four evaluations, compared with 2.61 for uniform flow-renoise and 2.37 for the best tested flow-map schedule. This is encouraging within the evaluated setup, but the guided teacher reaches 2.06 using 250 evaluations. That reference makes the efficiency trade-off concrete: the student uses far fewer network calls, but its quality remains short of the teacher’s reported result.",
+      "zh": "在测试的有限范围无分类器引导配置下，数据空间迭代在四次评估时F-I-D得分为2.29，而均匀流重噪为2.61，最佳测试流映射调度为2.37。在评估设置内这是令人鼓舞的，但引导教师模型使用250次评估达到了2.06。这个参照让效率权衡变得具体：学生模型使用的网络调用少得多，但质量仍不及教师模型报告的结果。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 262.23,
+      "end": 265.59,
+      "en": "How much does the method still depend on choices that resemble a schedule?",
+      "zh": "这个方法在多大程度上仍然依赖于类似调度表的选择？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 266.37,
+      "end": 298.31,
+      "en": "It removes the flow-time schedule from the sampling path, but it does not eliminate configuration choices. The number of refinement evaluations remains a decision, and the model uses a refinement index. Training also benefits from particular choices: sampling distillation times from a Beta distribution that favors higher-noise times, conditioning on the step, and setting the first Adam momentum coefficient to zero. An optional optimal-transport regularizer slightly worsens F-I-D in the reported ablation.",
+      "zh": "它把流时间调度从采样路径中去掉了，但并没有消除配置选择。细化评估的次数仍然需要人为决定，而且模型会使用一个细化索引。训练同样受益于一些特定的选择：从偏向高噪声时刻的Beta分布中采样蒸馏时间、以步数为条件，以及把Adam的一阶动量系数设为零。在报告的消融实验中，一个可选的最优传输正则项会让F-I-D略微变差。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 299.43,
+      "end": 330.21,
+      "en": "The broader implication is a shift in where iterative computation happens: from transitions along a probability-flow path to repeated updates of data predictions. That complements the trajectory-oriented direction in “Flow Matching for Generative Modeling,” rather than replacing flow models, since the method still relies on real and fake flow models for training. Compared with progressive distillation, it changes the states used for refinement instead of merely compressing a sampling trajectory into fewer steps.",
+      "zh": "更广泛的意义在于，迭代计算发生的位置发生了转移：从沿概率流路径的转移，转向对数据预测的反复更新。这与《Flow Matching for Generative Modeling》中面向轨迹的方向形成互补，而不是取代流模型，因为该方法在训练中仍然依赖真实和虚假的流模型。与渐进式蒸馏相比，它改变的是用于细化的状态，而不只是把采样轨迹压缩成更少的步数。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 331.09,
+      "end": 335.63,
+      "en": "Could this approach help text-to-image or video generation too, or is that still untested?",
+      "zh": "这种方法能不能也帮到文生图或视频生成，还是说这方面还没测试过？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 336.63,
+      "end": 370.29,
+      "en": "That remains open. The main evidence is class-conditional ImageNet at 256 by 256, with an additional unconditional C-I-F-A-R-10 experiment. In that smaller experiment, data-space D-M-D performs better at 2 to 4 evaluations but worse at one. The paper also notes that self-rollout training is a limitation, and it does not test text-to-image, video, or whether different regions truly receive different effective refinement. Those are worthwhile directions for follow-up work.",
+      "zh": "这还没有定论。主要证据来自256乘256的类别条件ImageNet，另外还有一个无条件的CIFAR-10实验。在那个较小的实验里，数据空间的DMD在2到4次评估时表现更好，但在1次时更差。论文也指出，自轨迹训练是一个局限，而且它没有测试文生图、视频，也没有验证不同区域是否真的获得了不同的有效精修。这些都是值得后续跟进的方向。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 370.29,
+      "end": 406.151,
+      "en": "The takeaway is not that data-space iteration removes every design choice, but that it offers a competitive alternative to choosing a flow-time discretization for few-step generation. Its controlled adaptation of D-M-D helps isolate that idea, while the benchmark results and limitations show where the evidence stops. For researchers, the next question is how broadly this organization of refinement transfers across models, tasks, and training objectives. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论并不是说数据空间的迭代能消除所有设计选择，而是说它为少步生成中的流时间离散化提供了一种有竞争力的替代方案。它对D-M-D的受控改造有助于把这一思路单独拎出来验证，而基准结果和局限性则说明了证据的边界在哪里。对研究者来说，下一个问题是这种精炼的组织方式能在多大范围内迁移到不同的模型、任务和训练目标上。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lin2026fewstepgenerationdataspaceiteration,\n      title={Few-Step Generation via Data-Space Iteration}, \n      author={Shanchuan Lin and Yansong Peng and Fu-Yun Wang and Haoqi Fan},\n      year={2026},\n      eprint={2610.12102},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.12102}, \n}",
+  "topics": [
+    "Generative Models",
+    "Image Generation",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    0.6,
+    0.294,
+    0.2,
+    0.43,
+    0.284,
+    0.207,
+    0.383,
+    0.563,
+    0.56,
+    0.547,
+    0.649,
+    0.528,
+    0.573,
+    0.565,
+    0.62,
+    0.754,
+    0.44,
+    0.308,
+    0.207,
+    0.636,
+    0.427,
+    0.516,
+    0.29,
+    0.299,
+    0.231,
+    0.389,
+    0.412,
+    0.317,
+    0.35,
+    0.36,
+    0.254,
+    0.429,
+    0.511,
+    0.619,
+    0.421,
+    0.378,
+    0.481,
+    0.494,
+    0.404,
+    0.63,
+    0.446,
+    0.5,
+    0.367,
+    0.503,
+    0.216,
+    0.233,
+    0.486,
+    0.757,
+    0.386,
+    0.448,
+    0.309,
+    0.272,
+    0.231,
+    0.451,
+    0.244,
+    0.36,
+    0.251,
+    0.265,
+    0.325,
+    1.0,
+    0.321,
+    0.382,
+    0.266,
+    0.404,
+    0.27,
+    0.585,
+    0.675,
+    0.392,
+    0.488,
+    0.586,
+    0.323,
+    0.37
+  ],
+  "published": "2026-10-08",
+  "views": 345,
+  "license": "CC BY"
+}

@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 469.577,
+  "word_match_rate": 0.9393,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning for Robotics, we study how policies acquire reliable behavior when actions involve contact, precision, and long sequences. Today's lecture is on AlphaNIST. On the N-I-S-T Assembly Task Board, a robot must fit small parts together, sometimes while other parts obstruct its work. The challenge is not just a careful insertion; it is learning what to do without being handed a sequence of prescribed maneuvers. Yes, Noah?",
+      "start": 0.0,
+      "end": 28.54
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the key idea that one policy practices across different assembly tasks instead of learning each one separately?",
+      "start": 29.7,
+      "end": 36.44
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is the central idea, with an important qualification about the objective. Recent work such as A Balanced Data Diet: Addressing the Exploration Bottleneck in Mega-Scale RL for Robot Control studies how to distribute practice across starting states. Emergent Dexterity via Diverse Resets and Large-Scale Reinforcement Learning explores broad reset coverage for manipulation. AlphaNIST brings related ingredients to varied assemblies and asks whether shared experience under a common completion objective can help. That matters because assembly is difficult to learn from sparse feedback.",
+      "start": 37.6,
+      "end": 72.84
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper trains one shared policy across 20 different assembly pairs, rather than giving every pair its own policy. Its task reward signals whether an assembly is complete, not how much intermediate progress has been made. The result is strikingly high training success under that setup: 98.2% averaged across the 20 tasks. But this is not a claim that the policy assembles all 20 pairs in one episode; those are separate single-pair tasks.",
+      "start": 73.86,
+      "end": 103.3
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if the task reward only marks completion, does the policy receive no other reward at all?",
+      "start": 104.3,
+      "end": 109.82
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It does receive another term: a per-step control cost. So “binary task reward” describes the assembly objective, not the whole reward function. The completion signal arrives when the part is within 0.001 meters of its fully assembled pose; intermediate progress earns no task reward. A useful analogy is grading a final solution rather than awarding points for each intermediate step, while still charging a small cost for the effort spent along the way.",
+      "start": 109.82,
+      "end": 141.24
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The training process also varies where the robot starts. A cache contains assembly identities and reset states ranging from loose parts to pickup and transport situations, near-mating positions, and partial assemblies. Success-guided sampling gives more practice to states where the current policy succeeds about half the time, while preserving a chance to sample every cached state. These are alternative training starting points, not a scripted sequence the robot must follow.",
+      "start": 142.1,
+      "end": 171.62
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the policy knows which assembly it is facing if it has no task ID?",
+      "start": 172.58,
+      "end": 177.58
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The policy receives geometry point clouds and robot state, rather than a discrete task label. It must use the observed scene to respond to the particular parts and their positions. Across 64,000 simulated environments and 25,000 iterations, the shared sparse-reward policy reached 98.2% success, with a reported variation of 0.986 percentage points. It exceeded 98% on every task, while 20 separately trained policies averaged 81.4%.",
+      "start": 178.48,
+      "end": 210.74
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The comparison is not simply “sharing wins.” The experiment also changes the reward. With dense shaping that rewards end-effector proximity and orientation alignment, each weighted 0.01, the shared policy reached 17.8%, while separate policies averaged 78.3%. These are training success rates under the same scale and iteration setup. The four-way comparison shows that both the sharing arrangement and the reward formulation matter; it does not isolate task sharing as the only cause.",
+      "start": 213.16,
+      "end": 247.62
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So the shared policy’s advantage depends on sparse feedback, but do the authors establish why dense shaping hurts it?",
+      "start": 247.62,
+      "end": 255.04
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "No. The authors suggest that a common completion objective may be more consistent across different geometries, whereas dense shaping can favor different partial solutions. That is an interpretation, not a uniquely demonstrated mechanism. There is also a compute comparison: the shared sparse-reward run used 410 device-hours, while the 20 specialist runs used 16,100 total, or 39.3 times as many. This compares device-hours, not elapsed time, attempts, or action counts.",
+      "start": 255.72,
+      "end": 289.48
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A separate evaluation asks whether smarter reset selection helps. At 256,000 environments, beta sampling achieved 97.4% success, compared with 84.3% for uniform reset sampling. Here the policies were evaluated stochastically on a common frozen bank of mixed resets, with 32 trials per task per seed, 20 tasks, and five evaluation seeds. Success required full assembly within 15 seconds without a simultaneous safety failure. These evaluation figures should not be confused with the training comparison.",
+      "start": 290.38,
+      "end": 325.9
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the paper also test whether one policy can manage several assemblies in the same episode?",
+      "start": 326.98,
+      "end": 331.52
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Yes, using a separately trained multi-pair policy configuration, distinct from the 20-task single-pair policy. Its reward remains zero until every active pair is assembled, with no prescribed order or intermediate completion reward; episodes allow 15 seconds per pair. Success is 99% with one active pair and 84% with ten. In an observed sequence, the robot moves a U-S-B A connector closer, leaves it to assemble a rod, then returns to insert the connector.",
+      "start": 332.52,
+      "end": 364.84
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Another sequence shows the robot making small turns while threading an M12 nut near an R-J-45 connector. The authors describe this behavior as planning-like: the policy appears to defer one subtask and avoid interference while completing another. That is evidence of coordination in this setting, not proof of a general planner. All reported results are in simulation, and the paper does not establish hardware transfer or completion of all 20 pairs in one episode.",
+      "start": 365.78,
+      "end": 395.92
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this fit with the earlier reset and sampling work you mentioned, and what remains uncertain?",
+      "start": 396.84,
+      "end": 401.54
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "AlphaNIST extends rather than invents diverse resets or success-guided sampling. Its contribution is to apply these ideas across heterogeneous assemblies under a shared sparse completion objective. The contrast with earlier sampling work is especially useful: changing how experience is allocated is not, by itself, the full story, because the dense-reward shared policy performs poorly in this comparison. Whether the same combination transfers to physical contact, imperfect perception, or different assembly families remains open.",
+      "start": 402.32,
+      "end": 434.94
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The broader lesson is that varied practice can teach a robot useful contact skills and sequencing behavior without specifying each maneuver or the order of tasks. In these experiments, that result depends on the shared policy, the reset strategy, and especially the completion-focused task objective. The evidence invites further tests beyond simulation, while keeping clear what has actually been demonstrated. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 435.8,
+      "end": 469.577
+    }
+  ]
+}

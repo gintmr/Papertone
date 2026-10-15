@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 459.102,
+  "word_match_rate": 0.9003,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course called Deep Reinforcement Learning Methods, today’s lecture is on LeWAM: Learning World Action Models. Consider a robot asked to arrange objects like a picture. A tiny difference in a push or grasp can change the contact, so searching for a successful action sequence is difficult. LeWAM’s central idea is to learn both how actions change a scene and which actions are plausible. Yes, Noah?",
+      "start": 0.0,
+      "end": 26.0
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is this part of the trend toward learning visual world models for planning?",
+      "start": 27.12,
+      "end": 31.56
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Yes. LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels learns action-conditioned visual dynamics, while H-JEPA: End-to-End Learning of Hierarchical World Models for Visual Planning explores planning across predictive levels. LeWAM builds on this direction but joins action prediction with world modeling in a shared representation. The motivation is practical: a model that can both assess imagined actions and suggest plausible ones may reduce reliance on broad, expensive searches. The paper reports improved goal-reaching across 10 simulated tasks.",
+      "start": 32.32,
+      "end": 73.04
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "A joint-embedding predictive architecture, or J-E-P-A, predicts future observations in a compact latent representation rather than reconstructing the pixels. LeWAM uses a shared visual encoder and a mixture-of-transformers predictor to learn two related jobs: predict the next latent state from history and clean actions, and predict action chunks from noisy inputs. A latent-distribution regularizer encourages the representations to follow an isotropic Gaussian distribution. The shared representation is meant to connect what the model expects to happen with actions it could take.",
+      "start": 73.82,
+      "end": 112.62
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does it learn to suggest actions instead of just predicting what happens?",
+      "start": 112.62,
+      "end": 118.08
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "For action learning, the model uses flow matching: it learns to transform noisy action chunks toward actions recorded in offline demonstrations. At test time, that action head samples candidate chunks, while the dynamics head predicts their consequences. A masking rule prevents clean action tokens in the history from leaking into the action-prediction branch. These details matter because the proposal mechanism is trained alongside the dynamics, not bolted on as an independent policy after the world model is complete.",
+      "start": 119.1,
+      "end": 150.84
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Planning then uses the model’s two capabilities together. LeWAM rolls candidate action chunks through its learned dynamics, and gradient descent refines the candidates to reduce the difference between the predicted final latent state and the goal. It keeps the best-cost candidate, executes its first 5 actions, observes the new scene, and replans. This is receding-horizon control: plan ahead, act briefly, then use fresh evidence. The learned dynamics remain available to judge proposals throughout this process.",
+      "start": 151.84,
+      "end": 181.96
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the proposals help initialize the search, but the planner still improves them against predicted outcomes?",
+      "start": 182.88,
+      "end": 188.1
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. That distinction is central to interpreting the results. Across 10 simulated tasks, LeWAM averages 93.5% success, compared with 50.9% for LeWM using cross-entropy method search. Success is averaged across the named tasks, rather than pooling all trials together. Most tasks set the goal 25 environment steps ahead and allow 50 actions; Two-Room uses a 100-step offset and 150 actions. LeWAM beats that baseline on every task, with large gaps on ToolHang and Transport.",
+      "start": 189.08,
+      "end": 224.62
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The contact-rich ToolHang task illustrates the difference: success is 94.7% for LeWAM and 35.4% for LeWM with cross-entropy method search. A separate horizon sweep averages Push-T, Cube, Scene, and Puzzle. At a 100-step goal offset, that four-task mean is 46.2% for LeWAM versus 10.9% for the baseline. But Puzzle is a serious qualification: at that offset, its success is only 3.3% for LeWAM and 0.7% for the baseline.",
+      "start": 225.7,
+      "end": 262.3
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can we tell whether flow matching itself explains the planning improvement?",
+      "start": 263.26,
+      "end": 266.52
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The paper offers evidence, but not a clean causal answer. On Push-T, LeWAM’s direct policy succeeds 82.7% of the time and planning raises that to 97.3%, a 14.7-point gain. A variant with a mean-squared-error action head goes from 90% directly to 95.3% with planning, a 5.3-point gain. Since their direct baselines differ, comparing those gains is consistent with a greater planning benefit from flow matching, but it does not establish a nine-point causal effect.",
+      "start": 266.52,
+      "end": 301.0
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The authors suggest that flow matching can represent multiple plausible action modes, whereas a deterministic mean-squared-error head may average distinct actions into an unhelpful middle. That is a plausible explanation, not a proven cause of the manipulation results. Efficiency also needs careful wording: under the reported settings, planning throughput averages 52.5 versus 1.62 planner calls per second across Scene, Puzzle, Cube, and Push-T. That is a 32.3-times throughput difference on the same H-one-hundred graphics processor, not evidence of fewer robot actions or faster task completion.",
+      "start": 301.9,
+      "end": 341.12
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does that result mean the same model transfers readily to new robots or objects?",
+      "start": 342.04,
+      "end": 346.0
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "No. The evidence is goal-reaching from offline data in task-specific settings, not broad transfer to new objects, cameras, or embodiments. The authors note limited data coverage and train or adapt models separately for tasks and embodiments. LeWAM also supports direct behavior cloning, but its simulation comparison with Diffusion Policy is mixed: average completion is 64.7% versus 61.6% across DrawerCleanup, Transport, and ToolHang, with LeWAM winning Transport but not the other two.",
+      "start": 347.96,
+      "end": 380.02
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Physical-robot results are similarly bounded. Across 3 tasks and 30 trials per task, LeWAM averages 33.3% success, compared with 38.9% for Diffusion Policy and 28.9% for pi zero point five. So this is not evidence that it generally outperforms robot-policy baselines. The broader contribution is a design connection: a world model can provide candidate actions as well as evaluate imagined actions. That shifts attention from asking only how to improve search toward learning useful proposals jointly with predictive dynamics.",
+      "start": 381.46,
+      "end": 416.48
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "For researchers, the next questions concern coverage, transfer, and when learned proposals help beyond a strong direct policy. LeWAM suggests that action generation and world modeling can share representations without making the planner redundant: the model proposes, predicts, and then supports refinement. But results vary with task and horizon, and the action-head comparison leaves causal questions open. The memorable takeaway is simple: a useful world model should not only imagine what an action might do; it can also help decide which actions are worth imagining. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 417.54,
+      "end": 459.102
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "id": "2610.13917",
+  "title": "Designing Protein Structures from Natural Language",
+  "authors": [
+    "Joseph Lee",
+    "Yanjing Li",
+    "Bo Qiang",
+    "Gregory Lau",
+    "Allyson Ettinger",
+    "Noah A. Smith",
+    "Rory Donovan-Maiye",
+    "David Baker",
+    "Hanna Hajishirzi",
+    "Pang Wei Koh"
+  ],
+  "abstract": "A central challenge in de novo protein design is generating proteins with desired structural and functional properties. Existing design models typically require a dedicated input representation for each property, limiting the design objectives they support. We develop Prompteina, the first all-atom structure generation model that supports new and broader design objectives specified in natural language, analogous to text-to-image generation. To train Prompteina, we construct Prompteina-Data, a paired text--protein structure dataset of 1.8M structures and 50M+ captions describing global and residue-specific structural and functional properties. We adapt Proteina-Complexa, a pretrained structure generation model, through text-conditioned pretraining and finetuning that aligns residues with their corresponding text. Prompteina outperforms baselines on 15 of 18 structural properties and generates proteins that more closely match descriptions of their intended functions. In binder design, it leads baselines on at least 13 of 20 targets and improves interface confidence by 14% over the strongest baseline. With iterative in silico feedback, Prompteina's gain over non-iterative generation is 57% larger than the next-best baseline on the hardest targets. Finally, we experimentally validate Prompteina designs against GM2A, a target with no reported de novo binders. We identify nine binders, with the strongest at an apparent $K_{\\mathrm{D}}$ of 107 nM. These results establish natural language as an effective and powerful conditioning interface for protein structure generation.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.13917",
+    "arxiv": "https://arxiv.org/abs/2610.13917"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a12dfe-56d8-7266-932d-46126a9b0eaf/podcast.mp3",
+  "duration": 495.908,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 42.14,
+      "en": "In a graduate course on Computational Protein Design, today’s lecture is on “Designing Protein Structures from Natural Language.” Protein design is moving from generating backbones toward all-atom structures, sequences, and target-specific binders. Recent work such as “Proteina: Scaling Flow-based Protein Structure Generative Models” and “La-Proteina: Atomistic Protein Generation via Partially Latent Flow Matching” illustrates that shift. This paper, from researchers including the University of Washington and the Allen Institute for AI, asks how language might make design constraints easier to express. Go ahead, Noah.",
+      "zh": "在一门计算蛋白质设计的研究生课程上，今天的讲座主题是“从自然语言设计蛋白质结构”。蛋白质设计正在从生成骨架转向全原子结构、序列以及针对特定靶点的结合物。最近的工作，比如“Proteina：扩展基于流的蛋白质结构生成模型”和“La-Proteina：通过部分潜在流匹配进行全原子蛋白质生成”，就体现了这一转变。这篇论文来自包括华盛顿大学和艾伦人工智能研究所在内的研究人员，探讨的是语言如何能让设计约束更容易表达。诺亚，你来说吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 43.28,
+      "end": 48.5,
+      "en": "Hi Professor, does the paper use text to design protein sequences, structures, or both?",
+      "zh": "教授您好，这篇论文是用文本设计蛋白质序列、结构，还是两者都做？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 49.24,
+      "end": 80.46,
+      "en": "Both. Prompteina conditions a structure-generation model directly on natural-language descriptions, then generates a protein sequence and an all-atom structure together. That differs from systems that first use a functional description to generate a sequence and fold it afterward. The motivation is practical: designers often have several requirements, from overall shape to a particular interface contact, and translating each into a specialized input can be cumbersome. A flexible language interface could let people state those requirements more naturally.",
+      "zh": "两者都有。Prompteina 直接用自然语言描述来条件化一个结构生成模型，然后同时生成蛋白质序列和全原子结构。这和那些先用功能描述生成序列、之后再折叠成结构的系统不同。动机很实际：设计者往往有多个要求，从整体形状到某个特定的界面接触，把每一条都转换成专门的输入会很麻烦。一个灵活的语言接口可以让人们更自然地表达这些要求。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 81.38,
+      "end": 117.64,
+      "en": "The core contribution is a model and a dataset designed to connect language with structure at multiple scales. Prompteina-Data contains about 1.8 million protein-chain entries and 52.4 million captions. Captions describe properties ranging from fold and shape to local interactions, including disulfide bonds and protein interfaces. The authors also create text-to-residue alignments for descriptions that identify specific structural regions. In an audit, an automated judge found the captions had 95.7% accuracy relative to their source annotations.",
+      "zh": "核心贡献是一个模型和一个数据集，目的是在多个尺度上把语言和结构连接起来。Prompteina-Data包含大约180万条蛋白质链条目和5240万条描述文本。这些描述涵盖从折叠、形状到局部相互作用的各种属性，包括二硫键和蛋白质界面。作者还为那些能定位特定结构区域的描述创建了文本到残基的对齐。在一次审查中，一个自动化评判系统发现这些描述相对于其来源标注的准确率达到了95.7%。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 118.72,
+      "end": 125.38,
+      "en": "Quick question: how does the model make a global description affect the whole protein while a local instruction affects only part of it?",
+      "zh": "问个简单的问题：模型是怎么做到让一个全局描述影响整个蛋白质，而一条局部指令只影响其中一部分的？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 126.0,
+      "end": 156.2,
+      "en": "The model uses two routes for text. A pooled representation of the prompt is broadcast across residues and conditions adaptive layer normalization, which helps convey global properties such as compactness or fold. At the same time, residue representations use cross-attention to access individual prompt tokens. That gives local details a route into the relevant parts of the structure. Think of the first route as setting the overall design brief and the second as annotating particular locations on a blueprint.",
+      "zh": "这个模型用两条路径来处理文本。一条是把提示词的池化表示广播到所有残基上，用来调制自适应层归一化，这有助于传达紧凑度或折叠方式这类全局属性。与此同时，残基表示通过交叉注意力去访问提示词中的各个token。这就让局部细节有了一条进入结构相关部分的通道。可以把第一条路径理解为设定整体设计纲要，第二条则是在蓝图上标注具体位置。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 157.82,
+      "end": 190.38,
+      "en": "Prompteina builds on Complexa, an existing all-atom structure-generation model. It generates backbone coordinates and latent representations for side chains; a frozen variational autoencoder then decodes those into atoms and amino-acid sequence. Training first teaches the new text pathways while keeping the pretrained denoiser frozen. The denoiser is then unfrozen for continued text-conditioned training, followed by an alignment stage that teaches the model to associate caption tokens with protein residues.",
+      "zh": "Prompteina 建立在 Complexa 之上，后者是一个已有的全原子结构生成模型。它生成主链坐标和侧链的潜在表示，然后由一个冻结的变分自编码器把这些解码成原子和氨基酸序列。训练时，先教新的文本通路，同时保持预训练的去噪器冻结。之后解冻去噪器，继续进行文本条件训练，接着是一个对齐阶段，教模型把描述文本的 token 和蛋白质残基关联起来。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 190.38,
+      "end": 195.72,
+      "en": "Can you clarify what the residue alignment contributes beyond simply adding more captions?",
+      "zh": "你能说明一下，残基对齐除了单纯增加更多描述之外，还带来了什么贡献吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 196.84,
+      "end": 229.7,
+      "en": "Captions alone can say that a protein has a feature without telling the model where that feature belongs. Alignment supervision links text tokens to residues when the annotation supplies identifiable positions, such as the residues in a disulfide bond or a described helix. This is important for fine-grained control: the model must learn not only that a feature exists, but also how language refers to a location or group of residues. The authors then add training for binder generation using protein-complex data.",
+      "zh": "仅靠描述可以说明某个蛋白质具有某种特征，却无法告诉模型这个特征位于哪里。当注释提供了可识别的位置时，比如二硫键中的残基或所描述的螺旋，对齐监督会把文本token与残基对应起来。这对细粒度控制很重要：模型不仅要学会某个特征存在，还要学会语言如何指代某个位置或一组残基。作者随后利用蛋白质复合物数据加入了结合体生成的训练。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 230.56,
+      "end": 264.5,
+      "en": "The applications are tested across structural control, functional descriptions, and binder design. Across 18 structural tasks in five categories, Prompteina leads the evaluated baselines on 15. It can control fold, topology, secondary structure, shape, and combinations of properties. For example, generated helix counts closely track requested counts. But specialized inputs still matter: RFdiffusion does better on strand and sheet counts, where its residue-level controls are designed for that purpose.",
+      "zh": "这些应用在结构控制、功能描述和结合剂设计上都做了测试。在五大类共18项结构任务中，Prompteina在15项上领先于所评估的基线。它能控制折叠、拓扑、二级结构、形状以及多种属性的组合。比如，生成的螺旋数量与要求的数量非常接近。但专用输入仍然很重要：RFdiffusion在链和片层数量上表现更好，因为它的残基级控制就是为此设计的。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 264.5,
+      "end": 271.0,
+      "en": "So the language interface is flexible, but it does not necessarily beat specialized controls on every task?",
+      "zh": "所以语言接口很灵活，但在每个任务上不一定都能胜过专门的控制方法？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 271.84,
+      "end": 305.62,
+      "en": "Exactly. The strength here is breadth of control through a shared interface, not universal dominance. In binder experiments across 20 targets, the requested number of target-contacting binder residues closely matches the generated interface size. For agent-guided design, a language-model agent researches a target and writes specifications. Prompteina scores higher than the strongest baseline on expected top-k interface confidence for generated sequences, while results also show that interface details contribute more than adding fold and shape descriptions alone.",
+      "zh": "确实如此。这里的优势在于通过共享接口实现的控制广度，而不是全面碾压。在覆盖20个靶点的结合剂实验中，要求的与靶点接触的结合剂残基数量与生成的接口大小高度吻合。在智能体引导的设计中，语言模型智能体会研究靶点并撰写规格说明。在生成序列的预期top-k接口置信度上，Prompteina的得分高于最强基线，同时结果也表明，接口细节的贡献大于单纯添加折叠和形状描述。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 306.68,
+      "end": 338.94,
+      "en": "The agent can also revise its specifications after seeing scores from earlier designs. On the hardest targets, Prompteina gains more through this iterative process than the comparison methods; its reported top-eight gain is 57% larger than the next-best baseline’s gain. The researchers also tested designs against GM2 ganglioside activator protein, or G-M-two A. Of 89 designs assayed, nine were classified as binders, and six had fitted apparent dissociation constants below 1 micromolar.",
+      "zh": "智能体还能在看到早期设计的评分后修改自己的规格。在最难的目标上，Prompteina通过这一迭代过程获得的提升比对比方法更大；其报告的前八名提升比次优基线的提升高出57%。研究人员还针对GM2神经节苷脂激活蛋白（G-M-two A）测试了设计。在检测的89个设计中，有9个被归类为结合体，其中6个的拟合表观解离常数低于1微摩尔。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 339.88,
+      "end": 345.76,
+      "en": "Hold on, how strong is the experimental evidence, given that most of the comparisons use predicted confidence scores?",
+      "zh": "等一下，既然大多数比较用的都是预测的置信度分数，那实验证据到底有多强？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 346.62,
+      "end": 381.94,
+      "en": "That distinction matters. Predicted interface confidence helps rank candidates, but it does not establish experimental binding. The GM2A result provides experimental evidence for one target: the strongest design had an overall apparent dissociation constant of about 107 nanomolar across three replicates. However, the study tested a selected set of designs for a single target, so it cannot establish that the approach will generalize experimentally across proteins or produce biological activity. The authors also rely on automated captioning and residue matching.",
+      "zh": "这个区别很重要。预测的界面置信度有助于对候选进行排序，但并不能确立实验层面的结合。GM2A的结果为一个靶点提供了实验证据：最强的设计在三次重复中整体表观解离常数约为107纳摩尔。然而，该研究只针对单一靶点测试了一组选定的设计，因此无法证明该方法在实验层面能泛化到不同蛋白质，也无法证明能产生生物活性。作者还依赖自动描述和残基匹配。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 383.64,
+      "end": 416.86,
+      "en": "Prompteina’s broader implication is that natural language could become a common interface for protein generation, reducing the need to invent a separate control format for every property. That connects structure design with language-model agents, which can research targets and propose specifications. Earlier work such as Chroma also explored natural-language guidance, but used a separate captioning model to steer generation. Prompteina instead puts text directly into the denoiser. The next challenge is testing whether the model interprets varied, less constrained instructions reliably.",
+      "zh": "Prompteina更广泛的意义在于，自然语言可能成为蛋白质生成的通用接口，从而减少为每一种属性单独发明一套控制格式的需要。这就把结构设计与语言模型智能体连接起来，后者可以研究靶点并提出规格说明。此前的Chroma等工作也探索过自然语言引导，但用的是单独的描述生成模型来引导生成。Prompteina则把文本直接放进去噪器。下一个挑战是测试该模型能否可靠地理解各种约束更少的指令。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 417.9,
+      "end": 425.54,
+      "en": "Could this approach eventually let an agent translate biological research directly into a design, without a human specifying structural controls?",
+      "zh": "这种方法最终是否能让智能体把生物学研究直接转化为设计方案，而无需人类指定结构控制参数？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 426.4,
+      "end": 461.76,
+      "en": "That is a plausible direction, but the results suggest a careful answer: language makes it easier to express requirements, yet an agent’s specification and the model’s interpretation still need validation. Future work could test more targets, broader instruction styles, and experimental outcomes beyond predicted confidence. It would also be useful to measure when natural language adds value over a specialized control. The paper’s contribution is a practical step toward that interface, supported by a large text–structure dataset and a prospective binder experiment.",
+      "zh": "这是一个合理的方向，但结果提示我们要谨慎回答：语言让表达需求变得更容易，但智能体的规格说明和模型的解读仍然需要验证。未来的工作可以测试更多靶点、更广泛的指令风格，以及预测置信度之外的实验 outcomes。衡量自然语言何时比专用控制更有价值，也会很有用。这篇论文的贡献是朝这个界面迈出的务实一步，背后有一个大型文本-结构数据集和一项前瞻性结合实验作为支撑。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 462.78,
+      "end": 495.908,
+      "en": "The takeaway is that natural language can guide both global architecture and local structural features in a single all-atom generation process. Prompteina shows how that interface may help designers and agents combine constraints, while its experimental evidence remains limited to one target. For researchers, the key question is not only whether a model can follow a prompt, but whether the resulting structure performs as intended in the laboratory. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，自然语言可以在单一的全原子生成过程中同时引导全局架构和局部结构特征。Prompteina 展示了这一接口如何帮助设计者和智能体组合约束条件，但其实验证据仍局限于一个靶点。对研究者而言，关键问题不仅是模型能否遵循提示，还在于生成的结构能否在实验室中达到预期表现。感谢收听。如果还有问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lee2026designingproteinstructuresnatural,\n      title={Designing Protein Structures from Natural Language}, \n      author={Joseph Lee and Yanjing Li and Bo Qiang and Gregory Lau and Allyson Ettinger and Noah A. Smith and Rory Donovan-Maiye and David Baker and Hanna Hajishirzi and Pang Wei Koh},\n      year={2026},\n      eprint={2610.13917},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.13917}, \n}",
+  "topics": [
+    "Ai For Genomics",
+    "Data Curation",
+    "Fine Tuning"
+  ],
+  "peaks": [
+    1.0,
+    0.742,
+    0.697,
+    0.457,
+    0.432,
+    0.311,
+    0.726,
+    0.563,
+    0.627,
+    0.59,
+    0.424,
+    0.68,
+    0.639,
+    0.424,
+    0.465,
+    0.369,
+    0.499,
+    0.669,
+    0.509,
+    0.281,
+    0.2,
+    0.303,
+    0.347,
+    0.496,
+    0.49,
+    0.358,
+    0.454,
+    0.619,
+    0.671,
+    0.565,
+    0.496,
+    0.491,
+    0.498,
+    0.545,
+    0.42,
+    0.344,
+    0.373,
+    0.412,
+    0.62,
+    0.56,
+    0.425,
+    0.371,
+    0.275,
+    0.238,
+    0.553,
+    0.457,
+    0.337,
+    0.267,
+    0.269,
+    0.702,
+    0.414,
+    0.52,
+    0.421,
+    0.373,
+    0.415,
+    0.613,
+    0.435,
+    0.345,
+    0.472,
+    0.359,
+    0.468,
+    0.619,
+    0.61,
+    0.627,
+    0.712,
+    0.498,
+    0.413,
+    0.564,
+    0.493,
+    0.345,
+    0.452,
+    0.33
+  ],
+  "published": "2026-10-09",
+  "views": 447,
+  "license": "CC BY"
+}

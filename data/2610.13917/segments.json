@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 495.908,
+  "word_match_rate": 0.9419,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Computational Protein Design, today’s lecture is on “Designing Protein Structures from Natural Language.” Protein design is moving from generating backbones toward all-atom structures, sequences, and target-specific binders. Recent work such as “Proteina: Scaling Flow-based Protein Structure Generative Models” and “La-Proteina: Atomistic Protein Generation via Partially Latent Flow Matching” illustrates that shift. This paper, from researchers including the University of Washington and the Allen Institute for AI, asks how language might make design constraints easier to express. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 42.14
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does the paper use text to design protein sequences, structures, or both?",
+      "start": 43.28,
+      "end": 48.5
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Both. Prompteina conditions a structure-generation model directly on natural-language descriptions, then generates a protein sequence and an all-atom structure together. That differs from systems that first use a functional description to generate a sequence and fold it afterward. The motivation is practical: designers often have several requirements, from overall shape to a particular interface contact, and translating each into a specialized input can be cumbersome. A flexible language interface could let people state those requirements more naturally.",
+      "start": 49.24,
+      "end": 80.46
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The core contribution is a model and a dataset designed to connect language with structure at multiple scales. Prompteina-Data contains about 1.8 million protein-chain entries and 52.4 million captions. Captions describe properties ranging from fold and shape to local interactions, including disulfide bonds and protein interfaces. The authors also create text-to-residue alignments for descriptions that identify specific structural regions. In an audit, an automated judge found the captions had 95.7% accuracy relative to their source annotations.",
+      "start": 81.38,
+      "end": 117.64
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does the model make a global description affect the whole protein while a local instruction affects only part of it?",
+      "start": 118.72,
+      "end": 125.38
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The model uses two routes for text. A pooled representation of the prompt is broadcast across residues and conditions adaptive layer normalization, which helps convey global properties such as compactness or fold. At the same time, residue representations use cross-attention to access individual prompt tokens. That gives local details a route into the relevant parts of the structure. Think of the first route as setting the overall design brief and the second as annotating particular locations on a blueprint.",
+      "start": 126.0,
+      "end": 156.2
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Prompteina builds on Complexa, an existing all-atom structure-generation model. It generates backbone coordinates and latent representations for side chains; a frozen variational autoencoder then decodes those into atoms and amino-acid sequence. Training first teaches the new text pathways while keeping the pretrained denoiser frozen. The denoiser is then unfrozen for continued text-conditioned training, followed by an alignment stage that teaches the model to associate caption tokens with protein residues.",
+      "start": 157.82,
+      "end": 190.38
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify what the residue alignment contributes beyond simply adding more captions?",
+      "start": 190.38,
+      "end": 195.72
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Captions alone can say that a protein has a feature without telling the model where that feature belongs. Alignment supervision links text tokens to residues when the annotation supplies identifiable positions, such as the residues in a disulfide bond or a described helix. This is important for fine-grained control: the model must learn not only that a feature exists, but also how language refers to a location or group of residues. The authors then add training for binder generation using protein-complex data.",
+      "start": 196.84,
+      "end": 229.7
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The applications are tested across structural control, functional descriptions, and binder design. Across 18 structural tasks in five categories, Prompteina leads the evaluated baselines on 15. It can control fold, topology, secondary structure, shape, and combinations of properties. For example, generated helix counts closely track requested counts. But specialized inputs still matter: RFdiffusion does better on strand and sheet counts, where its residue-level controls are designed for that purpose.",
+      "start": 230.56,
+      "end": 264.5
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So the language interface is flexible, but it does not necessarily beat specialized controls on every task?",
+      "start": 264.5,
+      "end": 271.0
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Exactly. The strength here is breadth of control through a shared interface, not universal dominance. In binder experiments across 20 targets, the requested number of target-contacting binder residues closely matches the generated interface size. For agent-guided design, a language-model agent researches a target and writes specifications. Prompteina scores higher than the strongest baseline on expected top-k interface confidence for generated sequences, while results also show that interface details contribute more than adding fold and shape descriptions alone.",
+      "start": 271.84,
+      "end": 305.62
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The agent can also revise its specifications after seeing scores from earlier designs. On the hardest targets, Prompteina gains more through this iterative process than the comparison methods; its reported top-eight gain is 57% larger than the next-best baseline’s gain. The researchers also tested designs against GM2 ganglioside activator protein, or G-M-two A. Of 89 designs assayed, nine were classified as binders, and six had fitted apparent dissociation constants below 1 micromolar.",
+      "start": 306.68,
+      "end": 338.94
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, how strong is the experimental evidence, given that most of the comparisons use predicted confidence scores?",
+      "start": 339.88,
+      "end": 345.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That distinction matters. Predicted interface confidence helps rank candidates, but it does not establish experimental binding. The GM2A result provides experimental evidence for one target: the strongest design had an overall apparent dissociation constant of about 107 nanomolar across three replicates. However, the study tested a selected set of designs for a single target, so it cannot establish that the approach will generalize experimentally across proteins or produce biological activity. The authors also rely on automated captioning and residue matching.",
+      "start": 346.62,
+      "end": 381.94
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Prompteina’s broader implication is that natural language could become a common interface for protein generation, reducing the need to invent a separate control format for every property. That connects structure design with language-model agents, which can research targets and propose specifications. Earlier work such as Chroma also explored natural-language guidance, but used a separate captioning model to steer generation. Prompteina instead puts text directly into the denoiser. The next challenge is testing whether the model interprets varied, less constrained instructions reliably.",
+      "start": 383.64,
+      "end": 416.86
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could this approach eventually let an agent translate biological research directly into a design, without a human specifying structural controls?",
+      "start": 417.9,
+      "end": 425.54
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That is a plausible direction, but the results suggest a careful answer: language makes it easier to express requirements, yet an agent’s specification and the model’s interpretation still need validation. Future work could test more targets, broader instruction styles, and experimental outcomes beyond predicted confidence. It would also be useful to measure when natural language adds value over a specialized control. The paper’s contribution is a practical step toward that interface, supported by a large text–structure dataset and a prospective binder experiment.",
+      "start": 426.4,
+      "end": 461.76
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The takeaway is that natural language can guide both global architecture and local structural features in a single all-atom generation process. Prompteina shows how that interface may help designers and agents combine constraints, while its experimental evidence remains limited to one target. For researchers, the key question is not only whether a model can follow a prompt, but whether the resulting structure performs as intended in the laboratory. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 462.78,
+      "end": 495.908
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 402.625,
+  "word_match_rate": 0.9439,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Deep Reinforcement Learning for Robot Manipulation, today’s lecture is on Tactile Curiosity Drives Robot Interaction. The paper comes from researchers at ETH Zürich and the University of California, Berkeley. Current work includes T-Rex: Tactile-Reactive Dexterous Manipulation and TouchGuide, reflecting a growing interest in using touch for contact-rich control. I see Noah has a question; go ahead, Noah.",
+      "start": 0.0,
+      "end": 29.48
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what problem is this paper trying to solve?",
+      "start": 30.44,
+      "end": 33.34
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The core problem is that a robot can spend a great deal of reinforcement learning time moving through empty space, even though manipulation depends on making contact. Ordinary exploration bonuses may favor any unfamiliar outcome, including uncertain motion that teaches little about objects. This paper asks whether uncertainty in tactile predictions can give exploration a more useful direction: toward uncertain contact outcomes. That matters as the field adds tactile sensing to robot learning, but still needs efficient ways to make contact data useful.",
+      "start": 34.16,
+      "end": 68.7
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The method, called Tacex, builds on uncertainty-driven exploration. An ensemble of learned dynamics models predicts what will happen next; disagreement among those models signals epistemic uncertainty, meaning the system lacks a settled prediction. Tacex estimates disagreement separately for latent, visual, and tactile representations, then weights those signals to form an exploration bonus. The key design choice is that curiosity can be aimed at a particular sensory modality, rather than treating all uncertainty as equally relevant to manipulation.",
+      "start": 69.62,
+      "end": 104.12
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does prioritizing tactile uncertainty mean the robot stops using vision?",
+      "start": 105.14,
+      "end": 109.98
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. The weights determine which uncertainty contributes most to the exploration reward; they do not decide which observations the policy receives. The robot can still use visual, tactile, and latent information. The tactile input represents spatial force maps, including local pressure and shear, so the model can be uncertain about both the presence and distribution of contact. This is different from simply rewarding a large force: the signal is about how poorly the outcome is predicted.",
+      "start": 109.98,
+      "end": 140.48
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The first set of experiments separates exploration from task learning. During data collection, the robot receives no task reward. The researchers compare tactile-focused and combined uncertainty signals with other exploration settings, including random exploration. They then freeze the collected experience, relabel it for sparse-reward pick-and-place, and train an S-A-C policy offline. Because that learner gets no further environment interaction, its performance tests whether exploration gathered data that can support a later task.",
+      "start": 141.48,
+      "end": 173.14
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the offline learner is a test of the exploration data, rather than the exploration policy itself?",
+      "start": 174.12,
+      "end": 179.72
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly. In the single-object setting, tactile-disagreement variants interact with and attempt to grasp the object more often than variants without that signal. The resulting data supports strong offline pick-and-place performance, reported above the online D-R-Q comparison. In a four-object scene, tactile-plus-visual uncertainty yields more varied grasps, corresponding to about two effectively explored objects, while tactile-only exploration tends to focus on about one. For a single-object task, that narrower focus can slightly help downstream performance.",
+      "start": 180.58,
+      "end": 215.48
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "A second application is post-training a frozen vision-language-action policy on 8 contact-rich simulation tasks. The pretrained policy keeps its original visual, proprioceptive, and language inputs. A separate learned M-L-P predicts a latent diffusion-noise action that steers the policy’s output, and S-A-C trains this steering component. Tacex adds tactile observations and an ensemble-disagreement bonus to that learner. This design tests whether touch can improve contact behavior without retraining the large pretrained policy itself.",
+      "start": 216.6,
+      "end": 252.26
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify what the tactile bonus adds beyond simply giving the steering policy tactile observations?",
+      "start": 253.1,
+      "end": 258.38
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The ablations distinguish those contributions. Tactile observations can improve the steering policy’s state representation, helping it know what contact is occurring. Tactile uncertainty adds another role: it rewards actions whose tactile consequences remain poorly predicted, encouraging informative interaction. Across the reported post-training tasks, Tacex often improves on the visual-and-proprioceptive baseline, but not uniformly. On five tasks, combining tactile and visual uncertainty has the highest reported mean final return, suggesting that the two signals can complement each other.",
+      "start": 259.5,
+      "end": 294.84
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "This shifts the exploration question from “How uncertain is the whole state?” to “Which uncertainty is useful for this kind of learning?” That is a practical contribution because manipulation data is often sparse precisely where contact matters. The results also connect to newer efforts such as T-Rex and TouchGuide, which bring touch into dexterous control or policy steering. Tacex differs by using spatially resolved tactile prediction uncertainty as an exploration signal, rather than treating touch only as a direct control cue.",
+      "start": 294.84,
+      "end": 327.74
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, how much confidence should we place in these results given the simulation setting?",
+      "start": 328.54,
+      "end": 332.68
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The simulation results are promising but leave important questions open. They do not establish performance on physical robots, where tactile noise, calibration drift, sensor wear, and safe force limits matter. The modality weights are fixed rather than learned, and the approach has not been demonstrated with fragile objects or dexterous hands. Its intrinsic reward may also distract a pretrained policy that already explores effectively. Real-hardware tests and adaptive weighting would help clarify when tactile curiosity is useful and how to deploy it safely.",
+      "start": 333.6,
+      "end": 367.58
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The memorable takeaway is that curiosity can be shaped by the sense that matters most for a task. Here, uncertainty about touch steers exploration toward contact, and the resulting experience can support offline manipulation learning or help steer a frozen pretrained policy. The findings do not show that tactile curiosity helps everywhere, but they offer a clear way to test and design modality-specific exploration. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 368.52,
+      "end": 402.625
+    }
+  ]
+}

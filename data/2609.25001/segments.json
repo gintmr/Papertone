@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 404.245,
+  "word_match_rate": 0.9183,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Welcome to Advanced Topics in Multimodal AI. Today's lecture is on “GameHorizon Suite: Multi-Horizon Data and Evaluation in Gameplay.” We've seen a lot of recent work on gameplay agents, like “NitroGen” focusing on creating a generalist agent, but this paper from researchers at Tencent ARC Lab and several universities takes a different approach. It argues that to truly evaluate AI in games, we need to stop treating it as a single, flat action-prediction problem. Instead, it proposes a unified framework to measure perception, planning, and control across different time scales.",
+      "start": 0.0,
+      "end": 32.5
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "Yes, Noah?",
+      "start": 33.6,
+      "end": 34.04
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Excuse me, Professor. You mention a unified framework, but isn't that what other benchmarks like LMGAME-BENCH are also aiming for? How is this approach different from just giving an LLM a game and seeing how it does?",
+      "start": 34.42,
+      "end": 44.7
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Good question. While other benchmarks test end-to-end performance, GameHorizon's core contribution is its structured, multi-horizon approach. It tries to disentangle why an agent fails. Does it fail at perceiving the current state, planning the next few steps, or actually executing the precise mouse and keyboard actions? It does this by creating a hierarchy of goals. Think of it as mapping the entire decision-making process, from long-term strategy down to a single mouse click.",
+      "start": 45.0,
+      "end": 75.84
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The authors identify a gap between two types of models. On one hand, you have specialized game agents and vision-language-action models. They're built for speed and can predict immediate actions well, but they often lack long-term reasoning capabilities. On the other hand, you have large, general-purpose vision-language models, which are strong at planning and language reasoning but haven't been systematically tested on their ability to execute precise actions in a complex game environment. GameHorizon aims to bridge this evaluation gap. Their main idea is a three-level hierarchy. Short-horizon operations are about one to five seconds long, like attacking an enemy. Medium-horizon goals cover one to two minutes, like completing a combat objective. And long-horizon strategies span five to eight minutes, summarizing the player's overall intent. This allows them to test if a model can connect high-level goals to low-level actions.",
+      "start": 76.22,
+      "end": 129.44
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So they're creating annotations for these different time scales on the same gameplay video? How do they even collect that kind of data?",
+      "start": 129.84,
+      "end": 135.88
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "That's the next key part. They collected 5,000 hours of gameplay across 21 diverse AAA titles by directly recording the keyboard and mouse inputs from 100 experienced human players. This is a crucial distinction from datasets that try to infer actions from video, which can be noisy. They get the raw, ground-truth controls. Then comes their annotation pipeline, which they call GameHorizon-Annotator. It's an interesting bottom-up process. First, they segment the gameplay based on player actions. Then, they use a dynamic programming approach to merge these short action clips into medium-horizon segments, and then merge those into long-horizon segments. Finally, and this is a critical point, they use a Vision-Language Model to generate the textual instructions for each of these segments.",
+      "start": 136.14,
+      "end": 179.8
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Wait, they use a VLM to generate the ground-truth instructions? Doesn't that risk introducing model-generated biases into the evaluation data itself? It seems circular.",
+      "start": 180.22,
+      "end": 189.36
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That's a valid methodological concern, and the paper acknowledges it as a limitation. The trade-off is scale. Manually annotating thousands of hours of video at three different temporal granularities would be prohibitively expensive and time-consuming. By using a VLM in a bottom-up fashion, they can manage the complexity. For short-horizon clips, the VLM gets concrete data: frames and exact actions. For higher levels, it gets the previously generated lower-level descriptions. This grounds the VLM's output, making the process scalable while trying to maintain consistency. The authors argue this is justified by the finding that bottom-up abstraction, inferring a goal from actions, is a much easier task for models than top-down decomposition.",
+      "start": 189.76,
+      "end": 237.68
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Okay, that makes sense as a practical trade-off. How is the benchmark itself structured?",
+      "start": 238.42,
+      "end": 241.94
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "It has two tracks. The offline track consists of 5,000 multiple-choice questions designed to be reproducible and targeted. These questions test things like predicting the immediate action, decomposing a medium-term goal into short-term steps, and checking the consistency across all three horizons. The online track is an interactive evaluation, but it's limited to Minecraft, likely because its state is more accessible for programmatic control and resetting. This online track is designed to see if high offline scores translate to actual in-game success, and it allows them to pinpoint exactly which subtask causes a long-horizon plan to fail.",
+      "start": 242.28,
+      "end": 281.56
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The results are quite telling. General-purpose VLMs like GPT-6-Astra and Gemini variants significantly outperformed specialized game agents. In fact, dedicated agents like NitroGen performed near the random baseline on these unseen AAA games, which suggests their policies are highly domain-specific and don't generalize well. This paper's methodology puts all these different model architectures on a level playing field. The diagnostic tests also revealed that for most models, perceiving the current action is much easier than planning the future one, and adding higher-level instructions primarily helps with that future planning, not perception. This supports their whole hierarchical premise: long-term goals are essential for effective planning.",
+      "start": 281.86,
+      "end": 323.92
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "So the implication is that for generalist agents, scaling up reasoning and language capabilities might be more important than just training a better action-prediction head?",
+      "start": 324.5,
+      "end": 331.68
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Precisely. It suggests that future work should focus on models that can explicitly bridge the gap between high-level reasoning and low-level control, rather than treating them as separate problems. This work shifts the focus from pure imitation learning on action sequences to a more holistic view of goal decomposition and execution. It connects to broader themes in AI, like hierarchical reinforcement learning and chain-of-thought reasoning, but grounds them in the complex, continuous domain of AAA games. It provides a concrete dataset and benchmark for training and evaluating these more integrated architectures.",
+      "start": 331.68,
+      "end": 368.1
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "So, to wrap up, GameHorizon's main impact is providing a framework that treats gameplay not as one monolithic task, but as an integrated system of perception, multi-level planning, and fine-grained control. It gives us a more nuanced way to diagnose model failures. The key takeaway is that to build truly competent AI agents for complex interactive tasks, we need to evaluate their ability to align strategy with action across multiple time horizons. The framework itself, not just the leaderboard, is the primary contribution here.",
+      "start": 368.5,
+      "end": 399.54
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 399.74,
+      "end": 404.245
+    }
+  ]
+}

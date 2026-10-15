@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 429.008,
+  "word_match_rate": 0.9067,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Learning Systems, today’s lecture is on L-L-M-as-Jev: L-L-Ms Are Already Jev-Style Decision Models—When and How to Fine-Tune Them. Recent work such as Improving L-L-M-as-a-Judge Inference with the Judgment Distribution studies how probabilities can improve model judgments, while Can Jev be Your Q or Policy in Reinforcement Learning? explores Jev in decision-making systems. This paper, by Yinheng Li and Justin Wagle, who list Microsoft email addresses, asks whether ordinary language models can make structured choices directly. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.8
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why use a decision model instead of asking the L-L-M to generate an answer in text?",
+      "start": 38.78,
+      "end": 44.74
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Text generation can solve classification and routing tasks, but it adds a parsing step: the system must interpret what the model wrote, and formatting mistakes can cause failures. A Jev-style model instead assigns probabilities to a fixed set of choices. The authors test whether a standard causal language model can do that using its existing next-token probabilities, without adding a classification head or training a separate decision model.",
+      "start": 45.64,
+      "end": 72.88
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the main question is whether a general model already knows how to choose reliably?",
+      "start": 73.74,
+      "end": 77.7
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. Their interface numbers each option and ends the prompt with “Best answer: [”. The model scores the continuation for each candidate, such as “1]”, and those scores form a probability distribution. The closing bracket makes candidate endings prefix-free: “1]” cannot be mistaken for the beginning of “12]”. This supports larger choice sets than letter labels typically allow, while keeping the model’s ordinary text-generation ability.",
+      "start": 78.52,
+      "end": 104.46
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Can you clarify how that works for a list with many options?",
+      "start": 105.42,
+      "end": 108.26
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The candidate endings form a trie, a branching structure that shares common prefixes. After processing the prompt once, the model can score the branches in parallel rather than separately generating an answer for every option. The method requires no new vocabulary items, parameters, or labeled training data. That makes it a practical baseline: researchers can check how well an existing model handles a decision task before investing in fine-tuning.",
+      "start": 109.26,
+      "end": 136.46
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "What changes when the authors do fine-tune the model?",
+      "start": 138.1,
+      "end": 140.76
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They train with a listwise decision loss that focuses on selecting the correct candidate. But optimizing only the answer could disrupt other behavior, so they also anchor the tuned model to its frozen base. These penalties preserve probability mass on legal answer tokens, the distribution over irrelevant tokens, and next-token behavior outside the answer. The authors test full-parameter tuning and lora adapters, and shuffle option order to reduce learned associations between labels and answers.",
+      "start": 141.48,
+      "end": 172.96
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Why preserve probabilities for tokens that are not answers?",
+      "start": 173.98,
+      "end": 176.66
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Because a decision prompt is only one use of the model. If tuning changes unrelated token behavior, it could affect conversation or cause the model to keep generating after its selected answer. The anchors are a form of behavioral regularization: they let the model learn the decision task while discouraging broad drift. In their experiments, the default anchor strength prevents many malformed or unfinished outputs that appear when the model is tuned without those constraints.",
+      "start": 177.6,
+      "end": 206.58
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How strong is the training-free result compared with fine-tuning?",
+      "start": 207.64,
+      "end": 210.04
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The frozen 4-billion-parameter quen three point five model gets 81.4% accuracy on the 231 public JevBench items, with an E-C-E of 0.057. It also reaches 69% on Banking77, a task with 77 choices. That illustrates the interface’s ability to handle high-cardinality decisions. For this model, parallel candidate scoring and ordinary autoregressive generation produce the same JevBench predictions, with no reported parsing failures.",
+      "start": 211.56,
+      "end": 245.86
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does that mean fine-tuning is unnecessary?",
+      "start": 246.9,
+      "end": 248.6
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Not in general. Fine-tuning improves Banking77 for both tested model sizes, and it especially helps the smaller quen three, zero point six B model, whose frozen accuracy is only 22.2% on that task. But improvements depend on the data and method. Full fine-tuning does not beat the larger model’s frozen JevBench score, while lora with the default anchor reaches 84%. So adaptation is most compelling where the base model has a clear weakness.",
+      "start": 249.86,
+      "end": 280.68
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What practical risks should teams watch for when choosing training data?",
+      "start": 280.68,
+      "end": 285.52
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The authors find that data composition shapes behavior beyond headline accuracy. Intent-focused training can improve routing but also encourage “yes” answers on binary questions, suppress “none of the above,” and increase overconfidence. Adding varied verification and reasoning examples reduces these tendencies. Context length matters too: short examples can hurt performance on long inputs, while adding long-context data helps recover it, particularly for the smaller model.",
+      "start": 286.38,
+      "end": 317.02
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The results also extend beyond text. Without multimodal fine-tuning, the larger model reaches 82.4% on M-M-Bench under a circular option-rotation evaluation and 64.6% on M-M-Star. Removing images sharply reduces accuracy, suggesting the model uses visual input; text-only fine-tuning retains this capability. For deployment, that means one decision interface may cover text and image choices, though teams should still test it on their own formats and inputs.",
+      "start": 317.92,
+      "end": 351.56
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "How broadly can we generalize from these evaluations?",
+      "start": 352.6,
+      "end": 354.92
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Carefully. The study covers two Qwen models, and JevBench results use only 231 public items, not the sealed evaluation set. Some fine-tuning comparisons are single-seed, and the reference implementation’s latency is not optimized. Still, the central shift is useful: structured decisions need not automatically require a custom head or a specialized model. This connects to work on judgment distributions, but focuses on extracting choices from a general model and preserving its other capabilities.",
+      "start": 356.14,
+      "end": 387.72
+    },
+    {
+      "i": 20,
+      "speaker": "Noah",
+      "text": "So the key is to tune only when there is a measured gap, and check more than accuracy?",
+      "start": 388.48,
+      "end": 393.34
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "That is the practical takeaway. Start with the frozen model and a clear probability-based interface; fine-tune when evidence shows a task-specific weakness and suitable labeled data are available. Then evaluate calibration, output stability, context length, and behavior beyond the target task. The paper’s memorable lesson is that a capable decision model may already be inside a general-purpose language model—but careful measurement determines when adaptation helps. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 394.42,
+      "end": 429.008
+    }
+  ]
+}

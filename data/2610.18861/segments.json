@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 492.669,
+  "word_match_rate": 0.9241,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical graduate course on Language Model Agents, today’s lecture is on HybridAgent. Recent work such as Thinkless: LLM Learns When to Think and Latent Collaboration in Multi-Agent Systems reflects a broader interest in adaptive reasoning and latent computation. HybridAgent takes that trend into tool use: it lets an agent reason in continuous hidden states but return to text when it needs to act or communicate. That matters because real tasks often require both private computation and evidence gathered from the outside world. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 37.96
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if hidden reasoning saves words, why not keep the whole agent latent?",
+      "start": 39.02,
+      "end": 43.48
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because tools and people need an interface they can read. Conventional agents often generate text for intermediate reasoning as well as tool calls, which can use many tokens. A purely latent reasoner can avoid spelling out each step, but it lacks a straightforward way to make text-based tool calls or expose decisions. HybridAgent addresses that tension. On WebWalker, its 14-billion-parameter model reports an average score of 49.5, compared with 40.5 for ARPO; that is one benchmark result, not a guarantee across all tasks.",
+      "start": 44.66,
+      "end": 78.82
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The basic mechanism is an alternation within one generation process. In text mode, the model emits ordinary tokens and can start a latent span with the marker <latent>. In latent mode, it repeatedly computes using continuous hidden representations rather than decoding each step into words. A component called HybridLink maps the current hidden state into a representation the model can use for its next step. The span ends when a nearest-token readout matches the exit marker, </latent>, and text generation resumes.",
+      "start": 78.82,
+      "end": 112.98
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the model follow a fixed schedule for switching between modes?",
+      "start": 114.0,
+      "end": 118.08
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. The model generates the lengths and frequency of its latent spans dynamically; the method does not prescribe a fixed pattern like one latent step followed by one text step. HybridLink is a lightweight residual adapter: a learned projection aligns the hidden state with the model’s input-embedding space, while the residual preserves much of the original representation. Think of it as a bridge between two coordinate systems, not a separate reasoning engine.",
+      "start": 119.12,
+      "end": 147.6
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Multi-turn tool use creates another challenge: the full history includes text, hidden states, and tool observations, and it cannot all be reconstructed from a text transcript. HybridAgent retains the Transformer attention cache, called the K-V entries, across turns and continues from that working memory. For inspection, it can map each latent state to its nearest token embedding. Those displayed words are pseudo-text readouts, not tokens generated during latent reasoning, and they are not a complete explanation of the internal state.",
+      "start": 148.66,
+      "end": 181.24
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how they train a bridge that the model will actually use at inference?",
+      "start": 182.1,
+      "end": 186.18
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That is the purpose of HybridSFT. Ordinary teacher-forced training supplies ground-truth embeddings, while inference feeds back the model’s own HybridLink outputs; those inputs can differ. HybridSFT first generates its own latent inputs, then makes a second pass conditioned on those predictions. It trains text positions with next-token supervision and latent positions with a regression loss. The authors propose this to reduce the mismatch, but it does not establish that every mismatch disappears.",
+      "start": 186.18,
+      "end": 217.36
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The reinforcement-learning stage has to account for a different issue: latent vectors are not sampled tokens with token-level likelihoods. HybridRL therefore optimizes policy likelihoods at sampled text positions. During updates, it records and replays the exact latent inputs and tool observations, while keeping HybridLink fixed. Rewards cover answer correctness, format, and multi-tool use. There is no explicit reward for choosing a particular reasoning mode, so the model learns when to use each mode under the training setup.",
+      "start": 218.44,
+      "end": 250.82
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So if I imagine an agent searching for evidence, it reasons privately, then switches to text for the search call?",
+      "start": 251.9,
+      "end": 258.2
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Exactly: text is the channel for actions the tool can receive and observations it returns, while latent spans can handle internal steps between those interactions. The reported efficiency measures need to be kept separate. The authors report 2.7 times fewer text tokens and up to 54% fewer total generation steps, counting text and latent steps. Their main text summarizes inference-time speedup as 2.1 times. A latent step still runs the backbone, so fewer visible words do not mean computation is free.",
+      "start": 258.96,
+      "end": 291.68
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Does the adapter itself make a measurable difference, rather than simply reusing hidden states?",
+      "start": 292.52,
+      "end": 297.04
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The HybridLink ablation gives a useful comparison. In the 14-billion-parameter setup, direct hidden-state reuse scores 71.4 on math five hundred, 73.7 on MedQA, and 24.5 on MuSiQue. The proposed two-layer residual adapter scores 88.2, 81.7, and 34.5 on those same tasks. These are the scores reported by the paper; the comparison supports the value of the proposed bridge, but it does not isolate residual alignment from every other design choice.",
+      "start": 297.88,
+      "end": 334.02
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The authors also intervene on latent spans to test whether their content matters. On math five hundred, the 8-billion-parameter model scores 84.6 without intervention. Replacing its span with one from another problem lowers the score to 44.8 at relative perturbation strength 1.4; stronger Gaussian noise at 2.0 leaves a score of 66.4. This supports the authors’ interpretation that latent content matters in this test. It does not prove that semantic content is the only cause of the performance differences.",
+      "start": 334.98,
+      "end": 369.0
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How does that compare with Coconut, and what can we conclude about the field’s direction?",
+      "start": 370.06,
+      "end": 373.8
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Coconut, or Chain of Continuous Thought, feeds a model’s last hidden state back as its next input and studies continuous reasoning. HybridAgent builds on the idea of latent computation but targets a different setting: multi-turn agents that use tools. Its representation bridge, retained attention cache, and text-mediated tool interactions address that setting. The result suggests one direction for agent research: rather than choosing between verbose text reasoning and opaque latent reasoning, systems can try to divide work between internal computation and an external action channel.",
+      "start": 374.74,
+      "end": 411.94
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "And the efficiency results don’t mean the method is automatically cheaper in every deployment, right?",
+      "start": 412.82,
+      "end": 418.7
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Right. The paper evaluates Qwen3-Base models at 4, 8, and 14 billion parameters on 11 benchmarks, so its findings do not establish gains for every model or task. Its separate 14-billion-parameter cost analysis estimates lower decoding compute and cost under specified assumptions. It counts each latent or text step as a backbone forward pass, but excludes prompt prefill, context-dependent attention, and external tool execution. Those boundaries matter when translating benchmark findings into deployment expectations.",
+      "start": 419.18,
+      "end": 453.72
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The central design principle is a division of labor: continuous states can support internal steps, while text remains available for actions, observations, and answers that an environment or observer needs to see. The benchmark and ablation results support the proposed approach within the tested settings; the pseudo-text readout and efficiency estimates have narrower interpretations than a complete explanation or a guaranteed cost saving. The lasting question is how to build reliable interfaces between internal computation and tool-mediated action. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 454.92,
+      "end": 492.669
+    }
+  ]
+}
