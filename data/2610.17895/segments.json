@@ -1,0 +1,172 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 464.195,
+  "word_match_rate": 0.9412,
+  "line_count": 23,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Interactive Systems and AI Evaluation, today's lecture is on Interaction-as-a-Judge. Recent work such as Agent-as-a-Judge: Evaluate Agents with Agents and Computer-Use Agents as Judges for Generative User Interface reflects a shift toward evaluating software through richer evidence. This paper, by authors affiliated with Carnegie Mellon University and the University of California, Berkeley, asks whether actually using an application can improve judgments of its quality. I see Noah’s hand—go ahead, Noah.",
+      "start": 0.0,
+      "end": 35.17
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why isn’t looking at the code enough to tell whether an application works?",
+      "start": 36.29,
+      "end": 40.39
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Code can describe intended behavior without proving that the behavior appears during use. A button may be connected to the wrong action, navigation may confuse users, or an animation may fail after a particular sequence of inputs. The paper’s central idea is to add computer-use interaction to evaluation: an agent operates an application, records what it observes and does, and a judge uses that trace as evidence. It evaluates both user preference and explicit requirements.",
+      "start": 41.35,
+      "end": 70.89
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: are those two evaluation tasks measuring the same thing?",
+      "start": 72.11,
+      "end": 76.11
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "No. Preference prediction asks which of two generated applications a person would prefer, combining factors such as appearance, usefulness, and usability. Requirement verification asks whether a specified behavior works, such as whether a game character responds to a key press. The distinction matters: a polished application can fail a requirement, while a functional one can still be unpleasant to use. The authors build ArenaPreferences for pairwise preferences and ArenaCorrectness for checking game requirements.",
+      "start": 76.77,
+      "end": 107.47
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "How large are those datasets, and what does each one contain?",
+      "start": 108.41,
+      "end": 111.37
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "ArenaPreferences contains 6,858 comparisons across seven application categories, including games, simulations, and consumer applications. Each comparison includes a prompt, two applications, interaction traces, and a human preference label. ArenaCorrectness contains 67 game-development traces and 412 labeled requirements, classified as broken or working. Its labels come largely from user complaints and later reports about fixes. These datasets let the authors study both subjective judgments and more concrete behavioral checks.",
+      "start": 113.37,
+      "end": 149.53
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So what did the comparisons reveal about using an application before judging it?",
+      "start": 150.61,
+      "end": 154.91
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Interaction generally helps, though not every judge benefits equally. For Gemini 3 Flash, preference accuracy rises from 65.6% with code alone to 69.1% with iterative interaction. The trained reward model reaches 70.8% with code and interaction, compared with 69.7% using code alone. On requirement verification, the strongest tested model reaches 81.6% overall accuracy with interaction, versus 77% with code only. Broken requirements are particularly difficult, and interaction improves their detection.",
+      "start": 155.43,
+      "end": 194.13
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify what iterative interaction does differently from a one-shot plan?",
+      "start": 194.13,
+      "end": 199.41
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The authors compare three strategies. With iterative computer use, an agent sees the outcome of each action before choosing the next, so it can adapt when a page or game changes state. One-shot computer use plans actions from the initial view and executes them without further observation. A heuristic strategy selects actions without model-based planning. Iterative exploration tends to work best, but it also requires repeated model calls, making the evidence more costly to collect.",
+      "start": 200.31,
+      "end": 229.61
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How does that evaluation evidence help an agent create better software, rather than just score it?",
+      "start": 230.63,
+      "end": 235.97
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The paper tests two feedback loops. At inference time, an agent tries to repair broken requirements over 5 iterations, using either interaction-based or code-only self-verification. Interaction-based feedback repairs 75.5% of initially broken requirements, compared with 55.4% for code-only feedback. This suggests that seeing a failure occur can guide a more useful correction than inspecting code alone. It also gives the agent a concrete test of whether a proposed repair changed the behavior.",
+      "start": 236.41,
+      "end": 269.15
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "And what happens when interaction is used as a training reward?",
+      "start": 270.61,
+      "end": 273.53
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "For training, the researchers use an interaction-only reward model in reinforcement learning with D-A-P-O, comparing it with a code-only reward model. Under their auto-rubric evaluation, the interaction-reward model improves win rate over the base model by 6.72 percentage points among applications that build and render successfully. Build success also rises from 81.3% to 88.5%. The model generates 35.7% less code than the code-reward condition, though quality results exclude failed builds.",
+      "start": 274.47,
+      "end": 310.43
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Does that mean interaction traces are a reliable substitute for source code?",
+      "start": 311.47,
+      "end": 315.11
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "They can provide useful evidence without source code, but the paper does not establish that traces are a universal substitute. In one preference comparison, an interaction-only reward model reaches about 69% accuracy. Still, results depend on interaction quality and the application type. The reinforcement-learning study excludes games because its heuristic interaction policy is poorly suited to playing them. Computer use also takes time and model calls, so the cost of collecting informative traces remains a practical constraint.",
+      "start": 315.97,
+      "end": 348.79
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does this fit with Agent-as-a-Judge and the broader evaluation trend?",
+      "start": 349.81,
+      "end": 353.49
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Agent-as-a-Judge emphasizes inspecting project files and, in some settings, recorded trajectories. Interaction-as-a-Judge adds direct operation of the application as another evidence source, rather than relying only on workspace inspection or a static artifact. This makes the evaluation closer to a user’s experience. It also connects judging to generation: traces can help compare outputs, guide repairs, or provide rewards during training. The broader shift is toward evaluating software through behavior observed in its environment.",
+      "start": 355.27,
+      "end": 388.15
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "What limitations should we keep in mind before generalizing these results?",
+      "start": 389.15,
+      "end": 392.79
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The evidence has boundaries. The correctness dataset is relatively small and focused on games, while preference comparisons come from one platform and retain applications with successful builds and substantial user interaction. Requirement labels can depend on how users report a problem or confirm a fix. Some judgments also rely on an internal evaluator, and the reinforcement-learning quality comparison excludes build failures. Broader applications and more independent human assessment would help establish how well these findings transfer.",
+      "start": 393.69,
+      "end": 426.83
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "What is the main takeaway for researchers building coding agents?",
+      "start": 427.73,
+      "end": 430.83
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "The key takeaway is that software should be evaluated not only by what its code says, but also by what happens when an agent uses it. Interaction adds evidence about behavior and can improve preference judgments, requirement checks, repair, and training rewards. That does not remove the need for code inspection or careful validation; it gives researchers another way to test whether an application works in practice. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 431.77,
+      "end": 464.195
+    }
+  ]
+}

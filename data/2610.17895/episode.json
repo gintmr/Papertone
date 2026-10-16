@@ -1,0 +1,292 @@
+{
+  "id": "2610.17895",
+  "title": "Interaction-as-a-Judge",
+  "authors": [
+    "Wayne Chi",
+    "I-Hung Hsu",
+    "Li Chen",
+    "Wei-Lin Chiang",
+    "Ion Stoica",
+    "Anastasios Nikolas Angelopoulos",
+    "Ameet Talwalkar",
+    "Chris Donahue",
+    "Cho-Jui Hsieh"
+  ],
+  "abstract": "Coding agents are tasked with producing sophisticated interactive applications such as websites, desktop applications, and games. While humans assess these applications interactively, current automated LLM evaluations primarily focus on code analysis and unit tests. This mismatch can cause LLM judges to miss failures that are immediately apparent to human users. We study Interaction-as-a-Judge, an evaluation paradigm where computer-use agents (CUAs) directly interact with an application. We demonstrate that Interaction-as-a-Judge can improve both evaluation and generation of interactive applications. To this end, we collect and release two complementary datasets: $6,858$ pairs of applications with human preferences and corresponding agent traces, and $222$ applications with human-verified requirement labels. Relative to standard non-interactive approaches, we find that Interaction-as-a-Judge improves evaluation in terms of predicting human preferences ($65.6\\% \\to 69.1\\%$) and requirement verification ($77.0\\% \\to 81.6\\%$). We also observe scaling benefits: across both preference alignment and requirement verification, higher-quality interactions improve performance. Finally, through both inference- and training-time experiments, we demonstrate that Interaction-as-a-Judge can also improve the quality of generated artifacts. At inference time, Interaction-as-a-Judge repairs $75.5\\%$ of broken requirements within five attempts, compared to $55.4\\%$ for code-only self-feedback. At training time, using Interaction-as-a-Judge as a reward signal improves win-rate over the base model by $6.7$pp while reducing both generated code length by $35.7\\%$ and build failure rates by $7.2$pp compared to a code-only reward signal.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.17895",
+    "arxiv": "https://arxiv.org/abs/2610.17895"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a13944-d7d3-74f0-9adf-abb22dc49545/podcast.mp3",
+  "duration": 464.195,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.17,
+      "en": "In our graduate course on Interactive Systems and AI Evaluation, today's lecture is on Interaction-as-a-Judge. Recent work such as Agent-as-a-Judge: Evaluate Agents with Agents and Computer-Use Agents as Judges for Generative User Interface reflects a shift toward evaluating software through richer evidence. This paper, by authors affiliated with Carnegie Mellon University and the University of California, Berkeley, asks whether actually using an application can improve judgments of its quality. I see Noah’s hand—go ahead, Noah.",
+      "zh": "在我们这门关于交互系统与AI评估的研究生课上，今天的讲座主题是“以交互作为评判者”。最近的一些工作，比如《Agent-as-a-Judge：用智能体评估智能体》以及《将计算机使用智能体作为生成式用户界面的评判者》，反映出一种趋势，即通过更丰富的证据来评估软件。这篇论文的作者来自卡内基梅隆大学和加州大学伯克利分校，他们研究的问题是：实际使用一个应用，是否能够提升对其质量的判断。我看到诺亚举手了——诺亚，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.29,
+      "end": 40.39,
+      "en": "Hi Professor, why isn’t looking at the code enough to tell whether an application works?",
+      "zh": "教授您好，为什么光看代码还不足以判断一个应用能不能正常工作呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.35,
+      "end": 70.89,
+      "en": "Code can describe intended behavior without proving that the behavior appears during use. A button may be connected to the wrong action, navigation may confuse users, or an animation may fail after a particular sequence of inputs. The paper’s central idea is to add computer-use interaction to evaluation: an agent operates an application, records what it observes and does, and a judge uses that trace as evidence. It evaluates both user preference and explicit requirements.",
+      "zh": "代码能描述预期行为，却不能证明这种行为在实际使用中真的会出现。按钮可能绑定了错误的操作，导航可能让用户困惑，动画也可能在特定输入序列后失效。这篇论文的核心思路是在评估中加入计算机使用交互：让一个智能体操作应用，记录它观察到什么、做了什么，再由评判者把这些轨迹作为证据。它同时评估用户偏好和明确需求。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 72.11,
+      "end": 76.11,
+      "en": "Quick question: are those two evaluation tasks measuring the same thing?",
+      "zh": "快速问一下：这两个评估任务衡量的是同一件事吗？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 76.77,
+      "end": 107.47,
+      "en": "No. Preference prediction asks which of two generated applications a person would prefer, combining factors such as appearance, usefulness, and usability. Requirement verification asks whether a specified behavior works, such as whether a game character responds to a key press. The distinction matters: a polished application can fail a requirement, while a functional one can still be unpleasant to use. The authors build ArenaPreferences for pairwise preferences and ArenaCorrectness for checking game requirements.",
+      "zh": "不是。偏好预测问的是，在两个生成的应用里，人会更喜欢哪一个，这综合了外观、实用性和易用性等因素。需求验证问的是，某个指定的行为能不能正常工作，比如游戏角色会不会响应按键。这个区别很重要：一个打磨得很精致的应用可能过不了需求验证，而一个功能正常的应用用起来也可能让人很不爽。作者构建了 ArenaPreferences 来做成对偏好比较，构建了 ArenaCorrectness 来检查游戏需求。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 108.41,
+      "end": 111.37,
+      "en": "How large are those datasets, and what does each one contain?",
+      "zh": "这些数据集有多大，各自又包含什么内容？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 113.37,
+      "end": 149.53,
+      "en": "ArenaPreferences contains 6,858 comparisons across seven application categories, including games, simulations, and consumer applications. Each comparison includes a prompt, two applications, interaction traces, and a human preference label. ArenaCorrectness contains 67 game-development traces and 412 labeled requirements, classified as broken or working. Its labels come largely from user complaints and later reports about fixes. These datasets let the authors study both subjective judgments and more concrete behavioral checks.",
+      "zh": "ArenaPreferences包含6858组对比，覆盖游戏、模拟和消费级应用等七个应用类别。每组对比都包括一个提示词、两个应用、交互轨迹，以及一个人工偏好标签。ArenaCorrectness则包含67条游戏开发轨迹和412条标注需求，分为有问题和能正常运行两类。它的标签主要来自用户投诉以及后续关于修复的报告。这两个数据集让作者既能研究主观判断，也能做更具体的行为检查。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 150.61,
+      "end": 154.91,
+      "en": "So what did the comparisons reveal about using an application before judging it?",
+      "zh": "那么这些对比结果说明了什么：在评判一个应用之前先实际使用它，到底有没有用？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 155.43,
+      "end": 194.13,
+      "en": "Interaction generally helps, though not every judge benefits equally. For Gemini 3 Flash, preference accuracy rises from 65.6% with code alone to 69.1% with iterative interaction. The trained reward model reaches 70.8% with code and interaction, compared with 69.7% using code alone. On requirement verification, the strongest tested model reaches 81.6% overall accuracy with interaction, versus 77% with code only. Broken requirements are particularly difficult, and interaction improves their detection.",
+      "zh": "交互通常是有帮助的，不过并非每个评判模型都能同等受益。对 Gemini 3 Flash 来说，偏好准确率从仅用代码时的 65.6% 提升到迭代交互下的 69.1%。训练后的奖励模型在代码加交互下达到 70.8%，而仅用代码时为 69.7%。在需求验证上，测试中最强的模型在交互下总体准确率达到 81.6%，而仅用代码时为 77%。被破坏的需求尤其难处理，交互能提升对它们的检测能力。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 194.13,
+      "end": 199.41,
+      "en": "Can you clarify what iterative interaction does differently from a one-shot plan?",
+      "zh": "你能说清楚迭代式交互和一次性规划到底有什么不同吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 200.31,
+      "end": 229.61,
+      "en": "The authors compare three strategies. With iterative computer use, an agent sees the outcome of each action before choosing the next, so it can adapt when a page or game changes state. One-shot computer use plans actions from the initial view and executes them without further observation. A heuristic strategy selects actions without model-based planning. Iterative exploration tends to work best, but it also requires repeated model calls, making the evidence more costly to collect.",
+      "zh": "作者比较了三种策略。在迭代式计算机操作中，智能体会先看到每个动作的结果，再决定下一步，因此当页面或游戏状态发生变化时，它能及时调整。一次性计算机操作则只根据初始画面规划动作，然后直接执行，不再进行后续观察。启发式策略则不依赖基于模型的规划来选择动作。迭代式探索通常效果最好，但它也需要反复调用模型，因此收集证据的成本更高。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 230.63,
+      "end": 235.97,
+      "en": "How does that evaluation evidence help an agent create better software, rather than just score it?",
+      "zh": "这些评估证据如何帮助智能体开发出更好的软件，而不只是给它打分？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 236.41,
+      "end": 269.15,
+      "en": "The paper tests two feedback loops. At inference time, an agent tries to repair broken requirements over 5 iterations, using either interaction-based or code-only self-verification. Interaction-based feedback repairs 75.5% of initially broken requirements, compared with 55.4% for code-only feedback. This suggests that seeing a failure occur can guide a more useful correction than inspecting code alone. It also gives the agent a concrete test of whether a proposed repair changed the behavior.",
+      "zh": "这篇论文测试了两种反馈回路。在推理阶段，智能体会尝试通过5轮迭代来修复有问题的需求，用的是基于交互的自验证或仅基于代码的自验证。基于交互的反馈修复了75.5%的初始问题需求，而仅基于代码的反馈只修复了55.4%。这说明亲眼看到失败发生，比单纯检查代码更能引导出有用的修正。它还给智能体提供了一个具体的测试，来判断所提出的修复是否真的改变了行为。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 270.61,
+      "end": 273.53,
+      "en": "And what happens when interaction is used as a training reward?",
+      "zh": "那如果把交互用作训练奖励，会发生什么？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 274.47,
+      "end": 310.43,
+      "en": "For training, the researchers use an interaction-only reward model in reinforcement learning with D-A-P-O, comparing it with a code-only reward model. Under their auto-rubric evaluation, the interaction-reward model improves win rate over the base model by 6.72 percentage points among applications that build and render successfully. Build success also rises from 81.3% to 88.5%. The model generates 35.7% less code than the code-reward condition, though quality results exclude failed builds.",
+      "zh": "在训练方面，研究者使用仅基于交互的奖励模型，结合D-A-P-O进行强化学习，并与仅基于代码的奖励模型做对比。在他们的自动评分标准评估下，对于能够成功构建并渲染的应用，交互奖励模型相比基础模型将胜率提升了6.72个百分点。构建成功率也从81.3%上升到88.5%。该模型生成的代码比代码奖励条件下少了35.7%，不过质量结果排除了构建失败的样本。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 311.47,
+      "end": 315.11,
+      "en": "Does that mean interaction traces are a reliable substitute for source code?",
+      "zh": "这是否意味着交互轨迹可以可靠地替代源代码？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 315.97,
+      "end": 348.79,
+      "en": "They can provide useful evidence without source code, but the paper does not establish that traces are a universal substitute. In one preference comparison, an interaction-only reward model reaches about 69% accuracy. Still, results depend on interaction quality and the application type. The reinforcement-learning study excludes games because its heuristic interaction policy is poorly suited to playing them. Computer use also takes time and model calls, so the cost of collecting informative traces remains a practical constraint.",
+      "zh": "它们能在没有源代码的情况下提供有用的证据，但论文并没有证明轨迹是万能的替代品。在一次偏好比较中，仅靠交互的奖励模型达到了大约69%的准确率。不过，结果还是取决于交互质量和应用类型。那项强化学习研究把游戏排除在外，因为它的启发式交互策略不太适合玩游戏。计算机操作也很耗时，还要调用模型，所以收集有信息量的轨迹，成本仍然是一个现实约束。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 349.81,
+      "end": 353.49,
+      "en": "How does this fit with Agent-as-a-Judge and the broader evaluation trend?",
+      "zh": "这与Agent-as-a-Judge以及更广泛的评估趋势如何契合？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 355.27,
+      "end": 388.15,
+      "en": "Agent-as-a-Judge emphasizes inspecting project files and, in some settings, recorded trajectories. Interaction-as-a-Judge adds direct operation of the application as another evidence source, rather than relying only on workspace inspection or a static artifact. This makes the evaluation closer to a user’s experience. It also connects judging to generation: traces can help compare outputs, guide repairs, or provide rewards during training. The broader shift is toward evaluating software through behavior observed in its environment.",
+      "zh": "Agent-as-a-Judge 强调检查项目文件，在某些场景下还会检查录制的轨迹。Interaction-as-a-Judge 则把直接操作应用作为另一种证据来源，而不是只依赖工作区检查或静态产物。这让评估更贴近用户的真实体验。它还把评判和生成连接了起来：轨迹可以帮助比较输出、指导修复，或者在训练过程中提供奖励。更广泛的趋势是，通过软件在其环境中所表现出的行为来评估软件。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 389.15,
+      "end": 392.79,
+      "en": "What limitations should we keep in mind before generalizing these results?",
+      "zh": "在推广这些结果之前，我们应该注意哪些局限性？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 393.69,
+      "end": 426.83,
+      "en": "The evidence has boundaries. The correctness dataset is relatively small and focused on games, while preference comparisons come from one platform and retain applications with successful builds and substantial user interaction. Requirement labels can depend on how users report a problem or confirm a fix. Some judgments also rely on an internal evaluator, and the reinforcement-learning quality comparison excludes build failures. Broader applications and more independent human assessment would help establish how well these findings transfer.",
+      "zh": "这些证据是有边界的。正确性数据集相对较小，而且集中在游戏上；偏好对比则来自单一平台，并且只保留了构建成功、用户互动较多的应用。需求标签可能取决于用户如何报告问题或确认修复。有些判断还依赖内部评估器，而且强化学习质量对比排除了构建失败的案例。更广泛的应用场景和更多独立的人工评估，将有助于确定这些发现的可迁移性。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 427.73,
+      "end": 430.83,
+      "en": "What is the main takeaway for researchers building coding agents?",
+      "zh": "对于构建编程智能体的研究者来说，主要结论是什么？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 431.77,
+      "end": 464.195,
+      "en": "The key takeaway is that software should be evaluated not only by what its code says, but also by what happens when an agent uses it. Interaction adds evidence about behavior and can improve preference judgments, requirement checks, repair, and training rewards. That does not remove the need for code inspection or careful validation; it gives researchers another way to test whether an application works in practice. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键结论是，评估软件不能只看代码写了什么，还要看智能体使用它时会发生什么。交互能提供关于行为的证据，并改进偏好判断、需求检查、修复和训练奖励。这并不意味着不再需要代码审查或仔细验证，而是给研究者提供了另一种检验应用在现实中是否有效的方法。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chi2026interactionasajudge,\n      title={Interaction-as-a-Judge}, \n      author={Wayne Chi and I-Hung Hsu and Li Chen and Wei-Lin Chiang and Ion Stoica and Anastasios Nikolas Angelopoulos and Ameet Talwalkar and Chris Donahue and Cho-Jui Hsieh},\n      year={2026},\n      eprint={2610.17895},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.17895}, \n}",
+  "topics": [
+    "Agents",
+    "Data Curation",
+    "Human-AI"
+  ],
+  "peaks": [
+    0.624,
+    0.368,
+    0.395,
+    0.368,
+    0.337,
+    0.499,
+    0.809,
+    0.349,
+    0.484,
+    0.438,
+    0.404,
+    0.441,
+    0.428,
+    0.313,
+    0.2,
+    0.268,
+    0.274,
+    0.497,
+    0.334,
+    0.411,
+    0.5,
+    0.505,
+    0.343,
+    0.424,
+    0.688,
+    0.503,
+    0.323,
+    0.452,
+    0.399,
+    0.393,
+    0.633,
+    1.0,
+    0.602,
+    0.523,
+    0.731,
+    0.481,
+    0.506,
+    0.432,
+    0.485,
+    0.339,
+    0.386,
+    0.321,
+    0.585,
+    0.457,
+    0.514,
+    0.201,
+    0.302,
+    0.297,
+    0.404,
+    0.903,
+    0.568,
+    0.532,
+    0.412,
+    0.552,
+    0.497,
+    0.439,
+    0.45,
+    0.366,
+    0.282,
+    0.376,
+    0.387,
+    0.746,
+    0.603,
+    0.72,
+    0.862,
+    0.739,
+    0.331,
+    0.891,
+    0.479,
+    0.679,
+    0.44,
+    0.452
+  ],
+  "published": "2026-10-13",
+  "views": 577,
+  "license": "CC BY"
+}

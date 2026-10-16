@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 480.078,
+  "word_match_rate": 0.9086,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Transformer Architectures and Structured Decision Systems, today's lecture is on Jeva: System One Models from First Principles. Qi Li and Xinchao Wang, at the National University of Singapore, ask how models can make direct choices without generating a rationale first. Work such as JEV-as-a-Judge and Screening Is Enough reflects growing interest in confidence, abstention, and efficient decisions. Jeva takes a structural approach. I see Noah's hand—go ahead, Noah.",
+      "start": 0.0,
+      "end": 33.52
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes a system-one decision different from an ordinary language-model answer?",
+      "start": 35.0,
+      "end": 39.72
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A system-one model returns a bounded decision directly: perhaps a tool choice, a document selection, a yes-or-no judgment, or a score. Many existing methods derive decisions from answer-token probabilities or task-specific output heads. Jeva instead treats the candidate set itself as structured input. That matters because a choice list may change from request to request, and some requests have no suitable option at all. The goal is direct decision-making without assuming one answer must be correct.",
+      "start": 40.74,
+      "end": 72.96
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The first design idea is to separate request understanding from candidate representation. Jeva encodes the request and each option independently with a shared language-model backbone. The option encoding excludes the current question, its position, and the other candidates. A compact decision stack then lets the request state attend to the whole set. Think of prepared reference cards: they stay fixed while a question-specific reader compares them.",
+      "start": 73.94,
+      "end": 102.26
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if the options are encoded independently, can the model still account for how they relate to one another?",
+      "start": 103.24,
+      "end": 109.06
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Yes. The option vectors remain fixed, but the request state is refined through attention over the complete set. That distinction is important: Jeva does not simply assign each option an isolated score and rank them. The set can change the evidence gathered into the state. The paper shows that adding a third candidate can reverse the preference between two unchanged candidates, something an independent scorer based only on the request and each option cannot do.",
+      "start": 110.0,
+      "end": 137.36
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The second idea is to separate answer availability from competition among the candidates. Jeva first forms a distribution over the supplied options, representing which one is preferable if an acceptable answer exists. A separate coverage gate estimates whether any option applies. The model can therefore assign probability to a null outcome rather than forcing all probability onto unsuitable candidates. This makes abstention part of the decision structure, not an afterthought.",
+      "start": 137.36,
+      "end": 168.28
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how that separation behaves when someone adds more candidates?",
+      "start": 169.16,
+      "end": 172.8
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The coverage estimate uses the maximum candidate score with a learned threshold and temperature, while the conditional option probabilities are normalized across candidates. So adding a low-scoring option below the existing maximum does not directly alter the coverage estimate. However, the decision stack can respond to the changed set and alter scores. Jeva also supports three output types: choosing an option, predicting a positive-candidate probability, and returning an expected score.",
+      "start": 174.0,
+      "end": 203.14
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "A third enabling idea is symmetry. Permuting candidates reorders their probabilities but, under the paper's assumptions, leaves the refined state and null probability unchanged. Shared scoring also means that adding options does not require new output parameters. For repeated workloads, Jeva can cache candidate vectors and attention keys and values, then reuse them with new requests. This is candidate-side reuse, not answer caching: the request still gets encoded and evaluated afresh.",
+      "start": 204.06,
+      "end": 237.46
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "What does that reuse save in a practical retrieval workload?",
+      "start": 239.1,
+      "end": 242.14
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "In the reported cache tests, hybrid reuse reduced median latency for long-document candidate sets from 2,102 milliseconds to 75.1 milliseconds when all options were reusable. For shared candidate banks, the reductions also appeared on Typed Decisions and MLDR. Those measurements depend on the implementation and workload, so they are not universal latency guarantees. Importantly, the tested cache conditions produced no decision changes, although the largest probability difference was 0.00736.",
+      "start": 242.14,
+      "end": 276.02
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The evaluation tests several distinct claims. Jeva led full-coverage accuracy in seven of eight reported general-evaluation slices, including BANKING77 and three Mind2Web settings. In a candidate-order test on 600 examples, it had no decision flips and a mean total-variation difference of 3.17 times ten to the minus 8 across aligned distributions. On BANKING77 requests with absent answers, null detection reached 98.66% AUROC. These results support the design, but remain bounded by the tested tasks.",
+      "start": 279.86,
+      "end": 320.14
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we interpret the large candidate-set results, given that they use a diagnostic retrieval setting?",
+      "start": 321.0,
+      "end": 326.24
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "With candidate sets ranging from 32 to 2,048, Jeva supported all tested requests and achieved 78.40% aggregate accuracy; accuracy at 2,048 candidates was 69.88%. Length-aware batching also reduced median latency at that size from 94.459 seconds to 12.040 seconds on an H200. These are implementation-specific findings, not proof of broad retrieval superiority. The main architectural point is that the decision head scales linearly with candidate count rather than constructing every candidate-to-candidate interaction.",
+      "start": 327.1,
+      "end": 367.48
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Jeva connects to retrieval systems that encode queries and passages independently, and to late-interaction methods that preserve richer candidate representations. Its added emphasis is set-aware refinement alongside explicit answerability. Screening Is Enough also explores rejecting all keys rather than always normalizing attention, while JEV-as-a-Judge studies confidence-based escalation to a larger model. Jeva's contribution is a unified candidate-decision architecture, rather than a general claim that one mechanism resolves every form of uncertainty.",
+      "start": 368.72,
+      "end": 404.46
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Does the paper establish that Jeva will generalize to other backbones and deployment settings?",
+      "start": 405.4,
+      "end": 409.86
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Not yet. The main trained model uses a Qwen3.5-4B backbone and one decision block, and the timing results rely on particular hardware, batching, and runtime choices. Cache equivalence also assumes fixed model and encoder settings; parameter changes require invalidation. Those limits make the paper's contribution best understood as a design and implementation case for reusable, set-aware decisions. Further work should test more models, tasks, and operational constraints.",
+      "start": 410.82,
+      "end": 444.38
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The lasting takeaway is to treat a decision set as more than a row of answer labels. Jeva separates reusable candidate memory, request-specific comparison, and the question of whether any candidate is valid. That separation offers a way to combine context-sensitive decisions with caching and abstention, while making the assumptions visible. The evidence is promising within its tested scope, and the next research step is to learn where these structural advantages persist. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 445.52,
+      "end": 480.078
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 401.293,
+  "word_match_rate": 0.9627,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning Methods, today’s lecture is on Scaling Empowered Agents. Recent work such as The Geometry of Empowerment and A Single Goal is All You Need explores how agents can gain control or develop skills without conventional task rewards. This paper, from researchers affiliated with Princeton and Berkeley, connects those directions: it trains agents not only to learn skills, but also to seek states where those skills offer more choices. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 30.98
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does empowerment mean in this setting?",
+      "start": 32.04,
+      "end": 34.72
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Empowerment measures how much an agent can influence what it will observe in the future. Imagine standing in a room with several usable paths and tools: from there, your actions can lead to many different outcomes. A narrow corridor offers fewer possibilities. The paper asks how an agent can learn to find situations with more such options, rather than simply seeking novelty or reducing prediction error.",
+      "start": 35.82,
+      "end": 60.1
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So is the goal to learn many different skills, or to find places where those skills matter more?",
+      "start": 61.04,
+      "end": 65.62
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Both, but they are separate learning problems. Skills first provide a way to measure the range of outcomes available from a state. A second policy then tries to reach states where those skills can produce more distinguishable futures. The distinction matters: learning a varied repertoire from a fixed starting point does not, by itself, teach an agent where it should go to make that repertoire useful.",
+      "start": 66.34,
+      "end": 88.92
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The proposed method, Skills Empowered Agents, uses a skill-conditioned policy and a separate state-seeking policy. A skill is selected from a continuous vector, and the policy uses that skill along with its starting context to choose actions. The system learns whether a future state reveals which skill was used. If different skills lead to recognizable outcomes, the starting state offers more effective control.",
+      "start": 89.9,
+      "end": 115.64
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "One important design choice is how the method estimates those outcomes. It trains a classifier to infer the selected skill from the starting and future states, using a contrastive learning objective. Future states are sampled at varying, discounted time horizons, so the signal can reflect longer-term consequences rather than just immediate motion. A structured classifier compares representations of state changes, reducing the risk that it mistakes trivial differences for meaningful control.",
+      "start": 116.68,
+      "end": 146.4
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: how does the system avoid counting tiny state changes as useful empowerment?",
+      "start": 147.32,
+      "end": 151.98
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That concern is central. In continuous environments, the authors add noise during classifier training, creating an information bottleneck: a skill distinction should remain detectable despite small perturbations. They also use the structured state-difference classifier instead of a more general decoder, which can overfit to collected data. Neither choice guarantees that every learned distinction is useful, so the researchers also evaluate concrete environmental behavior.",
+      "start": 153.06,
+      "end": 181.22
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Training uses a two-stage rollout. First, the state-seeking policy moves from a reset to a switch state. Then a sampled skill runs from that state, producing evidence about the control available there. This lets the skill learner examine states the other policy can reach, while the state-seeking policy receives an intrinsic reward based on estimated empowerment. The setup links exploration of skills with exploration of promising starting locations.",
+      "start": 182.14,
+      "end": 209.54
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The experiments span Craftax-Classic, a partially observed crafting and survival environment, and continuous tasks involving an ant, a soccer ball, and movable blocks. In Craftax-Classic, the agent averages about 7 to 8 achievements out of 22 at the reported training scale, collecting resources and crafting tools. In the continuous tasks, it approaches regions or objects where it can move the ant, ball, or blocks in several directions.",
+      "start": 210.94,
+      "end": 238.72
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How do we know those behaviors reflect real control rather than just a high classifier score?",
+      "start": 239.8,
+      "end": 244.48
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The authors do not rely on the classifier estimate alone. They measure task-specific outcomes, including achievements in Craftax-Classic and distances to the ball or blocks. Their ablations also test the two-stage rollout, classifier choices, and policy switching. Removing switching or using a more expressive classifier often weakens behavior. The results suggest that careful estimation and the way policies gather data both contribute to the outcome.",
+      "start": 245.32,
+      "end": 273.96
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "A useful way to interpret the qualitative results is that empowerment is accrued and then spent. The agent first seeks a state with more available options; then its skills use those options to change the environment. In Craftax-Classic, this can mean collecting materials, crafting tools, building, or responding to enemies. Survival incentives alone do not produce the same range of crafting behavior in the reported comparisons.",
+      "start": 274.88,
+      "end": 302.02
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "How does this connect to The Geometry of Empowerment and earlier skill-learning work?",
+      "start": 303.22,
+      "end": 307.4
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The Geometry of Empowerment offers a theoretical way to characterize potential empowerment through the futures reachable by skills. This paper takes a practical step toward optimizing that kind of quantity in learned environments. It also builds on mutual-information skill discovery, but adds a policy whose job is to seek more empowering states. That is a useful distinction from work focused primarily on learning or composing skills once an initial state has been given.",
+      "start": 308.26,
+      "end": 336.58
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The conclusions should remain bounded by the experiments. What counts as an outcome depends on which state variables define empowerment; using inventory, health, or object position could lead to different behavior. The theoretical improvement argument also assumes an accurately fitted classifier and ideal policy updates, conditions that function approximation may not satisfy. The work demonstrates a promising approach in selected benchmarks, not a guarantee of useful behavior in every environment.",
+      "start": 337.42,
+      "end": 368.26
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The main takeaway is that skill learning can do more than expand an agent’s behavioral repertoire: it can help the agent decide where that repertoire will matter. Skills provide a practical lens on controllable futures, while a separate policy searches for states with greater control. Future research can test how robust this approach is across representations, state variables, and environments. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 368.26,
+      "end": 401.293
+    }
+  ]
+}

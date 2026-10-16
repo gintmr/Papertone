@@ -1,0 +1,259 @@
+{
+  "id": "2610.18141",
+  "title": "Mitigating Cross-Modal Hallucinations by Correcting Modality Misrouting in Omnimodal LLMs",
+  "authors": [
+    "Yu Mi",
+    "Licheng Pan",
+    "Jiayi Zhu",
+    "Qirui Liu",
+    "Yitong Qiao",
+    "Changtong Xu",
+    "Tao Wei",
+    "Fei Sun",
+    "Zhixuan Chu",
+    "Kui Ren"
+  ],
+  "abstract": "Omnimodal large language models (OLLMs) are susceptible to cross-modal hallucinations under audio-visual interference. We find that, for a substantial fraction of incorrect joint predictions, the question-relevant unimodal branch can still recover the correct answer, suggesting that task-relevant evidence can remain recoverable from the relevant modality even when it is not reflected in the joint prediction. We refer to this recoverable failure pattern as \\emph{modality misrouting}. We propose CaRe (Conflict-aware Residual Intervention), a training-free inference-time method for identifying and correcting modality misrouting. CaRe uses a text-only modality probe to identify a candidate modality-specific counterfactual branch, and flags potential misrouting when its prediction conflicts with the original joint prediction. For such cases, CaRe computes a residual direction from the discrepancy between the counterfactual and fused representations and uses it to steer the original multimodal state toward the relevant modality evidence, while retaining both modalities in the original audio-visual inference path. The intervention strength is adapted based on the confidence of the counterfactual branch. Experiments on CMM and AVHBench across two OLLMs show that CaRe consistently outperforms the evaluated inference-time hallucination-mitigation baselines.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.18141",
+    "arxiv": "https://arxiv.org/abs/2610.18141"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a13884-3300-780e-a613-4a030ca31870/podcast.mp3",
+  "duration": 460.669,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.5,
+      "en": "In a hypothetical course on Multimodal Learning and Reliable AI, today’s lecture is on “Mitigating Cross-Modal Hallucinations by Correcting Modality Misrouting in Omnimodal LLMs.” Recent work such as “Attention Reallocation” and “AVCD” reflects a broader trend toward inference-time ways to reduce hallucinations. This paper, from researchers affiliated with Zhejiang University and Ant Group, asks a more specific question: what if the model already has the right evidence, but fails to use it in its joint prediction? I see a hand. Yes, Noah?",
+      "zh": "在一门假设开设的多模态学习与可靠AI课程中，今天的讲座主题是“通过纠正全模态大语言模型中的模态错误路由来缓解跨模态幻觉”。近期的“注意力重分配”和“AVCD”等工作反映了一个更广泛的趋势，即在推理阶段减少幻觉。这篇论文来自浙江大学和蚂蚁集团的研究人员，提出了一个更具体的问题：如果模型已经掌握了正确的证据，但在联合预测时没能用上它，那该怎么办？我看到有人举手。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.52,
+      "end": 43.08,
+      "en": "Hi Professor, does modality misrouting mean the model is paying attention to the wrong input?",
+      "zh": "教授您好，模态误路由是指模型把注意力放到了错误的输入上吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.06,
+      "end": 72.04,
+      "en": "That is close, though the paper defines it through a particular pattern: a joint audio-video answer is wrong, while the relevant audio-only or video-only branch can still answer correctly. The evidence has not vanished; it is underrepresented in the fused prediction. The authors measure this recovery pattern on cross-modal benchmarks and find it in a substantial share of errors, motivating a correction that uses the model’s own unimodal representations.",
+      "zh": "这个理解很接近，不过论文里是通过一种特定的模式来定义它的：联合的音视频答案是错的，但相关的纯音频或纯视频分支仍然能答对。证据并没有消失，只是在融合预测里被弱化了。作者在跨模态基准上测量了这种恢复模式，发现在相当一部分错误里都存在这种情况，于是提出了一种利用模型自身单模态表征来做纠正的方法。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.38,
+      "end": 102.48,
+      "en": "The method, called care, first asks a text-only question about which modality is needed to answer the prompt: audio, video, or both. Because this probe sees the question but not the sensory sample, it serves as a routing guide rather than an answer. If it uniquely selects audio or video, care compares that modality’s branch with the joint audio-video branch. If the probe does not select one modality, the ordinary joint prediction is left unchanged.",
+      "zh": "这个方法叫care，它先问一个纯文本的问题：回答这个提示需要哪种模态——音频、视频，还是两者都要。因为这个探测只看得到问题、看不到感官样本，所以它起的是路由指引的作用，而不是给出答案。如果它明确选中了音频或视频，care就会把那个模态的分支和音视频联合分支做比较。如果探测没有选中某一种模态，那就保持原来的联合预测不变。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.52,
+      "end": 108.32,
+      "en": "So the method does not automatically trust whichever single-modality answer sounds more confident?",
+      "zh": "所以这个方法并不会自动相信那个听起来更有把握的单模态答案？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 109.24,
+      "end": 136.76,
+      "en": "Exactly. Care also requires a conflict: the joint and selected unimodal branches must each have a clear prediction, and those predictions must differ. For example, a video of a cat might bias the joint model toward claiming it hears a meow, even when the audio contains duck calls. If the audio-only branch says “no,” and the question probe points to audio, the conflict gate allows a correction. Otherwise, the method makes no intervention.",
+      "zh": "没错。CARE还要求存在冲突：联合分支和选中的单模态分支必须各自有明确的预测，而且这些预测必须不同。举个例子，一段猫的视频可能会让联合模型倾向于声称它听到了喵喵声，即使音频里其实是鸭叫。如果纯音频分支说“不对”，而问题探针又指向音频，那么冲突门控就允许进行一次修正。否则，该方法不做任何干预。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.76,
+      "end": 165.5,
+      "en": "For a gate-positive case, care compares internal hidden states from the joint and selected unimodal branches. Their difference supplies a sample-specific residual direction. The method adds a scaled version of that difference to the joint representation, rather than substituting the unimodal answer. Think of it as using a counterfactual branch as a guide to adjust the model’s route, while keeping both sensory inputs available for the rest of the answer.",
+      "zh": "对于一个门控为正的样本，care会比较联合分支和选中的单模态分支的内部隐藏状态。两者的差异提供了一个样本特定的残差方向。方法将这个差异的缩放版本加到联合表示上，而不是直接替换成单模态的答案。可以把它理解为用一个反事实分支来引导模型调整推理路径，同时让两种感官输入在后续回答中仍然可用。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 165.5,
+      "end": 169.34,
+      "en": "Can you clarify where that representation adjustment happens?",
+      "zh": "你能说清楚这个表示调整具体发生在哪里吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 170.24,
+      "end": 199.22,
+      "en": "The intervention happens at the final prompt-token position during prefilling, in the final 3 language-decoder layers in the main experiments. The adjusted state then passes through later decoder layers, and generation continues on the audio-video path. The correction strength depends on the unimodal branch’s decision margin: more decisive predictions can receive stronger steering. The coefficients also decrease across the selected layers, so early layers get more adjustment than later ones.",
+      "zh": "这种干预发生在预填充阶段的最后一个提示token位置，在主实验中位于语言解码器的最后3层。调整后的状态随后经过后面的解码器层，生成过程继续沿音视频路径进行。校正强度取决于单模态分支的决策裕度：预测越果断，受到的引导可以越强。系数在所选各层之间也逐层递减，所以靠前的层得到的调整比靠后的层更多。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 200.12,
+      "end": 238.8,
+      "en": "This design relies on three linked ideas: route using the question, intervene only when branch predictions conflict, and correct the joint representation without dropping either modality. Across the C-M-M benchmark, care raises accuracy from 70.5% to 85.9% for quen two point five omni seven B, and from 73% to 86.9% for mini C-P-M o two point six. On A-V-H-Bench, the corresponding results rise from 69.8% to 82.3%, and from 73.4% to 80.2%.",
+      "zh": "这个设计依赖三个相互关联的思路：用问题来路由，只在分支预测冲突时才介入，以及在不丢弃任一模态的情况下修正联合表示。在C-M-M基准上，care把quen two point five omni seven B的准确率从70.5%提升到85.9%，把mini C-P-M o two point six的准确率从73%提升到86.9%。在A-V-H-Bench上，相应结果分别从69.8%提升到82.3%，从73.4%提升到80.2%。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 240.82,
+      "end": 244.86,
+      "en": "Does the method help both kinds of cross-modal errors, or mainly one direction?",
+      "zh": "这个方法对两种跨模态错误都有帮助，还是主要只对一个方向有效？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 245.86,
+      "end": 281.68,
+      "en": "The reported results cover both directions: visual evidence inducing a false audio perception, and audio evidence inducing a false visual perception. Gains are especially apparent on the Audio Dominance subset of C-M-M. The team also tests quen two point five omni three B, where accuracy rises from 76.9% to 82.5% on C-M-M and from 76.4% to 81% on A-V-H-Bench. That offers evidence across model scales, though still within a limited set of backbones.",
+      "zh": "报告的结果覆盖了两个方向：视觉证据引发错误的音频感知，以及音频证据引发错误的视觉感知。在C-M-M的音频主导子集上，提升尤其明显。团队还测试了Qwen2.5-Omni-3B，在C-M-M上准确率从76.9%升到82.5%，在A-V-H-Bench上从76.4%升到81%。这提供了跨模型规模的证据，不过仍然局限在有限的骨干模型范围内。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 282.68,
+      "end": 321.56,
+      "en": "A useful ablation compares representation correction with simply taking the selected unimodal branch’s answer. Care performs better across the reported backbone-task combinations, with gains over direct selection reaching 10.82 percentage points. This supports the idea that the joint context remains valuable even when it has misrouted evidence. On Daily-Omni, broader audio-visual question-answering accuracy changes modestly, from 61.5% to 61.8% for one model and from 61% to 61.5% for the other, with variation across categories.",
+      "zh": "一个有用的消融实验，是把表示纠正和直接采用所选单模态分支的答案做对比。在报告的各骨干-任务组合上，CARE 表现更好，相比直接选择最多提升了 10.82 个百分点。这说明即便联合上下文里混入了被误导的证据，它依然有价值。在 Daily-Omni 上，更广泛的音视频问答准确率变化不大，一个模型从 61.5% 升到 61.8%，另一个从 61% 升到 61.5%，各类别之间有波动。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 322.74,
+      "end": 326.98,
+      "en": "How should we compare this with Attention Reallocation or AVCD?",
+      "zh": "我们该怎么把它和注意力重分配或AVCD做比较呢？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 326.98,
+      "end": 361.46,
+      "en": "Those works also explore inference-time mitigation, but care’s distinctive emphasis is identifying a recoverable disagreement between a joint branch and a question-selected unimodal branch, then steering the joint representation. It is not a global reweighting rule or simply a contrastive output adjustment. That makes it a targeted response to modality misrouting. The comparison also suggests a broader research direction: diagnosing where useful evidence is lost inside a multimodal computation, then intervening selectively.",
+      "zh": "这些工作同样探索了推理阶段的缓解方法，但CARE的独特重点在于识别联合分支与问题选定的单模态分支之间可恢复的分歧，然后引导联合表示。它不是全局重加权规则，也不是简单的对比输出调整。这使它成为对模态误路由的有针对性回应。这一对比还指向了一个更广泛的研究方向：诊断有用的证据在多模态计算中何处丢失，然后选择性地进行干预。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 362.48,
+      "end": 391.74,
+      "en": "There are important constraints. The method assumes a finite answer set, such as yes or no, so branch predictions and margins can be compared. It also assumes the relevant evidence is accessible in a unimodal branch and that the question-only probe selects a useful modality. Extra probe and counterfactual passes add inference cost, even though the paper reports lower serial-execution latency than M-A-D and notes that parallel branches could reduce latency further.",
+      "zh": "这里有一些重要限制。该方法假设答案集是有限的，比如是或否，这样才能比较各分支的预测和边际。它还假设相关证据在单模态分支中是可获取的，并且仅基于问题的探针能选出有用的模态。额外的探针和反事实前向传播会增加推理成本，尽管论文报告其串行执行延迟低于 M-A-D，并指出并行分支可以进一步降低延迟。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 392.62,
+      "end": 396.74,
+      "en": "Could this approach work for open-ended questions where there is no fixed set of answers?",
+      "zh": "这种方法能不能用在没有固定答案集的开放式问题上呢？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 397.7,
+      "end": 427.88,
+      "en": "That remains an open question. Extending care to open-ended generation would require reliable ways to compare branch claims and identify meaningful conflicts without a predefined answer space. More broadly, the paper shifts attention from suppressing suspicious outputs toward recovering evidence the model already represents. Its benchmark results support that strategy for binary cross-modal tasks, while leaving broader tasks, more models, and deployment costs for future evaluation.",
+      "zh": "这仍然是一个开放问题。要把care扩展到开放式生成，就需要可靠的方法来比较各分支的主张，并在没有预定义答案空间的情况下识别有意义的冲突。更广泛地说，这篇论文把注意力从压制可疑输出转向恢复模型已经表示出的证据。它的基准结果支持这一策略在二元跨模态任务上的有效性，而更广泛的任务、更多模型以及部署成本则留待未来评估。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 428.94,
+      "end": 460.669,
+      "en": "The central takeaway is simple: a multimodal model can possess the evidence it needs and still fail to route that evidence into its answer. Care offers a selective way to use a unimodal branch as a guide while retaining joint context. Whether this pattern generalizes beyond the tested settings will depend on better routing, wider evaluations, and practical control of inference cost. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论很简单：一个多模态模型可以拥有它所需的证据，却仍然无法把这些证据引导到答案里。Care提供了一种选择性的方法，把单模态分支当作引导，同时保留联合上下文。这个模式能否推广到测试环境之外，将取决于更好的路由、更广泛的评估，以及对推理成本的实用控制。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{mi2026mitigatingcrossmodalhallucinationscorrecting,\n      title={Mitigating Cross-Modal Hallucinations by Correcting Modality Misrouting in Omnimodal LLMs}, \n      author={Yu Mi and Licheng Pan and Jiayi Zhu and Qirui Liu and Yitong Qiao and Changtong Xu and Tao Wei and Fei Sun and Zhixuan Chu and Kui Ren},\n      year={2026},\n      eprint={2610.18141},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.18141}, \n}",
+  "topics": [
+    "AI"
+  ],
+  "peaks": [
+    0.855,
+    0.542,
+    0.548,
+    0.368,
+    0.506,
+    0.234,
+    0.842,
+    0.71,
+    0.859,
+    0.588,
+    0.501,
+    0.79,
+    0.577,
+    0.788,
+    0.686,
+    0.648,
+    0.695,
+    1.0,
+    0.837,
+    0.796,
+    0.677,
+    0.759,
+    0.401,
+    0.31,
+    0.384,
+    0.318,
+    0.88,
+    0.668,
+    0.513,
+    0.563,
+    0.492,
+    0.486,
+    0.5,
+    0.388,
+    0.308,
+    0.3,
+    0.376,
+    0.583,
+    0.989,
+    0.731,
+    0.639,
+    0.506,
+    0.417,
+    0.514,
+    0.698,
+    0.582,
+    0.345,
+    0.55,
+    0.241,
+    0.2,
+    0.507,
+    0.585,
+    0.432,
+    0.444,
+    0.309,
+    0.48,
+    0.657,
+    0.376,
+    0.399,
+    0.307,
+    0.349,
+    0.459,
+    0.727,
+    0.63,
+    0.546,
+    0.542,
+    0.432,
+    0.96,
+    0.666,
+    0.422,
+    0.528,
+    0.328
+  ],
+  "published": "2026-10-13",
+  "views": 247,
+  "license": "arXiv 默认许可"
+}

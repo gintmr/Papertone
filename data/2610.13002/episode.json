@@ -1,0 +1,248 @@
+{
+  "id": "2610.13002",
+  "title": "Scaling Empowered Agents",
+  "authors": [
+    "Catherine Ji",
+    "Vivek Myers",
+    "Joshua Lin",
+    "Alexandra Wingate",
+    "Sergey Levine",
+    "Benjamin Eysenbach"
+  ],
+  "abstract": "Empowerment measures the capacity of an agent to actively control its environment. In this work, we explain the connection between skill learning and empowerment. While skill learning is not empowerment, we introduce a simple scalable recipe for empowerment maximization: empowerment corresponds to the number of executable skills from a state, so maximizing empowerment corresponds to reaching states that are good starting points for many skills. Our recipe applies to arbitrary underlying skill learning methods. Whereas most prior work on empowerment looks at tabular settings, this recipe enables us to study empowerment at a scale where we can realize theoretically-predicted but empirically-elusive properties of empowerment (e.g., gathering resources, environment modification, survival). Experiments show that empowerment maximization unlocks interesting emergent properties, such as building a house in Crafter. Website and code at \\href{this https URL}{this https url}.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.13002",
+    "arxiv": "https://arxiv.org/abs/2610.13002"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a12e24-3dbf-7302-9e59-f46ad2cf0fc7/podcast.mp3",
+  "duration": 401.293,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 30.98,
+      "en": "In Deep Reinforcement Learning Methods, today’s lecture is on Scaling Empowered Agents. Recent work such as The Geometry of Empowerment and A Single Goal is All You Need explores how agents can gain control or develop skills without conventional task rewards. This paper, from researchers affiliated with Princeton and Berkeley, connects those directions: it trains agents not only to learn skills, but also to seek states where those skills offer more choices. I see your hand, Noah; go ahead.",
+      "zh": "在深度强化学习方法这门课里，今天讲的是扩展赋能智能体。最近的一些工作，比如《赋能的几何》和《一个目标就够了》，探讨了智能体如何在没有传统任务奖励的情况下获得控制权或发展技能。这篇论文来自普林斯顿和伯克利的研究人员，把这两个方向联系了起来：它不仅训练智能体学习技能，还让它们去寻找那些能让这些技能提供更多选择的状态。我看到你举手了，Noah，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.04,
+      "end": 34.72,
+      "en": "Hi Professor, what does empowerment mean in this setting?",
+      "zh": "教授您好，在这个设定里，empowerment是什么意思？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 35.82,
+      "end": 60.1,
+      "en": "Empowerment measures how much an agent can influence what it will observe in the future. Imagine standing in a room with several usable paths and tools: from there, your actions can lead to many different outcomes. A narrow corridor offers fewer possibilities. The paper asks how an agent can learn to find situations with more such options, rather than simply seeking novelty or reducing prediction error.",
+      "zh": "赋权衡量的是智能体能在多大程度上影响它未来会观察到的东西。想象你站在一个房间里，里面有好几条可用的路径和工具：在那里，你的行动可以通向许多不同的结果。而一条狭窄的走廊提供的可能性就少得多。这篇论文要问的是，智能体如何学会去寻找拥有更多这类选项的情境，而不是仅仅追求新奇或降低预测误差。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 61.04,
+      "end": 65.62,
+      "en": "So is the goal to learn many different skills, or to find places where those skills matter more?",
+      "zh": "那么目标是学会许多不同的技能，还是找到那些技能更能发挥作用的地方？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 66.34,
+      "end": 88.92,
+      "en": "Both, but they are separate learning problems. Skills first provide a way to measure the range of outcomes available from a state. A second policy then tries to reach states where those skills can produce more distinguishable futures. The distinction matters: learning a varied repertoire from a fixed starting point does not, by itself, teach an agent where it should go to make that repertoire useful.",
+      "zh": "两者都是，但它们是两个独立的学习问题。技能首先提供了一种衡量某个状态能产生多大结果范围的方法。然后第二个策略尝试到达那些能让这些技能产生更可区分未来的状态。这个区分很重要：从一个固定起点学习多样化的技能库，本身并不能教会智能体应该去哪里才能让这个技能库发挥作用。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 89.9,
+      "end": 115.64,
+      "en": "The proposed method, Skills Empowered Agents, uses a skill-conditioned policy and a separate state-seeking policy. A skill is selected from a continuous vector, and the policy uses that skill along with its starting context to choose actions. The system learns whether a future state reveals which skill was used. If different skills lead to recognizable outcomes, the starting state offers more effective control.",
+      "zh": "提出的方法叫技能赋能智能体，它使用一个以技能为条件的策略和一个独立的状态搜索策略。技能从一个连续向量中选取，策略结合该技能与起始上下文来选择动作。系统会学习未来的状态是否能揭示当时用的是哪个技能。如果不同技能导向可辨认的结果，那么起始状态就提供了更有效的控制。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 116.68,
+      "end": 146.4,
+      "en": "One important design choice is how the method estimates those outcomes. It trains a classifier to infer the selected skill from the starting and future states, using a contrastive learning objective. Future states are sampled at varying, discounted time horizons, so the signal can reflect longer-term consequences rather than just immediate motion. A structured classifier compares representations of state changes, reducing the risk that it mistakes trivial differences for meaningful control.",
+      "zh": "一个重要的设计选择是该方法如何估计这些结果。它训练一个分类器，从起始状态和未来状态中推断所选技能，并使用对比学习目标。未来状态在不同的、折扣的时间范围内采样，因此信号可以反映更长期的后果，而不仅仅是即时动作。结构化分类器比较状态变化的表示，降低将微小差异误认为有意义控制的风险。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 147.32,
+      "end": 151.98,
+      "en": "Quick question: how does the system avoid counting tiny state changes as useful empowerment?",
+      "zh": "快速问一下：系统怎么避免把微小的状态变化当成有用的赋能？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 153.06,
+      "end": 181.22,
+      "en": "That concern is central. In continuous environments, the authors add noise during classifier training, creating an information bottleneck: a skill distinction should remain detectable despite small perturbations. They also use the structured state-difference classifier instead of a more general decoder, which can overfit to collected data. Neither choice guarantees that every learned distinction is useful, so the researchers also evaluate concrete environmental behavior.",
+      "zh": "这个担忧很关键。在连续环境中，作者在分类器训练时加入噪声，制造了一个信息瓶颈：即使有微小扰动，技能之间的区分也应该仍然可检测。他们还使用了结构化的状态差异分类器，而不是更通用的解码器，因为后者容易对收集到的数据过拟合。这两种选择都不能保证每个学到的区分都有用，所以研究者还评估了具体的环境行为。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 182.14,
+      "end": 209.54,
+      "en": "Training uses a two-stage rollout. First, the state-seeking policy moves from a reset to a switch state. Then a sampled skill runs from that state, producing evidence about the control available there. This lets the skill learner examine states the other policy can reach, while the state-seeking policy receives an intrinsic reward based on estimated empowerment. The setup links exploration of skills with exploration of promising starting locations.",
+      "zh": "训练采用两阶段轨迹。首先，状态寻找策略从重置状态移动到切换状态。然后从该状态运行一个采样技能，产生关于该处可用控制的证据。这让技能学习器能够考察另一个策略可以到达的状态，同时状态寻找策略根据估计的赋权获得内在奖励。这一设置将技能探索与有潜力的起始位置探索联系起来。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 210.94,
+      "end": 238.72,
+      "en": "The experiments span Craftax-Classic, a partially observed crafting and survival environment, and continuous tasks involving an ant, a soccer ball, and movable blocks. In Craftax-Classic, the agent averages about 7 to 8 achievements out of 22 at the reported training scale, collecting resources and crafting tools. In the continuous tasks, it approaches regions or objects where it can move the ant, ball, or blocks in several directions.",
+      "zh": "实验覆盖了Craftax-Classic，一个部分可观测的合成与生存环境，以及涉及蚂蚁、足球和可移动方块的连续任务。在Craftax-Classic中，按报告的训练规模，智能体平均能完成22项成就中的约7到8项，会收集资源并合成工具。在连续任务中，它会靠近那些能让蚂蚁、球或方块朝多个方向移动的区域或物体。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 239.8,
+      "end": 244.48,
+      "en": "How do we know those behaviors reflect real control rather than just a high classifier score?",
+      "zh": "我们怎么知道这些行为反映的是真正的控制能力，而不只是分类器打分高呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 245.32,
+      "end": 273.96,
+      "en": "The authors do not rely on the classifier estimate alone. They measure task-specific outcomes, including achievements in Craftax-Classic and distances to the ball or blocks. Their ablations also test the two-stage rollout, classifier choices, and policy switching. Removing switching or using a more expressive classifier often weakens behavior. The results suggest that careful estimation and the way policies gather data both contribute to the outcome.",
+      "zh": "作者并没有只依赖分类器的估计。他们测量了具体任务的结果，包括在Craftax-Classic中的成就，以及到球或方块的距离。他们的消融实验还测试了两阶段轨迹、分类器选择以及策略切换。去掉切换或使用表达能力更强的分类器，往往会削弱行为表现。结果表明，细致的估计以及策略收集数据的方式，都对最终结果有贡献。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 274.88,
+      "end": 302.02,
+      "en": "A useful way to interpret the qualitative results is that empowerment is accrued and then spent. The agent first seeks a state with more available options; then its skills use those options to change the environment. In Craftax-Classic, this can mean collecting materials, crafting tools, building, or responding to enemies. Survival incentives alone do not produce the same range of crafting behavior in the reported comparisons.",
+      "zh": "一个有用的解读定性结果的方式是，赋权先被积累起来，然后被花掉。智能体首先寻找一个拥有更多可选状态的状态，然后它的技能利用这些选项来改变环境。在Craftax-Classic中，这可能意味着收集材料、制作工具、建造或应对敌人。在报告的比较中，仅靠生存激励并不能产生同样范围的制作行为。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 303.22,
+      "end": 307.4,
+      "en": "How does this connect to The Geometry of Empowerment and earlier skill-learning work?",
+      "zh": "这和《赋能几何》以及早期的技能学习研究有什么联系？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 308.26,
+      "end": 336.58,
+      "en": "The Geometry of Empowerment offers a theoretical way to characterize potential empowerment through the futures reachable by skills. This paper takes a practical step toward optimizing that kind of quantity in learned environments. It also builds on mutual-information skill discovery, but adds a policy whose job is to seek more empowering states. That is a useful distinction from work focused primarily on learning or composing skills once an initial state has been given.",
+      "zh": "《赋能几何》提供了一种理论方式，通过技能可到达的未来来刻画潜在赋能。这篇论文则朝着在学习环境中优化这类量迈出了实际的一步。它也建立在互信息技能发现的基础上，但额外加入了一个策略，其职责是寻找更具赋能作用的状态。这与那些主要关注在给定初始状态后学习或组合技能的工作相比，是一个有用的区别。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 337.42,
+      "end": 368.26,
+      "en": "The conclusions should remain bounded by the experiments. What counts as an outcome depends on which state variables define empowerment; using inventory, health, or object position could lead to different behavior. The theoretical improvement argument also assumes an accurately fitted classifier and ideal policy updates, conditions that function approximation may not satisfy. The work demonstrates a promising approach in selected benchmarks, not a guarantee of useful behavior in every environment.",
+      "zh": "这些结论应当限定在实验范围内。什么算作结果，取决于用哪些状态变量来定义赋权；用库存、生命值还是物体位置，可能会导致不同的行为。理论上的改进论证还假设分类器拟合准确、策略更新理想，而函数近似未必能满足这些条件。这项工作在选定的基准上展示了一种有前景的方法，但并不能保证在每个环境中都能产生有用的行为。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 368.26,
+      "end": 401.293,
+      "en": "The main takeaway is that skill learning can do more than expand an agent’s behavioral repertoire: it can help the agent decide where that repertoire will matter. Skills provide a practical lens on controllable futures, while a separate policy searches for states with greater control. Future research can test how robust this approach is across representations, state variables, and environments. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "主要结论是，技能学习不仅能扩展智能体的行为库，还能帮它判断这些行为在哪里才真正重要。技能提供了一个实用的视角，帮我们看清哪些未来是可控的，而另一个独立的策略则负责寻找控制力更强的状态。未来的研究可以检验这种方法在不同表征、状态变量和环境中的稳健性。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{ji2026scalingempoweredagents,\n      title={Scaling Empowered Agents}, \n      author={Catherine Ji and Vivek Myers and Joshua Lin and Alexandra Wingate and Sergey Levine and Benjamin Eysenbach},\n      year={2026},\n      eprint={2610.13002},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.13002}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.732,
+    0.472,
+    0.461,
+    0.479,
+    0.488,
+    0.41,
+    0.811,
+    0.699,
+    0.972,
+    0.667,
+    0.439,
+    0.788,
+    0.699,
+    0.346,
+    0.31,
+    0.251,
+    0.844,
+    0.396,
+    0.431,
+    0.402,
+    0.461,
+    0.428,
+    0.401,
+    0.386,
+    0.379,
+    0.367,
+    0.382,
+    0.643,
+    0.73,
+    0.641,
+    0.569,
+    0.724,
+    0.668,
+    0.534,
+    0.537,
+    0.58,
+    0.431,
+    0.48,
+    0.531,
+    0.401,
+    0.521,
+    0.387,
+    0.317,
+    1.0,
+    0.781,
+    0.388,
+    0.497,
+    0.391,
+    0.427,
+    0.828,
+    0.871,
+    0.573,
+    0.777,
+    0.67,
+    0.729,
+    0.857,
+    0.404,
+    0.387,
+    0.535,
+    0.434,
+    0.49,
+    0.533,
+    0.439,
+    0.522,
+    0.496,
+    0.3,
+    0.677,
+    0.391,
+    0.477,
+    0.322,
+    0.2,
+    0.289
+  ],
+  "published": "2026-10-09",
+  "views": 594,
+  "license": "arXiv 默认许可"
+}

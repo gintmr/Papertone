@@ -1,0 +1,253 @@
+{
+  "id": "2610.18773",
+  "title": "Jeva: System One Models from First Principles",
+  "authors": [
+    "Qi Li",
+    "Xinchao Wang"
+  ],
+  "abstract": "System one models enable direct, low-latency decision-making. Yet recent practice of predicting an answer from serialized text does not, by itself, respect the structure of a decision problem. We argue that current designs underemphasize four important structural requirements. (i) null-aware: Models should distinguish answer absence from uncertainty among candidates; (ii) permutation-invariant: Reordering alternatives should not change the decision; (iii) option-scalable: Growing candidate sets should not require redefining the output space; (iv) cacheable: Request-independent computation over recurring alternatives should be reusable across requests. We introduce Jeva, a decision-native architecture that addresses these requirements jointly. A shared encoder independently represents the request and each option, while a compact decision stack refines only the request state against immutable option memory. Symmetric aggregation yields permutation-equivariant probabilities; shared scoring accommodates variable-size candidate sets. A separate coverage estimate distinguishes answer absence from candidate competition, enabling explicit null outcomes. Request-independent option representations and layer projections support reuse across newly assembled sets. These mechanisms unify Choice, Noul, and Score outputs. Across evaluations, Jeva combines strong typed-decision performance with near-perfect null detection and no decision flips under any tested permutations. It scales to thousands of candidates and substantially reduces latency through cross-request reuse without changing decisions.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.18773",
+    "arxiv": "https://arxiv.org/abs/2610.18773"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a138e3-84c8-7038-ac6c-7eb20ec253e6/podcast.mp3",
+  "duration": 480.078,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.52,
+      "en": "In our graduate course on Transformer Architectures and Structured Decision Systems, today's lecture is on Jeva: System One Models from First Principles. Qi Li and Xinchao Wang, at the National University of Singapore, ask how models can make direct choices without generating a rationale first. Work such as JEV-as-a-Judge and Screening Is Enough reflects growing interest in confidence, abstention, and efficient decisions. Jeva takes a structural approach. I see Noah's hand—go ahead, Noah.",
+      "zh": "在我们这门关于Transformer架构与结构化决策系统的研究生课上，今天的讲座主题是Jeva：从第一性原理理解系统一模型。新加坡国立大学的李琦和王新超在思考，模型如何能在不先给出推理过程的情况下直接做出选择。像JEV-as-a-Judge和Screening Is Enough这样的工作，反映出大家对置信度、弃权和高效决策越来越感兴趣。Jeva采取的是一种结构化的思路。我看到Noah举手了——请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.0,
+      "end": 39.72,
+      "en": "Hi Professor, what makes a system-one decision different from an ordinary language-model answer?",
+      "zh": "教授您好，系统一的决策和普通语言模型的回答有什么不同？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.74,
+      "end": 72.96,
+      "en": "A system-one model returns a bounded decision directly: perhaps a tool choice, a document selection, a yes-or-no judgment, or a score. Many existing methods derive decisions from answer-token probabilities or task-specific output heads. Jeva instead treats the candidate set itself as structured input. That matters because a choice list may change from request to request, and some requests have no suitable option at all. The goal is direct decision-making without assuming one answer must be correct.",
+      "zh": "系统一模型直接返回一个有边界的决策：可能是一个工具选择、一份文档挑选、一个是或否的判断，或者一个分数。许多现有方法从答案token的概率或任务专用的输出头中推导决策。Jeva则不同，它把候选集本身当作结构化输入来处理。这一点很重要，因为选择列表可能因请求而异，而且有些请求根本没有合适的选项。目标是直接做决策，而不是假设必须有一个正确答案。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.94,
+      "end": 102.26,
+      "en": "The first design idea is to separate request understanding from candidate representation. Jeva encodes the request and each option independently with a shared language-model backbone. The option encoding excludes the current question, its position, and the other candidates. A compact decision stack then lets the request state attend to the whole set. Think of prepared reference cards: they stay fixed while a question-specific reader compares them.",
+      "zh": "第一个设计思路，是把请求理解和候选表示分开。Jeva 用同一个语言模型主干，分别独立编码请求和每个选项。选项的编码不包含当前问题、它的位置以及其他候选。然后一个紧凑的决策栈让请求状态去注意整个集合。可以想象成事先准备好的参考卡片：它们保持固定，由一个针对具体问题的阅读器来比较它们。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.24,
+      "end": 109.06,
+      "en": "Quick question: if the options are encoded independently, can the model still account for how they relate to one another?",
+      "zh": "问个简单的问题：如果各个选项是独立编码的，模型还能考虑到它们之间的相互关系吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 110.0,
+      "end": 137.36,
+      "en": "Yes. The option vectors remain fixed, but the request state is refined through attention over the complete set. That distinction is important: Jeva does not simply assign each option an isolated score and rank them. The set can change the evidence gathered into the state. The paper shows that adding a third candidate can reverse the preference between two unchanged candidates, something an independent scorer based only on the request and each option cannot do.",
+      "zh": "可以。选项向量保持不变，但请求状态会通过针对完整选项集合的注意力机制得到细化。这个区别很重要：Jeva 并不是简单地给每个选项单独打分然后排序。整个集合可以改变汇聚到状态中的证据。论文表明，加入第三个候选可以逆转两个未变候选之间的偏好顺序，而仅基于请求和每个选项的独立打分器做不到这一点。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 137.36,
+      "end": 168.28,
+      "en": "The second idea is to separate answer availability from competition among the candidates. Jeva first forms a distribution over the supplied options, representing which one is preferable if an acceptable answer exists. A separate coverage gate estimates whether any option applies. The model can therefore assign probability to a null outcome rather than forcing all probability onto unsuitable candidates. This makes abstention part of the decision structure, not an afterthought.",
+      "zh": "第二个思路是把答案的可用性和候选之间的竞争分开。Jeva先对提供的选项形成一个分布，表示如果存在可接受的答案，哪一个更可取。另有一个独立的覆盖门来估计是否有任何选项适用。因此，模型可以把概率分配给空结果，而不是把所有概率都硬压到不合适的候选上。这让弃权成为决策结构的一部分，而不是事后才想到的东西。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 169.16,
+      "end": 172.8,
+      "en": "Can you clarify how that separation behaves when someone adds more candidates?",
+      "zh": "你能说明一下，当有人加入更多候选时，这种分离会如何表现吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 174.0,
+      "end": 203.14,
+      "en": "The coverage estimate uses the maximum candidate score with a learned threshold and temperature, while the conditional option probabilities are normalized across candidates. So adding a low-scoring option below the existing maximum does not directly alter the coverage estimate. However, the decision stack can respond to the changed set and alter scores. Jeva also supports three output types: choosing an option, predicting a positive-candidate probability, and returning an expected score.",
+      "zh": "覆盖率估计用的是候选中的最高分，配上一个学习得到的阈值和温度，而各个选项的条件概率则是在所有候选之间做归一化。所以，如果新增一个低分选项，分数低于当前最高分，并不会直接改变覆盖率估计。不过，决策栈可以对这个变化后的集合做出反应，进而改变分数。Jeva 还支持三种输出类型：选择一个选项、预测正候选概率，以及返回期望分数。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 204.06,
+      "end": 237.46,
+      "en": "A third enabling idea is symmetry. Permuting candidates reorders their probabilities but, under the paper's assumptions, leaves the refined state and null probability unchanged. Shared scoring also means that adding options does not require new output parameters. For repeated workloads, Jeva can cache candidate vectors and attention keys and values, then reuse them with new requests. This is candidate-side reuse, not answer caching: the request still gets encoded and evaluated afresh.",
+      "zh": "第三个关键思路是对称性。对候选做排列会改变它们的概率顺序，但在论文的假设下，精炼后的状态和空概率保持不变。共享打分还意味着增加选项不需要新的输出参数。对于重复的工作负载，Jeva 可以缓存候选向量以及注意力的键和值，然后在新请求中复用。这是候选侧的复用，不是答案缓存：请求仍然会被重新编码和评估。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 239.1,
+      "end": 242.14,
+      "en": "What does that reuse save in a practical retrieval workload?",
+      "zh": "在实际的检索工作负载中，这种复用能省下什么？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 242.14,
+      "end": 276.02,
+      "en": "In the reported cache tests, hybrid reuse reduced median latency for long-document candidate sets from 2,102 milliseconds to 75.1 milliseconds when all options were reusable. For shared candidate banks, the reductions also appeared on Typed Decisions and MLDR. Those measurements depend on the implementation and workload, so they are not universal latency guarantees. Importantly, the tested cache conditions produced no decision changes, although the largest probability difference was 0.00736.",
+      "zh": "在报告的缓存测试中，当所有选项都可复用时，混合复用将长文档候选集的中位延迟从2102毫秒降至75.1毫秒。对于共享候选库，Typed Decisions和MLDR上也出现了类似的降低。这些测量结果取决于具体实现和工作负载，因此并非通用的延迟保证。重要的是，测试的缓存条件没有产生任何决策变化，尽管最大概率差异为0.00736。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 279.86,
+      "end": 320.14,
+      "en": "The evaluation tests several distinct claims. Jeva led full-coverage accuracy in seven of eight reported general-evaluation slices, including BANKING77 and three Mind2Web settings. In a candidate-order test on 600 examples, it had no decision flips and a mean total-variation difference of 3.17 times ten to the minus 8 across aligned distributions. On BANKING77 requests with absent answers, null detection reached 98.66% AUROC. These results support the design, but remain bounded by the tested tasks.",
+      "zh": "这项评估检验了几个不同的主张。Jeva在八个已报告通用评估切片中的七个里取得了全覆盖率准确率领先，包括BANKING77和三个Mind2Web设置。在一项针对600个样本的候选顺序测试中，它没有出现决策翻转，对齐分布之间的平均全变差差异为3.17乘以10的负8次方。在BANKING77中答案缺失的请求上，空值检测达到了98.66%的AUROC。这些结果支持了该设计，但仍受限于所测试的任务范围。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 321.0,
+      "end": 326.24,
+      "en": "How should we interpret the large candidate-set results, given that they use a diagnostic retrieval setting?",
+      "zh": "考虑到这些结果是在一种诊断性检索设置下得到的，我们该如何解读大候选集的结果？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 327.1,
+      "end": 367.48,
+      "en": "With candidate sets ranging from 32 to 2,048, Jeva supported all tested requests and achieved 78.40% aggregate accuracy; accuracy at 2,048 candidates was 69.88%. Length-aware batching also reduced median latency at that size from 94.459 seconds to 12.040 seconds on an H200. These are implementation-specific findings, not proof of broad retrieval superiority. The main architectural point is that the decision head scales linearly with candidate count rather than constructing every candidate-to-candidate interaction.",
+      "zh": "在候选集规模从32到2048的测试中，Jeva支持了所有测试请求，总体准确率达到78.40%；在2048个候选时准确率为69.88%。长度感知批处理还将该规模下的中位延迟从94.459秒降至H200上的12.040秒。这些是特定实现下的发现，并不能证明其在检索上具有广泛优势。架构上的核心要点在于，决策头随候选数量线性扩展，而不是构建每个候选之间的两两交互。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 368.72,
+      "end": 404.46,
+      "en": "Jeva connects to retrieval systems that encode queries and passages independently, and to late-interaction methods that preserve richer candidate representations. Its added emphasis is set-aware refinement alongside explicit answerability. Screening Is Enough also explores rejecting all keys rather than always normalizing attention, while JEV-as-a-Judge studies confidence-based escalation to a larger model. Jeva's contribution is a unified candidate-decision architecture, rather than a general claim that one mechanism resolves every form of uncertainty.",
+      "zh": "Jeva可以接入独立编码查询和段落的检索系统，也可以接入保留更丰富候选表示的后期交互方法。它额外强调的是集合感知的细化，以及显式的可回答性判断。《Screening Is Enough》还探讨了拒绝所有键、而不是始终对注意力做归一化，而JEV-as-a-Judge则研究了基于置信度升级到更大模型。Jeva的贡献是一个统一的候选决策架构，而不是声称某一种机制能解决所有形式的不确定性。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 405.4,
+      "end": 409.86,
+      "en": "Does the paper establish that Jeva will generalize to other backbones and deployment settings?",
+      "zh": "这篇论文是否证明了Jeva能泛化到其他骨干模型和部署环境？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 410.82,
+      "end": 444.38,
+      "en": "Not yet. The main trained model uses a Qwen3.5-4B backbone and one decision block, and the timing results rely on particular hardware, batching, and runtime choices. Cache equivalence also assumes fixed model and encoder settings; parameter changes require invalidation. Those limits make the paper's contribution best understood as a design and implementation case for reusable, set-aware decisions. Further work should test more models, tasks, and operational constraints.",
+      "zh": "还没有。主要训练模型用的是Qwen3.5-4B骨干网络和一个决策模块，而时间结果依赖于特定的硬件、批处理和运行时选择。缓存等价性还假设模型和编码器设置固定不变；参数一变就需要失效。这些限制使得这篇论文的贡献最好被理解为一种面向可复用、集合感知决策的设计与实现案例。后续工作应该测试更多模型、任务和运行约束。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 445.52,
+      "end": 480.078,
+      "en": "The lasting takeaway is to treat a decision set as more than a row of answer labels. Jeva separates reusable candidate memory, request-specific comparison, and the question of whether any candidate is valid. That separation offers a way to combine context-sensitive decisions with caching and abstention, while making the assumptions visible. The evidence is promising within its tested scope, and the next research step is to learn where these structural advantages persist. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "真正值得记住的一点是，不要把决策集仅仅当成一行答案标签。Jeva把可复用的候选记忆、针对具体请求的比较，以及“是否存在有效候选”这个问题拆分开来。这种拆分提供了一条路径，把依赖上下文的决策与缓存和弃权机制结合起来，同时让背后的假设变得可见。在已测试的范围内，证据是令人鼓舞的，下一步研究要弄清楚这些结构性优势在哪些情况下依然成立。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026jevamodelsprinciples,\n      title={Jeva: System One Models from First Principles}, \n      author={Qi Li and Xinchao Wang},\n      year={2026},\n      eprint={2610.18773},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.18773}, \n}",
+  "topics": [
+    "Inference Optimization",
+    "ML Systems",
+    "Representation Learning"
+  ],
+  "peaks": [
+    0.877,
+    0.827,
+    0.576,
+    0.792,
+    0.357,
+    0.703,
+    0.563,
+    0.391,
+    0.215,
+    0.2,
+    0.26,
+    0.649,
+    0.775,
+    0.292,
+    0.535,
+    0.476,
+    0.979,
+    0.619,
+    0.512,
+    0.717,
+    0.607,
+    0.533,
+    0.419,
+    0.449,
+    0.414,
+    0.565,
+    0.875,
+    0.721,
+    0.518,
+    0.568,
+    0.666,
+    1.0,
+    0.669,
+    0.646,
+    0.444,
+    0.478,
+    0.59,
+    0.631,
+    0.563,
+    0.459,
+    0.302,
+    0.34,
+    0.64,
+    0.26,
+    0.314,
+    0.208,
+    0.312,
+    0.251,
+    0.73,
+    0.478,
+    0.334,
+    0.309,
+    0.346,
+    0.358,
+    0.248,
+    0.546,
+    0.39,
+    0.39,
+    0.302,
+    0.285,
+    0.295,
+    0.738,
+    0.7,
+    0.551,
+    0.434,
+    0.468,
+    0.557,
+    0.658,
+    0.564,
+    0.436,
+    0.403,
+    0.316
+  ],
+  "published": "2026-10-13",
+  "views": 249,
+  "license": "CC BY"
+}

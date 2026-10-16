@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 435.121,
+  "word_match_rate": 0.9138,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on generative modeling, today’s lecture is on “Are We Overthinking One-Step Generation?” Recent work such as “Mean Flows for One-step Generative Modeling” and “One-step Diffusion with Distribution Matching Distillation” reflects a clear trend: reduce sampling to one network evaluation. Researchers at Seoul National University and Harvard ask whether training needs to be equally elaborate. Their answer challenges the assumption that one-step generation requires complex machinery. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.0
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the main question whether a simpler training recipe can still produce high-quality samples?",
+      "start": 33.14,
+      "end": 38.42
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. Priming Models propose a two-stage recipe: first teach a network to reconstruct images from heavily corrupted inputs, then train it to match the distribution of real data. Unlike methods that distill a pretrained diffusion model, this approach does not need a diffusion teacher. It matters because fewer sampling steps can lower inference costs, while simpler training could make one-step generation more practical. The paper tests this idea in image generation, text-to-image, and world modeling.",
+      "start": 39.28,
+      "end": 70.66
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The first stage is reconstruction pretraining. The network sees an image mixed with Gaussian noise and learns to recover the original. Think of it as learning the visual grammar of images before being asked to invent new ones. The authors use a fixed corruption level for their principal ImageNet setup, preserving some target information while making the input resemble the noise used at generation time.",
+      "start": 71.74,
+      "end": 94.84
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: why not train directly on random noise from the beginning?",
+      "start": 95.64,
+      "end": 99.1
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The authors’ concern is that a randomly initialized network may not respond usefully to distribution-matching updates. A loss can indicate that generated samples should move in a certain direction, but the network may not yet know how to make that change. Reconstruction gives it a useful input-to-image mapping first. Importantly, the goal is not simply better reconstructions; that stage prepares the same network for direct distributional post-training.",
+      "start": 100.1,
+      "end": 127.34
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "In the second stage, Gaussian noise goes through the pretrained network to produce one-step samples. The authors compare generated images with real examples using frozen feature encoders and an entropy-regularized optimal transport objective. A generated-to-real term encourages matching, while a generated-to-generated reference term adds a repulsive effect to discourage collapse. No diffusion teacher is involved, though pretrained feature encoders remain part of the method.",
+      "start": 128.9,
+      "end": 158.42
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify what the repulsive term contributes beyond matching generated images to real ones?",
+      "start": 158.42,
+      "end": 164.68
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Matching alone can leave a generator producing too few varieties of samples. The reference term compares generated examples with other generated examples, but stops gradients through those reference samples. That adds a signal discouraging samples from crowding together. The intuition resembles arranging points so they cover the target distribution rather than piling up in one dense region. The paper also tests energy-distance and kernel-based alternatives to its principal objective.",
+      "start": 165.6,
+      "end": 194.26
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The ImageNet experiments show why both stages matter. The pretrained network does not immediately generate strong one-step samples; quality improves substantially during post-training, with clean images appearing within the first 1,250 updates. The Large model reaches an F-I-D of 1.19 after 160 pretraining epochs, at a reported training cost of 238.95 exaFLOPs. Its comparison with selected baselines suggests a favorable quality-and-compute trade-off.",
+      "start": 195.3,
+      "end": 225.58
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How much does the result depend on the reconstruction setup, rather than the post-training objective?",
+      "start": 228.36,
+      "end": 233.0
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The ablations indicate that pretraining choices matter. Among tested fixed corruption levels, 0.8 performs best, while 1.0, which removes information about the clean target, performs poorly. Removing perceptual supervision also worsens results. Masking and representation-based reconstruction remain workable, but do not match the default configuration. These findings support reconstruction as a meaningful preparation step, though they do not show that one particular recipe will be best for every dataset.",
+      "start": 233.98,
+      "end": 265.44
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "There is also evidence across different tasks. For text-to-image generation, one pretraining variant reaches GenEval 0.818 and DPG-Bench 82.16, exceeding the reported one-step MeanFlow scores and approaching its four-step results. A two-step Priming extension improves those metrics further. These comparisons suggest that the approach can extend beyond class-conditional ImageNet, although benchmark scores alone cannot tell us whether prompts are consistently followed in everyday use.",
+      "start": 265.44,
+      "end": 300.04
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the same training idea help when the output is a future robot-camera frame?",
+      "start": 300.82,
+      "end": 304.94
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The world-model experiments provide a useful test. Given recent observations and actions, Priming predicts future frames using latents from a pretrained image encoder. On RT-1 and Bridge-V2, it beats the one-step Drifting baseline on all reported metrics. Compared with 32-step flow matching, it has better reported image metrics on both datasets, but a higher F-V-D on RT-1. Its training compute is also lower than Drifting’s on both datasets.",
+      "start": 305.94,
+      "end": 335.12
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "These results position Priming alongside, but distinct from, approaches such as MeanFlow and distribution-matching distillation. Those works explore efficient generation through different objectives or by using a teacher. Priming instead treats reconstruction as the bridge between an untrained network and direct distribution matching. The paper’s Jacobian-alignment analysis offers a possible explanation: models that respond more strongly along estimated correction directions tend to achieve lower F-I-D after post-training.",
+      "start": 336.7,
+      "end": 367.36
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Is that alignment evidence enough to establish why the method works?",
+      "start": 369.08,
+      "end": 372.3
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "No. The relationship is consistent with the authors’ explanation, but it does not prove alignment is the sole cause of the gains. The broader implication is a useful change in emphasis: rather than asking only how to compress a sampling trajectory, researchers can ask what preliminary task makes direct generation easier to optimize. Still, Priming relies on pretrained feature encoders, and its results cover a defined set of datasets and configurations, so broader applicability remains an open question.",
+      "start": 373.26,
+      "end": 402.68
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The key takeaway is that one-step generation may benefit less from elaborate trajectory machinery than from a well-chosen starting point. Priming Models first teach a network to recover images from corruption, then refine its output distribution directly. The results make that recipe worth testing in other settings, while leaving important questions about feature-encoder dependence and generalization. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 402.68,
+      "end": 435.121
+    }
+  ]
+}

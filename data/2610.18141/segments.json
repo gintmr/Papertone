@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 460.669,
+  "word_match_rate": 0.9187,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course on Multimodal Learning and Reliable AI, today’s lecture is on “Mitigating Cross-Modal Hallucinations by Correcting Modality Misrouting in Omnimodal LLMs.” Recent work such as “Attention Reallocation” and “AVCD” reflects a broader trend toward inference-time ways to reduce hallucinations. This paper, from researchers affiliated with Zhejiang University and Ant Group, asks a more specific question: what if the model already has the right evidence, but fails to use it in its joint prediction? I see a hand. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.5
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does modality misrouting mean the model is paying attention to the wrong input?",
+      "start": 38.52,
+      "end": 43.08
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is close, though the paper defines it through a particular pattern: a joint audio-video answer is wrong, while the relevant audio-only or video-only branch can still answer correctly. The evidence has not vanished; it is underrepresented in the fused prediction. The authors measure this recovery pattern on cross-modal benchmarks and find it in a substantial share of errors, motivating a correction that uses the model’s own unimodal representations.",
+      "start": 44.06,
+      "end": 72.04
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The method, called care, first asks a text-only question about which modality is needed to answer the prompt: audio, video, or both. Because this probe sees the question but not the sensory sample, it serves as a routing guide rather than an answer. If it uniquely selects audio or video, care compares that modality’s branch with the joint audio-video branch. If the probe does not select one modality, the ordinary joint prediction is left unchanged.",
+      "start": 73.38,
+      "end": 102.48
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the method does not automatically trust whichever single-modality answer sounds more confident?",
+      "start": 103.52,
+      "end": 108.32
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. Care also requires a conflict: the joint and selected unimodal branches must each have a clear prediction, and those predictions must differ. For example, a video of a cat might bias the joint model toward claiming it hears a meow, even when the audio contains duck calls. If the audio-only branch says “no,” and the question probe points to audio, the conflict gate allows a correction. Otherwise, the method makes no intervention.",
+      "start": 109.24,
+      "end": 136.76
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "For a gate-positive case, care compares internal hidden states from the joint and selected unimodal branches. Their difference supplies a sample-specific residual direction. The method adds a scaled version of that difference to the joint representation, rather than substituting the unimodal answer. Think of it as using a counterfactual branch as a guide to adjust the model’s route, while keeping both sensory inputs available for the rest of the answer.",
+      "start": 136.76,
+      "end": 165.5
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify where that representation adjustment happens?",
+      "start": 165.5,
+      "end": 169.34
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The intervention happens at the final prompt-token position during prefilling, in the final 3 language-decoder layers in the main experiments. The adjusted state then passes through later decoder layers, and generation continues on the audio-video path. The correction strength depends on the unimodal branch’s decision margin: more decisive predictions can receive stronger steering. The coefficients also decrease across the selected layers, so early layers get more adjustment than later ones.",
+      "start": 170.24,
+      "end": 199.22
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "This design relies on three linked ideas: route using the question, intervene only when branch predictions conflict, and correct the joint representation without dropping either modality. Across the C-M-M benchmark, care raises accuracy from 70.5% to 85.9% for quen two point five omni seven B, and from 73% to 86.9% for mini C-P-M o two point six. On A-V-H-Bench, the corresponding results rise from 69.8% to 82.3%, and from 73.4% to 80.2%.",
+      "start": 200.12,
+      "end": 238.8
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does the method help both kinds of cross-modal errors, or mainly one direction?",
+      "start": 240.82,
+      "end": 244.86
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The reported results cover both directions: visual evidence inducing a false audio perception, and audio evidence inducing a false visual perception. Gains are especially apparent on the Audio Dominance subset of C-M-M. The team also tests quen two point five omni three B, where accuracy rises from 76.9% to 82.5% on C-M-M and from 76.4% to 81% on A-V-H-Bench. That offers evidence across model scales, though still within a limited set of backbones.",
+      "start": 245.86,
+      "end": 281.68
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A useful ablation compares representation correction with simply taking the selected unimodal branch’s answer. Care performs better across the reported backbone-task combinations, with gains over direct selection reaching 10.82 percentage points. This supports the idea that the joint context remains valuable even when it has misrouted evidence. On Daily-Omni, broader audio-visual question-answering accuracy changes modestly, from 61.5% to 61.8% for one model and from 61% to 61.5% for the other, with variation across categories.",
+      "start": 282.68,
+      "end": 321.56
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we compare this with Attention Reallocation or AVCD?",
+      "start": 322.74,
+      "end": 326.98
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Those works also explore inference-time mitigation, but care’s distinctive emphasis is identifying a recoverable disagreement between a joint branch and a question-selected unimodal branch, then steering the joint representation. It is not a global reweighting rule or simply a contrastive output adjustment. That makes it a targeted response to modality misrouting. The comparison also suggests a broader research direction: diagnosing where useful evidence is lost inside a multimodal computation, then intervening selectively.",
+      "start": 326.98,
+      "end": 361.46
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "There are important constraints. The method assumes a finite answer set, such as yes or no, so branch predictions and margins can be compared. It also assumes the relevant evidence is accessible in a unimodal branch and that the question-only probe selects a useful modality. Extra probe and counterfactual passes add inference cost, even though the paper reports lower serial-execution latency than M-A-D and notes that parallel branches could reduce latency further.",
+      "start": 362.48,
+      "end": 391.74
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could this approach work for open-ended questions where there is no fixed set of answers?",
+      "start": 392.62,
+      "end": 396.74
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That remains an open question. Extending care to open-ended generation would require reliable ways to compare branch claims and identify meaningful conflicts without a predefined answer space. More broadly, the paper shifts attention from suppressing suspicious outputs toward recovering evidence the model already represents. Its benchmark results support that strategy for binary cross-modal tasks, while leaving broader tasks, more models, and deployment costs for future evaluation.",
+      "start": 397.7,
+      "end": 427.88
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The central takeaway is simple: a multimodal model can possess the evidence it needs and still fail to route that evidence into its answer. Care offers a selective way to use a unimodal branch as a guide while retaining joint context. Whether this pattern generalizes beyond the tested settings will depend on better routing, wider evaluations, and practical control of inference cost. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 428.94,
+      "end": 460.669
+    }
+  ]
+}

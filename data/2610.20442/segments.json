@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 457.743,
+  "word_match_rate": 0.9663,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Embodied Intelligence and Robot Learning, today's lecture is on Towards Agentic Robots: Model, Data, Environment, and Harness. Recent surveys such as Survey on Evaluation of L-L-M-based Agents and World Model for Robot Learning show growing interest in agents that act over time and models that anticipate how environments change. This paper brings those threads together around the complete robot system. Researchers from The Chinese University of Hong Kong and Fudan University contributed. Yes, Noah?",
+      "start": 0.0,
+      "end": 33.26
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does “agentic” mean here, beyond a robot that can act on its own?",
+      "start": 34.22,
+      "end": 39.16
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It describes how a robot system organizes decisions: selecting and coordinating capabilities, using observations and feedback to adjust plans, and checking what happens during execution. It does not necessarily mean the robot operates without people. The paper’s central motivation is that a capable action policy alone may not complete a long task reliably. A robot may also need to notice failure, gather more evidence, choose a different skill, or recover from its current state.",
+      "start": 39.98,
+      "end": 70.7
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors offer a survey and conceptual framework, not a new robot model or controlled experiment. Their taxonomy groups agentic robotics into 4 domains: Model, Data, Environment, and Harness. Together, these describe what a robot learns and does, how its experience is prepared, how its tasks and worlds are created, and how capabilities are organized at runtime. The framework helps connect research that often appears in separate literatures, from policy learning to simulation and tool use.",
+      "start": 71.64,
+      "end": 103.94
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: are those 4 domains separate parts of a robot system?",
+      "start": 104.84,
+      "end": 108.6
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Not necessarily. The 17 categories are non-exclusive functions, so one system can span several domains. Model includes training, perception, planning, robot control, and adaptation. Data covers collection, annotation, and refinement. Environment includes reconstruction, task generation, and benchmarking. Harness covers orchestration, memory, monitoring and recovery, skills, infrastructure, and layered systems. Think of the taxonomy as a map of responsibilities, not a prescription for a particular architecture.",
+      "start": 108.6,
+      "end": 144.22
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The Model domain asks how evidence becomes action: an agent might decide what to perceive, decompose a task, check whether a plan is feasible, or revise a policy after experience. Data connects execution to later learning through collected trajectories, added labels, and quality control. Environment design matters because a scene, task, or evaluator can each be flawed in different ways. A physically unstable scene, impossible goal, or misleading success metric can undermine a result.",
+      "start": 145.34,
+      "end": 176.18
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify what the Harness adds if the system already has a planner and a robot policy?",
+      "start": 177.12,
+      "end": 181.8
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The Harness makes those capabilities usable together. Orchestration routes tasks among models, tools, skills, policies, and sometimes people. Memory stores task state or past experience, while monitoring checks progress and initiates recovery when something goes wrong. Infrastructure supplies interfaces and runtime safety checks. Layered systems divide responsibility across components, such as a high-level planner and a lower-level controller. Without these connections, a good planner may issue a request that its executor cannot safely carry out.",
+      "start": 182.7,
+      "end": 217.64
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "So the key is not just choosing an action, but verifying its physical result?",
+      "start": 218.54,
+      "end": 222.76
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Exactly. The paper emphasizes that a tool’s report of success may not prove the intended outcome occurred. Independent checks can use sensor readings, visual evidence, task-specific conditions, or runtime constraints. Plans should also be checked before execution and revised when observations contradict assumptions. Memory needs similar scrutiny: a procedure that worked before may be stale after objects or scenes change. These checks make feedback useful for both immediate recovery and future improvement.",
+      "start": 223.64,
+      "end": 256.76
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "For real-world use, this framework suggests that robot systems need to coordinate perception, action, and verification under changing conditions. A household robot, for example, might recognize that an object has moved, update its plan, select another skill, and confirm that the requested placement succeeded. The survey also reports results from individual studies illustrating how infrastructure matters: one cited study found that smaller action steps raised zero-shot success from 60% to 82%. Those figures are not a unified comparison across systems.",
+      "start": 257.82,
+      "end": 293.18
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How should we interpret those reported results when the studies use different tasks and setups?",
+      "start": 294.1,
+      "end": 298.64
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "As evidence about particular design choices, not as a leaderboard for the field. The paper also cites a comparison where changing an interface reduced question-answering accuracy from 74% to 59.1%. That illustrates how interfaces can affect performance, but differences in tasks, tools, observations, retries, and human assistance make direct cross-study rankings unreliable. A careful evaluation should report those conditions and isolate, where possible, the contribution of planning, tool selection, or recovery beyond the underlying robot policy.",
+      "start": 299.6,
+      "end": 337.86
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The same caution applies when moving from simulation to physical robots. Simulation enables repeatable tests and scalable task generation, but may expose precise state or clean success labels that are unavailable in reality. Physical systems face uncertain perception, calibration differences, contact, latency, and actions that may continue after a stop request. The authors therefore treat real-robot testing as a distinct challenge. Strong evaluations should test changing scenes, missing information, executor failures, and dependencies across longer tasks.",
+      "start": 338.8,
+      "end": 375.08
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How does this system-level view connect to the V-L-A and world-model surveys?",
+      "start": 375.08,
+      "end": 380.38
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Surveys of V-L-A models and world models examine important capabilities for linking language, perception, action, or predicted futures to robot behavior. This paper asks how those capabilities are selected, coordinated, checked, and improved within a larger system. Its contribution is a shared vocabulary for studying the interfaces between models, data, environments, and runtime software. That perspective can help researchers identify whether a failure comes from the policy itself or from how the system prepared, executed, or evaluated its work.",
+      "start": 381.26,
+      "end": 417.5
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The framework also points toward research questions rather than claiming a single best design. Researchers need better ways to isolate an agent’s contribution, validate automatic changes to skills or models, refresh stale memory, and connect high-level reasoning safely to physical execution. Benchmarks should make assistance, tools, observation access, and retry limits visible. Overall, the paper shifts attention from whether a model can produce an action to whether the whole robot system can select, execute, verify, and revise it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 418.48,
+      "end": 457.743
+    }
+  ]
+}
