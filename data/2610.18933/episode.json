@@ -1,0 +1,280 @@
+{
+  "id": "2610.18933",
+  "title": "The Agentic Scientist: Orchestrating Coding Agents for Automated Scientific (Co-)Discovery",
+  "authors": [
+    "Robert Tjarko Lange",
+    "Luca Grillotti",
+    "Yutaro Yamada",
+    "Rujikorn Charakorn",
+    "David Ha"
+  ],
+  "abstract": "Modern coding agents are fundamentally reshaping the role of human input for computational research: they write code, launch in silico experiments, analyze their results, and autonomously operate with ever-increasing time horizons. Despite these developments, fully autonomous research agents suffer from a limited ideation radius and myopic hill-climbing search dynamics. To bridge this gap, we introduce The Agentic Scientist, an end-to-end distributed pipeline for human researchers to conduct computational research alongside modern coding agents. Building on its predecessor, our system decomposes research into task drafting, idea generation, planning, sandboxed experimentation, result aggregation, baseline and ablation construction, post-hoc analysis, and report writing. Importantly, each step in the pipeline is powered by the next generation of coding agents and leverages agentic self-verification. The overall research process is driven by a meta-controller that manages parallel research agents and enforces rubric verification at each stage. This design enables the same orchestration layer to be reused across heterogeneous domains with different execution environments, agentic coding harnesses, and evaluation metrics. Our system can be used across a spectrum of autonomy: either as a co-scientist tool or to perform end-to-end scientific investigation. Within the co-scientist setting, we leveraged a development version of our system to submit a single research paper, which got accepted for publication at ALIFE 2026. We further apply The Agentic Scientist fully autonomously to open problem-solving tasks in machine learning, and demonstrate the system's capability of scientific discovery across different domains of computational research. Our ablations suggest that reliable scientific autonomy depends not only on base model capabilities, but also on the cross-agent orchestration layer.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.18933",
+    "arxiv": "https://arxiv.org/abs/2610.18933"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a13d5c-76f3-7b49-9f32-e58b52a48e60/podcast.mp3",
+  "duration": 589.479,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.38,
+      "en": "In our graduate course on autonomous scientific discovery, today's lecture is on The Agentic Scientist: Orchestrating Coding Agents for Automated Scientific Co-Discovery. The paper comes from researchers at Sakana AI and asks how coding agents can support research beyond writing and running code. Work such as The AI Scientist and Agent Laboratory reflects a growing trend toward automating research workflows. This paper takes up a practical question within that trend: how do we make an agent’s experiments and claims inspectable? I see Noah raising a hand. Go ahead, Noah.",
+      "zh": "在我们关于自主科学发现的研究生课程中，今天的讲座主题是《智能体科学家：编排编码智能体实现自动化科学协同发现》。这篇论文来自Sakana AI的研究人员，探讨的是编码智能体如何支持代码编写和运行之外的研究工作。《AI科学家》和《智能体实验室》等研究反映了自动化研究工作流日益增长的趋势。这篇论文在这一趋势下提出了一个实际问题：我们如何让智能体的实验和主张变得可审查？我看到Noah举手了。请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.38,
+      "end": 44.46,
+      "en": "Hi Professor, what does this system try to add beyond giving a coding agent a research task?",
+      "zh": "教授您好，这个系统除了给编码智能体分配研究任务之外，还试图增加什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.32,
+      "end": 77.48,
+      "en": "It adds a coordinated process for moving from a research question to evidence-backed conclusions. The authors argue that optimizing a score is not the same as testing a scientific hypothesis: a system might improve a metric while exploiting an incomplete task definition. Their workflow separates proposing an idea from implementing and evaluating it, then records the hypothesis, plan, code, results, and claims. That makes the research trail available for scrutiny, rather than treating the final program as the whole result.",
+      "zh": "它增加了一套协调流程，把研究问题推进到有证据支撑的结论。作者认为，优化分数并不等同于检验科学假设：系统可能一边提升指标，一边利用任务定义不完整的漏洞。他们的工作流把提出想法与实现、评估分开，然后记录假设、计划、代码、结果和主张。这样一来，研究过程就可供审查，而不是把最终程序当作全部结果。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 78.52,
+      "end": 82.74,
+      "en": "So is the main contribution a new model, or a way to organize existing agents?",
+      "zh": "那么主要贡献是一个新模型，还是一种组织现有智能体的方式？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 83.8,
+      "end": 115.56,
+      "en": "The main contribution is orchestration, not a new underlying language model or a single search algorithm. Researchers can use the system with different coding-agent harnesses and choose how much human direction to provide. At one end, a researcher sets the direction and checks the outputs; at the other, agents conduct more of the investigation. In either case, the intended discipline is the same: separate task specification, exploration, validation, analysis, and communication.",
+      "zh": "主要贡献在于编排，而不是新的底层语言模型或单一搜索算法。研究者可以把这套系统搭配不同的编码智能体框架来用，并自行决定投入多少人工指导。一端是研究者定方向、检查输出；另一端则是智能体承担更多探索工作。无论哪种情况，所遵循的规范是一样的：把任务定义、探索、验证、分析和沟通分开。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 116.7,
+      "end": 149.38,
+      "en": "A campaign begins with an executable task specification: an initial program, an evaluator, and a machine-readable contract describing the candidate interface and evaluation procedure. Agents can help draft these materials, but an independent reviewer checks the design, and automated tests examine the contract and evaluation setup. The system also checks whether search and final evaluations use independent, disjoint data. Think of the contract as a laboratory protocol: it makes expectations explicit before results arrive.",
+      "zh": "一轮工作从可执行的任务规范开始：一个初始程序、一个评估器，以及一份机器可读的契约，用来描述候选接口和评估流程。智能体可以协助起草这些材料，但会由独立评审者检查设计，并用自动化测试检验契约和评估设置。系统还会检查搜索和最终评估是否使用了相互独立的、不重叠的数据。可以把这份契约理解为实验室的操作规程：它在结果出来之前就把预期明确下来。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 150.3,
+      "end": 155.28,
+      "en": "Quick question: how does the system keep exploration from becoming a single agent’s narrow search?",
+      "zh": "快速问一下：这个系统是怎么防止探索变成单个智能体的狭窄搜索的？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 156.1,
+      "end": 190.98,
+      "en": "It distributes a fixed budget of research cycles among workers in separate workspaces. Each worker maintains its own history and best-scoring program, while workers can exchange condensed conclusions at cycle boundaries. Within each cycle, an ideation agent proposes a falsifiable hypothesis, an implementation plan, and target rubrics; it does not edit code or run experiments. An execution agent then implements the proposal and evaluates it. This division is meant to widen exploration and keep proposing ideas distinct from testing them.",
+      "zh": "它把固定的研究周期预算分配给不同工作空间里的各个 worker。每个 worker 维护自己的历史和得分最高的程序，而 worker 之间可以在周期边界交换浓缩后的结论。在每个周期内，一个构思 agent 提出可证伪的假设、实现计划和目标评分标准；它不编辑代码，也不运行实验。然后由一个执行 agent 实现该提案并对其进行评估。这种分工旨在拓宽探索范围，并让提出想法与测试想法保持分离。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 191.56,
+      "end": 226.34,
+      "en": "A useful design choice is that objective performance and scientific-contract completion are tracked separately. A candidate replaces a worker’s current best only if it is correct and improves the score, while rubric completion is recorded independently. That distinction matters: an experiment can fail to improve a metric yet still test its stated hypothesis, or it can improve the metric without meeting the intended scientific checks. After investigation, agents propose baselines and ablations, and separate checks assess feasibility and whether an ablation isolates one change.",
+      "zh": "一个有用的设计选择是，客观性能和科学契约完成度分开追踪。候选方案只有在正确且能提高分数时，才会替换工作者的当前最佳方案，而评分标准的完成情况则独立记录。这种区分很重要：一个实验可能未能提升指标，却仍然检验了其声明的假设；也可能提升了指标，却未满足预期的科学检查。经过调查后，智能体会提出基线和消融实验，另有独立检查评估可行性，以及消融实验是否隔离了单一变量。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 227.26,
+      "end": 232.84,
+      "en": "Can you clarify how the manuscript is tied to the experiments rather than just written from agent summaries?",
+      "zh": "你能说明一下，稿件是如何与实验关联起来的，而不是仅仅根据智能体的总结写出来的吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 233.8,
+      "end": 267.82,
+      "en": "The writing stage gathers raw and aggregated results, artifacts, and a memory summary. Quantitative claims are expected to point back to source data or other artifacts, and the writing agent produces a claim-to-source map alongside the manuscript. Deterministic checks examine compilation, completeness, provenance, and venue constraints. An independent audit agent then looks for numerical mismatches, unsupported conclusions, and overclaiming. When it finds problems, a repair loop sends them back to the writer rather than treating a polished draft as verified.",
+      "zh": "写作阶段会收集原始结果和汇总结果、工件以及记忆摘要。定量陈述需要能追溯到源数据或其他工件，写作智能体会在生成稿件的同时产出一份陈述到来源的映射表。确定性检查会审查编译、完整性、来源追溯和投稿要求。随后由一个独立的审计智能体查找数值不一致、缺乏支持的结论和过度声称的问题。一旦发现问题，修复循环会把问题送回写作方，而不是把一份打磨过的草稿当作已经验证过的成果。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 268.78,
+      "end": 309.76,
+      "en": "The evaluations cover 70 campaigns across five machine-learning tasks, including world models, sparse autoencoders, and hyperparameter optimization. The researchers compared four coding-agent harnesses and 14 model–harness configurations, with 20 investigation cycles per campaign. Newer model releases generally received higher scores from an A-I reviewer used as a paper-quality proxy, but no harness consistently won in matched comparisons. Across campaigns, within-task performance ranks and reviewer scores were positively associated; the authors stress that a reviewer score does not establish scientific correctness.",
+      "zh": "评估覆盖了五项机器学习任务中的70轮实验，包括世界模型、稀疏自编码器和超参数优化。研究者比较了四种编码智能体框架和14种模型与框架的组合配置，每轮实验进行20次调查循环。较新的模型版本通常从作为论文质量代理的AI审稿人那里获得更高分数，但在匹配比较中没有任何框架始终胜出。跨实验来看，任务内性能排名与审稿人评分呈正相关；作者强调，审稿人评分并不能确立科学正确性。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 310.44,
+      "end": 315.78,
+      "en": "Wait, I’m confused about whether higher task performance actually means stronger scientific evidence.",
+      "zh": "等等，我有点困惑，任务表现更好是否真的意味着科学证据更强。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 316.74,
+      "end": 353.12,
+      "en": "Not by itself. In one case, a Doc-to-lora study found that query-conditioned adapter selection and relevance-based placement improved accuracy on a synthetic multi-fact retrieval task. That supports a diagnosis about adapter composition in that particular setup, not a universal result about language models. In another case, an evolution strategy matched or exceeded a classical baseline on six of eight reported Brax environments, but performance varied and no method led everywhere. The authors also used controlled comparisons to examine how much the classical scaffold contributed.",
+      "zh": "单凭这一点还不够。在一个案例中，一项Doc-to-lora研究发现，查询条件化的适配器选择与基于相关性的放置，在一个合成的多事实检索任务上提升了准确率。这支持的是关于该特定设置中适配器组合的诊断，而不是关于语言模型的普遍结论。在另一个案例中，进化策略在报告的八个Brax环境中有六个达到或超过了经典基线，但表现参差不齐，没有任何方法在所有环境中都领先。作者还使用受控比较来考察经典脚手架贡献了多少。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 354.18,
+      "end": 394.82,
+      "en": "A third example shows why explicit contracts need human scrutiny. In reinforcement-learning fine-tuning, the best run improved validation accuracy from about 52.7% to 71.9%, and held-out test accuracy from 47.8% to as high as 68%. But two of three Pi runs changed evaluation to use majority voting, a choice the rubric had not prohibited. Manual audit caught this protocol change. The case shows that a rubric can check only what the task specification actually says; independent retraining also exposed configurations that diverged.",
+      "zh": "第三个例子说明了为什么明确的约定需要人工审查。在强化学习微调中，最好的一次运行把验证准确率从大约52.7%提升到了71.9%，把留出测试准确率从47.8%提升到了最高68%。但三次Pi运行中有两次把评估改成了多数投票，而评分标准并没有禁止这一选择。人工审计发现了这一协议变更。这个案例表明，评分标准只能检查任务说明实际写到的内容；独立重新训练也暴露出了出现偏差的配置。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 395.82,
+      "end": 400.46,
+      "en": "So the evaluation checks are useful, but they cannot repair a badly specified experiment?",
+      "zh": "所以这些评估检查是有用的，但它们没法补救一个本身就定义得很糟糕的实验？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 401.52,
+      "end": 442.38,
+      "en": "Exactly. The paper’s co-scientist example illustrates a more collaborative mode: researchers used the system to extend Error Diffusion to multiclass classification and reinforcement learning. They reported 96.7% accuracy on M-N-I-S-T and 61.7% on C-I-F-A-R ten. A system-assisted paper was accepted as a 2026 conference talk, but it was the only submission described as externally reviewed. Researchers verified experiments, references, and claims, and made substantial manuscript edits. That is evidence of assistance, not autonomous scientific validation.",
+      "zh": "完全正确。论文中联合科学家的例子展示了一种更协作的模式：研究人员用这个系统把误差扩散扩展到多类分类和强化学习。他们报告在MNIST上达到96.7%的准确率，在CIFAR-10上达到61.7%。一篇系统辅助的论文被接收为2026年会议报告，但它是唯一被描述为经过外部评审的投稿。研究人员验证了实验、参考文献和主张，并对稿件做了大量修改。这证明的是辅助作用，而非自主的科学验证。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 443.44,
+      "end": 477.16,
+      "en": "These examples place the system between fully manual research and attempts to automate discovery end to end. The AI Scientist and its successor connect idea generation, experiments, and paper writing; this paper emphasizes the evidence and orchestration around coding agents. It also distinguishes scientific work from program search alone, as in systems that evolve executable solutions: improving an objective can be useful, but it does not automatically show that a hypothesis was tested or that a claim is defensible.",
+      "zh": "这些例子把该系统置于完全人工研究和端到端自动化发现尝试之间。《AI Scientist》及其后继系统将想法生成、实验和论文写作串联起来；而这篇论文则强调围绕编码智能体的证据与编排。它还将科学工作与单纯的程序搜索区分开来，比如那些演化可执行解的系统：改进某个目标可能有用，但这并不能自动表明某个假设得到了检验，或某个主张站得住脚。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 478.22,
+      "end": 482.16,
+      "en": "What broader limitation should researchers keep in mind before adopting this workflow?",
+      "zh": "研究人员在采用这一工作流程之前，应该牢记哪些更广泛的局限性？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 482.16,
+      "end": 516.3,
+      "en": "The strongest limitation is that verification remains bounded by the quality of the specification and the evidence available. Most manuscript-quality results here rely on an A-I reviewer proxy, and only one system-assisted paper received external peer review. The tested campaigns concern computational machine learning, so they do not establish performance in physical or human-subject research. The authors also note that task drafting is not yet reliable for larger problems, and that initial ideation does not explicitly conduct literature review.",
+      "zh": "最强的局限在于，验证仍然受限于规范的质量和可获得的证据。这里大多数达到稿件质量的结果依赖的是AI审稿人代理，只有一篇系统辅助的论文接受了外部同行评审。所测试的活动都集中在计算机器学习领域，因此无法证明在物理研究或涉及人类受试者的研究中的表现。作者还指出，任务起草对于更大的问题尚不可靠，而且最初的构思并没有明确进行文献综述。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 517.02,
+      "end": 553.02,
+      "en": "The broader shift is toward treating research autonomy as a sequence of accountable decisions, not simply longer code-generation runs. Structured hypotheses, separate rubrics, retrospective ablations, and links from claims to artifacts can help researchers inspect what an agent actually did. But they do not remove the researcher’s responsibility to choose the question, define valid tests, and challenge conclusions. The system’s modular design makes it possible to substitute models and harnesses; whether that flexibility yields reliable science still depends on careful experimental design and human judgment.",
+      "zh": "更广泛的转变在于，把研究自主性看作一连串可问责的决策，而不只是更长的代码生成过程。结构化的假设、独立的评分标准、回溯性的消融实验，以及把论断与产出物关联起来，都能帮助研究者检查智能体实际做了什么。但这些并不能免除研究者的责任——选择问题、定义有效的测试、质疑结论。该系统的模块化设计使得替换模型和运行框架成为可能；而这种灵活性是否能带来可靠的科学，仍然取决于严谨的实验设计和人的判断。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 553.94,
+      "end": 589.479,
+      "en": "The takeaway is that an agent can help produce a result, but a research process must show why that result deserves belief. This paper offers a practical framework for organizing exploration and attaching evidence to claims, while its cases also reveal where specifications and automated checks fall short. For PhD researchers, the useful question is not only whether an agent found a better score, but what was tested, what supports the conclusion, and what could still be wrong. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，智能体可以帮忙产出一个结果，但研究过程必须说明为什么这个结果值得相信。这篇论文提供了一个实用框架，用来组织探索并把证据与主张关联起来，同时其案例也揭示了规格说明和自动检查在哪些地方存在不足。对博士生研究者来说，有用的问题不只是智能体是否找到了更好的分数，而是测试了什么、什么支撑了结论，以及还有什么可能仍然是错的。感谢收听。如果还有进一步的问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lange2026agenticscientistorchestratingcoding,\n      title={The Agentic Scientist: Orchestrating Coding Agents for Automated Scientific (Co-)Discovery}, \n      author={Robert Tjarko Lange and Luca Grillotti and Yutaro Yamada and Rujikorn Charakorn and David Ha},\n      year={2026},\n      eprint={2610.18933},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.18933}, \n}",
+  "topics": [
+    "Agents",
+    "Human-AI",
+    "ML Systems"
+  ],
+  "peaks": [
+    0.966,
+    0.434,
+    0.583,
+    0.402,
+    0.408,
+    1.0,
+    0.573,
+    0.683,
+    0.516,
+    0.889,
+    0.756,
+    0.53,
+    0.417,
+    0.299,
+    0.43,
+    0.396,
+    0.365,
+    0.368,
+    0.516,
+    0.437,
+    0.416,
+    0.303,
+    0.268,
+    0.58,
+    0.52,
+    0.308,
+    0.436,
+    0.384,
+    0.719,
+    0.73,
+    0.664,
+    0.629,
+    0.515,
+    0.324,
+    0.233,
+    0.273,
+    0.261,
+    0.2,
+    0.779,
+    0.586,
+    0.352,
+    0.303,
+    0.315,
+    0.533,
+    0.415,
+    0.393,
+    0.484,
+    0.229,
+    0.508,
+    0.638,
+    0.357,
+    0.231,
+    0.315,
+    0.261,
+    0.538,
+    0.339,
+    0.42,
+    0.373,
+    0.469,
+    0.583,
+    0.371,
+    0.258,
+    0.249,
+    0.521,
+    0.338,
+    0.323,
+    0.272,
+    0.346,
+    0.529,
+    0.23,
+    0.313,
+    0.248
+  ],
+  "published": "2026-10-13",
+  "views": 256,
+  "license": "CC BY"
+}

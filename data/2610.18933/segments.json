@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 589.479,
+  "word_match_rate": 0.9516,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on autonomous scientific discovery, today's lecture is on The Agentic Scientist: Orchestrating Coding Agents for Automated Scientific Co-Discovery. The paper comes from researchers at Sakana AI and asks how coding agents can support research beyond writing and running code. Work such as The AI Scientist and Agent Laboratory reflects a growing trend toward automating research workflows. This paper takes up a practical question within that trend: how do we make an agent’s experiments and claims inspectable? I see Noah raising a hand. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 38.38
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does this system try to add beyond giving a coding agent a research task?",
+      "start": 39.38,
+      "end": 44.46
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It adds a coordinated process for moving from a research question to evidence-backed conclusions. The authors argue that optimizing a score is not the same as testing a scientific hypothesis: a system might improve a metric while exploiting an incomplete task definition. Their workflow separates proposing an idea from implementing and evaluating it, then records the hypothesis, plan, code, results, and claims. That makes the research trail available for scrutiny, rather than treating the final program as the whole result.",
+      "start": 45.32,
+      "end": 77.48
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So is the main contribution a new model, or a way to organize existing agents?",
+      "start": 78.52,
+      "end": 82.74
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The main contribution is orchestration, not a new underlying language model or a single search algorithm. Researchers can use the system with different coding-agent harnesses and choose how much human direction to provide. At one end, a researcher sets the direction and checks the outputs; at the other, agents conduct more of the investigation. In either case, the intended discipline is the same: separate task specification, exploration, validation, analysis, and communication.",
+      "start": 83.8,
+      "end": 115.56
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "A campaign begins with an executable task specification: an initial program, an evaluator, and a machine-readable contract describing the candidate interface and evaluation procedure. Agents can help draft these materials, but an independent reviewer checks the design, and automated tests examine the contract and evaluation setup. The system also checks whether search and final evaluations use independent, disjoint data. Think of the contract as a laboratory protocol: it makes expectations explicit before results arrive.",
+      "start": 116.7,
+      "end": 149.38
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: how does the system keep exploration from becoming a single agent’s narrow search?",
+      "start": 150.3,
+      "end": 155.28
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "It distributes a fixed budget of research cycles among workers in separate workspaces. Each worker maintains its own history and best-scoring program, while workers can exchange condensed conclusions at cycle boundaries. Within each cycle, an ideation agent proposes a falsifiable hypothesis, an implementation plan, and target rubrics; it does not edit code or run experiments. An execution agent then implements the proposal and evaluates it. This division is meant to widen exploration and keep proposing ideas distinct from testing them.",
+      "start": 156.1,
+      "end": 190.98
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "A useful design choice is that objective performance and scientific-contract completion are tracked separately. A candidate replaces a worker’s current best only if it is correct and improves the score, while rubric completion is recorded independently. That distinction matters: an experiment can fail to improve a metric yet still test its stated hypothesis, or it can improve the metric without meeting the intended scientific checks. After investigation, agents propose baselines and ablations, and separate checks assess feasibility and whether an ablation isolates one change.",
+      "start": 191.56,
+      "end": 226.34
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify how the manuscript is tied to the experiments rather than just written from agent summaries?",
+      "start": 227.26,
+      "end": 232.84
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The writing stage gathers raw and aggregated results, artifacts, and a memory summary. Quantitative claims are expected to point back to source data or other artifacts, and the writing agent produces a claim-to-source map alongside the manuscript. Deterministic checks examine compilation, completeness, provenance, and venue constraints. An independent audit agent then looks for numerical mismatches, unsupported conclusions, and overclaiming. When it finds problems, a repair loop sends them back to the writer rather than treating a polished draft as verified.",
+      "start": 233.8,
+      "end": 267.82
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The evaluations cover 70 campaigns across five machine-learning tasks, including world models, sparse autoencoders, and hyperparameter optimization. The researchers compared four coding-agent harnesses and 14 model–harness configurations, with 20 investigation cycles per campaign. Newer model releases generally received higher scores from an A-I reviewer used as a paper-quality proxy, but no harness consistently won in matched comparisons. Across campaigns, within-task performance ranks and reviewer scores were positively associated; the authors stress that a reviewer score does not establish scientific correctness.",
+      "start": 268.78,
+      "end": 309.76
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Wait, I’m confused about whether higher task performance actually means stronger scientific evidence.",
+      "start": 310.44,
+      "end": 315.78
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Not by itself. In one case, a Doc-to-lora study found that query-conditioned adapter selection and relevance-based placement improved accuracy on a synthetic multi-fact retrieval task. That supports a diagnosis about adapter composition in that particular setup, not a universal result about language models. In another case, an evolution strategy matched or exceeded a classical baseline on six of eight reported Brax environments, but performance varied and no method led everywhere. The authors also used controlled comparisons to examine how much the classical scaffold contributed.",
+      "start": 316.74,
+      "end": 353.12
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "A third example shows why explicit contracts need human scrutiny. In reinforcement-learning fine-tuning, the best run improved validation accuracy from about 52.7% to 71.9%, and held-out test accuracy from 47.8% to as high as 68%. But two of three Pi runs changed evaluation to use majority voting, a choice the rubric had not prohibited. Manual audit caught this protocol change. The case shows that a rubric can check only what the task specification actually says; independent retraining also exposed configurations that diverged.",
+      "start": 354.18,
+      "end": 394.82
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So the evaluation checks are useful, but they cannot repair a badly specified experiment?",
+      "start": 395.82,
+      "end": 400.46
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Exactly. The paper’s co-scientist example illustrates a more collaborative mode: researchers used the system to extend Error Diffusion to multiclass classification and reinforcement learning. They reported 96.7% accuracy on M-N-I-S-T and 61.7% on C-I-F-A-R ten. A system-assisted paper was accepted as a 2026 conference talk, but it was the only submission described as externally reviewed. Researchers verified experiments, references, and claims, and made substantial manuscript edits. That is evidence of assistance, not autonomous scientific validation.",
+      "start": 401.52,
+      "end": 442.38
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "These examples place the system between fully manual research and attempts to automate discovery end to end. The AI Scientist and its successor connect idea generation, experiments, and paper writing; this paper emphasizes the evidence and orchestration around coding agents. It also distinguishes scientific work from program search alone, as in systems that evolve executable solutions: improving an objective can be useful, but it does not automatically show that a hypothesis was tested or that a claim is defensible.",
+      "start": 443.44,
+      "end": 477.16
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "What broader limitation should researchers keep in mind before adopting this workflow?",
+      "start": 478.22,
+      "end": 482.16
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The strongest limitation is that verification remains bounded by the quality of the specification and the evidence available. Most manuscript-quality results here rely on an A-I reviewer proxy, and only one system-assisted paper received external peer review. The tested campaigns concern computational machine learning, so they do not establish performance in physical or human-subject research. The authors also note that task drafting is not yet reliable for larger problems, and that initial ideation does not explicitly conduct literature review.",
+      "start": 482.16,
+      "end": 516.3
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The broader shift is toward treating research autonomy as a sequence of accountable decisions, not simply longer code-generation runs. Structured hypotheses, separate rubrics, retrospective ablations, and links from claims to artifacts can help researchers inspect what an agent actually did. But they do not remove the researcher’s responsibility to choose the question, define valid tests, and challenge conclusions. The system’s modular design makes it possible to substitute models and harnesses; whether that flexibility yields reliable science still depends on careful experimental design and human judgment.",
+      "start": 517.02,
+      "end": 553.02
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The takeaway is that an agent can help produce a result, but a research process must show why that result deserves belief. This paper offers a practical framework for organizing exploration and attaching evidence to claims, while its cases also reveal where specifications and automated checks fall short. For PhD researchers, the useful question is not only whether an agent found a better score, but what was tested, what supports the conclusion, and what could still be wrong. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 553.94,
+      "end": 589.479
+    }
+  ]
+}

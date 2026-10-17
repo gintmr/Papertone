@@ -1,0 +1,250 @@
+{
+  "id": "2610.22192",
+  "title": "Terminal-RSI: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine",
+  "authors": [
+    "Junyao Yang",
+    "Zongxia Li",
+    "Yucheng Shi",
+    "Zhongzhi Li",
+    "Ruhan Wang",
+    "Ruiwen Zhou",
+    "Haitao Mi",
+    "Shuicheng Yan",
+    "Leowei Liang"
+  ],
+  "abstract": "Converting verifier outcomes into useful policy updates and partial progress into complete task resolution is crucial for terminal agents. We present Terminal-RSI, which alternates Recursive Self-Rewrite (RSR) of verified trajectories with critic-inheriting Recursive Policy-Refine (RPR). We formulate Turn-Boundary Skip-Observation GAE (TB-GAE) to retain token-specific baselines while applying decay across interaction turns. Family Dense Reward (FDR) calibrates semantic progress across task families; Success-Prioritized Reward (SPR) separates strict success from bounded partial credit. A Warm-up Critic Model, recursive critic handoff, and stage-specific learning rates coordinate the two refinement phases. The five-stage sequence from Qwen3.8-27B base model through RSR-1, RPR-1, RSR-2, and RPR-2 yields Terminal-RSI-27B: 19.84% on Terminal-Bench 4.0, 86.52% on Terminal-Bench 2.1, 16.95% on Terminal-Bench 3.0, and 79.00% on Terminal-Bench Hard. On LHTB, process reward rises from 0.21 to 0.37 and strict completion from 0/46 to 5/46; SWR100 success doubles from 3.00% to 6.00%. By recursively coupling verified trajectory rewriting with critic-inheriting policy refinement, each retained stage consolidates discovered behaviors and progressively advances the agent from partial local repairs to strict terminal verification.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.22192",
+    "arxiv": "https://arxiv.org/abs/2610.22192"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a14263-f829-73b6-baf6-d55bfe59e987/podcast.mp3",
+  "duration": 453.224,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.02,
+      "en": "In Deep Reinforcement Learning for Long-Horizon Agents, today's lecture is on Terminal-R-S-I: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine. Work such as CompactionRL and A-R-E-X reflects a broader shift toward agents that improve across extended interactions, rather than merely answer isolated prompts. This paper, from a team including researchers at Tencent Hy Frontier and the National University of Singapore, combines verified demonstrations with reinforcement learning. I see a hand—yes, Noah?",
+      "zh": "在《长时程智能体的深度强化学习》这门课里，今天讲的是Terminal-R-S-I：通过递归自我重写和策略优化实现递归自我改进的终端智能体。CompactionRL和A-R-E-X这类工作反映了一个更广泛的转变，即智能体能在持续交互中不断改进，而不只是回答孤立的问题。这篇论文来自一个包括腾讯混元前沿和新加坡国立大学研究人员的团队，它把经过验证的演示与强化学习结合了起来。我看到有人举手——是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.22,
+      "end": 41.8,
+      "en": "Hi Professor, what makes a terminal agent different from a regular language-model assistant?",
+      "zh": "教授您好，终端智能体和普通的语言模型助手有什么不同？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.8,
+      "end": 71.94,
+      "en": "A terminal agent acts through tools in an executable environment, such as a command line or software repository. Its answer is judged by whether the environment reaches a state accepted by a verifier, not by whether its explanation sounds convincing. That distinction matters because an agent can make useful partial changes and still fail the task’s final condition. Terminal-R-S-I asks how to turn verified discoveries into better behavior, then keep improving through interaction.",
+      "zh": "终端智能体是在可执行环境里通过工具行动的，比如命令行或软件仓库。它的答案好不好，不看解释听起来有没有说服力，而看环境是否达到了验证器认可的状态。这个区别很关键，因为智能体可能做出了有用的部分修改，却仍然没满足任务的最终条件。Terminal-R-S-I 要解决的问题就是：如何把经过验证的发现转化为更好的行为，再通过交互持续改进。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 72.96,
+      "end": 108.48,
+      "en": "The central design alternates two phases. Recursive Self-Rewrite, or R-S-R, converts successful, verifier-approved trajectories into runbooks and trains the actor through supervised examples. Recursive Policy-Refine, or R-P-R, then uses reinforcement learning with environment feedback. Think of R-S-R as learning from carefully checked demonstrations and R-P-R as practicing in the live environment. Repeating this sequence is intended to transfer reliable solutions while allowing the policy to improve beyond the cases already demonstrated.",
+      "zh": "核心设计在两个阶段之间交替进行。递归自我重写（R-S-R）把经过验证器认可的、成功的轨迹转化成操作手册，并通过监督样本训练执行者。接着，递归策略优化（R-P-R）利用环境反馈进行强化学习。可以把R-S-R理解为从经过仔细检查的示范中学习，把R-P-R理解为在真实环境中练习。重复这一序列，目的是把可靠的解法迁移过来，同时让策略能够超越已经示范过的案例继续提升。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 109.52,
+      "end": 113.7,
+      "en": "Quick question: are the runbooks simply copied into training, or are they checked again?",
+      "zh": "快速问一下：这些操作手册是直接复制到训练里，还是会再检查一遍？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 114.58,
+      "end": 147.82,
+      "en": "They are checked again. Successful trajectories become runbooks, which are re-executed in a target harness, and a reviewer screens them for problems such as incompatibility or leaked private guidance. Only accepted, freshly verified executions become supervision. The training loss targets generated decisions under public task context. This extra verification step is important: a trajectory that once succeeded is not automatically a safe or reproducible training example in a different execution setting.",
+      "zh": "这些内容会再次接受检查。成功的轨迹会变成操作手册，然后在目标执行环境中重新运行，并由审核人员筛查其中是否存在不兼容或泄露私有指导信息等问题。只有通过审核且经过最新验证的执行结果才会成为监督数据。训练损失针对的是在公开任务上下文下生成的决策。这个额外的验证步骤很重要：一条曾经成功过的轨迹，并不会自动成为在另一种执行环境中安全且可复现的训练样本。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 148.74,
+      "end": 181.9,
+      "en": "The second key idea concerns the critic, which estimates how valuable an agent’s current situation is. R-S-R changes the actor but leaves critic weights untouched. Before each joint actor–critic phase, R-P-R performs 4 critic-only calibration updates with the actor frozen, then proceeds to joint P-P-O updates. This tries to balance two risks: resetting the critic discards useful learning, while transferring it without recalibration may leave its estimates mismatched to the changed policy or reward.",
+      "zh": "第二个关键思路跟评论家有关，它负责估计智能体当前处境有多大价值。R-S-R只改演员，不动评论家的权重。每次演员-评论家联合阶段开始前，R-P-R会先冻结演员，只对评论家做4次校准更新，然后再进入联合的P-P-O更新。这样做是想平衡两个风险：重置评论家会丢掉有用的学习成果，而不重新校准就直接迁移，又可能让它的估计跟已经变化的策略或奖励对不上。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 181.9,
+      "end": 189.44,
+      "en": "Wait, why can ordinary G-A-E give misleading credit if observation tokens are masked from the policy loss?",
+      "zh": "等等，如果观测token已经从策略损失里屏蔽掉了，为什么普通G-A-E还是可能给出误导性的信用分配？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 190.46,
+      "end": 223.12,
+      "en": "Masking observations from the policy loss does not necessarily remove their influence from recursive advantage calculations. A command may require many generated tokens, while a long tool observation may add text without adding a policy decision. Standard G-A-E can discount across those tokens, making credit depend partly on log length. The proposed T-B G-A-E applies discount and trace decay across interaction-turn boundaries instead; observations inform value estimates but are not recursion nodes.",
+      "zh": "将观测从策略损失中屏蔽，并不一定就能消除它们对递归优势计算的影响。一条命令可能需要生成很多token，而一段很长的工具观测可能只是增加了文本，却没有增加策略决策。标准G-A-E会跨越这些token进行折扣，使得信用部分取决于日志长度。提出的T-B G-A-E则改为在交互轮次边界上应用折扣和轨迹衰减；观测为价值估计提供信息，但不是递归节点。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 224.04,
+      "end": 258.4,
+      "en": "That distinction is useful in practice, but the evidence needs careful reading. The authors say the documented first refinement phase used standard G-A-E, so the evaluated checkpoints do not isolate an online benefit from T-B G-A-E. Their results instead test the broader retained training sequence. Across four Terminal-Bench suites, its equal-weight mean success rises from 20.68% for the base model to 50.58% for the final checkpoint, though individual benchmarks do not all improve at every stage.",
+      "zh": "这个区分在实践中很有用，但证据需要仔细解读。作者说，有记录的第一轮精炼阶段用的是标准G-A-E，所以被评估的检查点并没有单独隔离出T-B G-A-E带来的在线收益。他们的结果实际检验的是更广泛的保留训练序列。在四个Terminal-Bench套件上，其等权平均成功率从基础模型的20.68%上升到最终检查点的50.58%，不过各个基准并非在每个阶段都有提升。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 259.32,
+      "end": 263.86,
+      "en": "Can you clarify how the reward distinguishes partial progress from actually finishing?",
+      "zh": "你能说明一下奖励是怎么区分部分进展和真正完成的吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 263.86,
+      "end": 298.68,
+      "en": "Family Dense Reward, or F-D-R, credits passed semantic checks, normalized by a fixed family-specific divisor, but adds no separate completion bonus. Success-Prioritized Reward, or S-P-R, adds strict success to bounded partial credit, so a completed task scores at least 1 while a failure remains below 1 when a valid report exists. On long-horizon tasks, the final checkpoint improves process reward from 0.21 to 0.37, but strict completions reach only 5 of 46.",
+      "zh": "家族稠密奖励（F-D-R）为通过的语义检查给分，并按固定的家族专属除数归一化，但不额外增加单独的完成奖励。成功优先奖励（S-P-R）在有限的部分得分之上加入严格成功判定，因此完成的任务至少得1分，而存在有效报告时失败任务仍低于1分。在长时程任务上，最终检查点将过程奖励从0.21提升到0.37，但严格完成的任务仅达到46个中的5个。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 299.86,
+      "end": 333.62,
+      "en": "This reward distinction addresses a concrete failure mode. In an audit of 4,352 trajectories, failed trajectories accounted for 50.09% of reward mass under the earlier dense reward. When the same outcomes were rescored with S-P-R, their share fell to 28.72%, and failures scoring at least 1 fell from 158 to zero. These are offline allocation results: they show what the reward would emphasize on fixed trajectories, not that S-P-R alone caused policy improvement during training.",
+      "zh": "这种奖励区分针对的是一个具体的失败模式。在对4352条轨迹的审计中，在早期的稠密奖励下，失败轨迹占了奖励总量的50.09%。当用S-P-R对相同结果重新打分时，这一占比降到了28.72%，得分至少为1的失败轨迹从158条降到了零。这些是离线的分配结果：它们展示的是奖励在固定轨迹上会强调什么，而不是说仅靠S-P-R就带来了训练过程中的策略改进。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 334.58,
+      "end": 340.22,
+      "en": "How strong is the evidence that alternating the phases, rather than extra training compute, caused the gains?",
+      "zh": "交替进行各阶段而非增加训练算力带来了这些提升，这一说法的证据有多强？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 340.22,
+      "end": 372.58,
+      "en": "That remains unresolved. The direct-P-P-O comparison is weaker at the reported local training steps, but it is not compute-matched: the R-S-R route also spends resources on discovery and supervised rewriting. The evaluation uses one 27-billion-parameter backbone and does not include independent training seeds. So the results support the sequence as a promising training recipe, but they do not establish statistical superiority or tell us how much each phase contributes separately.",
+      "zh": "这一点仍未解决。在报告的本地训练步数下，直接PPO的对比更弱，但并未做算力匹配：RSR路线还会在发现和监督重写上花费资源。评估使用了一个270亿参数的骨干模型，且未包含独立的训练种子。因此，结果支持该序列是一种有前景的训练配方，但并未确立统计上的优越性，也无法告诉我们每个阶段分别贡献了多少。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 373.48,
+      "end": 407.24,
+      "en": "The paper’s broader contribution is to keep distinct measures distinct: partial progress, strict completion, checker coverage, and reward allocation. That is useful for terminal-agent research, where passing tested checks may still leave the requested implementation incomplete. It also complements work such as CompactionRL, which focuses on managing long interaction histories, and A-R-E-X, which recursively updates research context. Terminal-R-S-I instead emphasizes verified solution reuse, critic transfer, and reward calibration.",
+      "zh": "这篇论文更广泛的贡献在于把不同的衡量指标区分开来：部分进展、严格完成、检查器覆盖率和奖励分配。这对终端智能体研究很有用，因为在那种场景下，通过已测试的检查项可能仍然意味着所要求的实现并不完整。它也与CompactionRL和A-R-E-X等工作形成互补，前者专注于管理长交互历史，后者递归更新研究上下文。而Terminal-R-S-I则强调经过验证的解决方案复用、评论家迁移和奖励校准。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 408.36,
+      "end": 410.62,
+      "en": "So what would be the most informative next experiment?",
+      "zh": "那么，最有信息量的下一个实验会是什么呢？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 411.64,
+      "end": 453.224,
+      "en": "A controlled study could match compute across alternating and direct reinforcement-learning routes, compare transferred and reset critics, and test T-B G-A-E in an isolated online comparison. Matched reward experiments would clarify whether completion-prioritized feedback changes behavior, not just how scores are allocated. Broader model families and independent training seeds would test generality. The lasting takeaway is that an agent must learn both to make progress and to satisfy the final contract—and researchers should measure those achievements separately. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "一个受控实验可以在交替式和直接式强化学习路径之间匹配计算量，比较迁移的评论家和重置的评论家，并在隔离的在线对比中测试T-B G-A-E。匹配奖励的实验可以澄清以完成为优先的反馈是否改变了行为，而不仅仅是分数如何分配。更广泛的模型家族和独立的训练种子可以检验泛化性。持久的结论是，智能体必须同时学会推进进展和满足最终契约，研究人员应该分别衡量这两项成就。感谢收听。如果你还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yang2026terminalrsirecursiveselfimprovingterminal,\n      title={Terminal-RSI: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine}, \n      author={Junyao Yang and Zongxia Li and Yucheng Shi and Zhongzhi Li and Ruhan Wang and Ruiwen Zhou and Haitao Mi and Shuicheng Yan and Leowei Liang},\n      year={2026},\n      eprint={2610.22192},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.22192}, \n}",
+  "topics": [
+    "AI"
+  ],
+  "peaks": [
+    0.852,
+    0.605,
+    0.535,
+    0.403,
+    0.518,
+    0.283,
+    0.901,
+    0.751,
+    0.741,
+    0.736,
+    0.508,
+    0.572,
+    0.61,
+    0.438,
+    0.507,
+    0.309,
+    0.346,
+    0.459,
+    0.754,
+    0.613,
+    0.572,
+    0.608,
+    0.4,
+    0.346,
+    0.63,
+    0.635,
+    0.607,
+    0.497,
+    0.312,
+    0.669,
+    0.946,
+    1.0,
+    0.834,
+    0.721,
+    0.633,
+    0.494,
+    0.705,
+    0.541,
+    0.567,
+    0.358,
+    0.384,
+    0.554,
+    0.718,
+    0.413,
+    0.327,
+    0.476,
+    0.314,
+    0.483,
+    0.541,
+    0.498,
+    0.61,
+    0.481,
+    0.413,
+    0.744,
+    0.458,
+    0.378,
+    0.406,
+    0.261,
+    0.284,
+    0.366,
+    0.39,
+    0.349,
+    0.305,
+    0.362,
+    0.357,
+    0.686,
+    0.46,
+    0.388,
+    0.433,
+    0.246,
+    0.2,
+    0.243
+  ],
+  "published": "2026-10-15",
+  "views": 179,
+  "license": "CC BY"
+}

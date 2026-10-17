@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 453.224,
+  "word_match_rate": 0.9299,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning for Long-Horizon Agents, today's lecture is on Terminal-R-S-I: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine. Work such as CompactionRL and A-R-E-X reflects a broader shift toward agents that improve across extended interactions, rather than merely answer isolated prompts. This paper, from a team including researchers at Tencent Hy Frontier and the National University of Singapore, combines verified demonstrations with reinforcement learning. I see a hand—yes, Noah?",
+      "start": 0.0,
+      "end": 36.02
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes a terminal agent different from a regular language-model assistant?",
+      "start": 37.22,
+      "end": 41.8
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A terminal agent acts through tools in an executable environment, such as a command line or software repository. Its answer is judged by whether the environment reaches a state accepted by a verifier, not by whether its explanation sounds convincing. That distinction matters because an agent can make useful partial changes and still fail the task’s final condition. Terminal-R-S-I asks how to turn verified discoveries into better behavior, then keep improving through interaction.",
+      "start": 42.8,
+      "end": 71.94
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central design alternates two phases. Recursive Self-Rewrite, or R-S-R, converts successful, verifier-approved trajectories into runbooks and trains the actor through supervised examples. Recursive Policy-Refine, or R-P-R, then uses reinforcement learning with environment feedback. Think of R-S-R as learning from carefully checked demonstrations and R-P-R as practicing in the live environment. Repeating this sequence is intended to transfer reliable solutions while allowing the policy to improve beyond the cases already demonstrated.",
+      "start": 72.96,
+      "end": 108.48
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: are the runbooks simply copied into training, or are they checked again?",
+      "start": 109.52,
+      "end": 113.7
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "They are checked again. Successful trajectories become runbooks, which are re-executed in a target harness, and a reviewer screens them for problems such as incompatibility or leaked private guidance. Only accepted, freshly verified executions become supervision. The training loss targets generated decisions under public task context. This extra verification step is important: a trajectory that once succeeded is not automatically a safe or reproducible training example in a different execution setting.",
+      "start": 114.58,
+      "end": 147.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The second key idea concerns the critic, which estimates how valuable an agent’s current situation is. R-S-R changes the actor but leaves critic weights untouched. Before each joint actor–critic phase, R-P-R performs 4 critic-only calibration updates with the actor frozen, then proceeds to joint P-P-O updates. This tries to balance two risks: resetting the critic discards useful learning, while transferring it without recalibration may leave its estimates mismatched to the changed policy or reward.",
+      "start": 148.74,
+      "end": 181.9
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Wait, why can ordinary G-A-E give misleading credit if observation tokens are masked from the policy loss?",
+      "start": 181.9,
+      "end": 189.44
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Masking observations from the policy loss does not necessarily remove their influence from recursive advantage calculations. A command may require many generated tokens, while a long tool observation may add text without adding a policy decision. Standard G-A-E can discount across those tokens, making credit depend partly on log length. The proposed T-B G-A-E applies discount and trace decay across interaction-turn boundaries instead; observations inform value estimates but are not recursion nodes.",
+      "start": 190.46,
+      "end": 223.12
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "That distinction is useful in practice, but the evidence needs careful reading. The authors say the documented first refinement phase used standard G-A-E, so the evaluated checkpoints do not isolate an online benefit from T-B G-A-E. Their results instead test the broader retained training sequence. Across four Terminal-Bench suites, its equal-weight mean success rises from 20.68% for the base model to 50.58% for the final checkpoint, though individual benchmarks do not all improve at every stage.",
+      "start": 224.04,
+      "end": 258.4
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify how the reward distinguishes partial progress from actually finishing?",
+      "start": 259.32,
+      "end": 263.86
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Family Dense Reward, or F-D-R, credits passed semantic checks, normalized by a fixed family-specific divisor, but adds no separate completion bonus. Success-Prioritized Reward, or S-P-R, adds strict success to bounded partial credit, so a completed task scores at least 1 while a failure remains below 1 when a valid report exists. On long-horizon tasks, the final checkpoint improves process reward from 0.21 to 0.37, but strict completions reach only 5 of 46.",
+      "start": 263.86,
+      "end": 298.68
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "This reward distinction addresses a concrete failure mode. In an audit of 4,352 trajectories, failed trajectories accounted for 50.09% of reward mass under the earlier dense reward. When the same outcomes were rescored with S-P-R, their share fell to 28.72%, and failures scoring at least 1 fell from 158 to zero. These are offline allocation results: they show what the reward would emphasize on fixed trajectories, not that S-P-R alone caused policy improvement during training.",
+      "start": 299.86,
+      "end": 333.62
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How strong is the evidence that alternating the phases, rather than extra training compute, caused the gains?",
+      "start": 334.58,
+      "end": 340.22
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That remains unresolved. The direct-P-P-O comparison is weaker at the reported local training steps, but it is not compute-matched: the R-S-R route also spends resources on discovery and supervised rewriting. The evaluation uses one 27-billion-parameter backbone and does not include independent training seeds. So the results support the sequence as a promising training recipe, but they do not establish statistical superiority or tell us how much each phase contributes separately.",
+      "start": 340.22,
+      "end": 372.58
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The paper’s broader contribution is to keep distinct measures distinct: partial progress, strict completion, checker coverage, and reward allocation. That is useful for terminal-agent research, where passing tested checks may still leave the requested implementation incomplete. It also complements work such as CompactionRL, which focuses on managing long interaction histories, and A-R-E-X, which recursively updates research context. Terminal-R-S-I instead emphasizes verified solution reuse, critic transfer, and reward calibration.",
+      "start": 373.48,
+      "end": 407.24
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "So what would be the most informative next experiment?",
+      "start": 408.36,
+      "end": 410.62
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "A controlled study could match compute across alternating and direct reinforcement-learning routes, compare transferred and reset critics, and test T-B G-A-E in an isolated online comparison. Matched reward experiments would clarify whether completion-prioritized feedback changes behavior, not just how scores are allocated. Broader model families and independent training seeds would test generality. The lasting takeaway is that an agent must learn both to make progress and to satisfy the final contract—and researchers should measure those achievements separately. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 411.64,
+      "end": 453.224
+    }
+  ]
+}
