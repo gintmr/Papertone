@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 451.604,
+  "word_match_rate": 0.9415,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course on Autonomous Systems and Optimization, today’s lecture is on DuoDiscover: Scaling Autonomous Discovery Beyond the Evaluation Bottleneck. Recent work such as Dream-RSI and AVO shows how coding agents can guide iterative search and improve optimization strategies. This paper, from researchers at Google and Stanford among other institutions, takes on a practical constraint: full evaluations can be so slow that agents barely get to search. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 32.0
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what exactly is the evaluation bottleneck here?",
+      "start": 33.12,
+      "end": 36.52
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It is the time required to learn whether a code change actually helps. A full benchmark, serving workload, or hardware simulation may take minutes or hours. When every proposed edit waits for that result, the agent can test only a small number of candidates. DuoDiscover’s central idea is to let agents find both a promising region of code and a faster way to assess edits there, then check that shortcut against the true objective.",
+      "start": 37.32,
+      "end": 64.8
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The first main concept is co-discovery: each coding agent chooses a target, such as a function or kernel stage, and constructs a task-specific proxy called a yardstick. It might use smaller inputs, an isolated profiling harness, a filtered test suite, or a static cost estimate. The yardstick does not need to reproduce the benchmark’s absolute score. It needs to rank candidate edits in a way that agrees with the full evaluation.",
+      "start": 65.92,
+      "end": 93.92
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the yardstick is more like a compass for choosing edits than a replacement score?",
+      "start": 95.04,
+      "end": 98.88
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The agent uses it in a fast inner loop, retaining edits that improve the yardstick and reverting those that do not. A slower outer loop then checks promising candidates with the true evaluation. The orchestrator coordinates independent workers, shares useful discoveries, and may combine confirmed edits. This avoids requiring a human to divide a large engineering task into targets before the search begins.",
+      "start": 99.68,
+      "end": 125.74
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How does the system tell whether a yardstick is still trustworthy?",
+      "start": 127.0,
+      "end": 129.72
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That is the second central concept: ongoing fidelity testing. DuoDiscover compares yardstick rankings with full-evaluation results using Kendall’s rank correlation, while excluding score pairs that are too close to distinguish from evaluation noise. In the benchmark procedure, validation requires at least 6 distinguishable states, a correlation of at least 0.5, and a permutation test that rejects independence at the 0.05 level. These checks make proxy reliability measurable rather than assumed.",
+      "start": 130.8,
+      "end": 163.4
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The third concept is that proxy trust can expire. After each full evaluation, the orchestrator checks the relationship again. If a yardstick that passed validation later falls below the threshold, the system invalidates it. The agent can rebuild the proxy, select another target, or rely on full evaluations alone. Most importantly, every reported improvement must be confirmed against the true objective; the proxy guides exploration but never certifies the final result.",
+      "start": 163.4,
+      "end": 194.96
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Could an agent simply exploit a flaw in the yardstick and look successful?",
+      "start": 195.9,
+      "end": 199.38
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Yes, and the paper treats that as a central risk, not a theoretical footnote. In sampled tasks, 45% of validated kernel yardsticks and 41% of validated repository yardsticks were later invalidated. Frequent checking limits the damage: a misleading proxy may waste search effort, but it cannot create a reported gain without confirmation by the full evaluation. This distinction matters whenever an optimizer can adapt its behavior to the metric it is given.",
+      "start": 200.46,
+      "end": 231.56
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The practical results span software repositories, accelerator kernels, and hardware design. On 25 FormulaCode tasks, DuoDiscover reports a geometric-mean speedup of 2.156 times over the base code, compared with 1.778 times for Claude Code. On 100 S-W-E efficiency tasks, it reaches 15.02 times, compared with 12.81 times for Claude Code. In the sampled repository and kernel tasks, yardsticks ran a median 22 and 53 times faster than full evaluations, respectively.",
+      "start": 232.48,
+      "end": 269.28
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How do those fast measurements translate to real systems?",
+      "start": 270.34,
+      "end": 272.9
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The real-world case studies suggest the method can help when evaluations are particularly expensive. On the v-L-L-M serving system, DuoDiscover reports a 1.92 times geometric-mean gain across four objectives, including lower p99 decode latency and first-token latency, with throughput approximately unchanged. For a C-P-U data-prefetcher design task, some simulations took up to 28 hours. DuoDiscover reports a 6.31% performance gain, reaching it in 16.7 days with about 8,000 candidates.",
+      "start": 272.9,
+      "end": 312.04
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "Does that mean this approach should work for any optimization problem?",
+      "start": 313.18,
+      "end": 316.14
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "No. It depends on whether a useful, cheaper yardstick can be built, and proxy construction and validation have costs of their own. Warmup overhead may outweigh the benefit in short searches. The results also have limits: some comparisons use single benchmark runs, leaderboard snapshots, or baselines reported by earlier work. The paper’s evidence supports the approach across several computing settings, but it does not establish that reliable proxies are available for every task.",
+      "start": 317.04,
+      "end": 346.34
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The broader shift is to treat evaluation efficiency as part of the search problem itself. Dream-RSI focuses on using recorded discovery attempts to improve exploration policies, while AVO applies coding agents to attention-kernel optimization. DuoDiscover adds a complementary question: how can an agent discover what to optimize and how to measure it cheaply, while continuing to test whether that measurement remains reliable? Its answer links autonomous search to multi-fidelity optimization.",
+      "start": 347.24,
+      "end": 380.72
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Could this change how researchers design agent benchmarks?",
+      "start": 381.74,
+      "end": 384.4
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "It suggests benchmarks should report more than the best final score. Search cost, confirmed evaluations, proxy reliability over time, and warmup overhead all help explain why a system succeeds. Ablations in the paper find that fidelity testing, co-discovery, and orchestration each contribute to performance. A useful next step for the field is to compare systems under transparent cost accounting and to study settings where proxy drift is common or cheap evaluators are difficult to construct.",
+      "start": 385.66,
+      "end": 418.58
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The key takeaway is that faster search is not just a matter of running more agents; it also depends on finding trustworthy ways to learn from their edits. DuoDiscover makes that measurement problem an explicit part of autonomous discovery, while retaining full evaluations as the final authority. Its results are promising across software, kernels, and hardware design, with clear limits around proxy quality and cost. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 419.66,
+      "end": 451.604
+    }
+  ]
+}

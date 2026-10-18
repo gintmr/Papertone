@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 464.065,
+  "word_match_rate": 0.94,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical graduate course, Data-Centric Language Model Research, today's lecture is on Auto S-F-T: An Agentic System for Automated Data Research in Supervised Fine-Tuning. Recent work such as PostTrainBench studies whether agents can automate post-training, while R-S-I-Bench-Data evaluates agents as data researchers. This field is moving toward systems that learn from experimental feedback. Researchers at Tsinghua University and ModelBest ask a focused question: can an agent explore data engineering more broadly than simply changing which examples it samples? Yes, Noah?",
+      "start": 0.0,
+      "end": 38.7
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why focus on data changes instead of improving the training algorithm?",
+      "start": 39.62,
+      "end": 43.84
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because the paper treats data as an experimental object in its own right. In supervised fine-tuning, a dataset’s selection, quality, composition, and ordering can all shape model behavior. Auto S-F-T does not propose a new architecture or optimizer; it builds a research loop for investigating those choices. That focus matters as automated post-training systems become more capable: if agents only repeat one kind of data intervention, they may miss useful alternatives a human data engineer would consider.",
+      "start": 44.78,
+      "end": 77.78
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors organize those alternatives into six action families. Mixture changes the proportions of data groups; pruning removes examples; repair edits flawed examples; resupervision replaces answers while keeping the instructions; synthesis adds new examples; and ordering changes the sequence presented during training. The categories are determined by what changes in the data recipe, not just by the agent’s description of its intention. This gives the system a practical vocabulary for exploring distinct interventions.",
+      "start": 78.72,
+      "end": 111.04
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does each experiment build on the model from the previous round?",
+      "start": 111.04,
+      "end": 116.1
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. Each round starts again from the same base checkpoint, using a potentially revised data pool and recipe. That is an important control: it helps distinguish the effect of the data changes from accumulated changes in model weights. The training procedure, token budget, and evaluation protocol are held constant within comparisons, while the agent records its hypotheses and outcomes. Think of each round as a fresh trial with a changed recipe, rather than another layer of seasoning added to an evolving dish.",
+      "start": 117.0,
+      "end": 148.44
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The system also separates work across agents. A meta agent coordinates an executor, four analysis agents, and a synthesis agent. The executor runs training and evaluation in a separate session, keeping detailed logs out of the meta agent’s main context. The analysis agents inspect different evidence: data quality and coverage, successes and failures, learning dynamics, and earlier interventions. They return proposals; the meta agent remains responsible for choosing the next recipe.",
+      "start": 149.3,
+      "end": 182.74
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How does the synthesis agent avoid adding examples that merely look plausible?",
+      "start": 183.68,
+      "end": 187.44
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It uses several checks before generated examples enter the pool. In instruction-following experiments, the system targets capabilities with insufficient representation and can express those targets as verifiable constraints. Each candidate must pass a programmatic verifier, an independent semantic review, and an n-gram overlap check against evaluation data. These safeguards do not guarantee that every example is useful, but they reduce obvious validity and contamination risks. The design treats synthesis as a measured intervention, not an unrestricted stream of generated text.",
+      "start": 188.32,
+      "end": 223.2
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The first practical insight is that execution overhead can interfere with research decisions. In the pilot, one agent handled data choices, training, evaluation, and interpretation. Its context became crowded with logs and repeated records, and it repeatedly adjusted mixture proportions without repairing, replacing, or generating examples. Adding the separate executor reduced context compactions from ten to five and shell-command events from 58% to 29% over comparable elapsed time. That supports an efficiency claim, not a score-improvement claim.",
+      "start": 224.28,
+      "end": 260.38
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Wait, did the analysis agents improve results simply by proposing more kinds of actions?",
+      "start": 261.26,
+      "end": 266.1
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The reported comparison suggests a connection, but it does not isolate every cause. At 30 rounds, the analysis configuration scored 67.10% on I-F-Eval, versus 60.60% for the single-agent configuration at the same round count. Repair and resupervision made up 55% of its actions; the single agent kept using mixture changes. Neither generated examples in this comparison. The result indicates that broader analysis coincided with different interventions and higher scores, but one search per configuration limits causal certainty.",
+      "start": 267.06,
+      "end": 302.9
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A second insight is that targeted synthesis can address gaps in the available pool. With synthesis, the best I-F-Eval score was 81.58%, compared with 78.15% without it; on I-F-Bench, the corresponding scores were 51.95% and 49.02%. A targeted example set also raised the repeat-prompt capability’s pass rate to 75.6% in one round. Yet odd-even-syllables stayed at zero after being targeted three times, showing that added coverage does not ensure a capability is learnable under the tested conditions.",
+      "start": 304.02,
+      "end": 342.04
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Can we conclude the approach transfers to coding, or are those results too limited?",
+      "start": 343.2,
+      "end": 347.12
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The coding experiment offers a promising test, but not a broad guarantee. On M-B-P-P plus, the single-agent setup showed no sustained improvement; analysis agents reached 64.8% at round 13, and adding synthesis reached 65.8% by round six. The authors report a 3.7-point analysis gain over the single-agent result. Unlike instruction-following, coding lacked a supplied capability breakdown, so the system derived one from observed failures and available data. The runs were short, so transfer remains preliminary.",
+      "start": 348.16,
+      "end": 386.34
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Taken together, Auto S-F-T shifts attention from asking only how an agent trains a model to asking what range of data interventions it can investigate. Its controlled, same-base-model rounds make comparisons more interpretable, and its division of labor helps separate execution from analysis. That perspective connects with PostTrainBench’s study of automated post-training, while adding a specific emphasis on data research. Still, all experiments use one base model at one scale, and repeated evaluations do not replace independent full search runs.",
+      "start": 387.4,
+      "end": 423.38
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "So the key limitation is whether these results hold across models, datasets, and independent searches?",
+      "start": 424.36,
+      "end": 429.98
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Exactly. The evidence supports feasibility in the reported settings, not universal gains across scales, domains, or budgets. Future work should repeat complete searches, test more models and datasets, and examine which data actions help which capabilities. The memorable takeaway is this: an automated researcher’s progress may depend not just on how well it trains, but on whether it knows how many different questions to ask of its data. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 430.76,
+      "end": 464.065
+    }
+  ]
+}
