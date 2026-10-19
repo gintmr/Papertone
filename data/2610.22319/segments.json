@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 413.361,
+  "word_match_rate": 0.9343,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course on Multi-Agent A-I Systems, today’s lecture is on “A team of Gemini four Argon agents beats Minecraft.” Work such as “Voyager” and “Project Sid” reflects growing interest in agents that write executable actions or coordinate inside Minecraft. This paper, from Google DeepMind, asks whether a team of general-purpose coding agents can sustain a plan across a long chain of survival tasks. That matters for understanding agent coordination beyond short, isolated actions. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.8
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes reaching the End such a long-horizon challenge?",
+      "start": 35.92,
+      "end": 39.58
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The team had to move from a random spawn through the Overworld, gather resources, enter the Nether, find a stronghold, and reach the End. There, ten crystals heal the dragon, so the players needed to destroy them before finishing the fight. Instead of receiving a researcher-written route, 4 agents wrote programs and shared information. They won after 27 hours and 14 minutes, with 605 deaths. That is one observed completion, not evidence of reliable repetition.",
+      "start": 40.54,
+      "end": 69.66
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The first main idea is a repeated coding loop. Each agent wrote a JavaScript program to control its own player. Mineflayer executed actions such as walking, mining, crafting, or attacking, then returned text about position, health, inventory, surroundings, results, or errors. The agent used that feedback to write another program. In effect, the agents built and revised their own action plans as the game unfolded, rather than following a fixed script.",
+      "start": 70.68,
+      "end": 101.66
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: did the agents see the game through images, like a human player?",
+      "start": 102.6,
+      "end": 106.52
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. The interface provided structured game information and pathfinding, not pixels, a keyboard, or a mouse. The researchers supplied the Minecraft server and Mineflayer environment; the agents still chose what to do and in what order. That distinction is important: the agents had a powerful, game-specific interface, and Gemini four Argon already had Minecraft and Mineflayer knowledge. The result is about this instrumented setup, not human-like visual perception.",
+      "start": 106.52,
+      "end": 136.62
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The second idea is that coordination emerged from a shared goal, not assigned job descriptions. The agents chose roles for themselves and exchanged information through chat and shared notes. For example, after auratian drowned while carrying 12 Eyes of Ender, teammates told bulicame where the items were and when they would disappear. Bulicame recovered them. That episode shows how communication helped the team respond to a setback, but it does not prove that sharing caused the overall victory.",
+      "start": 137.78,
+      "end": 167.92
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The third idea is a long sequence of individual and collective milestones. One agent opened the Nether route; later, the team gathered resources, found the stronghold, and entered the End. The timeline records a portal at 1 hour and 42 minutes, the stronghold at 13 hours and 17 minutes, and entry to the End 16 minutes later. These are milestones in a single run, not evidence that the method was fast or efficient compared with another system.",
+      "start": 168.8,
+      "end": 198.3
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Can you clarify what the agents actually contributed to the dragon fight?",
+      "start": 199.24,
+      "end": 202.1
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "A critical insight was identifying why repeated attacks were not finishing the fight: the End crystals heal the dragon. About 21 hours into the run, auratian worked out a way to reach them with dirt pillars, climb beside each crystal, punch it, and dig the dirt back down. The team destroyed all ten over the following hours. This was a strategy developed during the run, rather than a route supplied by researchers.",
+      "start": 203.52,
+      "end": 229.16
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So the health plot proves the crystals were the only reason the dragon stayed healthy?",
+      "start": 230.38,
+      "end": 234.18
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "It shows a sequence, not a controlled causal test. In the agents’ program readings, the dragon’s health was never below 198.5 before the last crystal fell at 26 hours, 34 minutes, and 55 seconds. Afterward, recorded readings fell toward zero, and the game registered “Free the End” at 27 hours, 14 minutes, and 12 seconds. The final blow came from bulicame. The measurements were intermittent, not continuous monitoring.",
+      "start": 234.98,
+      "end": 266.42
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "For real-world relevance, the authors connect sustained coding and coordination to software engineering and enterprise tasks. That is motivation, not an application tested by this Minecraft experiment. The useful technical lesson is narrower: a coding agent can receive structured feedback, revise programs, and carry work through dependent subtasks in a single environment. Whether this approach transfers to software projects or other complex settings needs separate evaluation.",
+      "start": 267.56,
+      "end": 298.16
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does this compare with Voyager, and does it establish that teams outperform single agents?",
+      "start": 299.2,
+      "end": 303.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Voyager is the closest methodological predecessor: it also used Mineflayer programs written by an L-L-M, alongside an automatic curriculum and a growing skill library. Its reported tasks concerned exploration, items, technology progression, and novel tasks, not a four-agent dragon completion. MineDojo had called a fresh-world dragon playthrough a “moonshot,” but that is benchmark context, not a prior successful run. Earlier community-reported wins also exist, so this paper’s claim is about its particular setup, not the first A-I dragon victory.",
+      "start": 304.88,
+      "end": 341.98
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The missing experiment is a controlled comparison: the same setup with one player, or with shared memory removed. The paper reports neither such ablation nor repeated runs, so it cannot show that multiple agents, self-chosen roles, or any particular coordination practice caused the win. It also cannot establish reliability. Its narrower contribution is an observed completion by 4 coding agents on Easy, in a randomly generated world, using Mineflayer’s structured information and pathfinding.",
+      "start": 342.92,
+      "end": 374.48
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The takeaway is to separate what the demonstration shows from what remains unknown. Four agents sustained one plan across many setbacks and tasks, wrote 2,783 programs, and reached the Ender Dragon in a single run. That is evidence of what this particular team and interface accomplished—not of general game competence, repeatable success, or pixel-based play. For future work, controlled comparisons and repeated trials would test which parts of the arrangement matter. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 376.1,
+      "end": 413.361
+    }
+  ]
+}

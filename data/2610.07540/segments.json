@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 476.29,
+  "word_match_rate": 0.9384,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Learning-Based Control, today’s lecture is on Preserving Unstable Modes Through Inverse Dynamics in jepa World Models. Recent work such as Temporal Straightening for Latent Planning and Semigroup-JEPA explores how to shape latent dynamics for planning and generalization. This paper, by researchers affiliated with Columbia University and New York University, asks a different control-focused question: does a useful world model preserve the information needed to stabilize an unstable system? Go ahead, Noah.",
+      "start": 0.0,
+      "end": 32.74
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why might a model predict well but still fail to control the system?",
+      "start": 33.86,
+      "end": 38.06
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because prediction accuracy and control-relevant information are not the same thing. A model may predict what comes next while its representation has erased a physical direction that a controller needs to monitor. Think of a dashboard that accurately reports most engine behavior but omits the warning light for a fault that can rapidly worsen. The paper argues that standard jepa training can produce this kind of omission, even when the representation has not collapsed completely.",
+      "start": 39.18,
+      "end": 66.62
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "A jepa world model encodes observations into a compact latent state and predicts how that state changes under actions. The usual training recipe rewards accurate next-step latent prediction and uses an anti-collapse regularizer called sig-reg to keep representations dispersed. But dispersion alone does not say which physical features are retained. The paper therefore studies whether these common objectives preserve unstable modes: directions in the system’s state that grow over time unless feedback detects and corrects them.",
+      "start": 67.64,
+      "end": 101.06
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So a representation can vary a lot overall and still miss the one direction that matters for stabilization?",
+      "start": 101.6,
+      "end": 106.94
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The authors first make this precise in a linear control setting. They show that latent feedback can stabilize the physical system only if the representation preserves the unstable and marginally stable modes well enough to make them observable. They also construct a counterexample: prediction and sig-reg can both succeed even when the encoder discards an unstable direction. That result separates “the latent model predicts” from “a controller can use the latent state safely.”",
+      "start": 108.12,
+      "end": 137.2
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: what training signal do they add to encourage the encoder to keep those directions?",
+      "start": 138.1,
+      "end": 142.84
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "They add inverse dynamics: predicting actions from latent states. Their central version, endpoint inverse dynamics, receives the latent state at the start and the latent state at the end of a time window, then reconstructs the action sequence in between. The intuition is that actions leave traces in how the system changes. To infer those actions from the endpoints, the representation may need to retain information about the state directions those actions affected.",
+      "start": 143.8,
+      "end": 171.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The theory links this idea to reachability. Under specific linear-system assumptions, exact reconstruction of sufficiently rich action sequences means the encoder cannot erase directions that actions can reach over the chosen horizon. A second result concerns the controllability Gramian, which describes how strongly actions can affect different directions. With the paper’s assumptions, its dominant directions increasingly align with unstable modes as the horizon grows. These are conditional theoretical results, not guarantees for every learned nonlinear model.",
+      "start": 172.96,
+      "end": 206.92
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Does endpoint reconstruction require unusually favorable conditions, like enough latent capacity or diverse action sequences?",
+      "start": 207.82,
+      "end": 214.76
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Yes, and that qualification matters. The exact result assumes rich action-sequence support and enough latent dimension to encode the required sequence information; the paper gives a bound involving action dimension and horizon. In practice, training is approximate, so the theorem does not promise perfect preservation. The experiment asks a narrower question: does adding this action-reconstruction signal improve learned control in simulated visual tasks compared with prediction and sig-reg alone?",
+      "start": 214.76,
+      "end": 247.72
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "On CartPole, the difference is stark under latent L-Q-R, a feedback controller built from the learned local dynamics. Prediction with sig-reg achieves zero percent success, whether prediction is one-step or multi-step. One-step prediction with endpoint inverse dynamics reaches 100% success; the multi-step version with sig-reg also reaches 100%. This supports the paper’s central control claim, while reminding us that the result depends on the task, observations, and training setup.",
+      "start": 248.64,
+      "end": 281.0
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "But the paper also tests planners, right? Do they fail whenever latent L-Q-R fails?",
+      "start": 281.96,
+      "end": 286.92
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "No. Cross-entropy planning and gradient-based planning can succeed on CartPole with some sig-reg models that fail under latent L-Q-R. Those planners repeatedly optimize actions through a nonlinear model, which can compensate for some local-model errors. L-Q-R depends more directly on the learned local linearization. On Walker2D, endpoint inverse dynamics also preserves aspects of the locomotion cycle in latent rollouts and improves planning over the tested sig-reg models, though it remains below ground-truth dynamics.",
+      "start": 287.92,
+      "end": 319.86
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The results also help locate the method’s boundaries. PointMaze is open-loop stable, so preserving unstable modes is not required; the tested models generally achieve high goal-reaching success there, including action-reconstruction variants. With frozen visual encoders, endpoint inverse dynamics works with some eye-bot configurations, but none of the tested dino v two configurations gives a stabilizing L-Q-R controller. Removing proprioception in a tested eye-bot setup also yields zero success, indicating that visual input did not reliably supply needed velocity information.",
+      "start": 320.96,
+      "end": 357.04
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So the action loss can’t restore state information that a frozen visual encoder has already thrown away?",
+      "start": 358.1,
+      "end": 363.34
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Right. That limitation connects to broader work on action-sensitive representations, including Sensorimotor World Models and Delta-JEPA, which also use action information to shape latent features. This paper’s distinctive emphasis is reconstructing a whole action sequence from endpoint latents and relating that objective to finite-horizon reachability. The connection is useful, but it should not be overstated: its formal guarantees rely on linear assumptions, while its nonlinear experiments use simulated environments and approximate training.",
+      "start": 364.32,
+      "end": 398.46
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How should we interpret the evidence if we care about robots operating near unstable states?",
+      "start": 399.42,
+      "end": 404.18
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Treat it as a design principle with promising simulation evidence, not yet a deployment guarantee. Near an unstable equilibrium, omitted velocity or orientation information can prevent timely correction, so action reconstruction may be a useful additional training signal. But these experiments use proprioception, limited evaluation trials, and simulated tasks. Future work should test robustness to noise, less informative action data, longer or higher-dimensional action sequences, and physical robots. It should also examine when reconstruction improves control without sacrificing other objectives.",
+      "start": 405.02,
+      "end": 441.74
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The paper’s main takeaway is that a world model should be judged not only by what it predicts, but also by what a controller can observe through its representation. Prediction and anti-collapse regularization can leave an unstable blind spot; endpoint action reconstruction offers one way to discourage that, under specific conditions. For control research, the practical question is whether the latent state preserves the directions that matter for intervention. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 442.94,
+      "end": 476.29
+    }
+  ]
+}

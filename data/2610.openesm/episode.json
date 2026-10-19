@@ -1,0 +1,251 @@
+{
+  "id": "2610.openesm",
+  "title": "OpenEBFM: Energy-Based Foundation Models Are Scalable Architectures",
+  "authors": [
+    "Yuan Pu",
+    "Yudong Lu",
+    "Ting Wang",
+    "Zhicong Hong",
+    "Qinuo Li",
+    "Xuansheng Wu",
+    "Na Zou",
+    "Xia Hu",
+    "Guanchu Wang"
+  ],
+  "abstract": "Energy-based models have shown promising properties for domain-specific tasks but remain challenging in modeling general-purpose scenarios. To bridge this gap, we design Energy-Based Foundation Models (EBFMs) for general language modeling. EBFMs integrate energy steering and token generation within a single architecture to leverage the energy-guided search to refine token generation. Specifically, EBFMs first optimize a latent state over the energy landscape, then leverages the refined latent state for token generation. By performing such energy-guided pre-training on large-scale corpora, EBFMs learn generally effective energy landscape where favorable tokens correspond to lower energy values. To explore the scaling behavior of EBFMs, we pre-train EBFMs on three large-scale corpora, then evaluate across 26 downstream tasks spanning a broad range of domains. Our results demonstrate that EBFMs have promising scaling behaviors with increasing model size and training data, and outperform GPTs on most downstream tasks. These findings highlight EBFMs as a promising architecture for large-scale pre-training and general purpose problem solving. We fully release the model weights and training infrastructure to enable the community to completely reproduce and extend our results.\n\nGitHub: https://github.com/datamllab/openebfm\nHuggingface: https://huggingface.co/collections/guan-wang/openebfm",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.openesm",
+    "arxiv": "https://arxiv.org/abs/2610.openesm"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1247c-3ab7-7c00-a9bf-425dbd0970c9/podcast.mp3",
+  "duration": 441.521,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.96,
+      "en": "In a hypothetical course called Transformer Architectures, today’s lecture is on Energy-Based Foundation Models, the paper behind OpenEBFM. Language models must produce a next token, while an energy model naturally scores how compatible a candidate is with its context. Searching every possible token is impractical. Recent work such as Large Language Diffusion Models and Energy-Based Transformers are Scalable Learners and Thinkers explores alternatives to standard generation. This paper takes a different route: it steers a hidden representation, then generates from it. Yes, Noah?",
+      "zh": "在一门假设叫《Transformer架构》的课上，今天讲的是《基于能量的基础模型》，也就是OpenEBFM背后的那篇论文。语言模型必须生成下一个token，而能量模型则天然地给一个候选与上下文的匹配程度打分。把每一个可能的token都搜一遍是不现实的。最近的一些工作，比如《大语言扩散模型》和《基于能量的Transformer是可扩展的学习者和思考者》，探索了标准生成方式之外的替代方案。这篇论文走的是另一条路：它先对一个隐藏表示进行引导，然后再从中生成。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.06,
+      "end": 42.52,
+      "en": "Hi Professor, does steering the hidden state mean the model searches fewer possible tokens?",
+      "zh": "教授您好，引导隐藏状态是指模型搜索更少的候选token吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.54,
+      "end": 72.92,
+      "en": "It avoids searching the vocabulary directly, but that does not by itself establish faster inference or lower total compute. The broader field is testing how models can generate or evaluate text in ways that depart from a simple left-to-right prediction step. E-B-F-M fits that trend by using an energy score to guide a latent state before token prediction. That matters because it connects compatibility scoring to generation without requiring an exhaustive search through candidate words.",
+      "zh": "它避免了直接搜索词表，但这本身并不能证明推理更快或总计算量更低。更广泛的领域正在探索模型如何以不同于简单从左到右预测步骤的方式来生成或评估文本。E-B-F-M通过使用能量分数在token预测之前引导潜在状态，顺应了这一趋势。这一点很重要，因为它将兼容性评分与生成连接起来，而无需对候选词进行穷举搜索。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.88,
+      "end": 102.62,
+      "en": "The central design uses a shared Transformer backbone with two heads. The energy head gives a scalar compatibility score; the generative head gives a distribution over vocabulary tokens. At each position, the system starts from a latent state and adjusts it to reduce energy. It then passes the adjusted state to the generative head to predict the next token. So the model’s energy evaluates an internal representation, rather than directly ranking every possible next token.",
+      "zh": "核心设计采用共享的Transformer主干网络，配有两个头。能量头给出一个标量兼容性分数；生成头给出词表token上的分布。在每个位置，系统从一个潜在状态出发，调整它以降低能量，然后把调整后的状态传给生成头来预测下一个token。因此，模型的能量评估的是内部表示，而不是直接对每个可能的下一个token排序。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.38,
+      "end": 107.44,
+      "en": "Quick question: does a lower energy guarantee that the generated token is correct?",
+      "zh": "快速问一下：能量更低就能保证生成的token是正确的吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 108.44,
+      "end": 137.38,
+      "en": "No. Lower energy is the model’s learned signal for compatibility with context, not a certificate of truth, quality, or safety. Think of it as a learned guide that nudges a representation toward states the model regards as fitting. The generative head still makes the token prediction, and its reliability depends on what the system learned during training. This distinction is important: the paper proposes a route from scoring to generation, not a general guarantee that energy steering improves every output.",
+      "zh": "不能。较低的能量只是模型学到的、表示与上下文兼容程度的信号，并不代表内容真实、质量高或安全。可以把它理解为一个学到的引导，把表示推向模型认为合适的状态。生成头仍然负责预测token，其可靠性取决于系统在训练中学到了什么。这个区别很重要：论文提出的是一条从打分到生成的路径，而不是一个普遍保证，说能量引导能改善每一个输出。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 137.38,
+      "end": 170.72,
+      "en": "The authors report a favorable scaling pattern: across three corpora, E-B-F-M has lower validation bits per byte than G-P-T at matched training-token counts and model sizes. On the ClimbMix plot, validation error generally falls as training tokens increase, with E-B-F-M curves reaching lower values. The chart supports that qualitative pattern. It does not establish a verified exact token saving, and token counts should not be mistaken for elapsed time, inference speed, or total computation.",
+      "zh": "作者报告了一个有利的缩放规律：在三个语料库上，当训练token数量和模型规模相同时，E-B-F-M的验证集每字节比特数低于G-P-T。在ClimbMix图上，验证误差通常随训练token增加而下降，E-B-F-M曲线达到更低的值。图表支持这一定性规律，但并未确立经过验证的精确token节省量，而且token数量不应被误认为实际耗时、推理速度或总计算量。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 171.78,
+      "end": 176.86,
+      "en": "So the key technical question is how the latent state gets refined without changing the model weights?",
+      "zh": "所以关键的技术问题是，在不改变模型权重的情况下，潜在状态是如何被细化的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 177.72,
+      "end": 210.9,
+      "en": "The system begins with a Gaussian latent state, then repeatedly uses the energy gradient with respect to that state to move toward lower energy while keeping the model weights fixed. The paper leaves stochastic noise out of these steering updates, reporting that deterministic updates were more stable in large-scale pretraining. After refinement, the generative head predicts the next token. This separates two jobs: the energy head shapes the internal candidate representation, and the generative head turns that representation into text.",
+      "zh": "系统从一个高斯潜在状态开始，然后反复利用该状态的能量梯度向更低能量移动，同时保持模型权重不变。论文在这些引导更新中没有加入随机噪声，并报告说确定性更新在大规模预训练中更稳定。精炼之后，生成头预测下一个token。这就把两项工作分开了：能量头塑造内部候选表示，生成头则把该表示转成文本。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 211.82,
+      "end": 245.3,
+      "en": "A second important idea makes the method workable during training. Steering every position separately would be costly, so the model concatenates tokens and latent states and processes positions together. A redesigned attention mask lets each latent state attend to its causal prefix and itself, while positional indices align states with prediction positions. After steering, the generative head predicts next tokens, and next-token loss trains the weights. This parallelization is an architectural procedure, not a measured wall-clock speedup.",
+      "zh": "第二个重要思路让这个方法在训练时变得可行。逐个位置单独引导的代价太高，所以模型把token和潜在状态拼接起来，统一处理各个位置。重新设计的注意力掩码让每个潜在状态只能关注它的因果前缀和自身，同时位置索引把状态与预测位置对齐。引导之后，生成头预测下一个token，再用下一token损失训练权重。这种并行化是一种架构层面的处理方式，并不是实测的挂钟时间加速。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 246.52,
+      "end": 251.62,
+      "en": "Can you clarify what the evaluation says about performance beyond the training text?",
+      "zh": "你能说明一下评估结果对训练文本之外的性能是怎么说的吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 252.54,
+      "end": 287.76,
+      "en": "The paper reports an average of 1.35 bits per byte for E-B-F-M and 1.37 for G-P-T across 8 evaluated sets. Bits per byte is derived from token-level perplexity and normalized by bytes per token, which helps compare tokenizers; lower is better. The sets include OpenWebText validation and 7 zero-shot datasets. Both models saw 9.06 billion training tokens in 1 epoch. The result is modest and descriptive, not a reported significance test, and E-B-F-M does worse on Lambada.",
+      "zh": "论文报告称，在8个评估集上，E-B-F-M平均为每字节1.35比特，G-P-T为1.37比特。每字节比特数由token级困惑度推导而来，并按每token字节数归一化，这有助于比较不同的分词器；数值越低越好。这些评估集包括OpenWebText验证集和7个零样本数据集。两个模型在1个epoch内均训练了90.6亿个token。这一结果幅度不大，属于描述性结果，并非报告了显著性检验，而且E-B-F-M在Lambada上表现更差。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 289.18,
+      "end": 292.02,
+      "en": "And is the comparison with the diffusion model equally matched?",
+      "zh": "和扩散模型的比较是对等的吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 293.06,
+      "end": 332.04,
+      "en": "No. The paper’s M-D-L-M comparison uses 18.12 billion tokens, twice the budget given to E-B-F-M and G-P-T, so it is not an equal-token comparison. The evaluation recipe also covers 19 zero-shot question-answering tasks and 7 additional downstream generation datasets; OpenWebText validation is a separate evaluation set. Together, these results suggest a promising system-level generalization result, but they do not establish that the architecture is already a general-purpose foundation model at large scale.",
+      "zh": "不是。论文中与M-D-L-M的对比用了181.2亿个token，是E-B-F-M和G-P-T所分配预算的两倍，所以这不是等token的对比。评估方案还覆盖了19个零样本问答任务和7个额外的下游生成数据集；OpenWebText验证是一个单独的评估集。综合来看，这些结果提示了一个有前景的系统级泛化结果，但并不能证明该架构在大规模下已经是一个通用基础模型。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 333.02,
+      "end": 365.58,
+      "en": "The conceptual contrast with Energy-Based Transformers are Scalable Learners and Thinkers is useful. E-B-Ts refine candidate predictions directly against an energy verifier; E-B-F-M instead refines a latent representation and decodes from it. That is a distinct architectural choice, not an experimental victory over E-B-Ts, since the paper does not compare them directly. Nor does it include an E-B-F-M control with energy steering disabled, so its comparisons cannot isolate the steering mechanism as the cause of the system-level gains.",
+      "zh": "与《Energy-Based Transformers are Scalable Learners and Thinkers》的概念对比很有价值。E-B-T直接根据能量验证器来优化候选预测；而E-B-F-M则是优化一个潜在表示，再从中解码。这是一种不同的架构选择，并不是在实验上战胜了E-B-T，因为论文并没有直接比较两者。论文也没有加入一个禁用能量引导的E-B-F-M对照组，因此其比较无法将引导机制单独确定为系统级增益的原因。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 366.6,
+      "end": 369.68,
+      "en": "What would be the most informative next experiment to test that mechanism?",
+      "zh": "要检验这一机制，最有信息量的下一个实验会是什么？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 370.82,
+      "end": 404.24,
+      "en": "A matched ablation that disables energy steering while preserving the rest of the architecture would help test whether steering itself explains the gains. Further work would also need to measure training and inference costs directly; processing positions together does not remove gradient computations. The largest tested model has 1.03 billion parameters, and the paper identifies constraints in its distributed-training setup. For now, the contribution is a practical design for using energy evaluation to guide a generator without exhaustive token-space search.",
+      "zh": "一个匹配的消融实验——在保留架构其余部分的同时禁用能量引导——将有助于检验引导本身是否能解释这些增益。后续工作还需要直接测量训练和推理成本；将位置一起处理并不能消除梯度计算。测试过的最大模型有10.3亿参数，论文也指出了其分布式训练设置中的限制。目前，这项贡献是一种实用设计，用能量评估来引导生成器，而无需穷举式的token空间搜索。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 405.12,
+      "end": 441.521,
+      "en": "The takeaway is a careful one: E-B-F-M links a learned compatibility score to text generation by steering an internal representation, then decoding a token from it. Its reported validation and zero-shot results support the performance of the whole system, while leaving the isolated effect of energy steering unproven. That distinction is useful when reading architecture papers: a plausible mechanism and a favorable comparison are evidence, but they are not the same as a causal test. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论需要谨慎看待：E-B-F-M通过操控内部表示，把学到的兼容性分数与文本生成联系起来，再从中解码出一个token。其报告的验证结果和零样本结果支持整个系统的性能，但能量引导本身的独立效果仍未得到证实。读架构论文时，这个区分很有用：一个看似合理的机制加上有利的对比是证据，但并不等同于因果检验。感谢收听。如果还有问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{pu-openesm-energy-steered-models,\n  author = {Pu, Yuan and Lu, Yudong and Wang, Ting and Hong, Zhicong and Li, Qinuo and Wu, Xuansheng and Zou, Na and Hu, Xia and Wang, Guanchu},\n  keywords = {Computation and Language (cs.CL), Machine Learning (cs.LG), Energy-Based Models, Foundation Models, Language Modeling, Energy Steering, Scaling},\n  title = {OpenESM: Energy-Steered Models Are Scalable Foundation Learners},\n  publisher = {arXiv}\n}",
+  "topics": [
+    "Agents",
+    "Conversational Ai"
+  ],
+  "peaks": [
+    0.881,
+    0.57,
+    0.586,
+    0.455,
+    0.469,
+    0.393,
+    0.657,
+    0.798,
+    0.757,
+    0.471,
+    0.438,
+    0.396,
+    1.0,
+    0.775,
+    0.717,
+    0.873,
+    0.524,
+    0.755,
+    0.467,
+    0.587,
+    0.49,
+    0.474,
+    0.495,
+    0.625,
+    0.49,
+    0.439,
+    0.58,
+    0.251,
+    0.615,
+    0.661,
+    0.643,
+    0.505,
+    0.551,
+    0.271,
+    0.644,
+    0.757,
+    0.535,
+    0.492,
+    0.525,
+    0.743,
+    0.679,
+    0.572,
+    0.458,
+    0.438,
+    0.397,
+    0.391,
+    0.408,
+    0.467,
+    0.543,
+    0.287,
+    0.396,
+    0.398,
+    0.355,
+    0.313,
+    0.794,
+    0.636,
+    0.557,
+    0.557,
+    0.559,
+    0.571,
+    0.47,
+    0.368,
+    0.364,
+    0.266,
+    0.295,
+    0.2,
+    0.808,
+    0.47,
+    0.719,
+    0.284,
+    0.429,
+    0.371
+  ],
+  "published": "2026-10-10",
+  "views": 197,
+  "license": "User Uploaded"
+}

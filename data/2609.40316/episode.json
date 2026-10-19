@@ -1,0 +1,262 @@
+{
+  "id": "2609.40316",
+  "title": "Scaling Laws for Looped Mixture of Experts",
+  "authors": [
+    "Yanbei Chen",
+    "Anirudh Goyal",
+    "Raghuraman Krishnamoorthi"
+  ],
+  "abstract": "Looped transformers and Mixture-of-Experts (MoE) offer complementary routes to efficient scaling: recurrence increases computational depth at fixed parameters, while MoE sparsity expands total capacity at fixed active compute. Yet existing scaling laws model recurrence or sparsity in isolation. In this work, we introduce Loop Scaling Laws, the first scaling law to jointly model recurrence and sparsity alongside model size and data. At its core is a bounded, sparsity-conditional recurrence mapping that characterizes the effective-parameter gain from looping and how sparsity raises this gain. The laws predict the held-out loss of looped models more accurately than prior alternatives, and recover the standard dense and MoE scaling laws as special cases. Beyond prediction, the fitted laws provide a principled foundation for designing looped MoE models under compute and memory constraints. Downstream evaluations further demonstrate the complementary benefits of the two axes: sparsity delivers ~3x active-parameter efficiency, recurrence yields ~2x total-parameter efficiency on reasoning, and joint scaling further advances the performance frontier. As a practical extension, we show these gains hold at trillion-token scale: at matched training compute, a looped MoE with law-derived recurrence matches a ~2x larger non-looped MoE on the reasoning benchmarks, while enabling test-time scaling through recurrence.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.40316",
+    "arxiv": "https://arxiv.org/abs/2609.40316"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f57c-b7cb-78a6-803c-c942041e33c2/podcast.mp3",
+  "duration": 464.326,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.56,
+      "en": "In Transformer Architectures, we have been asking how to improve model capacity without paying proportionally in stored weights or computation. Today's lecture is on “Scaling Laws for Looped Mixture of Experts.” Recent work such as “Reasoning with Latent Thoughts: On the Power of Looped Transformers” and “Loop the Loopies!” reflects growing interest in combining recurrence and sparse experts. This paper, by researchers at Meta A-I, studies how those choices interact. I see Noah has a question. Yes, Noah?",
+      "zh": "在Transformer架构中，我们一直在探讨如何提升模型容量，而不必在存储权重或计算量上付出成比例的代价。今天的讲座主题是“循环混合专家的缩放定律”。近期的工作，比如“用潜在思维进行推理：论循环Transformer的力量”和“Loop the Loopies！”，都反映出人们对结合循环与稀疏专家的兴趣日益增长。这篇论文由Meta AI的研究人员撰写，研究了这些选择之间如何相互作用。我看到Noah有问题。Yes，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.56,
+      "end": 37.9,
+      "en": "Hi Professor, why combine recurrence and expert sparsity instead of scaling either one on its own?",
+      "zh": "教授您好，为什么要结合循环和专家稀疏性，而不是单独扩展其中任何一个呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 38.68,
+      "end": 65.38,
+      "en": "They address different resource constraints. A mixture-of-experts model stores a large pool of parameters but routes each token through only some experts. A looped transformer reuses weights across multiple passes, adding computation without storing a new copy of each layer. The paper asks whether combining them lets recurrent passes expose a token to more distinct parameters, and whether a scaling law can predict when that combination is useful.",
+      "zh": "它们解决的是不同的资源约束问题。混合专家模型存储大量参数，但每个token只路由经过其中一部分专家。循环Transformer在多轮传递中复用权重，增加计算量而不必为每一层存储新的副本。论文要问的是，把两者结合起来能否让循环传递使一个token接触到更多不同的参数，以及缩放定律能否预测这种组合何时有用。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 66.28,
+      "end": 95.22,
+      "en": "The central idea is to predict training loss from model size, data, recurrence, and sparsity within one framework. Earlier looped-model laws often mapped recurrent passes to effective parameter count with a linear or power-law growth pattern. Those forms can imply ever-increasing benefit, even though improvements generally taper. The authors instead use a bounded mapping: recurrence can raise effective capacity, but the predicted gain approaches a ceiling.",
+      "zh": "核心思路是在一个框架内，根据模型规模、数据、循环次数和稀疏性来预测训练损失。此前的循环模型规律通常把循环次数映射为有效参数数量，呈线性或幂律增长模式。这些形式可能意味着收益会不断增加，尽管改进通常会逐渐减弱。作者转而采用一种有界映射：循环可以提高有效容量，但预测的增益会趋近一个上限。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 96.16,
+      "end": 100.76,
+      "en": "Quick question: does effective capacity mean the number of weights the model actually stores?",
+      "zh": "快速问一下：有效容量是指模型实际存储的权重数量吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 101.72,
+      "end": 130.8,
+      "en": "Not quite. Effective capacity is a modeling quantity used to predict loss; it is not a literal count of stored weights. The paper distinguishes it from the unrolled parameter count, which determines computation. More passes reuse the same recurrent block, so the model need not store a fresh block each time, but training and inference still require extra operations. That distinction matters when comparing architectures under separate compute and memory limits.",
+      "zh": "不完全是。有效容量是一个用于预测损失的建模量，并不是实际存储权重的字面计数。论文把它和展开后的参数数量区分开来，后者决定计算量。更多的循环次数会复用同一个循环块，所以模型不必每次都存储一个新的块，但训练和推理仍然需要额外的运算。在分别比较计算和内存限制下的架构时，这一区分很重要。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 131.94,
+      "end": 159.16,
+      "en": "For looped mixture-of-experts models, the bounded recurrence benefit also depends on the active-parameter ratio: the fraction of the total expert pool used for a token. The fitted law allows the recurrence gain and its saturation rate to change with that ratio. In this way, it can represent a possibility the dense loop cannot: sparser routing may let successive passes reach a wider variety of experts.",
+      "zh": "对于循环式混合专家模型，有界循环带来的收益还取决于活跃参数比例：即一个token用到的专家池占总专家池的比例。拟合出的规律允许循环增益及其饱和率随该比例变化。这样一来，它就能表达稠密循环无法表达的一种可能性：更稀疏的路由或许能让后续的多次传递触及更多样的专家。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 160.26,
+      "end": 164.74,
+      "en": "So the authors are testing whether extra passes become more valuable as the expert pool gets sparser?",
+      "zh": "所以作者是在检验：专家池越稀疏，额外的传递是否会变得更有价值？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 166.26,
+      "end": 194.98,
+      "en": "Exactly, while also checking whether the law predicts loss beyond the configurations used for fitting. Their sweep varied active model size from 0.3 to 1 billion parameters, training data from 100 to 500 billion tokens, expert count from 1 to 16, and recurrence from 1 to 8 passes. The bounded mapping predicted held-out loss more accurately than linear and power-law alternatives in the reported comparisons.",
+      "zh": "完全正确，同时他们还检验了这条规律在拟合所用配置之外是否能预测损失。他们的扫描把活跃模型规模从0.3亿到10亿参数、训练数据从1000亿到5000亿token、专家数量从1到16、循环次数从1到8遍都覆盖了。在报告的比较中，有界映射对留出损失的预测比线性和幂律替代方案更准确。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 196.32,
+      "end": 224.8,
+      "en": "One piece of evidence concerns routing paths. The researchers counted how many distinct experts a token encountered across recurrent passes. That diversity rose with both pass count and expert count; at 8 passes, the measure was 1.51 with 2 experts and 1.70 with 8. This does not directly prove a larger effective capacity, but it supports the proposed mechanism: repeated computation can route tokens through different experts.",
+      "zh": "有一项证据与路由路径有关。研究者统计了一个token在多次循环中遇到了多少个不同的专家。这种多样性随着循环次数和专家数量的增加而上升；在8次循环时，2个专家的情况下该指标为1.51，8个专家时为1.70。这并不能直接证明有效容量更大，但它支持了所提出的机制：重复计算可以让token经过不同的专家。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 225.84,
+      "end": 230.42,
+      "en": "How should we interpret those small diversity values if the model has several experts available?",
+      "zh": "如果模型有多个专家可用，我们该如何理解这些较小的多样性数值？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 231.48,
+      "end": 261.96,
+      "en": "They are averages from the reported routing statistic, not a claim that every token visits every expert. Their value is comparative: diversity increases as recurrence and expert count rise. For design, the fitted law then estimates trade-offs under training-compute and weight-memory budgets. In the reported optimization, tight weight memory favors adding recurrence rather than expanding the expert pool; when more memory is available, configurations can use greater sparsity and sometimes fewer passes.",
+      "zh": "这些数值是报告中路由统计的平均值，并不是说每个token都会访问每个专家。它们的价值在于比较：多样性会随着循环次数和专家数量的增加而上升。在设计上，拟合出的规律可以估算训练计算量和权重内存预算下的权衡。在报告的优化中，紧张的权重内存更倾向于增加循环次数，而不是扩大专家池；当内存更充裕时，配置可以采用更高的稀疏度，有时还能减少循环次数。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 262.98,
+      "end": 291.86,
+      "en": "The downstream comparisons suggest the two mechanisms help in different ways. At matched training compute, increasing sparsity improved overall and reasoning scores in the reported settings. Increasing recurrence at a fixed expert count was especially useful for reasoning. For example, a 0.3 billion active-parameter model with at least 4 passes matched or exceeded a 0.6 billion non-looped model on reasoning in the cited comparison.",
+      "zh": "下游对比表明，这两种机制以不同方式发挥作用。在训练算力相同的情况下，提高稀疏度在报告设置中提升了整体得分和推理得分。在专家数量固定时增加循环次数对推理尤其有用。例如，在引用对比中，一个至少有4次前向传递的3亿活跃参数模型在推理上匹配或超过了6亿参数的非循环模型。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 292.84,
+      "end": 297.1,
+      "en": "Could recurrence be a practical way to spend more inference compute on difficult inputs?",
+      "zh": "循环机制能否成为一种实用方式，在困难输入上投入更多推理算力？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 297.86,
+      "end": 328.88,
+      "en": "Potentially. Because recurrence can be varied at inference, the paper treats it as an adjustable computation budget. In a longer-training case study, a looped model with 0.3 billion active and 1.3 billion total parameters was compared with a non-looped model using 0.6 billion active and 2.9 billion total parameters. At 4 and 5 passes, the looped model matched the larger model on two reasoning benchmarks, though its overall benchmark mean remained lower.",
+      "zh": "有可能。由于循环可以在推理时变化，论文将其视为一种可调节的计算预算。在一项更长训练的案例研究中，一个活跃参数为3亿、总参数为13亿的循环模型，与一个活跃参数为6亿、总参数为29亿的非循环模型进行了比较。在4次和5次传递时，循环模型在两个推理基准上匹配了更大的模型，尽管其整体基准均值仍然较低。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 328.88,
+      "end": 361.72,
+      "en": "That result illustrates both the promise and the boundary of the evidence. More passes raised the looped model’s overall score from 36.6 at one pass to 46.9 at five, along with inference compute. But the study’s main sweep reaches 1 billion active parameters, 8 passes, and 16 experts, and its memory optimization covers model weights rather than runtime state or key-value cache. Larger-scale design predictions therefore involve extrapolation.",
+      "zh": "这个结果既体现了前景，也划出了证据的边界。增加循环次数让循环模型的总体得分从单次循环的36.6提升到五次循环的46.9，同时推理计算量也随之增加。但这项研究的主要扫描范围只到10亿活跃参数、8次循环和16个专家，其内存优化覆盖的是模型权重，而非运行时状态或键值缓存。因此，更大规模的设计预测只能依赖外推。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 362.6,
+      "end": 366.74,
+      "en": "How does this framework relate to “Loop the Loopies!” and earlier scaling-law work?",
+      "zh": "这个框架和“Loop the Loopies!”以及早前的缩放定律研究有什么关系？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 367.48,
+      "end": 396.1,
+      "en": "Those works help establish the trend toward recurrent sparse models and practical training methods. This paper’s particular contribution is to model recurrence and sparsity together, rather than treating one as fixed while studying the other. It also connects to established scaling laws for dense, looped-dense, and non-looped expert models by recovering them as special cases. That unified view could make architecture comparisons more systematic, provided the fitted relationships generalize.",
+      "zh": "这些工作有助于确立循环稀疏模型的发展趋势和实用训练方法。本文的独特贡献在于将循环与稀疏性放在一起建模，而不是固定其中一个、单独研究另一个。它还与稠密模型、循环稠密模型和非循环专家模型的既有缩放规律相衔接，将这些规律作为特例纳入其中。这种统一视角有望让架构比较更加系统化，前提是拟合出的关系能够泛化。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 396.98,
+      "end": 431.18,
+      "en": "The broader lesson is not that one architecture always wins, but that capacity, computation, and stored weights can be exchanged in different ways. Sparse experts expand the parameter pool under limits on active computation; recurrence spends more computation while reusing weights. This paper offers a predictive tool for balancing those choices, and a useful research question for future work is whether its bounded, sparsity-dependent pattern persists across larger models, other loop designs, and realistic runtime constraints.",
+      "zh": "更广泛的启示并不是某种架构总会胜出，而是容量、计算量和存储权重可以以不同方式互换。稀疏专家在激活计算受限的情况下扩大了参数池；循环则通过复用权重来花费更多计算。这篇论文提供了一个用于权衡这些选择的预测工具，而未来工作中一个有用的研究问题是：其有界的、依赖稀疏性的模式是否会在更大的模型、其他循环设计以及现实运行时约束下持续存在。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 432.22,
+      "end": 464.326,
+      "en": "For PhD researchers, the key takeaway is to keep effective capacity separate from literal parameter count, and to evaluate architecture choices against the resource that is actually scarce. Recurrence and sparsity can complement each other, but the evidence remains tied to specific models, tasks, and budgets. A scaling law is most useful when its assumptions and extrapolation limits are visible. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "对博士生研究者来说，关键要点是把有效容量和字面参数数量区分开，并针对真正稀缺的资源来评估架构选择。循环和稀疏性可以互补，但证据仍然局限于特定模型、任务和预算。一个缩放定律最有用的时刻，是它的假设和外推边界都清晰可见时。感谢收听。如果还有问题，可以问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chen2026scalinglawsloopedmixture,\n      title={Scaling Laws for Looped Mixture of Experts}, \n      author={Yanbei Chen and Anirudh Goyal and Raghuraman Krishnamoorthi},\n      year={2026},\n      eprint={2609.40316},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.40316}, \n}",
+  "topics": [
+    "Transformers",
+    "Inference Optimization",
+    "Lightweight Models"
+  ],
+  "peaks": [
+    1.0,
+    0.539,
+    0.595,
+    0.527,
+    0.532,
+    0.706,
+    0.6,
+    0.44,
+    0.478,
+    0.424,
+    0.38,
+    0.489,
+    0.419,
+    0.357,
+    0.263,
+    0.415,
+    0.622,
+    0.595,
+    0.596,
+    0.541,
+    0.605,
+    0.378,
+    0.414,
+    0.344,
+    0.41,
+    0.479,
+    0.366,
+    0.278,
+    0.2,
+    0.23,
+    0.55,
+    0.775,
+    0.551,
+    0.614,
+    0.424,
+    0.68,
+    0.524,
+    0.387,
+    0.45,
+    0.37,
+    0.432,
+    0.367,
+    0.477,
+    0.423,
+    0.37,
+    0.549,
+    0.597,
+    0.603,
+    0.56,
+    0.405,
+    0.509,
+    0.497,
+    0.402,
+    0.324,
+    0.23,
+    0.325,
+    0.52,
+    0.559,
+    0.482,
+    0.453,
+    0.358,
+    0.705,
+    0.565,
+    0.441,
+    0.379,
+    0.374,
+    0.296,
+    0.414,
+    0.293,
+    0.253,
+    0.213,
+    0.202
+  ],
+  "published": "2026-09-30",
+  "views": 454,
+  "license": "CC BY"
+}

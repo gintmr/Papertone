@@ -1,0 +1,186 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 509.387,
+  "word_match_rate": 0.9378,
+  "line_count": 25,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Long-Horizon Agents and Embodied AI, today's lecture is on E-mem and E-mem bench: how embodied agents remember what matters for later action. Work such as FindingDory and EmbodiedBench reflects a wider shift toward evaluating agents across extended tasks, not isolated perception. Consider a household robot: a book moves from a bed, to a box, to a desk, and later the robot is asked to bring it to a table. Trusting the old location sends it to the bed; the latest evidence points to the desk. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.94
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is that book sequence an experimental result, or just an illustration?",
+      "start": 38.96,
+      "end": 43.34
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It is the paper's illustrative Dynamic Tracking example, not a measured result. The research question is how an agent can carry forward useful evidence rather than merely accumulate observations. E-mem keeps track of the latest object state, preserves what actions and their feedback reveal, and connects visual details to the scene where they appeared. The goal is to retrieve relevant evidence when a later task arrives, then use it while acting.",
+      "start": 44.54,
+      "end": 71.22
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what exactly does the benchmark ask an agent to do?",
+      "start": 72.14,
+      "end": 76.06
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Each episode gives an agent an earlier multimodal interaction history and a later task to complete in a simulator. The benchmark contains 2,554 episodes across four families: 1,036 Passive Observation, 1,052 Dynamic Tracking, 263 Interaction Failure, and 203 Experience Generalization. These test remembering a briefly seen object, updating an object's state, retaining constraints revealed by action outcomes, and applying a regularity learned from corrections to a new object.",
+      "start": 76.76,
+      "end": 113.78
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Are these tasks judged by whether the agent remembers correctly, or by what it does?",
+      "start": 114.72,
+      "end": 119.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "By what it does: success means the simulated environment reaches the task's required terminal state. Episodes include distractor activity, so the agent must identify relevant evidence rather than treat every past detail as equally useful. The authors report that retained episodes passed automated executability checks and manual screening. This makes the benchmark about memory in action, though simulation results alone do not demonstrate long-term memory performance on physical robots.",
+      "start": 119.98,
+      "end": 150.08
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how E-mem organizes that history?",
+      "start": 151.06,
+      "end": 153.88
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It separates information into three complementary records. Spatial memory tracks entities and their latest known locations or states, replacing an outdated conflicting location when new evidence arrives. Event memory records actions, feedback, and corrections in order; repeated corrections can be summarized as a reusable rule. Scene memory preserves selected visual context and associates objects with scenes, helping distinguish, for example, similar objects seen in different rooms.",
+      "start": 154.7,
+      "end": 185.66
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "So the later task doesn't influence what gets stored in the first place?",
+      "start": 186.7,
+      "end": 189.94
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "In the described loop, the system processes the earlier history chronologically and writes supported observations, state changes, and outcomes without knowing the later target instruction. Once that task arrives, it queries relevant records, combines them with the current observation, and generates actions. New observations and feedback during execution can update memory. This is a proposed mechanism for selecting and refreshing evidence, not a guarantee that every memory operation succeeds.",
+      "start": 189.94,
+      "end": 222.34
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "What does the architecture diagram help us see?",
+      "start": 223.46,
+      "end": 225.86
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The diagram groups the proposed architecture into three bands: scene memory, spatial memory, and event memory. Its examples show a spoon associated with a drawer scene, object relations such as inside or near, a state changing from closed to open, and action feedback being consolidated into a flatware-storage rule. Arrows indicate both updates and queries. The visual explains how the components are intended to work together; by itself, it does not establish which component causes better performance.",
+      "start": 226.52,
+      "end": 259.84
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How strong is the evidence that this organization improves task success?",
+      "start": 260.92,
+      "end": 264.56
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "In the controlled comparison of memory systems using G-P-T five point four mini as a shared backbone, E-mem reaches 58.9% average success rate, compared with 37.8% for TeleMem. The average gives equal weight to the four task families, rather than letting the largest families dominate. Success is terminal-state completion. This is the best overall result among the evaluated memory systems in that comparison, not a claim that E-mem beats every model tested in the full benchmark.",
+      "start": 265.42,
+      "end": 299.24
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Does the paper test the alternative of simply giving the model more images?",
+      "start": 299.24,
+      "end": 303.76
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Yes. On the same 800 episodes, both conditions kept the complete textual history and current R-G-B observation; one also added past images. Average success fell from 36.6% to 26.2% with those images, while mean input tokens rose from 41,770 to 206,489 and model-step latency rose from 4.1 to 39.1 seconds. Latency excludes simulator rendering. The result challenges this simple raw-history strategy in the tested setup, not every possible visual-history method.",
+      "start": 304.9,
+      "end": 344.5
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Could the component removals show which kinds of memory matter most?",
+      "start": 345.46,
+      "end": 348.76
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The ablation fixes G-P-T five point four mini and removes one memory at a time while keeping the other two. Average success falls from 58.9% for the full system to 47.9% without spatial memory, 46.9% without event memory, and 47.3% without scene memory. Task-specific drops align with the authors' interpretation: spatial memory supports tracking, event memory supports interaction failure and generalization, and scene memory supports passive observation. These results support contributions from all three in this setup, but do not establish exclusive causes.",
+      "start": 348.76,
+      "end": 390.78
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "How does this fit with earlier embodied-memory work such as FindingDory?",
+      "start": 391.74,
+      "end": 394.52
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "FindingDory already evaluates long-horizon memory in embodied tasks, chiefly through later navigation from historical interaction logs. EmbodiedBench evaluates vision-driven agents across environments and capabilities. E-mem bench's distinction is its combined focus on several memory demands, including interaction-derived state and transfer from prior experience, with remembered evidence guiding later action in the simulator. The authors also motivate those demands through a manual analysis of 100 failed trajectories from two models on two EmbodiedBench suites; that sample is not a universal measure of agent errors.",
+      "start": 396.94,
+      "end": 435.42
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "Does that mean E-mem bench changes what researchers should measure next?",
+      "start": 436.46,
+      "end": 440.0
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "It encourages evaluation to ask not only whether an agent recognizes a scene or completes a short task, but whether it preserves changing state, learns from outcomes, and retrieves relevant evidence later. That connects with a broader agent-memory trend, including MemoryArena's focus on interdependent tasks across sessions. The contribution here is specifically embodied and simulator-based. Follow-up work could test whether these memory behaviors transfer to physical robots and whether structured retrieval remains useful under different models and environments.",
+      "start": 440.94,
+      "end": 473.6
+    },
+    {
+      "i": 23,
+      "speaker": "Noah",
+      "text": "So the central lesson is to remember changes, not just observations?",
+      "start": 474.74,
+      "end": 477.9
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "text": "Exactly. A useful embodied memory must preserve what was seen, what actions and feedback changed or revealed, and which evidence matters when the robot acts again. In the book example, that means replacing the bed location with the desk location before choosing where to search. The broader takeaway is simple: memory becomes useful when an agent can update it and bring the right part back at the right time. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 479.24,
+      "end": 509.387
+    }
+  ]
+}

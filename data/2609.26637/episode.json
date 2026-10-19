@@ -1,0 +1,241 @@
+{
+  "id": "2609.26637",
+  "title": "Capable yet Parsimonious: Extracting and Characterizing Hidden Chain-of-Thought in Frontier Models",
+  "authors": [
+    "Xiaoyu Luo",
+    "Tao Ren",
+    "Wenrui Yu",
+    "Xiao Li",
+    "Qiongxiu Li",
+    "Johannes Bjerva"
+  ],
+  "abstract": "The rapid capability gains of frontier language models are widely attributed to improved reasoning abilities, yet this cannot be verified as raw CoT traces in closed-source systems are hidden. By registering a simple custom tool through a standard API feature, we induce frontier models to externalize intermediate reasoning. Because these traces may reflect post-hoc rationalization rather than genuine reasoning, we first evaluate against native CoT on open-source models and extend to closed-source frontier models including GPT-6 Astra. We find that the extracted reasoning matches native reasoning performance and substantially outperforms no-reasoning baselines, across competition mathematics, science, and code generation. We then characterize how frontier models structure their intermediate reasoning. Across token efficiency, reasoning-step types, and induced reasoning trees, we identify systematic differences in how models externalize, compress, and organize reasoning. We find that Astra exhibits token-efficient directed reasoning, selecting a correct trajectory earlier, while resolving elementary steps internally and externalizing only crucial reasoning. These findings provide a behavioral lens on frontier-model reasoning beyond benchmark scores.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.26637",
+    "arxiv": "https://arxiv.org/abs/2609.26637"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0cc19-f394-7479-a5e1-d03265ce2389/podcast.mp3",
+  "duration": 407.902,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.44,
+      "en": "In our graduate seminar on language-model reasoning, today’s lecture is on “Capable yet Parsimonious: Extracting and Characterizing Hidden Chain-of-Thought in Frontier Models.” Recent work such as “The Illusion of Thinking” and “Thought Anchors: Which L-L-M Reasoning Steps Matter?” reflects growing interest in how models reason, not just whether they answer correctly. Researchers from Aalborg University and Seafill take up a practical problem: frontier systems often hide their reasoning. Yes, Noah?",
+      "zh": "在我们关于语言模型推理的研究生研讨课上，今天的讲座主题是“有能力却简约：提取与刻画前沿模型中的隐藏思维链”。近期像《思考的幻觉》和《思维锚点：哪些大语言模型推理步骤真正重要？》这样的工作，反映出人们越来越关注模型如何推理，而不只是它答得对不对。来自奥尔堡大学和Seafill的研究者要处理一个实际问题：前沿系统常常把推理过程藏起来。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.48,
+      "end": 39.36,
+      "en": "Hi Professor, if those traces are hidden, how can researchers study them without access to the models’ internals?",
+      "zh": "教授您好，如果这些轨迹是隐藏的，研究者在不接触模型内部的情况下要怎么研究它们呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.28,
+      "end": 68.66,
+      "en": "That is the paper’s central methodological question. The authors define a custom tool whose only argument is a free-form text field, then require the model to write into it while solving a problem. They call this forced reasoning. The tool does not calculate or retrieve anything; it simply provides a visible workspace. The authors are careful to treat the resulting text as an observational proxy, not a guaranteed transcript of private computation.",
+      "zh": "这正是这篇论文核心的方法论问题。作者定义了一个自定义工具，它唯一的参数是一个自由文本字段，然后要求模型在解题时把内容写进去。他们把这叫做强制推理。这个工具不进行计算也不检索任何东西，它只是提供一个可见的工作区。作者很谨慎地把产生的文本当作一种观察性代理，而不是对内部计算的可靠记录。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 69.74,
+      "end": 74.02,
+      "en": "So the tool reveals an existing hidden trace, rather than generating a new one?",
+      "zh": "所以这个工具揭示的是一条已经存在的隐藏轨迹，而不是生成一条新的轨迹？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 74.58,
+      "end": 105.78,
+      "en": "Not quite. The distinction matters: the protocol does not extract a trace that was already generated internally. It prompts the model to externalize reasoning through a different channel. Before using it on closed systems, the authors test it on open models, where native reasoning is visible. They compare accuracy, wording overlap, and the mix of activities in the traces. The results are similar enough to support behavioral comparison, but not to establish that the two traces are identical.",
+      "zh": "不完全是。这个区别很重要：该协议并不是提取模型内部已经生成的轨迹，而是促使模型通过另一条通道把推理外化出来。在将其用于闭源系统之前，作者先在开源模型上做了测试，因为这些模型的原生推理是可见的。他们比较了准确率、措辞重合度，以及轨迹中各类活动的构成比例。结果足够相似，可以支持行为层面的比较，但不足以证明两条轨迹完全相同。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 106.84,
+      "end": 143.22,
+      "en": "On math problems, forced reasoning raises DeepSeek-V4-Flash from 30.5% accuracy without reasoning to 73.3%, compared with 70% using its native reasoning. GLM-5.2 rises from 21.4% to 84.3%, near its native result of 89.9%. The authors also find substantial lexical overlap between forced and native traces. That validation is useful, but it has boundaries: similar text and performance do not prove that the model followed the same internal process.",
+      "zh": "在数学题上，强制推理让DeepSeek-V4-Flash的准确率从无推理时的30.5%提升到73.3%，而它原生推理的准确率是70%。GLM-5.2则从21.4%升到84.3%，接近其原生推理的89.9%。作者还发现，强制推理和原生推理的轨迹在措辞上有大量重叠。这种验证很有用，但也有边界：相似的文本和表现并不能证明模型遵循了相同的内部过程。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 144.18,
+      "end": 148.66,
+      "en": "How exactly do they make the model use the tool, and does that work the same way across providers?",
+      "zh": "他们具体是怎么让模型调用工具的？不同厂商的模型上，这套做法效果一样吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 149.82,
+      "end": 182.24,
+      "en": "They force the first tool selection through named tool selection, record the text, append a fixed acknowledgment, and then let the model continue with automatic tool selection until it answers. This setup depends on each provider’s API features and reasoning controls. For G-P-T-5.6-Sol, native reasoning can be disabled; G-P-T-6 Astra only offers a minimum reasoning setting. Tool descriptions also differ, so these configurations are not perfectly uniform comparisons.",
+      "zh": "他们通过指定工具名称来强制完成第一次工具选择，记录下文本，附加一段固定的确认语，然后让模型在自动工具选择模式下继续，直到给出答案。这个设置依赖于各家提供商的API功能和推理控制。对于G-P-T-5.6-Sol，原生推理可以关闭；而G-P-T-6 Astra只提供最低推理设置。工具描述也各不相同，因此这些配置并非完全统一的对比。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 183.4,
+      "end": 221.5,
+      "en": "Across math, Humanity’s Last Exam, and coding tasks, forced reasoning generally comes close to native performance and exceeds the no-reasoning condition. The tool’s wording can have a large effect: giving G-P-T-5.6-Sol a maximal-deliberation tool description raises its math accuracy from 81.3% to 91.3%. Simply asking for step-by-step reasoning in the ordinary response reaches only 36.3%. The channel and instruction shape what gets externalized; forced reasoning is not one fixed level of effort.",
+      "zh": "在数学、Humanity’s Last Exam和编程任务中，强制推理的表现通常接近原生推理，并且优于无推理条件。工具描述措辞可能产生很大影响：给G-P-T-5.6-Sol一个最大程度深思的工具描述，能将其数学准确率从81.3%提升到91.3%。而只是在普通回复中要求逐步推理，准确率仅达到36.3%。通道和指令决定了哪些内容会被外化；强制推理并不是一种固定的努力程度。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 221.5,
+      "end": 226.96,
+      "en": "Does Astra’s shorter trace mean it skips whole kinds of reasoning, such as checking its work?",
+      "zh": "Astra更短的轨迹是否意味着它跳过了整类推理，比如检查自己的工作？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 227.84,
+      "end": 262.28,
+      "en": "The evidence points more toward sparse externalization than toward removing entire activity types. Astra’s traces include reading, analysis, planning, implementation, exploration, verification, and monitoring, much like the other models. But they are shorter and less redundant. For instance, a trace may state a completed arithmetic total without spelling out each contribution. Its reasoning trees also show narrower paths: Astra has a median of 27 nodes, compared with 60 for Sol and 136 for Sonnet 5.",
+      "zh": "这些证据更倾向于说明Astra只是减少了外显表达，而不是删掉了整类活动。Astra的轨迹同样包含阅读、分析、规划、实现、探索、验证和监控，和其他模型很像，只是更短、冗余更少。比如，一条轨迹可能直接给出算好的总数，而不逐项列出每个加数。它的推理树也显示出更窄的路径：Astra的节点数中位数是27，Sol是60，Sonnet 5是136。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 263.2,
+      "end": 292.18,
+      "en": "Those tree measures capture more than text length. Width reflects how many alternatives appear at a step, depth tracks how far the reasoning proceeds, and node count summarizes the represented path, including revisits. Astra reaches a similar median depth to Sol with less branching and fewer nodes. That is consistent with a more economical trajectory, but the tree is built from annotated text. It measures what the model chose to show, not every operation that may have occurred internally.",
+      "zh": "这些树形指标反映的不只是文本长度。宽度反映每一步出现了多少种备选路径，深度反映推理推进了多远，节点数则概括了所表示的路径，包括回访。Astra达到的中位深度与Sol相近，但分支更少、节点更少。这与更经济的轨迹相一致，但这棵树是基于标注文本构建的。它衡量的是模型选择展示的内容，而非内部可能发生的每一个操作。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 293.16,
+      "end": 296.98,
+      "en": "Can another model use Astra’s compact trace as effectively as Astra does?",
+      "zh": "另一个模型能像Astra自己那样有效地利用它的精简轨迹吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 296.98,
+      "end": 326.84,
+      "en": "Not always. In transfer tests, Sol’s and Opus’s traces work with relatively little accuracy loss across recipients. Astra’s traces can help stronger recipients, but weaker ones sometimes fail even when the trace states the correct answer. The likely issue is that a concise trace leaves steps implicit. A capable reader can reconstruct them; a less capable reader may not. That matters if researchers hope to reuse compact traces for supervision or distillation.",
+      "zh": "不一定总是如此。在迁移测试中，Sol和Opus的轨迹在不同接收方之间使用时，准确率损失相对较小。Astra的轨迹能帮到更强的接收方，但较弱的接收方有时即使轨迹里写明了正确答案也还是会失败。问题很可能在于，简洁的轨迹把一些步骤留成了隐含的。有能力的读者能把这些步骤重建出来，能力较弱的读者可能就做不到。如果研究人员希望把紧凑轨迹复用于监督或蒸馏，这一点就很关键。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 326.84,
+      "end": 333.1,
+      "en": "Could this method also expose reasoning through channels that providers intended to keep separate from the main answer?",
+      "zh": "这种方法是否也可能通过提供商原本想与主答案分开的渠道泄露推理内容？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 334.06,
+      "end": 364.3,
+      "en": "Yes, and the paper raises that as a governance concern. Disabling a designated reasoning channel does not necessarily prevent reasoning-like text from appearing in tool arguments or other output fields. Providers may need to consider disclosure controls across the full API, not only the final-answer channel. At the same time, researchers should avoid calling these outputs verified internal chain of thought. They may be useful behavioral records without being faithful accounts of hidden computation.",
+      "zh": "是的，论文也把这作为一个治理层面的担忧提了出来。禁用指定的推理通道，并不一定能阻止类似推理的文本出现在工具参数或其他输出字段中。服务商可能需要考虑覆盖整个API的披露控制，而不只是最终答案通道。与此同时，研究人员应避免把这些输出称为经过验证的内部思维链。它们可能是有用的行为记录，但并不是对隐藏计算过程的忠实描述。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 365.46,
+      "end": 407.902,
+      "en": "The broader contribution is a way to study reasoning efficiency when native traces are unavailable, while keeping capability and process measurement distinct. It complements work such as “Thought Anchors,” which examines the role of individual reasoning steps, but shifts attention to traces induced through an alternative workspace. Important limitations remain: small benchmark samples, model-specific prompts, automated annotation, and no access to closed-model internals. The memorable takeaway is simple: a shorter explanation can signal efficiency, but it can also make reasoning harder to reuse. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的贡献在于，它提供了一种在原生轨迹不可用时研究推理效率的方法，同时把能力测量和过程测量区分开来。它补充了“Thought Anchors”这类工作——后者考察单个推理步骤的作用，而这项研究把注意力转向通过替代工作区诱导出的轨迹。重要的局限仍然存在：基准样本量小、提示词因模型而异、标注是自动化的，而且无法访问闭源模型的内部。最值得记住的结论很简单：更简短的解释可以意味着效率，但也可能让推理更难被复用。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{luo2026capableparsimoniousextractingcharacterizing,\n      title={Capable yet Parsimonious: Extracting and Characterizing Hidden Chain-of-Thought in Frontier Models}, \n      author={Xiaoyu Luo and Tao Ren and Wenrui Yu and Xiao Li and Qiongxiu Li and Johannes Bjerva},\n      year={2026},\n      eprint={2609.26637},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.26637}, \n}",
+  "topics": [
+    "Chain Of Thought",
+    "Explainable Ai",
+    "Model Interpretation"
+  ],
+  "peaks": [
+    0.855,
+    0.45,
+    0.736,
+    0.567,
+    0.518,
+    0.256,
+    0.668,
+    0.669,
+    0.61,
+    0.429,
+    0.352,
+    0.298,
+    0.511,
+    0.544,
+    0.541,
+    0.436,
+    0.461,
+    0.531,
+    0.397,
+    0.481,
+    0.541,
+    0.41,
+    0.549,
+    0.542,
+    0.594,
+    0.549,
+    0.409,
+    0.376,
+    0.283,
+    0.217,
+    0.2,
+    0.271,
+    0.449,
+    0.417,
+    0.44,
+    0.321,
+    0.252,
+    0.223,
+    0.278,
+    0.375,
+    1.0,
+    0.456,
+    0.622,
+    0.568,
+    0.522,
+    0.559,
+    0.411,
+    0.341,
+    0.297,
+    0.322,
+    0.246,
+    0.582,
+    0.472,
+    0.476,
+    0.61,
+    0.32,
+    0.36,
+    0.314,
+    0.412,
+    0.488,
+    0.367,
+    0.375,
+    0.341,
+    0.254,
+    0.431,
+    0.498,
+    0.309,
+    0.296,
+    0.371,
+    0.507,
+    0.292,
+    0.271
+  ],
+  "published": "2026-09-22",
+  "views": 474,
+  "license": "CC BY"
+}

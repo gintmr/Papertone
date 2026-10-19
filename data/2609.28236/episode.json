@@ -1,0 +1,309 @@
+{
+  "id": "2609.28236",
+  "title": "EmbodiedMemory-Bench: Benchmarking Embodied Memory for Long-Horizon Embodied Tasks",
+  "authors": [
+    "Lizhou Liang",
+    "Xinyu Zhong",
+    "Miao Pan",
+    "Xiaohe Zhou",
+    "Xuanyu Liu",
+    "Qinfeng Li",
+    "Peng Li",
+    "Jintao Chen",
+    "Xuhong Zhang",
+    "Wenqi Zhang"
+  ],
+  "abstract": "Long-horizon embodied interaction requires agents to retain and continually update information about the environment as they observe, act, and encounter change. Yet current agents struggle to maintain such memory reliably. Our analysis traces this limitation to four key deficiencies: weak fine-grained visual memory, unreliable dynamic world-state tracking, failing to record world state revealed by interaction outcomes, and limited generalization from prior experience. However, existing benchmarks do not directly assess these memory capabilities during long-horizon embodied interaction. To address this gap, we introduce EmbodiedMemory-Bench (EMem-Bench), comprising 2,554 interactive episodes across four task families. EMem-Bench requires agents to build and update memory from interaction history, then use it to complete a later task by acting in the environment. We further present Embodied-Memorizer (EMem), an external memory system that organizes embodied experience into spatial, event, and scene memories. We also train EMem-8B, an 8B policy that manages and uses these memories. We evaluate a diverse range of open-source and proprietary MLLMs and representative multimodal memory systems. Results show that current models remain weak and uneven across the four challenges. Under matched backbones, EMem achieves the best overall performance among the evaluated memory systems and improves both open-source and proprietary models, while EMem-8B further improves over its backbone. Project page: this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.28236",
+    "arxiv": "https://arxiv.org/abs/2609.28236"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0d167-392e-73dd-b55a-466dfef04a2d/podcast.mp3",
+  "duration": 509.387,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.94,
+      "en": "In a hypothetical graduate course called Long-Horizon Agents and Embodied AI, today's lecture is on E-mem and E-mem bench: how embodied agents remember what matters for later action. Work such as FindingDory and EmbodiedBench reflects a wider shift toward evaluating agents across extended tasks, not isolated perception. Consider a household robot: a book moves from a bed, to a box, to a desk, and later the robot is asked to bring it to a table. Trusting the old location sends it to the bed; the latest evidence points to the desk. Yes, Noah?",
+      "zh": "在一门假设的研究生课程“长时程智能体与具身AI”中，今天的课讲的是E-mem和E-mem基准：具身智能体如何记住对后续行动重要的信息。FindingDory和EmbodiedBench这类工作反映出一种更广泛的转变，即评估智能体在长任务上的表现，而不是孤立的感知。设想一个家用机器人：一本书从床上移到盒子里，再移到书桌上，之后机器人被要求把它拿到桌子上。如果相信旧的位置，它就会去床上找；而最新的证据指向书桌。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.96,
+      "end": 43.34,
+      "en": "Hi Professor, is that book sequence an experimental result, or just an illustration?",
+      "zh": "教授您好，那个书的序列是实验结果，还是只是个示例？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.54,
+      "end": 71.22,
+      "en": "It is the paper's illustrative Dynamic Tracking example, not a measured result. The research question is how an agent can carry forward useful evidence rather than merely accumulate observations. E-mem keeps track of the latest object state, preserves what actions and their feedback reveal, and connects visual details to the scene where they appeared. The goal is to retrieve relevant evidence when a later task arrives, then use it while acting.",
+      "zh": "这是论文中用于说明的动态跟踪示例，并非实测结果。研究问题是智能体如何延续有用的证据，而不是仅仅累积观察。E-mem会跟踪最新的物体状态，保留动作及其反馈所揭示的信息，并将视觉细节与其出现的场景关联起来。目标是当后续任务到来时检索相关证据，并在行动中加以利用。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 72.14,
+      "end": 76.06,
+      "en": "Quick question: what exactly does the benchmark ask an agent to do?",
+      "zh": "快速问一下：这个基准到底要求智能体做什么？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 76.76,
+      "end": 113.78,
+      "en": "Each episode gives an agent an earlier multimodal interaction history and a later task to complete in a simulator. The benchmark contains 2,554 episodes across four families: 1,036 Passive Observation, 1,052 Dynamic Tracking, 263 Interaction Failure, and 203 Experience Generalization. These test remembering a briefly seen object, updating an object's state, retaining constraints revealed by action outcomes, and applying a regularity learned from corrections to a new object.",
+      "zh": "每个回合会给智能体一段较早的多模态交互历史，以及一个稍后要在模拟器中完成的任务。这个基准包含2,554个回合，分为四个类别：1,036个被动观察、1,052个动态追踪、263个交互失败和203个经验泛化。这些任务分别测试：记住一个短暂看到的物体、更新物体的状态、保留由动作结果揭示的约束，以及把从纠正中学到的规律应用到一个新物体上。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 114.72,
+      "end": 119.42,
+      "en": "Are these tasks judged by whether the agent remembers correctly, or by what it does?",
+      "zh": "这些任务是看智能体是否记得正确来评判，还是看它做了什么来评判？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 119.98,
+      "end": 150.08,
+      "en": "By what it does: success means the simulated environment reaches the task's required terminal state. Episodes include distractor activity, so the agent must identify relevant evidence rather than treat every past detail as equally useful. The authors report that retained episodes passed automated executability checks and manual screening. This makes the benchmark about memory in action, though simulation results alone do not demonstrate long-term memory performance on physical robots.",
+      "zh": "看它做了什么：成功意味着模拟环境达到任务要求的终止状态。轨迹中包含干扰活动，因此智能体必须识别出相关证据，而不是把每个过去的细节都视为同等有用。作者报告称，保留的轨迹通过了自动化可执行性检查和人工筛选。这使得该基准测试关注的是行动中的记忆，不过仅凭模拟结果并不能证明在物理机器人上的长期记忆表现。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 151.06,
+      "end": 153.88,
+      "en": "Can you clarify how E-mem organizes that history?",
+      "zh": "你能说明一下E-mem是如何组织这段历史的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 154.7,
+      "end": 185.66,
+      "en": "It separates information into three complementary records. Spatial memory tracks entities and their latest known locations or states, replacing an outdated conflicting location when new evidence arrives. Event memory records actions, feedback, and corrections in order; repeated corrections can be summarized as a reusable rule. Scene memory preserves selected visual context and associates objects with scenes, helping distinguish, for example, similar objects seen in different rooms.",
+      "zh": "它把信息分成三种互补的记录。空间记忆追踪实体及其最新已知的位置或状态，当有新证据到来时，会替换掉过时的冲突位置。事件记忆按顺序记录动作、反馈和纠正；重复出现的纠正可以归纳为一条可复用的规则。场景记忆保留选定的视觉上下文，并把物体与场景关联起来，帮助区分比如在不同房间里看到的相似物体。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 186.7,
+      "end": 189.94,
+      "en": "So the later task doesn't influence what gets stored in the first place?",
+      "zh": "所以后面的任务并不会影响最初存储的内容吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 189.94,
+      "end": 222.34,
+      "en": "In the described loop, the system processes the earlier history chronologically and writes supported observations, state changes, and outcomes without knowing the later target instruction. Once that task arrives, it queries relevant records, combines them with the current observation, and generates actions. New observations and feedback during execution can update memory. This is a proposed mechanism for selecting and refreshing evidence, not a guarantee that every memory operation succeeds.",
+      "zh": "在所描述的循环中，系统按时间顺序处理较早的历史，并在不知道后续目标指令的情况下，写入有依据的观察、状态变化和结果。当该任务到来时，它会查询相关记录，将其与当前观察结合，并生成动作。执行过程中的新观察和反馈可以更新记忆。这是一种用于选择和刷新证据的提议机制，并不保证每次记忆操作都能成功。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 223.46,
+      "end": 225.86,
+      "en": "What does the architecture diagram help us see?",
+      "zh": "架构图能帮我们看清什么？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 226.52,
+      "end": 259.84,
+      "en": "The diagram groups the proposed architecture into three bands: scene memory, spatial memory, and event memory. Its examples show a spoon associated with a drawer scene, object relations such as inside or near, a state changing from closed to open, and action feedback being consolidated into a flatware-storage rule. Arrows indicate both updates and queries. The visual explains how the components are intended to work together; by itself, it does not establish which component causes better performance.",
+      "zh": "这张图把提出的架构分成三条带：场景记忆、空间记忆和事件记忆。图中的例子展示了一把勺子与抽屉场景相关联、物体之间的空间关系如“在里面”或“在旁边”、状态从关闭变为打开，以及动作反馈被整合成一条餐具存放规则。箭头表示更新和查询。这张图解释了各组件预期如何协同工作；但单凭它本身，并不能确定是哪个组件带来了更好的性能。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 260.92,
+      "end": 264.56,
+      "en": "How strong is the evidence that this organization improves task success?",
+      "zh": "这一组织方式能提升任务成功率的证据有多强？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 265.42,
+      "end": 299.24,
+      "en": "In the controlled comparison of memory systems using G-P-T five point four mini as a shared backbone, E-mem reaches 58.9% average success rate, compared with 37.8% for TeleMem. The average gives equal weight to the four task families, rather than letting the largest families dominate. Success is terminal-state completion. This is the best overall result among the evaluated memory systems in that comparison, not a claim that E-mem beats every model tested in the full benchmark.",
+      "zh": "在使用GPT-5.4 mini作为共享骨干的受控记忆系统对比中，E-mem达到58.9%的平均成功率，而TeleMem为37.8%。该平均值对四个任务族给予同等权重，而不是让最大的任务族主导。成功定义为终态完成。这是该对比中所评估的记忆系统里最好的总体结果，并不是说E-mem在完整基准中击败了所有测试的模型。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 299.24,
+      "end": 303.76,
+      "en": "Does the paper test the alternative of simply giving the model more images?",
+      "zh": "论文有没有测试直接给模型更多图片这种替代方案？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 304.9,
+      "end": 344.5,
+      "en": "Yes. On the same 800 episodes, both conditions kept the complete textual history and current R-G-B observation; one also added past images. Average success fell from 36.6% to 26.2% with those images, while mean input tokens rose from 41,770 to 206,489 and model-step latency rose from 4.1 to 39.1 seconds. Latency excludes simulator rendering. The result challenges this simple raw-history strategy in the tested setup, not every possible visual-history method.",
+      "zh": "是的。在同样的800个轨迹上，两种条件都保留了完整的文本历史和当前的RGB观测；其中一种还额外加入了过去的图像。加入这些图像后，平均成功率从36.6%下降到26.2%，而平均输入token数从41,770上升到206,489，模型单步延迟从4.1秒上升到39.1秒。延迟不包括模拟器渲染。这一结果在测试设置中挑战了这种简单的原始历史策略，但并非否定所有可能的视觉历史方法。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 345.46,
+      "end": 348.76,
+      "en": "Could the component removals show which kinds of memory matter most?",
+      "zh": "移除各个组件能否看出哪种记忆最重要？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 348.76,
+      "end": 390.78,
+      "en": "The ablation fixes G-P-T five point four mini and removes one memory at a time while keeping the other two. Average success falls from 58.9% for the full system to 47.9% without spatial memory, 46.9% without event memory, and 47.3% without scene memory. Task-specific drops align with the authors' interpretation: spatial memory supports tracking, event memory supports interaction failure and generalization, and scene memory supports passive observation. These results support contributions from all three in this setup, but do not establish exclusive causes.",
+      "zh": "消融实验固定使用GPT-5.4 mini，每次移除一种记忆、保留另外两种。平均成功率从完整系统的58.9%下降到无空间记忆的47.9%、无事件记忆的46.9%和无场景记忆的47.3%。任务特定的下降与作者的解读一致：空间记忆支持追踪，事件记忆支持交互失败与泛化，场景记忆支持被动观察。这些结果支持三者在当前设置中均有贡献，但并不能确立排他性的因果关系。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 391.74,
+      "end": 394.52,
+      "en": "How does this fit with earlier embodied-memory work such as FindingDory?",
+      "zh": "这与FindingDory等早期具身记忆研究如何契合？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 396.94,
+      "end": 435.42,
+      "en": "FindingDory already evaluates long-horizon memory in embodied tasks, chiefly through later navigation from historical interaction logs. EmbodiedBench evaluates vision-driven agents across environments and capabilities. E-mem bench's distinction is its combined focus on several memory demands, including interaction-derived state and transfer from prior experience, with remembered evidence guiding later action in the simulator. The authors also motivate those demands through a manual analysis of 100 failed trajectories from two models on two EmbodiedBench suites; that sample is not a universal measure of agent errors.",
+      "zh": "FindingDory 已经在具身任务中评估长时程记忆，主要通过基于历史交互日志的后续导航来实现。EmbodiedBench 则在多种环境和能力维度上评估视觉驱动的智能体。E-mem bench 的不同之处在于它综合关注多种记忆需求，包括从交互中推导出的状态以及从先前经验中的迁移，并让记住的证据在模拟器中指导后续行动。作者还通过对两个模型在两个 EmbodiedBench 套件上的 100 条失败轨迹进行人工分析来引出这些需求；但该样本并不能作为智能体错误的普遍衡量标准。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 436.46,
+      "end": 440.0,
+      "en": "Does that mean E-mem bench changes what researchers should measure next?",
+      "zh": "这是否意味着E-mem基准改变了研究人员接下来该衡量什么？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 440.94,
+      "end": 473.6,
+      "en": "It encourages evaluation to ask not only whether an agent recognizes a scene or completes a short task, but whether it preserves changing state, learns from outcomes, and retrieves relevant evidence later. That connects with a broader agent-memory trend, including MemoryArena's focus on interdependent tasks across sessions. The contribution here is specifically embodied and simulator-based. Follow-up work could test whether these memory behaviors transfer to physical robots and whether structured retrieval remains useful under different models and environments.",
+      "zh": "它促使评估不仅关注智能体是否能识别场景或完成短任务，还要关注它是否能保持变化中的状态、从结果中学习，并在之后检索相关证据。这与更广泛的智能体记忆趋势相呼应，包括MemoryArena对跨会话相互依赖任务的关注。这里的贡献具体体现在具身性和基于模拟器上。后续工作可以测试这些记忆行为是否能迁移到物理机器人，以及结构化检索在不同模型和环境下是否仍然有用。"
+    },
+    {
+      "i": 23,
+      "speaker": "Noah",
+      "start": 474.74,
+      "end": 477.9,
+      "en": "So the central lesson is to remember changes, not just observations?",
+      "zh": "所以核心经验就是记住变化，而不只是记住观察到的内容？"
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "start": 479.24,
+      "end": 509.387,
+      "en": "Exactly. A useful embodied memory must preserve what was seen, what actions and feedback changed or revealed, and which evidence matters when the robot acts again. In the book example, that means replacing the bed location with the desk location before choosing where to search. The broader takeaway is simple: memory becomes useful when an agent can update it and bring the right part back at the right time. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "正是如此。有用的具身记忆必须保留看到过什么、哪些动作和反馈改变或揭示了什么，以及在机器人再次行动时哪些证据重要。在书的例子里，这意味着在选择去哪里找之前，把床的位置替换成书桌的位置。更广泛的启示很简单：当智能体能够更新记忆，并在正确的时间调取正确的部分时，记忆才变得有用。感谢收听。如果你还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{liang2026embodiedmemorybenchbenchmarkingembodiedmemory,\n      title={EmbodiedMemory-Bench: Benchmarking Embodied Memory for Long-Horizon Embodied Tasks}, \n      author={Lizhou Liang and Xinyu Zhong and Miao Pan and Xiaohe Zhou and Xuanyu Liu and Qinfeng Li and Peng Li and Jintao Chen and Xuhong Zhang and Wenqi Zhang},\n      year={2026},\n      eprint={2609.28236},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.28236}, \n}",
+  "topics": [
+    "Agents",
+    "Continual Learning",
+    "Reinforcement Learning"
+  ],
+  "peaks": [
+    0.514,
+    0.251,
+    0.224,
+    0.242,
+    0.26,
+    0.335,
+    0.56,
+    0.563,
+    0.457,
+    0.409,
+    0.47,
+    0.653,
+    0.478,
+    0.515,
+    0.456,
+    0.406,
+    0.669,
+    0.528,
+    0.503,
+    0.395,
+    0.413,
+    0.691,
+    0.629,
+    0.592,
+    0.552,
+    0.647,
+    0.463,
+    0.697,
+    0.532,
+    0.472,
+    0.298,
+    0.28,
+    1.0,
+    0.566,
+    0.45,
+    0.618,
+    0.478,
+    0.993,
+    0.886,
+    0.873,
+    0.67,
+    0.861,
+    0.583,
+    0.652,
+    0.544,
+    0.341,
+    0.423,
+    0.51,
+    0.368,
+    0.467,
+    0.29,
+    0.201,
+    0.216,
+    0.238,
+    0.2,
+    0.376,
+    0.957,
+    0.477,
+    0.439,
+    0.432,
+    0.359,
+    0.363,
+    0.718,
+    0.689,
+    0.741,
+    0.576,
+    0.381,
+    0.525,
+    0.375,
+    0.265,
+    0.434,
+    0.23
+  ],
+  "published": "2026-09-23",
+  "views": 468,
+  "license": "CC BY"
+}

@@ -1,0 +1,259 @@
+{
+  "id": "2610.07447",
+  "title": "Fork-and-Flush: Escaping Idea Basins in Autoresearch Agents",
+  "authors": [
+    "Ziyang Cai",
+    "Christos Ziakas",
+    "Vasilis Kontonis",
+    "Tim Pearce",
+    "Siddhartha Sen",
+    "Akshay Krishnamurthy",
+    "Shivam Garg",
+    "Dimitris Papailiopoulos"
+  ],
+  "abstract": "Autoresearch agents tackle open-ended problems by repeatedly proposing candidate solutions, evaluating them, and using feedback to guide subsequent experiments. We show that independent runs of the same agent on the same task often plateau at substantially different scores, with gaps that persist even after considerable additional compute. Embedding their candidate artifacts by functional similarity provides further evidence that trajectories remain in localized regions of the solution space, which we call idea basins. To help agents escape these basins, we study a simple periodic intervention, fork-and-flush. Our method forks the agent into parallel trajectories, each inheriting the accumulated workspace but starting with a fresh chat context. After running each trajectory for a fixed horizon, the agent continues from the highest-scoring one. Across 13 long-horizon research and engineering tasks, with individual agent runs lasting up to several days, fork-and-flush outperformed the single-run and best-of-N baselines by a relative improvement of 66.0% and 44.4%, respectively, on the min-max normalized average score under an equal compute budget.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.07447",
+    "arxiv": "https://arxiv.org/abs/2610.07447"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11441-5a33-7225-922f-d8e45f1382b7/podcast.mp3",
+  "duration": 426.658,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.82,
+      "en": "In our graduate seminar on autonomous research agents, we’ve been asking how systems can improve technical work over long stretches of trial and error. Today’s lecture is on Fork-and-Flush: Escaping Idea Basins in Autoresearch Agents. Recent work such as AutoScientists: Self-Organizing Agent Teams for Long-Running Scientific Experimentation and AutoLab: Can Frontier Models Solve Long-Horizon Auto Research and Engineering Tasks? reflects growing interest in sustained agent research. This paper, from Microsoft Research, studies how those agents search. Yes, Noah?",
+      "zh": "在我们关于自主研究智能体的研究生讨论课上，我们一直在探讨系统如何能在长时间的试错中改进技术工作。今天的讲座主题是“分叉与冲刷：自主研究智能体如何跳出想法盆地”。近期的一些工作，比如《AutoScientists：面向长期科学实验的自组织智能体团队》和《AutoLab：前沿模型能解决长周期自主研究与工程任务吗？》，反映出人们对智能体持续研究的兴趣日益增长。这篇来自微软研究院的论文，研究的正是这些智能体如何搜索。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.92,
+      "end": 39.82,
+      "en": "Hi Professor, what does the title mean by an idea basin?",
+      "zh": "教授您好，标题里的“想法盆地”是什么意思？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.72,
+      "end": 68.84,
+      "en": "An idea basin is a region of the solution space where an agent’s successive attempts tend to stay. Imagine exploring a landscape by taking steps guided by feedback: an early route may lead to a productive area, or leave you refining a weaker approach. The paper asks whether agents can break out of those patterns. That matters because long-running agents can keep improving locally while missing alternatives that other runs discover.",
+      "zh": "所谓“想法盆地”，就是解空间中的一片区域，智能体在连续尝试时往往会停留在那里。想象你在一片地形上探索，每一步都由反馈引导：早期的一条路线可能把你带到一个高产的区域，也可能让你一直在打磨一个较弱的做法。这篇论文要问的是，智能体能否跳出这些模式。这一点很重要，因为长时间运行的智能体可能一直在局部持续改进，却错过了其他运行所发现的替代方案。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 69.84,
+      "end": 99.46,
+      "en": "The authors begin with a revealing observation: independent runs on the same task often finish at quite different score levels, and extra compute does not necessarily erase those gaps. They interpret this as a search problem, not simply a speed problem. Different runs may settle into different regions of possible solutions. To examine that idea, they map candidate artifacts by comparing descriptions of what the artifacts do, rather than relying only on their final scores.",
+      "zh": "作者们一开始就给出了一个很有启发的观察：同一任务上的独立运行，最终得分往往差别很大，而且增加算力未必能抹平这些差距。他们把这理解成一个搜索问题，而不只是速度问题。不同的运行可能会停留在可能解空间的不同区域。为了考察这个想法，他们通过比较各个候选产物“做什么”的描述来对其进行映射，而不是只看最终得分。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.42,
+      "end": 104.26,
+      "en": "Quick question: does the agent keep its earlier work when it starts a new branch?",
+      "zh": "快速问一下：智能体在开启新分支时，会保留之前的工作吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 105.32,
+      "end": 136.74,
+      "en": "Yes. Fork-and-flush separates the agent’s workspace from its conversational history. A new branch inherits files and accumulated artifacts, but starts with an empty chat context. That distinction is central: the files can preserve useful engineering progress, while removing the conversation may reduce attachment to the reasoning that produced the current approach. The method does not retrain the model or transfer experience between separate tasks; it changes how search proceeds within one task.",
+      "zh": "是的。分叉并清空把智能体的工作区和它的对话历史分开。新分支继承文件和累积的产物，但从空的聊天上下文开始。这个区分很关键：文件可以保留有用的工程进展，而清空对话可能减少对产生当前方法的推理的依恋。该方法不重新训练模型，也不在独立任务之间迁移经验；它改变的是在单个任务内搜索如何进行。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.74,
+      "end": 167.0,
+      "en": "The procedure combines serial improvement with periodic parallel exploration. It begins with 4 independent agents and keeps the lineage with the strongest score. That lineage then works on its own until scheduled points at roughly 33% and 66% of the budget. At each point, 4 branches explore from the current workspace with fresh conversation histories. The branch with the best score achieved so far becomes the leader, and the others are discarded.",
+      "zh": "该流程将串行改进与周期性并行探索相结合。它从4个独立智能体开始，保留得分最强的谱系。该谱系随后自行推进，直到在预算约33%和66%处设定的时间点。在每个时间点，4个分支从当前工作区出发，以全新的对话历史进行探索。迄今得分最高的分支成为主分支，其余分支被丢弃。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 168.08,
+      "end": 171.8,
+      "en": "Why use fixed branch times instead of waiting until the agent appears stuck?",
+      "zh": "为什么采用固定的分支时间，而不是等到智能体看起来卡住了再分支？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.68,
+      "end": 201.78,
+      "en": "The authors tried plateau-triggered branching, but found it difficult to tune: step costs vary, and small score gains can reset a stall timer. Their fixed schedule avoids relying on a precise definition of stagnation. Branches receive about 6% of the total budget for each exploration round. Some are also prompted to try a different approach, although directed branches were selected in only 46% of 178 mid-run rounds, not significantly different from chance.",
+      "zh": "作者尝试了平台期触发分支，但发现很难调参：步数成本各不相同，微小的分数提升就可能重置停滞计时器。他们采用固定时间表，避免依赖对停滞的精确定义。每轮探索中，分支大约获得总预算的6%。有些分支还会被提示尝试不同的方法，不过在178个运行中轮次里，定向分支仅在46%的情况下被选中，与随机选择没有显著差异。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 202.78,
+      "end": 235.24,
+      "en": "The evaluation compares equal total compute on 13 tasks, ranging from algorithmic optimization and cryptanalysis to engineering problems. A single-run baseline spends its budget on one lineage; best-of-four divides it among 4 independent runs. Fork-and-flush is tested in 5 runs per task, except for the compact image-classifier task, which has 4. The team uses a consistent coding-agent setup, while task-specific scores are normalized before aggregation so unlike score scales can be combined.",
+      "zh": "评估在13个任务上比较相同的总计算量，任务范围从算法优化、密码分析到工程问题。单次运行基线把预算花在一条谱系上；四选一最佳则把预算分给4次独立运行。分叉并刷新在每个任务上测试5次运行，但紧凑图像分类器任务除外，该任务测试4次。团队使用一致的编码智能体设置，而任务特定分数在聚合前会归一化，以便将不同的分数尺度合并。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 236.2,
+      "end": 240.82,
+      "en": "How strong is the evidence that fresh context, rather than just extra branching, helps?",
+      "zh": "新鲜上下文本身有用、而不只是多开分支有用的证据有多强？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 241.86,
+      "end": 276.4,
+      "en": "The full method reached an average normalized score of 0.78, compared with 0.47 for a single run and 0.54 for best-of-four. It led on 12 of the 13 tasks. Ablations help separate the ingredients: on 11 tasks, flushing alone scored 0.55, forking alone 0.57, and the combination 0.71, against 0.45 for a single run. That pattern suggests each operation contributes, and their combination contributes more than either alone.",
+      "zh": "完整方法达到了0.78的平均归一化分数，而单次运行是0.47，四选一最优是0.54。它在13个任务中的12个上领先。消融实验有助于区分各个组成部分：在11个任务上，仅刷新得0.55，仅分支得0.57，两者结合得0.71，而单次运行是0.45。这一模式表明每种操作都有贡献，而它们的结合比单独任何一种贡献更大。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 277.3,
+      "end": 304.46,
+      "en": "The artifact maps offer a plausible account of how. In one polyomino task, 3 of 4 branches stayed close to the fork point, while the selected branch moved into a different region. Its first submission after the context reset made a larger-than-usual change, and the final score was 93.9, above the baseline median of 84.6. This is a useful case study, not proof that every gain comes from escaping a basin.",
+      "zh": "这些产物图景为“如何做到”提供了一个合理的解释。在一个多联骨牌任务中，4条分支里有3条停留在分叉点附近，而被选中的那条分支则进入了另一个区域。它在上下文重置后的第一次提交做出了比平常更大的改动，最终得分是93.9，高于基线中位数84.6。这是一个有用的案例研究，但并不能证明每一次提升都来自逃离某个盆地。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 305.44,
+      "end": 309.4,
+      "en": "Could the maps themselves be misleading, since they depend on language-model judgments?",
+      "zh": "这些图本身会不会有误导性，因为它们依赖语言模型的判断？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 310.5,
+      "end": 342.06,
+      "en": "That is an important caveat. The maps are indirect: a language model converts artifacts into functional descriptions, then a judge compares those descriptions, and an embedding arranges the resulting similarities. Held-out agreement was above chance across the tested tasks, which supports the method, but does not make the maps a direct view of solution space. The authors also find outcome variation is greatest on problems near a model’s capability boundary, where runs can make divergent partial progress.",
+      "zh": "这是一个重要的提醒。这些图是间接的：语言模型先把产物转成功能描述，然后由评判器比较这些描述，再用嵌入对得到的相似性进行排列。在测试过的任务中，留出集的一致性高于随机水平，这支持了该方法，但并不能让这些图成为对解空间的直接观察。作者还发现，结果差异在接近模型能力边界的问题上最大，在这些问题上，不同轨迹可能取得分歧的部分进展。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 343.04,
+      "end": 345.56,
+      "en": "So how does this fit with agent-team systems like AutoScientists?",
+      "zh": "那么，这和AutoScientists这类智能体团队系统怎么契合呢？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 347.86,
+      "end": 382.64,
+      "en": "AutoScientists organizes research through agents that propose, critique, and share experimental outcomes. Fork-and-flush addresses a narrower but complementary question: how to allocate compute across continuations of one agent’s existing work. Its shared state is a workspace of files, not model parameters or cross-task experience. Together, these approaches reflect a field exploring persistent, multi-step research, while this paper emphasizes that preserving artifacts and refreshing context may be a useful alternative to simply extending one trajectory.",
+      "zh": "AutoScientists通过智能体来组织研究，这些智能体负责提出方案、进行批判并共享实验结果。Fork-and-flush解决的是一个更窄但互补的问题：如何在一个智能体已有工作的延续之间分配计算资源。它的共享状态是一个文件工作区，而不是模型参数或跨任务经验。这两种方法共同反映了该领域对持久性、多步骤研究的探索，而本文强调，保留产物并刷新上下文，可能是单纯延长一条轨迹之外的有用替代方案。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 383.84,
+      "end": 387.2,
+      "en": "What should we be cautious about when applying this beyond the tested tasks?",
+      "zh": "在把这一方法应用到测试过的任务之外时，我们应该注意什么？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 388.24,
+      "end": 426.658,
+      "en": "The evidence covers 13 tasks and a limited set of models, and some runs lasted many hours, so broader replication is costly. Aggregate results also depend on min–max normalization, while raw scores across tasks are not directly comparable. The basin-escape example is suggestive rather than a universal explanation. Still, the practical lesson is clear: when an agent has a useful workspace but a potentially narrowing history, periodically branching from the work and flushing the conversation is worth testing. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这些证据覆盖了13个任务和有限的一组模型，而且有些运行持续了好几个小时，所以更大范围的复现成本很高。汇总结果还依赖最小-最大归一化，而不同任务的原始分数并不能直接比较。逃离盆地的例子只是有启发性，并不是一个普遍适用的解释。不过，实际教训很清楚：当一个智能体拥有有用的工作区，但历史记录可能越来越窄时，定期从工作中分出新分支并清空对话，值得一试。感谢收听。如果你还有任何问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{cai2026forkandflushescapingideabasins,\n      title={Fork-and-Flush: Escaping Idea Basins in Autoresearch Agents}, \n      author={Ziyang Cai and Christos Ziakas and Vasilis Kontonis and Tim Pearce and Siddhartha Sen and Akshay Krishnamurthy and Shivam Garg and Dimitris Papailiopoulos},\n      year={2026},\n      eprint={2610.07447},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.07447}, \n}",
+  "topics": [
+    "Agents",
+    "Ensemble Methods",
+    "Optimization Methods"
+  ],
+  "peaks": [
+    0.321,
+    0.312,
+    0.282,
+    0.29,
+    0.274,
+    0.244,
+    0.541,
+    0.401,
+    0.51,
+    0.62,
+    0.435,
+    0.697,
+    0.553,
+    0.521,
+    0.372,
+    0.42,
+    0.345,
+    0.443,
+    0.36,
+    0.278,
+    0.393,
+    0.33,
+    0.233,
+    0.659,
+    0.57,
+    0.546,
+    0.425,
+    0.42,
+    0.421,
+    0.605,
+    0.551,
+    0.391,
+    0.489,
+    0.354,
+    0.604,
+    0.452,
+    0.323,
+    0.289,
+    0.24,
+    0.326,
+    0.451,
+    0.495,
+    0.479,
+    0.431,
+    0.305,
+    0.31,
+    0.427,
+    0.788,
+    0.442,
+    0.406,
+    0.43,
+    0.488,
+    0.596,
+    0.479,
+    0.493,
+    0.359,
+    0.448,
+    0.355,
+    0.576,
+    0.431,
+    0.308,
+    0.235,
+    0.234,
+    0.2,
+    0.264,
+    0.746,
+    0.839,
+    1.0,
+    0.616,
+    0.768,
+    0.777,
+    0.632
+  ],
+  "published": "2026-10-05",
+  "views": 398,
+  "license": "CC BY"
+}

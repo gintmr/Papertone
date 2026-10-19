@@ -1,0 +1,263 @@
+{
+  "id": "2610.07540",
+  "title": "Preserving Unstable Modes Through Inverse Dynamics in JEPA World Models",
+  "authors": [
+    "Leonardo F. Toso",
+    "Yann LeCun",
+    "James Anderson",
+    "Oumayma Bounou"
+  ],
+  "abstract": "Robotic systems often exhibit unstable modes, along which small perturbations and disturbances can cause unbounded growth unless corrected through feedback. Controlling such systems from high-dimensional visual observations requires representations that preserve these modes. Joint-embedding predictive architectures (JEPAs) provide a natural framework for learning such representations and their dynamics from visual data. However, we demonstrate that next step prediction combined with anti-collapse regularization does not guarantee that controllable unstable modes are preserved: the training loss can be minimized while these modes are collapsed, making stabilization from the learned representation impossible. To address this, we augment world-model training with an action reconstruction objective (i.e., an inverse dynamics loss) that encourages control-aware representations, namely, visual representations that preserve crucial features for control. We prove that exact action reconstruction makes the encoder injective on the finite-horizon reachable subspace. Thus, the encoder cannot discard any state direction reachable by an action sequence within $H$ steps. Moreover, we show that, as $H$ grows, the dominant eigenspace of the finite-horizon controllability Gramian converges to the controllable unstable subspace. We establish our theoretical results for linear systems and demonstrate empirically that our findings extend to nonlinear visual control tasks (CartPole, Walker2D, and PointMaze), highlighting the benefits of control-aware representation learning.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.07540",
+    "arxiv": "https://arxiv.org/abs/2610.07540"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11470-1e92-7ffe-8180-ac7b289b5f30/podcast.mp3",
+  "duration": 476.29,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.74,
+      "en": "In a graduate course on Learning-Based Control, today’s lecture is on Preserving Unstable Modes Through Inverse Dynamics in jepa World Models. Recent work such as Temporal Straightening for Latent Planning and Semigroup-JEPA explores how to shape latent dynamics for planning and generalization. This paper, by researchers affiliated with Columbia University and New York University, asks a different control-focused question: does a useful world model preserve the information needed to stabilize an unstable system? Go ahead, Noah.",
+      "zh": "在一门关于基于学习的控制的研究生课程中，今天的讲座主题是《在jepa世界模型中通过逆动力学保留不稳定模态》。近期的工作，比如《用于潜在规划的时间拉直》和《半群-JEPA》，探讨了如何塑造潜在动力学以用于规划和泛化。这篇论文由哥伦比亚大学和纽约大学的研究人员合作完成，提出了一个不同的、以控制为核心的问题：一个有用的世界模型是否会保留稳定一个不稳定系统所需的信息？诺亚，你来讲吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.86,
+      "end": 38.06,
+      "en": "Hi Professor, why might a model predict well but still fail to control the system?",
+      "zh": "教授您好，为什么一个模型可能预测得很好，却仍然无法控制系统？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.18,
+      "end": 66.62,
+      "en": "Because prediction accuracy and control-relevant information are not the same thing. A model may predict what comes next while its representation has erased a physical direction that a controller needs to monitor. Think of a dashboard that accurately reports most engine behavior but omits the warning light for a fault that can rapidly worsen. The paper argues that standard jepa training can produce this kind of omission, even when the representation has not collapsed completely.",
+      "zh": "因为预测准确和控制所需的信息并不是一回事。模型可能能预测接下来会发生什么，但它的表征里已经抹掉了控制器需要监控的某个物理方向。就像一个仪表盘，能准确显示发动机的大部分行为，却漏掉了那个可能迅速恶化的故障警示灯。论文认为，标准的jepa训练就可能造成这种遗漏，即使表征并没有完全坍缩。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 67.64,
+      "end": 101.06,
+      "en": "A jepa world model encodes observations into a compact latent state and predicts how that state changes under actions. The usual training recipe rewards accurate next-step latent prediction and uses an anti-collapse regularizer called sig-reg to keep representations dispersed. But dispersion alone does not say which physical features are retained. The paper therefore studies whether these common objectives preserve unstable modes: directions in the system’s state that grow over time unless feedback detects and corrects them.",
+      "zh": "JEPA世界模型把观测编码成紧凑的潜在状态，并预测该状态在动作作用下如何变化。常规训练配方奖励准确的下一步潜在预测，并使用一种名为sig-reg的防坍缩正则化器来保持表征分散。但仅靠分散并不能说明哪些物理特征被保留了下来。因此，论文研究了这些常见目标是否能保留不稳定模态：即系统状态中那些除非反馈检测并纠正、否则会随时间增长的方向。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 101.6,
+      "end": 106.94,
+      "en": "So a representation can vary a lot overall and still miss the one direction that matters for stabilization?",
+      "zh": "所以一个表示整体上可以变化很大，却仍然漏掉对稳定化至关重要的那个方向？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 108.12,
+      "end": 137.2,
+      "en": "Exactly. The authors first make this precise in a linear control setting. They show that latent feedback can stabilize the physical system only if the representation preserves the unstable and marginally stable modes well enough to make them observable. They also construct a counterexample: prediction and sig-reg can both succeed even when the encoder discards an unstable direction. That result separates “the latent model predicts” from “a controller can use the latent state safely.”",
+      "zh": "正是如此。作者首先在线性控制设定下把这一点讲清楚了。他们证明，只有当表征能把不稳定模态和临界稳定模态保留到足以让它们可观测的程度，潜在反馈才能稳定物理系统。他们还构造了一个反例：即使编码器丢弃了某个不稳定方向，预测和sig-reg也都能成功。这个结果把“潜在模型能预测”和“控制器能安全地使用潜在状态”区分开了。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 138.1,
+      "end": 142.84,
+      "en": "Quick question: what training signal do they add to encourage the encoder to keep those directions?",
+      "zh": "快速问一下：他们加了什么训练信号来促使编码器保留这些方向？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 143.8,
+      "end": 171.94,
+      "en": "They add inverse dynamics: predicting actions from latent states. Their central version, endpoint inverse dynamics, receives the latent state at the start and the latent state at the end of a time window, then reconstructs the action sequence in between. The intuition is that actions leave traces in how the system changes. To infer those actions from the endpoints, the representation may need to retain information about the state directions those actions affected.",
+      "zh": "他们加入了逆动力学：从潜在状态预测动作。其核心版本是端点逆动力学，接收一个时间窗口起点和终点的潜在状态，然后重建中间的动作序列。直觉是，动作会在系统变化的方式中留下痕迹。要从端点推断这些动作，表征可能需要保留关于这些动作所影响的状态方向的信息。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.96,
+      "end": 206.92,
+      "en": "The theory links this idea to reachability. Under specific linear-system assumptions, exact reconstruction of sufficiently rich action sequences means the encoder cannot erase directions that actions can reach over the chosen horizon. A second result concerns the controllability Gramian, which describes how strongly actions can affect different directions. With the paper’s assumptions, its dominant directions increasingly align with unstable modes as the horizon grows. These are conditional theoretical results, not guarantees for every learned nonlinear model.",
+      "zh": "这一理论将这一想法与可达性联系起来。在特定的线性系统假设下，对足够丰富的动作序列进行精确重建，意味着编码器不能抹去动作在所选时间范围内能够到达的方向。第二个结果涉及可控性格拉姆矩阵，它描述了动作对不同方向的影响强度。在论文的假设下，随着时间范围增大，其主导方向会越来越与不稳定模态对齐。这些是有条件的理论结果，并不保证适用于每一个学习到的非线性模型。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 207.82,
+      "end": 214.76,
+      "en": "Does endpoint reconstruction require unusually favorable conditions, like enough latent capacity or diverse action sequences?",
+      "zh": "端点重建是否需要特别有利的条件，比如足够的潜在容量或多样化的动作序列？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 214.76,
+      "end": 247.72,
+      "en": "Yes, and that qualification matters. The exact result assumes rich action-sequence support and enough latent dimension to encode the required sequence information; the paper gives a bound involving action dimension and horizon. In practice, training is approximate, so the theorem does not promise perfect preservation. The experiment asks a narrower question: does adding this action-reconstruction signal improve learned control in simulated visual tasks compared with prediction and sig-reg alone?",
+      "zh": "是的，这个限定条件很重要。精确结论假设有丰富的动作序列支撑，并且潜在维度足以编码所需的序列信息；论文给出了一个涉及动作维度和时间跨度的界。实际训练是近似的，所以定理并不保证完美保留。实验问的是一个更窄的问题：在模拟视觉任务中，与仅用预测和sig-reg相比，加入这个动作重建信号能否改善学到的控制？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 248.64,
+      "end": 281.0,
+      "en": "On CartPole, the difference is stark under latent L-Q-R, a feedback controller built from the learned local dynamics. Prediction with sig-reg achieves zero percent success, whether prediction is one-step or multi-step. One-step prediction with endpoint inverse dynamics reaches 100% success; the multi-step version with sig-reg also reaches 100%. This supports the paper’s central control claim, while reminding us that the result depends on the task, observations, and training setup.",
+      "zh": "在CartPole上，潜在L-Q-R下的差异非常明显，这是一种基于学习到的局部动力学构建的反馈控制器。使用sig-reg的预测无论是一步还是多步，成功率都是零。带端点逆动力学的一步预测达到了100%的成功率；带sig-reg的多步版本也达到了100%。这支持了论文的核心控制主张，同时提醒我们结果依赖于任务、观测和训练设置。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 281.96,
+      "end": 286.92,
+      "en": "But the paper also tests planners, right? Do they fail whenever latent L-Q-R fails?",
+      "zh": "但论文也测试了规划器，对吧？潜空间L-Q-R失败的时候，它们是不是也都会失败？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 287.92,
+      "end": 319.86,
+      "en": "No. Cross-entropy planning and gradient-based planning can succeed on CartPole with some sig-reg models that fail under latent L-Q-R. Those planners repeatedly optimize actions through a nonlinear model, which can compensate for some local-model errors. L-Q-R depends more directly on the learned local linearization. On Walker2D, endpoint inverse dynamics also preserves aspects of the locomotion cycle in latent rollouts and improves planning over the tested sig-reg models, though it remains below ground-truth dynamics.",
+      "zh": "不是。交叉熵规划和基于梯度的规划可以在CartPole上成功，用的是某些在潜在L-Q-R下失败的sig-reg模型。这些规划器通过非线性模型反复优化动作，能够补偿一些局部模型的误差。L-Q-R则更直接地依赖于学到的局部线性化。在Walker2D上，端点逆动力学也在潜在轨迹中保留了运动周期的某些方面，并且在测试的sig-reg模型上改善了规划效果，尽管仍低于真实动力学。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 320.96,
+      "end": 357.04,
+      "en": "The results also help locate the method’s boundaries. PointMaze is open-loop stable, so preserving unstable modes is not required; the tested models generally achieve high goal-reaching success there, including action-reconstruction variants. With frozen visual encoders, endpoint inverse dynamics works with some eye-bot configurations, but none of the tested dino v two configurations gives a stabilizing L-Q-R controller. Removing proprioception in a tested eye-bot setup also yields zero success, indicating that visual input did not reliably supply needed velocity information.",
+      "zh": "这些结果也有助于界定该方法的适用边界。PointMaze是开环稳定的，因此不需要保留不稳定模态；被测模型在该任务上普遍能实现较高的目标到达成功率，包括动作重建变体。在使用冻结视觉编码器时，端点逆动力学在某些eye-bot配置下有效，但所有被测的dino v2配置都无法给出稳定的L-Q-R控制器。在某个被测eye-bot设置中移除本体感知后成功率也降为零，说明视觉输入未能可靠提供所需的速度信息。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 358.1,
+      "end": 363.34,
+      "en": "So the action loss can’t restore state information that a frozen visual encoder has already thrown away?",
+      "zh": "所以动作损失没法恢复冻结视觉编码器已经丢掉的状态信息吗？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 364.32,
+      "end": 398.46,
+      "en": "Right. That limitation connects to broader work on action-sensitive representations, including Sensorimotor World Models and Delta-JEPA, which also use action information to shape latent features. This paper’s distinctive emphasis is reconstructing a whole action sequence from endpoint latents and relating that objective to finite-horizon reachability. The connection is useful, but it should not be overstated: its formal guarantees rely on linear assumptions, while its nonlinear experiments use simulated environments and approximate training.",
+      "zh": "对。这个局限性与更广泛的动作敏感表征研究相关，包括感觉运动世界模型和Delta-JEPA，它们也利用动作信息来塑造潜在特征。这篇论文的独特重点在于从端点潜在变量重建整个动作序列，并将该目标与有限时域可达性联系起来。这种联系是有用的，但不应被夸大：其形式化保证依赖于线性假设，而非线性实验则使用模拟环境和近似训练。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 399.42,
+      "end": 404.18,
+      "en": "How should we interpret the evidence if we care about robots operating near unstable states?",
+      "zh": "如果我们关心机器人在不稳定状态附近运行，该如何解读这些证据？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 405.02,
+      "end": 441.74,
+      "en": "Treat it as a design principle with promising simulation evidence, not yet a deployment guarantee. Near an unstable equilibrium, omitted velocity or orientation information can prevent timely correction, so action reconstruction may be a useful additional training signal. But these experiments use proprioception, limited evaluation trials, and simulated tasks. Future work should test robustness to noise, less informative action data, longer or higher-dimensional action sequences, and physical robots. It should also examine when reconstruction improves control without sacrificing other objectives.",
+      "zh": "把它当作一条有前景的仿真证据支撑的设计原则，而不是部署保证。在不稳定平衡点附近，遗漏速度或方向信息会妨碍及时纠正，因此动作重建可能是一种有用的额外训练信号。但这些实验使用的是本体感知、有限的评估试验和仿真任务。未来工作应测试对噪声、信息量较少的动作数据、更长或更高维动作序列以及实体机器人的鲁棒性，还应考察重建在何时能改善控制而不牺牲其他目标。"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 442.94,
+      "end": 476.29,
+      "en": "The paper’s main takeaway is that a world model should be judged not only by what it predicts, but also by what a controller can observe through its representation. Prediction and anti-collapse regularization can leave an unstable blind spot; endpoint action reconstruction offers one way to discourage that, under specific conditions. For control research, the practical question is whether the latent state preserves the directions that matter for intervention. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这篇论文的主要结论是，评判一个世界模型，不能只看它预测了什么，还要看控制器能通过它的表征观察到什么。预测和防坍缩正则化可能留下一个不稳定的盲区；端点动作重建在特定条件下提供了一种抑制这个盲区的方法。对控制研究来说，实际问题在于潜在状态是否保留了那些对干预至关重要的方向。感谢收听。如果还有问题，可以问我们的AI助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{toso2026preservingunstablemodesinverse,\n      title={Preserving Unstable Modes Through Inverse Dynamics in JEPA World Models}, \n      author={Leonardo F. Toso and Yann LeCun and James Anderson and Oumayma Bounou},\n      year={2026},\n      eprint={2610.07540},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.07540}, \n}",
+  "topics": [
+    "Reinforcement Learning",
+    "Eess.Sy",
+    "Electrical Engineering And Systems Science"
+  ],
+  "peaks": [
+    0.674,
+    0.301,
+    0.291,
+    0.287,
+    0.206,
+    0.571,
+    0.685,
+    0.729,
+    0.807,
+    0.485,
+    0.923,
+    0.648,
+    0.428,
+    0.623,
+    0.399,
+    0.721,
+    0.515,
+    0.455,
+    0.524,
+    0.402,
+    0.396,
+    0.61,
+    0.325,
+    0.321,
+    0.27,
+    0.202,
+    0.484,
+    0.454,
+    0.434,
+    0.337,
+    0.395,
+    0.6,
+    0.485,
+    0.471,
+    0.304,
+    0.373,
+    0.27,
+    0.462,
+    0.651,
+    0.395,
+    0.28,
+    0.32,
+    0.414,
+    0.873,
+    0.632,
+    0.692,
+    0.68,
+    0.363,
+    1.0,
+    0.843,
+    0.408,
+    0.434,
+    0.708,
+    0.374,
+    0.602,
+    0.41,
+    0.262,
+    0.263,
+    0.2,
+    0.221,
+    0.46,
+    0.537,
+    0.687,
+    0.553,
+    0.363,
+    0.434,
+    0.402,
+    0.914,
+    0.749,
+    0.496,
+    0.598,
+    0.408
+  ],
+  "published": "2026-10-06",
+  "views": 400,
+  "license": "arXiv 默认许可"
+}

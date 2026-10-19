@@ -1,0 +1,242 @@
+{
+  "id": "2610.calm",
+  "title": "Stay CALM: Calibrated Online Aggregation for Multi-Horizon Forecasting Under Delayed, Overlapping Feedback",
+  "authors": [
+    "Shivesh Prakash"
+  ],
+  "abstract": "Online time-series forecasters keep adapting after deployment, but a forecast for h steps ahead can only be scored h steps later, and forecasts issued at neighbouring times share most of their targets. We argue that this overlap, more than the delay itself, is what makes online adaptation fragile. The losses that reach an online learner at horizon h are serially correlated, their long-run variance is inflated by an overlap factor κ^h that grows roughly like h up to h ≈ 30 on most standard benchmarks, and learning rates chosen for independent feedback end up chasing noise. For fixed-share exponential weights, a diffusion analysis shows that the excess loss caused by this noise depends on the learning rate η only through ηκ^h. The resulting calibration has nothing to tune: divide the learning rate by κ^h, and let the switching rate grow with it. We build CALM, a two-level aggregator that applies the calibration to selection, linearised exponential weights and a second-order combiner. It uses only the forecasts of its experts, so it can sit on top of any forecasting models, open or closed source, including published online methods run in their authors’ code. Because every aggregate is a convex combination of the experts, any aggregation rule can be replayed exactly from stored error statistics, which lets us compare 45 rules on identical forecasts. In 75 development settings CALM was never worse than not adapting. In two pre-registered confirmatory rounds (90 runs) it had lower error than Proceed, a state-of-the-art leak-free method that is also one of its experts, in 88 runs (by 6.2% on average, 3.8% outside ETTh2). It is rarely the single best of the twelve methods we compare, but in no run was its error more than 3.5% above the best one, the smallest such margin among them. Calibrated BOA, one of its components, has the lowest error most often, and the tuning-free delayed learner AdaHedgeD is slightly better than CALM in most runs but fails badly in one recurring setting. CALM’s update takes about a millisecond per time step.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.calm",
+    "arxiv": "https://arxiv.org/abs/2610.calm"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a14833-f21f-7bc8-876b-52551292a6cc/podcast.mp3",
+  "duration": 448.6,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 39.28,
+      "en": "In our graduate course on Online Learning for Time-Series Forecasting, today's lecture is on Stay calm: Calibrated Online Aggregation for Multi-Horizon Forecasting under Delayed, Overlapping Feedback. Shivesh Prakash, at the University of California, Berkeley, studies how forecasting systems should adapt as new observations arrive. Work such as OneNet and Online Irregular Multivariate Time Series Forecasting via Uncertainty-Driven Dual-Expert Calibration reflects a trend toward online adaptation. This paper asks whether those systems also need to account for overlapping evidence.",
+      "zh": "在我们关于时间序列预测在线学习的研究生课程中，今天的讲座主题是“保持冷静：延迟且重叠反馈下多视野预测的校准在线聚合”。加州大学伯克利分校的Shivesh Prakash研究预测系统应如何随着新观测的到来而调整。OneNet以及通过不确定性驱动的双专家校准进行在线不规则多变量时间序列预测等工作，反映了向在线适应发展的趋势。这篇论文探讨的是，这些系统是否也需要考虑重叠证据的问题。"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 40.42,
+      "end": 66.12,
+      "en": "The key distinction is that forecasts can be delayed and their target windows can overlap, so successive errors may carry much of the same information. That matters because a learner could mistake repeated evidence for independent evidence and overreact. I see you have a question, Noah; go ahead. We will connect this statistical issue to the method, its experiments, and the practical limits of combining forecasts.",
+      "zh": "关键区别在于，预测可能延迟，而且它们的目标窗口可能重叠，因此连续的误差可能携带大量相同的信息。这一点很重要，因为学习器可能把重复的证据误认为独立的证据，从而反应过度。诺亚，我看到你有问题，请讲。我们会把这个统计问题与方法、实验以及组合预测的实际局限联系起来。"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 67.42,
+      "end": 71.86,
+      "en": "Hi Professor, what does overlapping feedback mean in a simple forecasting example?",
+      "zh": "教授您好，在一个简单的预测例子里，重叠反馈是什么意思？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 72.82,
+      "end": 100.48,
+      "en": "Imagine issuing a forecast every day for the next 7 days. Tomorrow's forecast shares 6 target days with today's, so a sudden event can affect both forecast errors. When each forecast is finally scored, the learner receives losses that are related, not fresh independent measurements. The paper describes the inflation in long-run error variability as an overlap factor. On persistent benchmark series, that factor can approach the forecast horizon.",
+      "zh": "想象一下，每天都对接下来7天做一次预测。明天的预测和今天的预测有6个目标日是重叠的，所以一个突发事件可能同时影响这两次预测的误差。当每次预测最终被打分时，学习器收到的损失是相互关联的，而不是全新的独立测量。论文把长期误差变异性的膨胀称为重叠因子。在持续性较强的基准序列上，这个因子可能接近预测跨度。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.48,
+      "end": 106.9,
+      "en": "So the issue is not only that feedback arrives late; it is that the feedback repeats shared shocks?",
+      "zh": "所以问题不只是反馈来得晚，还在于反馈会重复共同的冲击？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 108.12,
+      "end": 133.82,
+      "en": "Exactly. Delayed-feedback methods keep track of losses that have not matured yet, but that alone does not remove correlation among the losses once they arrive. The authors argue that online aggregation should temper its reactions to this correlated evidence. Their method, calm, is a layer over a set of forecasting experts. It does not require replacing those experts or committing in advance to one adaptation strategy.",
+      "zh": "正是如此。延迟反馈方法会追踪那些尚未成熟的损失，但仅凭这一点，并不能在损失到达后消除它们之间的相关性。作者认为，在线聚合应当缓和对这种相关证据的反应。他们的方法calm是在一组预测专家之上的一层。它不需要替换这些专家，也不需要事先承诺采用某一种适应策略。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 134.82,
+      "end": 165.08,
+      "en": "The central calibration insight is to reduce an online learner's effective learning rate as overlap grows. In the paper's simplified two-expert analysis, noisy weight changes depend on both the learning rate and the long-run variability of the feedback. If that variability grows with the horizon, keeping the learner's behavior comparable means making it less reactive. The authors also adjust switching and second-order variability terms in several aggregation rules.",
+      "zh": "核心校准思路是：重叠越大，就越降低在线学习器的有效学习率。在论文简化的双专家分析中，带噪声的权重变化同时取决于学习率和反馈的长期波动性。如果这种波动性随时域增大，那么要让学习器的行为保持可比，就得让它反应更迟钝。作者还调整了若干聚合规则中的切换项和二阶波动项。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 165.98,
+      "end": 170.52,
+      "en": "Quick question: does calm estimate that overlap separately for every dataset and model?",
+      "zh": "快速问一下：calm 会针对每个数据集和模型分别估计这种重叠吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 171.36,
+      "end": 201.28,
+      "en": "Usually, no. The default calibration uses the horizon itself as a practical proxy for overlap, along with a common learning-rate constant and loss-scale estimate rather than parameters tuned separately for each backbone or dataset. The authors also test estimating overlap online and report similar performance in an ablation. This is useful operationally, but it relies on an approximation: when errors mean-revert, the horizon can overstate how much feedback actually overlaps.",
+      "zh": "通常不会。默认校准直接把预测跨度本身当作重叠程度的一个实用替代指标，再配合一个通用的学习率常数和损失尺度估计，而不是为每个主干模型或数据集单独调参。作者也测试了在线估计重叠程度，并在消融实验中报告了相近的表现。这在操作上很有用，但它依赖一个近似：当误差均值回归时，预测跨度可能会高估反馈实际重叠的程度。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 202.04,
+      "end": 233.22,
+      "en": "For its first level, calm groups horizons into buckets and runs several combiners, including calibrated fixed-share selection, exponentiated gradient, Bernstein online aggregation, and equal weighting. One version pools evidence from shorter horizons, whose outcomes become available sooner. A second level then combines the forecasts from those first-level methods. That design lets the system draw on both expert selection and averaging rather than assuming one approach will always be preferable.",
+      "zh": "在第一层，calm 把各个预测期分到不同桶里，并运行多个组合器，包括校准后的固定份额选择、指数梯度、Bernstein 在线聚合和等权平均。其中一个版本会汇集来自较短预测期的证据，因为这些预测期的结果会更早出来。第二层再把第一层各方法给出的预测组合起来。这样的设计让系统既能利用专家选择，也能利用平均，而不是假定某一种方法总是更可取。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 234.18,
+      "end": 264.3,
+      "en": "A practical benefit is modularity: experts can include frozen forecasts, refits, error-feedback corrections, fine-tuning strategies, or outside online methods. Since the final prediction is a convex combination, the researchers can reconstruct its squared loss from stored expert errors. They use that property to replay 45 aggregation rules on the same forecasts, avoiding the need to rerun each underlying forecasting model for every comparison.",
+      "zh": "一个实际的好处是模块化：专家可以包括冻结的预测、重新拟合、误差反馈修正、微调策略或外部在线方法。由于最终预测是凸组合，研究人员可以从存储的专家误差中重建其平方损失。他们利用这一特性对相同的预测重放45种聚合规则，从而避免为每次比较重新运行每个底层预测模型。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 265.34,
+      "end": 271.16,
+      "en": "Can you clarify how broad the evaluation was, and whether the comparison accounts for dependence in the test stream?",
+      "zh": "能否说明一下评估的范围有多广，以及这种比较是否考虑了测试流中的依赖性？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 271.16,
+      "end": 306.28,
+      "en": "The study covers 5 datasets, 3 forecasting backbones, and horizons of 24, 48, and 96 steps, following 2 leak-free protocols. It reports 75 development settings and 90 confirmatory runs across 2 pre-registered rounds. Comparisons use per-origin losses and Diebold–Mariano tests with long-run variance estimates that account for dependence. In the confirmatory runs, calm had lower error than Proceed in 88 of 90 cases, averaging a 6.2% reduction.",
+      "zh": "这项研究覆盖5个数据集、3个预测骨干网络，以及24、48和96步的预测跨度，遵循2种无泄漏协议。它报告了75个开发设置和90次确认性运行，分布在2个预注册轮次中。比较采用逐起点损失和Diebold–Mariano检验，并使用考虑依赖性的长期方差估计。在确认性运行中，calm在90个案例中的88个里误差低于Proceed，平均降低6.2%。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 307.2,
+      "end": 336.2,
+      "en": "Those results are not a claim that calm wins every head-to-head comparison. Calibrated B-O-A often had the lowest error, and AdaHedgeD was slightly better in most runs. The notable strength was limiting poor outcomes: calm was no more than 3.5% above the best method in any run. In development, it was never worse than the frozen model and beat the best single expert in hindsight in 54 settings.",
+      "zh": "这些结果并不是说calm在每一次正面比较中都能胜出。校准后的B-O-A往往误差最低，而AdaHedgeD在大多数运行中略胜一筹。其显著优势在于限制了糟糕结果：在任何一次运行中，calm比最佳方法最多只差3.5%。在开发阶段，它从未比冻结模型更差，并且在54个设置中事后看来胜过了最佳单一专家。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 337.2,
+      "end": 371.76,
+      "en": "This places calm alongside work such as OneNet and Under-Cali, which also address online forecasting through adaptation or expert calibration, but emphasizes a different source of difficulty: serially correlated evidence from shared forecast targets. The contribution connects online expert aggregation to econometric corrections for overlapping observations. It suggests that overlap-aware calibration may matter beyond forecasting whenever an online learner repeatedly sees related outcomes rather than independent feedback.",
+      "zh": "这让calm与OneNet和Under-Cali等工作并列，这些工作同样通过自适应或专家校准来处理在线预测，但calm强调的是另一类困难来源：来自共享预测目标的序列相关证据。这一贡献将在线专家聚合与针对重叠观测的计量经济学修正联系起来。它表明，只要在线学习器反复看到相关结果而非独立反馈，重叠感知校准的重要性就可能超出预测领域。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 372.82,
+      "end": 376.82,
+      "en": "What should we keep in mind before treating this as a general solution for online learning?",
+      "zh": "在把它当作在线学习的通用解决方案之前，我们应该注意什么？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 376.82,
+      "end": 409.56,
+      "en": "The theoretical analysis is a diffusion argument for a simplified two-expert setting, not a regret guarantee for the full multi-level system. Calm also cannot outperform the convex hull of its experts, and its performance depends on the available expert pool and tested protocols. Its aggregation takes roughly a millisecond per time step, but maintaining the experts costs more. In a finance evaluation, better volume forecasts did not improve a VWAP schedule over a simple 20-day average.",
+      "zh": "理论分析针对的是简化后的双专家设定，用的是扩散论证，并不是对整个多层级系统的遗憾保证。Calm 也无法超越其专家构成的凸包，而且它的表现取决于可用的专家池和所测试的协议。它的聚合每时间步大约耗时一毫秒，但维护这些专家的成本更高。在一项金融评估中，更好的成交量预测并没有让 VWAP 调度优于简单的 20 天平均值。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 410.54,
+      "end": 448.6,
+      "en": "The broader takeaway is that delayed feedback and overlapping feedback are distinct design problems. A learner may correctly wait for outcomes and still react too strongly when those outcomes repeat shared information. This paper offers a practical calibration principle and encouraging results, while leaving open how to combine it systematically with tuning-free delayed learners and how widely the findings transfer. When forecasts overlap, count the evidence carefully before changing the weights. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更宏观的启示是，延迟反馈和重叠反馈是两个不同的设计问题。学习器可能正确地等待结果，但当这些结果重复共享信息时，仍可能反应过强。本文提出了一个实用的校准原则和令人鼓舞的结果，但仍未解决如何将其与无需调参的延迟学习器系统结合，以及这些发现的可迁移性有多广。当预测重叠时，在改变权重之前要仔细清点证据。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{prakash-stay-calm,\n  author = {Prakash, Shivesh},\n  keywords = {Machine Learning (cs.LG), Online Learning, Time-Series Forecasting, Multi-Horizon Forecasting, Delayed Feedback, Overlapping Feedback, Forecast Aggregation},\n  title = {Stay CALM: Calibrated Online Aggregation for Multi-Horizon Forecasting Under Delayed, Overlapping Feedback}\n}",
+  "topics": [
+    "Time Series Analysis"
+  ],
+  "peaks": [
+    1.0,
+    0.839,
+    0.845,
+    0.738,
+    0.618,
+    0.594,
+    0.561,
+    0.492,
+    0.446,
+    0.605,
+    0.261,
+    0.744,
+    0.548,
+    0.45,
+    0.367,
+    0.274,
+    0.578,
+    0.585,
+    0.819,
+    0.542,
+    0.57,
+    0.626,
+    0.952,
+    0.761,
+    0.748,
+    0.497,
+    0.409,
+    0.633,
+    0.704,
+    0.668,
+    0.467,
+    0.561,
+    0.342,
+    0.364,
+    0.459,
+    0.309,
+    0.206,
+    0.368,
+    0.417,
+    0.354,
+    0.396,
+    0.319,
+    0.646,
+    0.717,
+    0.67,
+    0.639,
+    0.445,
+    0.453,
+    0.329,
+    0.459,
+    0.381,
+    0.494,
+    0.337,
+    0.2,
+    0.953,
+    0.607,
+    0.655,
+    0.5,
+    0.663,
+    0.351,
+    0.992,
+    0.653,
+    0.857,
+    0.454,
+    0.622,
+    0.591,
+    0.614,
+    0.56,
+    0.602,
+    0.276,
+    0.367,
+    0.236
+  ],
+  "published": "2026-10-17",
+  "views": 204,
+  "license": "User Uploaded"
+}

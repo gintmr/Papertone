@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 448.6,
+  "word_match_rate": 0.9335,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Online Learning for Time-Series Forecasting, today's lecture is on Stay calm: Calibrated Online Aggregation for Multi-Horizon Forecasting under Delayed, Overlapping Feedback. Shivesh Prakash, at the University of California, Berkeley, studies how forecasting systems should adapt as new observations arrive. Work such as OneNet and Online Irregular Multivariate Time Series Forecasting via Uncertainty-Driven Dual-Expert Calibration reflects a trend toward online adaptation. This paper asks whether those systems also need to account for overlapping evidence.",
+      "start": 0.0,
+      "end": 39.28
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "The key distinction is that forecasts can be delayed and their target windows can overlap, so successive errors may carry much of the same information. That matters because a learner could mistake repeated evidence for independent evidence and overreact. I see you have a question, Noah; go ahead. We will connect this statistical issue to the method, its experiments, and the practical limits of combining forecasts.",
+      "start": 40.42,
+      "end": 66.12
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does overlapping feedback mean in a simple forecasting example?",
+      "start": 67.42,
+      "end": 71.86
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Imagine issuing a forecast every day for the next 7 days. Tomorrow's forecast shares 6 target days with today's, so a sudden event can affect both forecast errors. When each forecast is finally scored, the learner receives losses that are related, not fresh independent measurements. The paper describes the inflation in long-run error variability as an overlap factor. On persistent benchmark series, that factor can approach the forecast horizon.",
+      "start": 72.82,
+      "end": 100.48
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the issue is not only that feedback arrives late; it is that the feedback repeats shared shocks?",
+      "start": 100.48,
+      "end": 106.9
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. Delayed-feedback methods keep track of losses that have not matured yet, but that alone does not remove correlation among the losses once they arrive. The authors argue that online aggregation should temper its reactions to this correlated evidence. Their method, calm, is a layer over a set of forecasting experts. It does not require replacing those experts or committing in advance to one adaptation strategy.",
+      "start": 108.12,
+      "end": 133.82
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The central calibration insight is to reduce an online learner's effective learning rate as overlap grows. In the paper's simplified two-expert analysis, noisy weight changes depend on both the learning rate and the long-run variability of the feedback. If that variability grows with the horizon, keeping the learner's behavior comparable means making it less reactive. The authors also adjust switching and second-order variability terms in several aggregation rules.",
+      "start": 134.82,
+      "end": 165.08
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does calm estimate that overlap separately for every dataset and model?",
+      "start": 165.98,
+      "end": 170.52
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Usually, no. The default calibration uses the horizon itself as a practical proxy for overlap, along with a common learning-rate constant and loss-scale estimate rather than parameters tuned separately for each backbone or dataset. The authors also test estimating overlap online and report similar performance in an ablation. This is useful operationally, but it relies on an approximation: when errors mean-revert, the horizon can overstate how much feedback actually overlaps.",
+      "start": 171.36,
+      "end": 201.28
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "For its first level, calm groups horizons into buckets and runs several combiners, including calibrated fixed-share selection, exponentiated gradient, Bernstein online aggregation, and equal weighting. One version pools evidence from shorter horizons, whose outcomes become available sooner. A second level then combines the forecasts from those first-level methods. That design lets the system draw on both expert selection and averaging rather than assuming one approach will always be preferable.",
+      "start": 202.04,
+      "end": 233.22
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "A practical benefit is modularity: experts can include frozen forecasts, refits, error-feedback corrections, fine-tuning strategies, or outside online methods. Since the final prediction is a convex combination, the researchers can reconstruct its squared loss from stored expert errors. They use that property to replay 45 aggregation rules on the same forecasts, avoiding the need to rerun each underlying forecasting model for every comparison.",
+      "start": 234.18,
+      "end": 264.3
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Can you clarify how broad the evaluation was, and whether the comparison accounts for dependence in the test stream?",
+      "start": 265.34,
+      "end": 271.16
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The study covers 5 datasets, 3 forecasting backbones, and horizons of 24, 48, and 96 steps, following 2 leak-free protocols. It reports 75 development settings and 90 confirmatory runs across 2 pre-registered rounds. Comparisons use per-origin losses and Diebold–Mariano tests with long-run variance estimates that account for dependence. In the confirmatory runs, calm had lower error than Proceed in 88 of 90 cases, averaging a 6.2% reduction.",
+      "start": 271.16,
+      "end": 306.28
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Those results are not a claim that calm wins every head-to-head comparison. Calibrated B-O-A often had the lowest error, and AdaHedgeD was slightly better in most runs. The notable strength was limiting poor outcomes: calm was no more than 3.5% above the best method in any run. In development, it was never worse than the frozen model and beat the best single expert in hindsight in 54 settings.",
+      "start": 307.2,
+      "end": 336.2
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "This places calm alongside work such as OneNet and Under-Cali, which also address online forecasting through adaptation or expert calibration, but emphasizes a different source of difficulty: serially correlated evidence from shared forecast targets. The contribution connects online expert aggregation to econometric corrections for overlapping observations. It suggests that overlap-aware calibration may matter beyond forecasting whenever an online learner repeatedly sees related outcomes rather than independent feedback.",
+      "start": 337.2,
+      "end": 371.76
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What should we keep in mind before treating this as a general solution for online learning?",
+      "start": 372.82,
+      "end": 376.82
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The theoretical analysis is a diffusion argument for a simplified two-expert setting, not a regret guarantee for the full multi-level system. Calm also cannot outperform the convex hull of its experts, and its performance depends on the available expert pool and tested protocols. Its aggregation takes roughly a millisecond per time step, but maintaining the experts costs more. In a finance evaluation, better volume forecasts did not improve a VWAP schedule over a simple 20-day average.",
+      "start": 376.82,
+      "end": 409.56
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The broader takeaway is that delayed feedback and overlapping feedback are distinct design problems. A learner may correctly wait for outcomes and still react too strongly when those outcomes repeat shared information. This paper offers a practical calibration principle and encouraging results, while leaving open how to combine it systematically with tuning-free delayed learners and how widely the findings transfer. When forecasts overlap, count the evidence carefully before changing the weights. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 410.54,
+      "end": 448.6
+    }
+  ]
+}

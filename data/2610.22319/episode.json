@@ -1,0 +1,238 @@
+{
+  "id": "2610.22319",
+  "title": "A team of Gemini 4 Argon agents beats Minecraft",
+  "authors": [
+    "Maxence Faldor",
+    "Satinder Singh",
+    "Roberta Raileanu"
+  ],
+  "abstract": "We placed four Gemini 4 Argon agents in a sandboxed Minecraft survival world and gave them one goal: defeat the Ender Dragon. Each agent controlled a player via an open-source library called Mineflayer and coordinated with its teammates through in-game chat and shared memory. No one assigned roles or wrote game logic. The agents planned, wrote, and debugged every program themselves. Researchers could watch the run on a live dashboard and pause or stop it at any time, but they had no cause to intervene. Starting from a randomly generated world on Easy difficulty, the team wrote 2,783 programs and defeated the dragon in 27 hours and 14 minutes, dying 605 times along the way. To our knowledge, this is the first end-to-end autonomous completion of Minecraft by AI agents, achieved using only the standard Mineflayer library without pre-scouted seeds or other game-specific tools written by humans. Winning required the agents to keep a coherent plan across thousands of dependent steps for more than a day. Complex real-world software engineering and enterprise tasks demand the same long-horizon coding and multi-agent coordination. We describe the setup, how the run unfolded, the team's strategies (dividing the work, sharing what they learned, recovering each other's items), and the limits of the result.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.22319",
+    "arxiv": "https://arxiv.org/abs/2610.22319"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1425f-f16a-7d68-89ab-e911b7074de7/podcast.mp3",
+  "duration": 413.361,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.8,
+      "en": "In a hypothetical course on Multi-Agent A-I Systems, today’s lecture is on “A team of Gemini four Argon agents beats Minecraft.” Work such as “Voyager” and “Project Sid” reflects growing interest in agents that write executable actions or coordinate inside Minecraft. This paper, from Google DeepMind, asks whether a team of general-purpose coding agents can sustain a plan across a long chain of survival tasks. That matters for understanding agent coordination beyond short, isolated actions. Yes, Noah?",
+      "zh": "在一门假设的多智能体AI系统课程中，今天的讲座主题是“一支由Gemini 4 Argon智能体组成的团队打败了Minecraft”。像“Voyager”和“Project Sid”这样的工作反映出人们对能在Minecraft中编写可执行动作或进行协调的智能体越来越感兴趣。这篇来自Google DeepMind的论文提出的问题是：一支通用编码智能体团队能否在一长串生存任务中维持一个计划？这对于理解超越短小、孤立动作的智能体协调很重要。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.92,
+      "end": 39.58,
+      "en": "Hi Professor, what makes reaching the End such a long-horizon challenge?",
+      "zh": "教授您好，为什么到达末地算是一个长时程的挑战呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.54,
+      "end": 69.66,
+      "en": "The team had to move from a random spawn through the Overworld, gather resources, enter the Nether, find a stronghold, and reach the End. There, ten crystals heal the dragon, so the players needed to destroy them before finishing the fight. Instead of receiving a researcher-written route, 4 agents wrote programs and shared information. They won after 27 hours and 14 minutes, with 605 deaths. That is one observed completion, not evidence of reliable repetition.",
+      "zh": "团队必须从随机出生点出发，穿越主世界、收集资源、进入下界、找到要塞，最终抵达末地。末地有十颗水晶会治疗末影龙，所以玩家需要先摧毁水晶才能结束战斗。4个智能体没有拿到研究员写好的路线，而是自己编写程序并共享信息。它们在27小时14分钟后获胜，期间死亡605次。这只是一次观测到的通关，并不能证明可以稳定复现。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.68,
+      "end": 101.66,
+      "en": "The first main idea is a repeated coding loop. Each agent wrote a JavaScript program to control its own player. Mineflayer executed actions such as walking, mining, crafting, or attacking, then returned text about position, health, inventory, surroundings, results, or errors. The agent used that feedback to write another program. In effect, the agents built and revised their own action plans as the game unfolded, rather than following a fixed script.",
+      "zh": "第一个核心思路是反复编写代码的循环。每个智能体编写一个JavaScript程序来控制自己的玩家角色。Mineflayer执行行走、挖矿、合成或攻击等动作，然后返回关于位置、生命值、物品栏、周围环境、结果或错误的文本信息。智能体利用这些反馈来编写下一个程序。实际上，智能体是在游戏推进过程中自行构建和修改行动计划的，而不是遵循固定的脚本。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 102.6,
+      "end": 106.52,
+      "en": "Quick question: did the agents see the game through images, like a human player?",
+      "zh": "快速问一下：这些智能体是通过图像来看游戏的，就像人类玩家那样吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 106.52,
+      "end": 136.62,
+      "en": "No. The interface provided structured game information and pathfinding, not pixels, a keyboard, or a mouse. The researchers supplied the Minecraft server and Mineflayer environment; the agents still chose what to do and in what order. That distinction is important: the agents had a powerful, game-specific interface, and Gemini four Argon already had Minecraft and Mineflayer knowledge. The result is about this instrumented setup, not human-like visual perception.",
+      "zh": "不是。接口提供的是结构化的游戏信息和寻路功能，不是像素画面，也不是键盘鼠标。研究人员提供了Minecraft服务器和Mineflayer环境；智能体仍然自己决定做什么、按什么顺序做。这个区别很重要：智能体拥有一个强大的、针对特定游戏的接口，而Gemini 4 Argon本身已经具备Minecraft和Mineflayer的知识。这个结果针对的是这套经过专门配置的环境，而不是类人的视觉感知。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 137.78,
+      "end": 167.92,
+      "en": "The second idea is that coordination emerged from a shared goal, not assigned job descriptions. The agents chose roles for themselves and exchanged information through chat and shared notes. For example, after auratian drowned while carrying 12 Eyes of Ender, teammates told bulicame where the items were and when they would disappear. Bulicame recovered them. That episode shows how communication helped the team respond to a setback, but it does not prove that sharing caused the overall victory.",
+      "zh": "第二个要点是，协作源于共同目标，而非事先分配的角色说明。智能体自行选择角色，并通过聊天和共享笔记交换信息。例如，auratian在携带12个末影之眼时溺水后，队友告诉bulicame物品在哪里、何时会消失。bulicame把它们找了回来。这一事件说明沟通帮助团队应对了挫折，但并不能证明共享信息促成了最终的胜利。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 168.8,
+      "end": 198.3,
+      "en": "The third idea is a long sequence of individual and collective milestones. One agent opened the Nether route; later, the team gathered resources, found the stronghold, and entered the End. The timeline records a portal at 1 hour and 42 minutes, the stronghold at 13 hours and 17 minutes, and entry to the End 16 minutes later. These are milestones in a single run, not evidence that the method was fast or efficient compared with another system.",
+      "zh": "第三个观点是一长串个人和集体里程碑。一个智能体打开了通往下界的路线；之后，团队收集资源、找到要塞并进入末地。时间线记录显示，传送门出现在1小时42分钟，要塞出现在13小时17分钟，16分钟后进入末地。这些只是单次运行中的里程碑，并不能证明该方法相比其他系统更快或更高效。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 199.24,
+      "end": 202.1,
+      "en": "Can you clarify what the agents actually contributed to the dragon fight?",
+      "zh": "你能具体说说，智能体在打龙这件事上到底贡献了什么吗？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 203.52,
+      "end": 229.16,
+      "en": "A critical insight was identifying why repeated attacks were not finishing the fight: the End crystals heal the dragon. About 21 hours into the run, auratian worked out a way to reach them with dirt pillars, climb beside each crystal, punch it, and dig the dirt back down. The team destroyed all ten over the following hours. This was a strategy developed during the run, rather than a route supplied by researchers.",
+      "zh": "一个关键发现是弄清了为什么反复攻击却始终打不完：末影水晶会治疗末影龙。在跑了大约21小时后，auratian想出了办法，用泥土柱子够到水晶，爬到每颗水晶旁边，把它打掉，再把泥土挖回去。团队在接下来的几个小时里摧毁了全部十颗水晶。这是跑的过程中发展出来的策略，而不是研究人员提供的路线。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 230.38,
+      "end": 234.18,
+      "en": "So the health plot proves the crystals were the only reason the dragon stayed healthy?",
+      "zh": "那么生命值曲线就能证明水晶是龙保持健康的唯一原因吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 234.98,
+      "end": 266.42,
+      "en": "It shows a sequence, not a controlled causal test. In the agents’ program readings, the dragon’s health was never below 198.5 before the last crystal fell at 26 hours, 34 minutes, and 55 seconds. Afterward, recorded readings fell toward zero, and the game registered “Free the End” at 27 hours, 14 minutes, and 12 seconds. The final blow came from bulicame. The measurements were intermittent, not continuous monitoring.",
+      "zh": "这展示的是一个时序过程，而不是受控的因果检验。在智能体的程序读数中，最后一块水晶在26小时34分55秒被击落之前，龙的生命值从未低于198.5。此后，记录的读数一路降到接近零，游戏在27小时14分12秒登记了“解放末地”。最后一击来自bulicame。这些测量是间歇性的，并非持续监控。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 267.56,
+      "end": 298.16,
+      "en": "For real-world relevance, the authors connect sustained coding and coordination to software engineering and enterprise tasks. That is motivation, not an application tested by this Minecraft experiment. The useful technical lesson is narrower: a coding agent can receive structured feedback, revise programs, and carry work through dependent subtasks in a single environment. Whether this approach transfers to software projects or other complex settings needs separate evaluation.",
+      "zh": "就现实意义而言，作者把持续的编码和协调与软件工程及企业任务联系起来。这只是动机，并不是这个Minecraft实验所测试的应用。真正有用的技术启示更窄：一个编码智能体可以在单一环境中接收结构化反馈、修改程序，并让工作贯穿相互依赖的子任务。这种方法能否迁移到软件项目或其他复杂场景，还需要单独评估。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 299.2,
+      "end": 303.76,
+      "en": "How does this compare with Voyager, and does it establish that teams outperform single agents?",
+      "zh": "这和Voyager相比如何，它是否证明了多智能体团队比单智能体表现更好？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 304.88,
+      "end": 341.98,
+      "en": "Voyager is the closest methodological predecessor: it also used Mineflayer programs written by an L-L-M, alongside an automatic curriculum and a growing skill library. Its reported tasks concerned exploration, items, technology progression, and novel tasks, not a four-agent dragon completion. MineDojo had called a fresh-world dragon playthrough a “moonshot,” but that is benchmark context, not a prior successful run. Earlier community-reported wins also exist, so this paper’s claim is about its particular setup, not the first A-I dragon victory.",
+      "zh": "Voyager 是方法论上最接近的前身：它同样使用了由大语言模型编写的 Mineflayer 程序，并配合自动课程和不断增长的技能库。它报告的任务涉及探索、物品、科技进阶和新颖任务，而不是四个智能体完成屠龙。MineDojo 曾把在新世界中通关龙战称为“登月级挑战”，但那只是基准背景，并非此前有过成功运行。更早的社区报告胜利也存在，所以这篇论文的主张是关于其特定设置的，而不是首次 AI 屠龙胜利。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 342.92,
+      "end": 374.48,
+      "en": "The missing experiment is a controlled comparison: the same setup with one player, or with shared memory removed. The paper reports neither such ablation nor repeated runs, so it cannot show that multiple agents, self-chosen roles, or any particular coordination practice caused the win. It also cannot establish reliability. Its narrower contribution is an observed completion by 4 coding agents on Easy, in a randomly generated world, using Mineflayer’s structured information and pathfinding.",
+      "zh": "缺失的实验是受控对比：同样的设置下只用单个玩家，或者去掉共享记忆。论文既没有报告这样的消融实验，也没有重复运行，因此无法证明是多个智能体、自选角色或任何特定的协作方式带来了这次胜利。它也无法确立可靠性。它更窄的贡献在于：观察到4个编码智能体在简单难度、随机生成的世界中，利用Mineflayer的结构化信息和寻路完成了一次通关。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 376.1,
+      "end": 413.361,
+      "en": "The takeaway is to separate what the demonstration shows from what remains unknown. Four agents sustained one plan across many setbacks and tasks, wrote 2,783 programs, and reached the Ender Dragon in a single run. That is evidence of what this particular team and interface accomplished—not of general game competence, repeatable success, or pixel-based play. For future work, controlled comparisons and repeated trials would test which parts of the arrangement matter. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "zh": "关键在于把演示所展示的内容与仍然未知的部分区分开。四个智能体在经历许多挫折和任务后坚持了同一个计划，编写了2783个程序，并在一次运行中抵达了末影龙。这只能证明这支特定团队和这套接口所取得的成果，而不能证明通用的游戏能力、可重复的成功或基于像素的游戏操作。对于未来的工作，受控对比和重复试验将检验这套安排中哪些部分真正重要。感谢收听。如果你还有任何问题，可以询问我们的人工智能助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{faldor2026teamgemini4argon,\n      title={A team of Gemini 4 Argon agents beats Minecraft}, \n      author={Maxence Faldor and Satinder Singh and Roberta Raileanu},\n      year={2026},\n      eprint={2610.22319},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.22319}, \n}",
+  "topics": [
+    "Agents",
+    "Reasoning",
+    "Tool Use"
+  ],
+  "peaks": [
+    0.842,
+    0.736,
+    0.477,
+    0.573,
+    0.423,
+    0.26,
+    0.845,
+    0.527,
+    0.23,
+    0.325,
+    0.4,
+    0.204,
+    0.467,
+    0.374,
+    0.397,
+    0.344,
+    0.355,
+    0.348,
+    0.589,
+    0.765,
+    1.0,
+    0.589,
+    0.505,
+    0.492,
+    0.835,
+    0.577,
+    0.681,
+    0.435,
+    0.324,
+    0.963,
+    0.516,
+    0.461,
+    0.413,
+    0.392,
+    0.464,
+    0.687,
+    0.601,
+    0.479,
+    0.503,
+    0.26,
+    0.84,
+    0.948,
+    0.983,
+    0.677,
+    0.837,
+    0.755,
+    0.856,
+    0.55,
+    0.335,
+    0.416,
+    0.457,
+    0.2,
+    0.56,
+    0.716,
+    0.565,
+    0.294,
+    0.376,
+    0.259,
+    0.272,
+    0.599,
+    0.79,
+    0.987,
+    0.595,
+    0.64,
+    0.536,
+    0.539,
+    0.738,
+    0.268,
+    0.321,
+    0.233,
+    0.311,
+    0.22
+  ],
+  "published": "2026-10-15",
+  "views": 338,
+  "license": "CC BY"
+}

@@ -1,0 +1,151 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 453.041,
+  "word_match_rate": 0.9203,
+  "line_count": 20,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Deep Reinforcement Learning and Language Models, today’s lecture is on Rufus-Air. The field is moving from showing that reinforcement learning can improve open base models toward documenting how to build useful post-trained systems. Open-Reasoner-Zero explores scaling reinforcement learning from base models, while Tülu 3 established an important precedent for sharing post-training resources. Rufus-Air focuses on a practical, connected training recipe. Yes, Noah, I see your hand.",
+      "start": 0.0,
+      "end": 30.82
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the starting weights are public, what practical gap does this paper address?",
+      "start": 31.84,
+      "end": 36.54
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Public weights tell a team where to begin, but not which data, training stages, rewards, or infrastructure choices will produce a capable model. Rufus-Air addresses that gap by documenting one model passing through 8 successive training stages, with each stage starting from the checkpoint produced by the previous one. The authors report broad gains over the vendor’s post-trained release, with an exception, but present the work as an inspectable engineering recipe rather than a new reinforcement-learning algorithm.",
+      "start": 37.6,
+      "end": 67.64
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The sequence begins with supervised fine-tuning, or S-F-T, on example responses. It then uses reinforcement learning for reasoning, coding, and instruction following, followed by general-agent, coding-agent, and search-agent training. The final stage is R-L-H-F: reinforcement learning against a learned preference reward model. This is a chain, not 8 independent experiments, so later stages inherit the model and changes produced earlier.",
+      "start": 68.72,
+      "end": 94.9
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: why move from checkable rewards toward softer judgments?",
+      "start": 95.8,
+      "end": 99.8
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The authors’ organizing idea is to establish broad capabilities and reliable formats, then use rewards that are comparatively direct to verify, such as whether code passes tests. Later stages add tool use and more open-ended objectives. The ordering is not simply a strict ranking by reward type: instruction-following training uses an L-L-M judge, yet comes before agent training. The authors argue instruction following is closer to existing model behavior and leaves less room for reward hacking.",
+      "start": 100.94,
+      "end": 131.04
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The base is G-L-M four point five Air Base, a public mixture-of-experts model labeled 106 billion total and 12 billion active parameters. Tülu 3 means Rufus-Air should not be described as the first open post-training recipe; Tülu 3 already shared models, data, code, infrastructure, and evaluation resources. Rufus-Air extends that line with a detailed account of an 8-stage chain on a public mixture-of-experts base, including specialized agents and the engineering needed to run them.",
+      "start": 131.04,
+      "end": 163.84
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the training keeps examples useful as the model improves?",
+      "start": 164.34,
+      "end": 168.48
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "In reasoning training, the authors first use a teacher to remove tasks with no successful completion. They then filter using the current policy’s observed success: prompts that are already too easy, or have no observed success, are excluded. During training, they retain groups whose rewards show some success but are not uniformly high. The authors interpret this as an automatic curriculum, because the retained tasks can shift as the policy improves; it is a practical design choice, not proof that filtering caused the overall gains.",
+      "start": 169.62,
+      "end": 200.02
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Rewards also vary by task. In coding reinforcement learning, generated Python is run against tests and receives a pass-or-fail signal. For instruction following, code can check format or required words, while a judge can evaluate a preference that depends on earlier conversation turns. A response earns positive reward only when it meets all required criteria. The authors exclude optional desirable properties, reporting that including them led to longer, more redundant responses in their setup.",
+      "start": 201.02,
+      "end": 232.32
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does that instruction-following stage show a measurable change, rather than just a reward trend?",
+      "start": 233.24,
+      "end": 238.34
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Yes. On Multi-challenge, a benchmark of multi-turn conversations testing instruction following, context use, and in-context reasoning, the score rises from 31.1 before instruction-following training to 55.8 after it: a 24.7-point gain. The score is pass at one, meaning the share of tasks solved in one sampled attempt, not a human preference win rate. It is a useful before-and-after comparison, but it does not isolate the rubric, filtering, or stage order as the cause.",
+      "start": 239.08,
+      "end": 270.72
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The training plots add context: reward and the in-loop IFBench score rise overall, while average response length falls from about 5,400 to 3,600 tokens and then stays near that level. That is response length per sample, not evidence of fewer attempts, shorter training time, or lower total compute. The authors report that adding optional rubric criteria produced length bias, but this observation comes from their training experience and does not establish a universal rule for reward design.",
+      "start": 271.68,
+      "end": 302.96
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we interpret the final comparisons when not every model used the same evaluation setup?",
+      "start": 303.84,
+      "end": 308.86
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "In the authors’ harness, Rufus-Air leads the official G-L-M four point five Air release on every reported benchmark except Arena-Hard version 2 Creative Writing. It is not uniformly ahead of other similarly sized models: the paper notes exceptions against Nemotron-3-Super, including Creative Writing and Tau2-Airline. Six additional model columns are developer-reported reference results, not same-harness tests. Also, most table scores are pass-at-one results, while the Arena-Hard rows report win rates, so comparisons require attention to the metric and setup.",
+      "start": 309.78,
+      "end": 344.24
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What limits the claim that this particular sequence is the recipe to follow?",
+      "start": 345.32,
+      "end": 349.18
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The paper does not establish that the 8-stage order is optimal or that each stage caused later benchmark changes. The authors say the order reflects previous experiments and compute limits, and no single benchmark suite was tracked at every stage. Coding-agent training also stopped before convergence. Because each stage updates the same model, the final scores reflect a cumulative process; this report is informative about what the team did, not a controlled comparison of every design choice.",
+      "start": 350.12,
+      "end": 378.64
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That distinction connects Rufus-Air to a broader shift in open-model research. Work such as Open-Reasoner-Zero investigates reinforcement learning directly on base models, while Tülu 3 emphasizes a broad set of reusable post-training resources. Rufus-Air’s contribution is a detailed, staged account that includes reasoning, tool-using agents, reward choices, and operational lessons. A useful next step for the field would be controlled comparisons of stage order and reward design, alongside continued publication of practical training details.",
+      "start": 379.6,
+      "end": 413.06
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "So the main takeaway is a documented process, not a claim that every team should copy the sequence unchanged?",
+      "start": 414.18,
+      "end": 419.94
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Exactly. Rufus-Air offers practitioners a traceable account of what was trained, how reward signals changed, and what stagewise measurements followed. Its results support taking the recipe seriously, while leaving open which parts generalize and which depend on this model and setup. The memorable takeaway is that open weights are only a starting point; progress also depends on making the decisions between checkpoints visible and testable. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 420.98,
+      "end": 453.041
+    }
+  ]
+}
