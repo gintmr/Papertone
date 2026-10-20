@@ -1,0 +1,172 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 490.657,
+  "word_match_rate": 0.9347,
+  "line_count": 23,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Multi-Agent Systems for Software Engineering, today’s lecture is on “OpenCollab: A Multi-Agent Coding Framework with Programmable Collaboration and Controllable Runtime.” Work such as ChatDev and MaintainCoder reflects a growing interest in specialized agents working together on software. This paper, from researchers at Shanghai Jiao Tong University and other institutions, asks a more basic question: when a system claims its agents collaborate, do they actually do so—and can we measure the effect?",
+      "start": 0.0,
+      "end": 37.56
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "text": "The field is moving from demonstrations of agents completing coding tasks toward careful evaluation of how they work, what resources they use, and whether their organizational structure matters. OpenCollab challenges the habit of comparing entire agent systems as if their differences came only from collaboration. Yes, Noah?",
+      "start": 38.54,
+      "end": 59.12
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does the paper mean by the “illusion of collaboration”?",
+      "start": 60.16,
+      "end": 63.78
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "It means a system may declare several roles, such as coordinator, coder, and reviewer, but the coordinator might do nearly all the work. Teammates may receive a message yet never get a turn to act. In that case, the system looks collaborative on paper, but the declared organization was not realized. OpenCollab makes this gap central to evaluation, rather than assuming that multiple configured agents necessarily produce teamwork.",
+      "start": 64.86,
+      "end": 91.88
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the paper is partly about measuring behavior, not just whether the code passes tests?",
+      "start": 92.84,
+      "end": 97.4
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. Its main contribution is a framework that separates organizational design from the machinery that runs agents. A shared runtime handles model calls, tools, budgets, context, and termination. Above that, controllers specify how agents interact. Because different experimental setups use the same underlying runtime, researchers can make a more controlled comparison between one agent, model-directed teamwork, and a scripted workflow.",
+      "start": 97.4,
+      "end": 128.42
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify how those three setups differ in practice?",
+      "start": 129.44,
+      "end": 132.32
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "In Single, one agent handles the task. In Team, several roles and their communication links are declared, but the model decides whether and when to delegate. In Workflow, Python code sets the order of calls, handoffs, and stopping conditions. Team therefore tests whether a model will collaborate; Workflow tests what happens when a collaboration pattern is reliably delivered. That distinction helps separate a design’s potential from an agent’s willingness to follow it.",
+      "start": 133.42,
+      "end": 164.46
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Quick question: how does the runtime keep the comparison controlled?",
+      "start": 164.76,
+      "end": 168.14
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Before a model call, the runtime checks whether the role has enough budget for the estimated cost. It also applies step limits, manages context compaction, runs tools, and records why a session ends. Each role has specified tools and communication permissions; unauthorized actions are refused and logged. Team members work in separate Git worktrees, while the entry role’s workspace is ultimately graded. That setup makes both resource use and the submitted patch easier to trace.",
+      "start": 169.04,
+      "end": 199.64
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "What lets researchers tell which agent actually did the work?",
+      "start": 200.58,
+      "end": 203.6
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "OpenCollab records an ordered event stream rather than relying only on conversational transcripts. Each event identifies the run, role, time, step, event type, and relevant details. The records cover model calls, tool actions, completion, termination, refused spawning, worktree changes, and context compaction. Researchers can reconstruct who acted, what each role consumed, and which patch reached evaluation. This is useful in practice: a team’s performance can be audited instead of inferred from its final answer.",
+      "start": 205.34,
+      "end": 242.64
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "And what is Adherence measuring?",
+      "start": 243.64,
+      "end": 244.88
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Adherence checks whether the declared organization was actually followed across six areas: participation, delegation, role boundaries, budget sharing, information flow, and context policy. A run counts as fully adherent only if every applicable area passes. For example, if a required teammate never produces model output, the run is non-adherent even if another agent consulted it. Unverifiable runs are conservatively counted as non-adherent, though the paper also considers alternative treatments in sensitivity analyses.",
+      "start": 246.48,
+      "end": 280.22
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "Does high Adherence automatically show that teamwork improved the result?",
+      "start": 281.32,
+      "end": 284.5
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "No. Adherence tells us whether the intended collaboration occurred; it does not, by itself, establish that collaboration caused an improvement. In the reference Team setup, Adherence was 47.2%. It rose to 91.7% with mandatory collaboration instructions and also reached 91.7% with a ring communication topology. Restricting editing tools or increasing role budgets raised it as well. These changes show that apparently small design choices can determine whether teammates participate at all.",
+      "start": 285.52,
+      "end": 320.0
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should we interpret the benchmark results alongside those adherence findings?",
+      "start": 320.66,
+      "end": 324.06
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "OpenCollab’s scripted Duo workflow achieved the highest reported Pass at one on the three benchmark suites: 64.25% on S-W-E-bench Pro, 83.15% on Terminal-Bench 2.1, and 69.91% on Deep S-W-E. In paired tests, Duo significantly outperformed the single-agent Base configuration on Deep S-W-E, but not on Terminal-Bench. Base used fewer tokens and cost less. So the results suggest a trade-off: reliable collaboration can help, but it consumes additional computation and does not win uniformly.",
+      "start": 326.08,
+      "end": 365.64
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "The paper also reports a C-A-C-E estimate; what assumption makes that interpretation uncertain?",
+      "start": 366.72,
+      "end": 372.96
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "The paper uses a Wald-ratio-style estimate called C-A-C-E, dividing the assignment-level performance difference by Adherence. But interpreting that ratio as a complier effect requires a mean-exclusion assumption: non-adherent Team runs must have the same average outcome as Single runs. That assumption is not guaranteed. On S-W-E-bench Pro, non-adherent runs accounted for most of the positive difference, while adherent runs performed worse than Single in that sample. The authors therefore caution against treating the ratio as a causal result without examining the assumption.",
+      "start": 373.86,
+      "end": 410.72
+    },
+    {
+      "i": 20,
+      "speaker": "Noah",
+      "text": "How does this connect to earlier multi-agent coding work such as ChatDev?",
+      "start": 410.72,
+      "end": 414.82
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "ChatDev helped establish the idea of specialized agents communicating across software-development stages. OpenCollab shifts attention toward whether such roles actually act, and whether comparisons hold runtime conditions constant. It also warns against filtering results to only adherent runs, since difficult tasks may be more likely to trigger—or disrupt—collaboration. Important limitations remain: adherence experiments use relatively small samples, only a few model variants are tested, and agents do not work in parallel. The framework makes these questions measurable, but does not settle them.",
+      "start": 416.78,
+      "end": 455.96
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "The broader takeaway is methodological: claims about multi-agent systems should report not only whether tasks succeeded, but also whether the proposed organization was delivered and what resources it consumed. OpenCollab provides shared runtime controls, inspectable traces, and an explicit adherence measure to support that kind of evaluation. Its results suggest scripted teamwork can help on some benchmarks, while model-directed teamwork may fail to materialize. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 456.58,
+      "end": 490.657
+    }
+  ]
+}

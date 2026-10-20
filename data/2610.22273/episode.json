@@ -1,0 +1,273 @@
+{
+  "id": "2610.22273",
+  "title": "Librarian Agents: Training LLMs to Curate Long-Context Workspaces that Anticipate Future Queries",
+  "authors": [
+    "Anikait Singh",
+    "Teresa Zhang",
+    "Yoonho Lee",
+    "Roshen Sanjay Nair",
+    "Aviral Kumar",
+    "Chelsea Finn"
+  ],
+  "abstract": "Reasoning over long document contexts remains a challenge for large language models (LLMs). Standard retrieval methods are inherently reactive, bottlenecking agents with complex, cross-document reasoning at inference time, while precomputed structures like knowledge graphs often fall short because they rely on rigid heuristics. Instead, can we allow agents to perform anticipatory directed curation: learning to proactively reorganize unstructured corpora prior to inference to efficiently serve diverse future queries. We build on a key asymmetry in modern agentic harnesses (e.g., Claude Code): while LLM agents are adept at navigating existing filesystems to solve an immediate task, they are rarely trained to construct reusable workspaces for future use. To instantiate this capability, we introduce Librarian Agents, a framework in which a builder agent transforms raw documents into a hierarchical filesystem of synthetic files and reference links, which forms a workspace tailored for a downstream answering agent. We formulate workspace construction as a Markov decision process and optimize the builder policy via reinforcement learning to directly maximize downstream answering accuracy. Empirically, Librarian Agents outperforms the strongest retrieval and precomputation baselines by 33 percentage points on BrowseComp-Plus, amortizes upfront construction costs across repeated queries, and generalizes zero-shot to unseen domains on BRIGHT with a 31-point average accuracy improvement.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.22273",
+    "arxiv": "https://arxiv.org/abs/2610.22273"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a14264-c468-7217-b331-5ac19bdee73c/podcast.mp3",
+  "duration": 462.523,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 39.88,
+      "en": "In our hypothetical course, Reinforcement Learning for Language-Model Agents, today's lecture is on “Librarian Agents: Training LLMs to Curate Long-Context Workspaces that Anticipate Future Queries.” Recent work such as “ZeroSearch: Incentivize the Search Capability of LLMs without Searching” and “SkillOS: Learning Skill Curation for Self-Evolving Agents” reflects a move toward training agents to search or organize reusable information. Researchers at Stanford, alongside a coauthor at Carnegie Mellon, ask what changes when a corpus is prepared before questions arrive. Yes, Noah?",
+      "zh": "在我们假想的课程“语言模型智能体的强化学习”中，今天的讲座主题是“图书管理员智能体：训练大语言模型整理长上下文工作区，以预判未来的查询”。近期的一些工作，比如《ZeroSearch：无需搜索即可激励大语言模型的搜索能力》和《SkillOS：为自我进化智能体学习技能整理》，反映出一种趋势，即训练智能体去搜索或组织可复用的信息。斯坦福的研究人员与卡内基梅隆的一位合著者一起提出疑问：如果在问题到来之前就准备好语料库，会带来哪些变化。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 41.0,
+      "end": 45.88,
+      "en": "Hi Professor, does this mean the system builds a search index before it knows what anyone will ask?",
+      "zh": "教授您好，这是否意味着系统在还不知道任何人会问什么之前，就先建好了一个搜索索引？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 47.02,
+      "end": 75.48,
+      "en": "That’s a useful starting point, but the workspace is more than an index. A builder agent turns raw documents into a hierarchical filesystem of synthesized files, folders, summaries, and links back to sources. Later, a separate, frozen answering agent uses that workspace to answer questions. The builder does not see the future evaluation questions, so it must organize material for a range of possible needs rather than optimize for one known query.",
+      "zh": "这是个有用的起点，但工作区不只是一个索引。构建智能体会把原始文档转换成一个分层文件系统，里面包含经过综合整理的文件、文件夹、摘要，以及指回来源的链接。之后，一个独立的、冻结的应答智能体会利用这个工作区来回答问题。构建者看不到未来的评估问题，因此它必须针对一系列可能的需求来组织材料，而不是针对某个已知查询做优化。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 75.48,
+      "end": 80.38,
+      "en": "Quick question: why not just use a fixed hierarchy or knowledge graph?",
+      "zh": "快速问一下：为什么不直接用固定的层级结构或知识图谱呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 81.24,
+      "end": 113.64,
+      "en": "The authors argue that fixed structures can encode assumptions about what relationships matter. A hierarchy designed around one schema may make the wrong abstractions easy to find and others hard to represent. Instead, the builder learns which artifacts and groupings help downstream answering. It can create files, merge related files into higher-level summaries, delete unhelpful synthetic files, or stop. Raw documents remain available, so the system does not have to trust summaries as complete.",
+      "zh": "作者认为，固定结构会把你对哪些关系重要的假设固化进去。围绕某一种模式设计的层级结构，可能让错误的抽象很容易被找到，而其他抽象却很难表示。相反，构建器会学习哪些产物和分组有助于下游的问答。它可以创建文件、把相关文件合并成更高层的摘要、删除没用的合成文件，或者停下来。原始文档仍然可用，所以系统不必把摘要当作完整信息来信任。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 114.68,
+      "end": 119.7,
+      "en": "So the main contribution is learning how to organize documents, not just writing better summaries?",
+      "zh": "所以主要贡献是学会如何组织文档，而不只是写出更好的摘要？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 120.74,
+      "end": 147.92,
+      "en": "Exactly. The paper treats corpus curation as a trainable behavior and judges it by whether another agent can answer questions more accurately. That separates the builder’s job from the answerer’s job. Provenance links connect synthetic files to their sources, and the answering agent is instructed to consult raw documents when summaries leave out needed details. The result is a reusable workspace with both synthesized navigation and a path back to evidence.",
+      "zh": "正是如此。这篇论文把语料整理当作一种可训练的行为，评判标准是另一个智能体能否更准确地回答问题。这就把构建者的工作和回答者的工作分开了。溯源链接把合成文件与它们的来源连起来，回答智能体被指示在摘要遗漏必要细节时去查阅原始文档。最终得到的是一个可复用的工作区，既有合成的导航，也有回到证据的路径。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 148.92,
+      "end": 181.3,
+      "en": "The builder’s state is the current filesystem, and its edits are actions in a finite-horizon reinforcement-learning problem. In the general formulation, the objective accounts for downstream answer accuracy along with costs such as construction effort, file reads, and answer-time tokens. In practice, the main training run sets explicit cost and navigation penalties to zero. That distinction matters: the reported results show improved answerability, but not that the builder learned to minimize construction cost.",
+      "zh": "构建器的状态是当前的文件系统，它的编辑操作是有限时域强化学习问题中的动作。在一般形式中，目标函数会考虑下游答案准确率以及构建工作量、文件读取和回答时token消耗等成本。在实践中，主训练运行将显式成本和导航惩罚设为零。这一区别很重要：报告的结果显示可回答性有所提高，但并未表明构建器学会了最小化构建成本。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 182.08,
+      "end": 186.66,
+      "en": "Can you clarify how the system gets a learning signal if future questions are hidden from the builder?",
+      "zh": "如果未来的问题是构建器看不到的，那系统怎么获得学习信号呢？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 187.62,
+      "end": 218.88,
+      "en": "The training process uses sampled probe queries to estimate whether the current workspace supports answering, but those queries are hidden from the builder itself. The system checks answerability every 8 builder turns, up to 4 times in a trajectory, and also provides a terminal reward for answer correctness. The policy is optimized with G-R-P-O. Dense feedback from edits helps training, while the paper explains that, without discounting, those edit rewards add up to the same overall objective as a final-workspace reward.",
+      "zh": "训练过程用采样得到的探测查询来估计当前工作区是否支持回答，但这些查询对构建器本身是隐藏的。系统每8个构建器轮次检查一次可回答性，在一条轨迹中最多检查4次，并且还会为答案正确性提供终端奖励。策略用G-R-P-O进行优化。来自编辑的密集反馈有助于训练，而论文解释说，如果不做折扣，这些编辑奖励累加起来，与最终工作区奖励所对应的总体目标是相同的。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 219.9,
+      "end": 222.56,
+      "en": "How does it compare with retrieval systems on the main benchmark?",
+      "zh": "在主要基准上，它和检索系统相比表现如何？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 223.58,
+      "end": 259.94,
+      "en": "On BrowseComp-Plus, the trained builder reaches reported accuracy of 0.75 with a quen three point five, four-billion answering model, and 0.77 with Gemini 3.1 Flash Lite. Strong embedding and reranking baselines score 0.42 and 0.44 with the first model, and 0.30 and 0.42 with the second. The paper summarizes the overall gain over its strongest retrieval and precomputation baselines as 33 percentage points, though the exact difference varies by model and comparison.",
+      "zh": "在BrowseComp-Plus上，训练后的构建器搭配一个40亿参数的问答模型时，报告准确率达到0.75；搭配Gemini 3.1 Flash Lite时达到0.77。而强嵌入和重排序基线在第一个模型下分别得分0.42和0.44，在第二个模型下分别为0.30和0.42。论文将其相对于最强检索和预计算基线的整体提升总结为33个百分点，不过具体差值因模型和对比对象而异。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 261.02,
+      "end": 264.92,
+      "en": "Wait, if the workspace is bigger, does it actually save inference cost?",
+      "zh": "等等，如果工作区更大，那它真的能节省推理成本吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 264.92,
+      "end": 307.52,
+      "en": "Not necessarily for each question. In a repeated-question evaluation, the trained workspace raises accuracy from 0.242 for the base builder to 0.637, but the answerer also reads more files and tokens: 26.9 files and 9,346 tokens per query, versus 2.72 files and 1,238 tokens. The authors estimate that, at 10 questions per corpus, the trained approach uses 33.8% fewer recorded tokens per expected correct answer. Their projected crossover is 31 questions, with a bootstrap interval from 18 to 54.",
+      "zh": "不一定对每个问题都如此。在重复问题的评估中，训练后的工作区把准确率从基础构建器的0.242提升到0.637，但回答器也会读取更多文件和token：每次查询26.9个文件和9346个token，而原来是2.72个文件和1238个token。作者估计，在每份语料10个问题的情况下，训练后的方法每得到一个预期正确答案所用的记录token少33.8%。他们预测的交叉点是31个问题，bootstrap区间为18到54。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 308.66,
+      "end": 312.06,
+      "en": "So that advantage depends on reusing the same corpus enough times?",
+      "zh": "所以这个优势取决于同一语料库被重复使用的次数足够多吗？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 313.0,
+      "end": 344.62,
+      "en": "Yes. Construction is an upfront expense, and the benefit depends on how often a workspace is reused. The paper also tests transfer on the Bright benchmark, with workspaces built for AOPS, Biology, and Stack Overflow. The trained builder averages 52% pass at one and about 67% pass at three across those domains, with particularly strong results on Stack Overflow. These findings support transfer across the tested settings, not a guarantee for every domain or future question distribution.",
+      "zh": "是的。构建是一项前期投入，收益取决于工作区被复用的频率。论文还在Bright基准上测试了迁移能力，为AOPS、生物学和Stack Overflow构建了工作区。训练后的构建器在这些领域平均一次通过率为52%，三次通过率约为67%，在Stack Overflow上表现尤为突出。这些发现支持在测试设置之间的迁移，但并不保证适用于所有领域或未来的问题分布。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 344.62,
+      "end": 349.8,
+      "en": "Could the summaries still mislead the answering agent if they omit a crucial detail?",
+      "zh": "如果摘要漏掉了关键细节，是否仍可能误导负责回答的智能体？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 350.68,
+      "end": 382.94,
+      "en": "That is a real limitation of any compressed representation. The system addresses it by preserving raw documents and linking synthetic files to their sources, so the answerer can inspect original evidence when a summary is insufficient. The workspace also grows substantially: on Bright, the trained builder creates an average of 53.4 active synthetic files, compared with 4.8 for the base builder. More structure can help navigation, but it also brings construction and maintenance questions that this evaluation does not settle.",
+      "zh": "这是任何压缩表示都存在的真实局限。系统通过保留原始文档、并将合成文件链接到其来源来应对这一问题，这样当摘要不够充分时，回答者可以查看原始证据。工作区也会显著增大：在 Bright 上，训练后的构建器平均创建 53.4 个活跃的合成文件，而基线构建器只有 4.8 个。更多的结构有助于导航，但也带来了构建和维护方面的问题，而本次评估并未解决这些问题。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 383.82,
+      "end": 416.82,
+      "en": "The broader shift is from asking only how an agent searches a corpus at query time to asking how it can prepare a corpus for many future searches. That complements agentic retrieval, including hierarchical interfaces such as A-RAG, while differing from skill-curation work such as SkillOS: here, the reusable resource is an organized external document collection. The paper’s evidence suggests learned curation can help a frozen answerer, but its cost trade-offs and changing-corpus behavior remain open research problems.",
+      "zh": "更广泛的转变在于，不再只问智能体在查询时如何搜索语料库，而是问它如何为未来的多次搜索准备好语料库。这与智能体式检索形成互补，包括A-RAG这类分层接口，同时又有别于SkillOS这类技能整理工作：在这里，可复用的资源是一个组织化的外部文档集合。论文的证据表明，学习式整理能帮助一个冻结的应答器，但其成本权衡和在语料变化下的行为仍是开放的研究问题。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 417.84,
+      "end": 422.16,
+      "en": "Would the next step be to update workspaces as documents and question patterns change?",
+      "zh": "下一步是不是要在文档和问题模式变化时更新工作区？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 423.04,
+      "end": 462.523,
+      "en": "That is one important direction, along with testing much larger collections and deciding when to bypass synthetic material and search raw sources directly. The study focuses on static corpora and benchmarks, while real deployments face updates, uneven reuse, and questions no summary anticipated. The central takeaway is that document organization can itself be learned and evaluated through downstream usefulness. A workspace is not a substitute for evidence; it is a reusable map that must remain connected to it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这是一个重要方向，同时还要测试更大规模的集合，并决定何时绕过合成材料、直接搜索原始来源。这项研究聚焦于静态语料和基准，而真实部署会面临更新、不均衡的复用，以及摘要未曾预料到的问题。核心结论是，文档组织本身可以通过下游效用被学习和评估。工作区不是证据的替代品，而是一张必须始终与证据保持连接的可复用地图。感谢收听。如果还有进一步的问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{singh2026librarianagentstrainingllms,\n      title={Librarian Agents: Training LLMs to Curate Long-Context Workspaces that Anticipate Future Queries}, \n      author={Anikait Singh and Teresa Zhang and Yoonho Lee and Roshen Sanjay Nair and Aviral Kumar and Chelsea Finn},\n      year={2026},\n      eprint={2610.22273},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.22273}, \n}",
+  "topics": [
+    "Agents",
+    "Data Curation",
+    "Reasoning"
+  ],
+  "peaks": [
+    0.74,
+    0.688,
+    0.577,
+    0.356,
+    0.458,
+    0.453,
+    0.573,
+    0.798,
+    0.735,
+    0.428,
+    0.621,
+    0.487,
+    0.699,
+    0.732,
+    0.603,
+    0.5,
+    0.415,
+    0.474,
+    0.612,
+    1.0,
+    0.686,
+    0.608,
+    0.588,
+    0.374,
+    0.243,
+    0.2,
+    0.28,
+    0.24,
+    0.642,
+    0.518,
+    0.369,
+    0.242,
+    0.335,
+    0.279,
+    0.745,
+    0.675,
+    0.679,
+    0.698,
+    0.755,
+    0.483,
+    0.526,
+    0.573,
+    0.738,
+    0.513,
+    0.522,
+    0.431,
+    0.466,
+    0.462,
+    0.795,
+    0.805,
+    0.704,
+    0.502,
+    0.44,
+    0.453,
+    0.631,
+    0.572,
+    0.485,
+    0.482,
+    0.493,
+    0.492,
+    0.64,
+    0.459,
+    0.523,
+    0.529,
+    0.391,
+    0.715,
+    0.508,
+    0.54,
+    0.531,
+    0.516,
+    0.481,
+    0.401
+  ],
+  "published": "2026-10-15",
+  "views": 305,
+  "license": "CC BY"
+}

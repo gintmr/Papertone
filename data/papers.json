@@ -15,8 +15,124 @@
       "cover": "cover.png",
       "path": "2610.calm",
       "published": "2026-10-17",
-      "views": 204,
+      "views": 243,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14833-f21f-7bc8-876b-52551292a6cc/podcast.mp3"
+    },
+    {
+      "id": "2610.22496",
+      "title": "Scaling Online Exploration for Robot Agents",
+      "authors": [
+        "Runhan Huang",
+        "Xiangcheng Zhang",
+        "Haoyu Chen",
+        "Yitong Li",
+        "Yen-Jen Wang",
+        "Bohan Lyu",
+        "Haotian Ye",
+        "Chuye Hong",
+        "Yixuan Wang",
+        "Chloe Su",
+        "Haoyu Xiong",
+        "Yangzhen Wu",
+        "Enze Xie",
+        "Travis Manderson",
+        "Stefano Ermon",
+        "Pieter Abbeel",
+        "Antonio Torralba",
+        "Dawn Song",
+        "Weirui Ye",
+        "Yilun Du"
+      ],
+      "duration": 454.660688,
+      "license": "CC BY",
+      "topics": [
+        "Robotics"
+      ],
+      "cover": "cover.png",
+      "path": "2610.22496",
+      "published": "2026-10-15",
+      "views": 282,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a151d7-9afe-7242-a158-31c4db524dae/podcast.mp3"
+    },
+    {
+      "id": "2610.22471",
+      "title": "Has GPT-6-Astra Achieved Embodied Intelligence?",
+      "authors": [
+        "SenseNova",
+        "Joint Research Team",
+        "Zhongang Cai",
+        "Ziang Cao",
+        "Tailai Chen",
+        "Han Chong Chua",
+        "Linjun Dai",
+        "Hanming Deng",
+        "Hokin Deng",
+        "Haiwen Diao",
+        "Chenjing Ding",
+        "Weichen Fan",
+        "Xiao Fu",
+        "Zerui Gong",
+        "Chenyang Gu",
+        "Zexin He",
+        "Zhi Hou",
+        "Bo Li",
+        "Qinyue Li",
+        "Quanzhou Li",
+        "Xiaowan Li",
+        "Zhichao Liao",
+        "Dahua Lin",
+        "Zilong Lin",
+        "Bo Liu",
+        "Chunxiao Liu",
+        "Pengfei Liu",
+        "Tianqi Liu",
+        "Ziwei Liu",
+        "Chen Change Loy",
+        "Lewei Lu",
+        "Jiapeng Luo",
+        "Yuexiao Ma",
+        "Liang Pan",
+        "Xingang Pan",
+        "Oscar Qian",
+        "Ziyi Shang",
+        "Yuyao Shao",
+        "Dawei Su",
+        "Dacheng Tao",
+        "Qingyi Tao",
+        "Quan Wang",
+        "Ruisi Wang",
+        "Xiaogang Wang",
+        "Ziyi Wang",
+        "Beichen Wen",
+        "Donghao Wu",
+        "Jiaxu Wu",
+        "Silei Wu",
+        "Xiaoming Wu",
+        "Zhonghua Wu",
+        "Hongcan Xiao",
+        "Weiye Xu",
+        "Atsushi Yamashita",
+        "Lei Yang",
+        "Zhe Yang",
+        "Baiqiao Yin",
+        "Wanqi Yin",
+        "Hanfei Zhao",
+        "Tianbo Zhong",
+        "Long Zhuo",
+        "Jing Zuo"
+      ],
+      "duration": 438.908875,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Few Shot Learning",
+        "Reasoning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.22471",
+      "published": "2026-10-15",
+      "views": 470,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a151d7-7edd-7325-a6fe-2cf0bf4e698d/podcast.mp3"
     },
     {
       "id": "2610.22364",
@@ -45,7 +161,7 @@
       "cover": "cover.png",
       "path": "2610.22364",
       "published": "2026-10-15",
-      "views": 408,
+      "views": 563,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14260-79a6-70d0-9522-fe46431364f9/podcast.mp3"
     },
     {
@@ -66,8 +182,32 @@
       "cover": "cover.png",
       "path": "2610.22319",
       "published": "2026-10-15",
-      "views": 338,
+      "views": 411,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1425f-f16a-7d68-89ab-e911b7074de7/podcast.mp3"
+    },
+    {
+      "id": "2610.22273",
+      "title": "Librarian Agents: Training LLMs to Curate Long-Context Workspaces that Anticipate Future Queries",
+      "authors": [
+        "Anikait Singh",
+        "Teresa Zhang",
+        "Yoonho Lee",
+        "Roshen Sanjay Nair",
+        "Aviral Kumar",
+        "Chelsea Finn"
+      ],
+      "duration": 462.523438,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Data Curation",
+        "Reasoning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.22273",
+      "published": "2026-10-15",
+      "views": 305,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a14264-c468-7217-b331-5ac19bdee73c/podcast.mp3"
     },
     {
       "id": "2610.22194",
@@ -104,7 +244,7 @@
       "cover": "cover.png",
       "path": "2610.22194",
       "published": "2026-10-15",
-      "views": 310,
+      "views": 360,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14263-f66b-7c73-8bb5-44f97e46a9aa/podcast.mp3"
     },
     {
@@ -129,8 +269,34 @@
       "cover": "cover.png",
       "path": "2610.22192",
       "published": "2026-10-15",
-      "views": 506,
+      "views": 661,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14263-f829-73b6-baf6-d55bfe59e987/podcast.mp3"
+    },
+    {
+      "id": "2610.21306",
+      "title": "VLA-$Δ$: Learning Physical State Transition for Vision-Language-Action Models",
+      "authors": [
+        "Qi Lu",
+        "Jiarun Li",
+        "Ce Zhang",
+        "Miao Pan",
+        "Yi Pan",
+        "Xu Wang",
+        "Wenqi Zhang",
+        "Xuhong Zhang"
+      ],
+      "duration": 480.574188,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Imitation Learning",
+        "Multimodal Learning",
+        "Representation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.21306",
+      "published": "2026-10-15",
+      "views": 370,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a14259-9b8d-74ed-a2bd-1f3027032a3b/podcast.mp3"
     },
     {
       "id": "2610.20442",
@@ -161,7 +327,7 @@
       "cover": "cover.png",
       "path": "2610.20442",
       "published": "2026-10-14",
-      "views": 737,
+      "views": 845,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d67-574b-7834-8dcc-1807c9a7efa5/podcast.mp3"
     },
     {
@@ -184,7 +350,7 @@
       "cover": "cover.png",
       "path": "2610.20331",
       "published": "2026-10-14",
-      "views": 1480,
+      "views": 1652,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d81-0715-7a25-936a-43666043a92c/podcast.mp3"
     },
     {
@@ -261,7 +427,7 @@
       "cover": "cover.png",
       "path": "2610.19005",
       "published": "2026-10-13",
-      "views": 267,
+      "views": 318,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d3c-1871-749c-8996-d8a9550257ea/podcast.mp3"
     },
     {
@@ -284,7 +450,7 @@
       "cover": "cover.png",
       "path": "2610.18933",
       "published": "2026-10-13",
-      "views": 346,
+      "views": 390,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d5c-76f3-7b49-9f32-e58b52a48e60/podcast.mp3"
     },
     {
@@ -310,7 +476,7 @@
       "cover": "cover.png",
       "path": "2610.18861",
       "published": "2026-10-13",
-      "views": 2496,
+      "views": 2856,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a138dc-8d7d-7d16-90ce-58dfef8fb294/podcast.mp3"
     },
     {
@@ -330,7 +496,7 @@
       "cover": "cover.png",
       "path": "2610.18773",
       "published": "2026-10-13",
-      "views": 344,
+      "views": 373,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a138e3-84c8-7038-ac6c-7eb20ec253e6/podcast.mp3"
     },
     {
@@ -366,7 +532,7 @@
       "cover": "cover.png",
       "path": "2610.18615",
       "published": "2026-10-13",
-      "views": 1264,
+      "views": 1373,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a138a1-6e1e-775b-8d05-b895075d778c/podcast.mp3"
     },
     {
@@ -392,7 +558,7 @@
       "cover": "cover.png",
       "path": "2610.18141",
       "published": "2026-10-13",
-      "views": 278,
+      "views": 286,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13884-3300-780e-a613-4a030ca31870/podcast.mp3"
     },
     {
@@ -419,7 +585,7 @@
       "cover": "cover.png",
       "path": "2610.17895",
       "published": "2026-10-13",
-      "views": 876,
+      "views": 916,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13944-d7d3-74f0-9adf-abb22dc49545/podcast.mp3"
     },
     {
@@ -461,7 +627,7 @@
       "cover": "cover.png",
       "path": "2610.17184",
       "published": "2026-10-12",
-      "views": 793,
+      "views": 946,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1385c-3e3c-7c59-bde8-98af12912830/podcast.mp3"
     },
     {
@@ -487,7 +653,7 @@
       "cover": "cover.png",
       "path": "2610.15924",
       "published": "2026-10-11",
-      "views": 884,
+      "views": 904,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13823-f645-74f3-b30b-b16299a8c431/podcast.mp3"
     },
     {
@@ -509,7 +675,7 @@
       "cover": "cover.png",
       "path": "2610.15429",
       "published": "2026-10-11",
-      "views": 597,
+      "views": 686,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13842-9722-7fd8-95dc-6dc1d40d0c75/podcast.mp3"
     },
     {
@@ -535,7 +701,7 @@
       "cover": "cover.png",
       "path": "2610.openesm",
       "published": "2026-10-10",
-      "views": 197,
+      "views": 201,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1247c-3ab7-7c00-a9bf-425dbd0970c9/podcast.mp3"
     },
     {
@@ -564,7 +730,7 @@
       "cover": "cover.png",
       "path": "2610.14163",
       "published": "2026-10-09",
-      "views": 1743,
+      "views": 1817,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a137fe-0b97-7c61-8841-b04cbea41325/podcast.mp3"
     },
     {
@@ -590,7 +756,7 @@
       "cover": "cover.png",
       "path": "2610.13947",
       "published": "2026-10-09",
-      "views": 427,
+      "views": 435,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a12dc5-73e4-701a-a35d-726ebc352ee8/podcast.mp3"
     },
     {
@@ -618,7 +784,7 @@
       "cover": "cover.png",
       "path": "2610.13917",
       "published": "2026-10-09",
-      "views": 621,
+      "views": 638,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a12dfe-56d8-7266-932d-46126a9b0eaf/podcast.mp3"
     },
     {
@@ -643,7 +809,7 @@
       "cover": "cover.png",
       "path": "2610.13778",
       "published": "2026-10-09",
-      "views": 1525,
+      "views": 1533,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a12e10-968e-70e8-a32b-9bab8a4f34d8/podcast.mp3"
     },
     {
@@ -2668,6 +2834,39 @@
       "published": "2026-09-29",
       "views": 599,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f51b-4a29-74b1-8f67-e3bc0eb9317d/podcast.mp3"
+    },
+    {
+      "id": "2609.38345",
+      "title": "OpenCollab: A Multi-Agent Coding Framework with Programmable Collaboration and Controllable Runtime",
+      "authors": [
+        "Chun-Wah Hsu",
+        "Kai Gong",
+        "Yu Wu",
+        "Xianhe Chen",
+        "Mengyang Liu",
+        "Jie Li",
+        "Hanyu Li",
+        "Zhixuan Liu",
+        "Naisheng Tang",
+        "Jiaying Chi",
+        "Ziheng Fan",
+        "Xuning He",
+        "Xiaokang Yang",
+        "Xue Jiang",
+        "Yihong Dong"
+      ],
+      "duration": 490.657188,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Agents",
+        "Causal Inference",
+        "ML Systems"
+      ],
+      "cover": "cover.png",
+      "path": "2609.38345",
+      "published": "2026-09-29",
+      "views": 230,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0f51a-3102-711d-9e70-bc88471f895b/podcast.mp3"
     },
     {
       "id": "2609.38163",

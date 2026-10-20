@@ -1,0 +1,298 @@
+{
+  "id": "2609.38345",
+  "title": "OpenCollab: A Multi-Agent Coding Framework with Programmable Collaboration and Controllable Runtime",
+  "authors": [
+    "Chun-Wah Hsu",
+    "Kai Gong",
+    "Yu Wu",
+    "Xianhe Chen",
+    "Mengyang Liu",
+    "Jie Li",
+    "Hanyu Li",
+    "Zhixuan Liu",
+    "Naisheng Tang",
+    "Jiaying Chi",
+    "Ziheng Fan",
+    "Xuning He",
+    "Xiaokang Yang",
+    "Xue Jiang",
+    "Yihong Dong"
+  ],
+  "abstract": "Multi-agent coding systems are designed to tackle complex software engineering tasks through collaboration. However, existing evaluations typically assume configured organizations are followed faithfully, whereas reality differs. This behavioral gap, combined with differences in underlying system components, prevents clear attribution of observed gains. To this end, we introduce OpenCollab, a multi-agent coding framework that provides a unified infrastructure for programmable collaboration and controllable runtime. Specifically, OpenCollab unifies organization design, enforces experimental control on a shared runtime, and tracks execution through fine-grained event streams. On this basis, we define Adherence to quantify whether the declared organization is actually realized. Our experiments reveal that agents collaborate very differently across configurations: changing any single dimension shifts Adherence, from 47.2% to as high as 97.2%. Furthermore, extensive agentic coding benchmarks show that OpenCollab (Duo) establishes new SOTA performance compared to the mainstream harnesses such as Mini-SWE-agent, OpenHands, Codex CLI, and Claude Code, showing that a well-designed organization can outperform strong existing harnesses, while OpenCollab's single-agent configuration uses the fewest tokens across all evaluated suites. OpenCollab establishes a unified multi-agent infrastructure for easy programmable collaboration and controlled causal evaluation.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.38345",
+    "arxiv": "https://arxiv.org/abs/2609.38345"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f51a-3102-711d-9e70-bc88471f895b/podcast.mp3",
+  "duration": 490.657,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.56,
+      "en": "In a hypothetical graduate course called Multi-Agent Systems for Software Engineering, today’s lecture is on “OpenCollab: A Multi-Agent Coding Framework with Programmable Collaboration and Controllable Runtime.” Work such as ChatDev and MaintainCoder reflects a growing interest in specialized agents working together on software. This paper, from researchers at Shanghai Jiao Tong University and other institutions, asks a more basic question: when a system claims its agents collaborate, do they actually do so—and can we measure the effect?",
+      "zh": "在一门假设的研究生课程“软件工程中的多智能体系统”里，今天的课讲的是“OpenCollab：一个具有可编程协作和可控运行时的多智能体编程框架”。ChatDev和MaintainCoder这类工作反映出人们越来越关注让专门的智能体协同处理软件任务。这篇论文来自上海交通大学及其他机构的研究人员，它提出了一个更基本的问题：当一个系统声称它的智能体在协作时，它们真的在协作吗——我们能不能测量这种协作的效果？"
+    },
+    {
+      "i": 1,
+      "speaker": "John",
+      "start": 38.54,
+      "end": 59.12,
+      "en": "The field is moving from demonstrations of agents completing coding tasks toward careful evaluation of how they work, what resources they use, and whether their organizational structure matters. OpenCollab challenges the habit of comparing entire agent systems as if their differences came only from collaboration. Yes, Noah?",
+      "zh": "这个领域正在从展示智能体完成编码任务，转向细致评估它们如何工作、使用什么资源，以及它们的组织结构是否重要。OpenCollab挑战了一种习惯做法，即把整个智能体系统拿来比较，仿佛它们的差异只来自协作。好，Noah？"
+    },
+    {
+      "i": 2,
+      "speaker": "Noah",
+      "start": 60.16,
+      "end": 63.78,
+      "en": "Hi Professor, what does the paper mean by the “illusion of collaboration”?",
+      "zh": "教授您好，论文里说的“协作的假象”是什么意思？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 64.86,
+      "end": 91.88,
+      "en": "It means a system may declare several roles, such as coordinator, coder, and reviewer, but the coordinator might do nearly all the work. Teammates may receive a message yet never get a turn to act. In that case, the system looks collaborative on paper, but the declared organization was not realized. OpenCollab makes this gap central to evaluation, rather than assuming that multiple configured agents necessarily produce teamwork.",
+      "zh": "意思是，一个系统可能声明了好几个角色，比如协调者、编码者和审查者，但协调者可能几乎干了所有的活。队友可能收到了消息，却始终没轮到行动。这种情况下，系统在纸面上看起来是协作的，但声明的组织结构并没有真正实现。OpenCollab把这一差距作为评估的核心，而不是想当然地认为配置了多个智能体就一定会产生团队协作。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 92.84,
+      "end": 97.4,
+      "en": "So the paper is partly about measuring behavior, not just whether the code passes tests?",
+      "zh": "所以这篇论文有一部分是在衡量行为表现，而不只是看代码能不能通过测试？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 97.4,
+      "end": 128.42,
+      "en": "Exactly. Its main contribution is a framework that separates organizational design from the machinery that runs agents. A shared runtime handles model calls, tools, budgets, context, and termination. Above that, controllers specify how agents interact. Because different experimental setups use the same underlying runtime, researchers can make a more controlled comparison between one agent, model-directed teamwork, and a scripted workflow.",
+      "zh": "正是如此。这篇论文的主要贡献是提出了一个框架，把组织设计和运行智能体的机制分开。共享运行时负责处理模型调用、工具、预算、上下文和终止。在此之上，控制器规定智能体之间如何交互。由于不同的实验设置使用同一个底层运行时，研究人员可以在单个智能体、模型主导的团队协作和脚本化工作流之间做更可控的比较。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 129.44,
+      "end": 132.32,
+      "en": "Can you clarify how those three setups differ in practice?",
+      "zh": "你能具体说明一下这三种设置在实际操作中有什么不同吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 133.42,
+      "end": 164.46,
+      "en": "In Single, one agent handles the task. In Team, several roles and their communication links are declared, but the model decides whether and when to delegate. In Workflow, Python code sets the order of calls, handoffs, and stopping conditions. Team therefore tests whether a model will collaborate; Workflow tests what happens when a collaboration pattern is reliably delivered. That distinction helps separate a design’s potential from an agent’s willingness to follow it.",
+      "zh": "在Single模式下，一个智能体独自处理任务。在Team模式下，会声明多个角色及其通信链路，但由模型决定是否以及何时委派。在Workflow模式下，Python代码设定调用顺序、交接和停止条件。因此，Team测试的是模型是否会协作；Workflow测试的是当协作模式被可靠执行时会发生什么。这一区分有助于把设计的潜力与智能体遵循该设计的意愿区分开来。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 164.76,
+      "end": 168.14,
+      "en": "Quick question: how does the runtime keep the comparison controlled?",
+      "zh": "快速问一下：运行时是怎么保证比较是受控的？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 169.04,
+      "end": 199.64,
+      "en": "Before a model call, the runtime checks whether the role has enough budget for the estimated cost. It also applies step limits, manages context compaction, runs tools, and records why a session ends. Each role has specified tools and communication permissions; unauthorized actions are refused and logged. Team members work in separate Git worktrees, while the entry role’s workspace is ultimately graded. That setup makes both resource use and the submitted patch easier to trace.",
+      "zh": "在调用模型之前，运行时先检查该角色是否有足够的预算来支付预估成本。它还会施加步数限制、管理上下文压缩、运行工具，并记录会话结束的原因。每个角色都有指定的工具和通信权限；未经授权的操作会被拒绝并记录在案。团队成员在各自独立的 Git 工作树中工作，而入口角色的工作区最终会被评分。这样的设置让资源使用和提交的补丁都更容易追踪。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 200.58,
+      "end": 203.6,
+      "en": "What lets researchers tell which agent actually did the work?",
+      "zh": "是什么让研究者能分辨出究竟是哪个智能体实际完成了工作？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 205.34,
+      "end": 242.64,
+      "en": "OpenCollab records an ordered event stream rather than relying only on conversational transcripts. Each event identifies the run, role, time, step, event type, and relevant details. The records cover model calls, tool actions, completion, termination, refused spawning, worktree changes, and context compaction. Researchers can reconstruct who acted, what each role consumed, and which patch reached evaluation. This is useful in practice: a team’s performance can be audited instead of inferred from its final answer.",
+      "zh": "OpenCollab记录的是有序的事件流，而不是只依赖对话记录。每个事件都会标明运行、角色、时间、步骤、事件类型和相关细节。记录覆盖模型调用、工具操作、完成、终止、拒绝生成、工作树变更和上下文压缩。研究者可以重建谁做了什么、每个角色消耗了什么，以及哪个补丁进入了评估。这在实践中很有用：团队的表现可以被审计，而不是从最终答案去推断。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 243.64,
+      "end": 244.88,
+      "en": "And what is Adherence measuring?",
+      "zh": "那么，Adherence衡量的是什么？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 246.48,
+      "end": 280.22,
+      "en": "Adherence checks whether the declared organization was actually followed across six areas: participation, delegation, role boundaries, budget sharing, information flow, and context policy. A run counts as fully adherent only if every applicable area passes. For example, if a required teammate never produces model output, the run is non-adherent even if another agent consulted it. Unverifiable runs are conservatively counted as non-adherent, though the paper also considers alternative treatments in sensitivity analyses.",
+      "zh": "Adherence检查的是所声明的组织架构在六个方面是否真正得到了遵循：参与、委派、角色边界、预算共享、信息流和上下文策略。只有所有适用的方面都通过，一次运行才算完全符合。例如，如果某个必需的队友从未产出模型输出，那么即使另一个智能体咨询过它，这次运行也算不符合。无法验证的运行会被保守地计为不符合，不过论文在敏感性分析中也考虑了其他处理方式。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 281.32,
+      "end": 284.5,
+      "en": "Does high Adherence automatically show that teamwork improved the result?",
+      "zh": "高依从性是否就自动说明团队合作改善了结果？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 285.52,
+      "end": 320.0,
+      "en": "No. Adherence tells us whether the intended collaboration occurred; it does not, by itself, establish that collaboration caused an improvement. In the reference Team setup, Adherence was 47.2%. It rose to 91.7% with mandatory collaboration instructions and also reached 91.7% with a ring communication topology. Restricting editing tools or increasing role budgets raised it as well. These changes show that apparently small design choices can determine whether teammates participate at all.",
+      "zh": "不能。依从性只能告诉我们预期的协作是否发生，但它本身并不能证明协作带来了改进。在参考的团队设置中，依从性是47.2%。加入强制协作指令后升到91.7%，采用环形通信拓扑也达到91.7%。限制编辑工具或增加角色预算同样能提高依从性。这些变化说明，看似很小的设计选择，就能决定队友到底会不会参与。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 320.66,
+      "end": 324.06,
+      "en": "How should we interpret the benchmark results alongside those adherence findings?",
+      "zh": "我们应该如何结合这些遵循度发现来解读基准结果？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 326.08,
+      "end": 365.64,
+      "en": "OpenCollab’s scripted Duo workflow achieved the highest reported Pass at one on the three benchmark suites: 64.25% on S-W-E-bench Pro, 83.15% on Terminal-Bench 2.1, and 69.91% on Deep S-W-E. In paired tests, Duo significantly outperformed the single-agent Base configuration on Deep S-W-E, but not on Terminal-Bench. Base used fewer tokens and cost less. So the results suggest a trade-off: reliable collaboration can help, but it consumes additional computation and does not win uniformly.",
+      "zh": "OpenCollab脚本化的Duo工作流在三个基准套件中有一个取得了报告的最高Pass@1：S-W-E-bench Pro上64.25%，Terminal-Bench 2.1上83.15%，Deep S-W-E上69.91%。在配对测试中，Duo在Deep S-W-E上显著优于单智能体Base配置，但在Terminal-Bench上没有。Base使用的token更少、成本更低。所以结果表明存在一种权衡：可靠的协作能有帮助，但它消耗额外计算，而且并非在所有场景下都占优。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 366.72,
+      "end": 372.96,
+      "en": "The paper also reports a C-A-C-E estimate; what assumption makes that interpretation uncertain?",
+      "zh": "论文还报告了一个C-A-C-E估计值；是什么假设让这一解读变得不确定？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 373.86,
+      "end": 410.72,
+      "en": "The paper uses a Wald-ratio-style estimate called C-A-C-E, dividing the assignment-level performance difference by Adherence. But interpreting that ratio as a complier effect requires a mean-exclusion assumption: non-adherent Team runs must have the same average outcome as Single runs. That assumption is not guaranteed. On S-W-E-bench Pro, non-adherent runs accounted for most of the positive difference, while adherent runs performed worse than Single in that sample. The authors therefore caution against treating the ratio as a causal result without examining the assumption.",
+      "zh": "论文使用了一种叫C-A-C-E的Wald比率式估计，把分配层面的性能差异除以依从率。但要把这个比率解释为依从者效应，需要一个均值排除假设：不依从的Team运行必须与Single运行具有相同的平均结果。这个假设并不能保证成立。在S-W-E-bench Pro上，不依从的运行占了正差异的大部分，而依从的运行在那个样本中反而比Single表现更差。因此作者提醒，在没有检验该假设的情况下，不应把这个比率当作因果结果。"
+    },
+    {
+      "i": 20,
+      "speaker": "Noah",
+      "start": 410.72,
+      "end": 414.82,
+      "en": "How does this connect to earlier multi-agent coding work such as ChatDev?",
+      "zh": "这和早期像ChatDev这样的多智能体编程工作有什么联系？"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 416.78,
+      "end": 455.96,
+      "en": "ChatDev helped establish the idea of specialized agents communicating across software-development stages. OpenCollab shifts attention toward whether such roles actually act, and whether comparisons hold runtime conditions constant. It also warns against filtering results to only adherent runs, since difficult tasks may be more likely to trigger—or disrupt—collaboration. Important limitations remain: adherence experiments use relatively small samples, only a few model variants are tested, and agents do not work in parallel. The framework makes these questions measurable, but does not settle them.",
+      "zh": "ChatDev帮助确立了让专门化智能体在软件开发各阶段之间通信的理念。OpenCollab把注意力转向这些角色是否真的在行动，以及比较时是否保持运行时条件不变。它还提醒不要只筛选出遵守组织的运行结果，因为困难任务可能更容易触发协作，也可能更容易打断协作。重要的局限仍然存在：遵守实验使用的样本相对较小，只测试了少数几个模型变体，而且智能体并非并行工作。这个框架让这些问题变得可测量，但并没有给出定论。"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 456.58,
+      "end": 490.657,
+      "en": "The broader takeaway is methodological: claims about multi-agent systems should report not only whether tasks succeeded, but also whether the proposed organization was delivered and what resources it consumed. OpenCollab provides shared runtime controls, inspectable traces, and an explicit adherence measure to support that kind of evaluation. Its results suggest scripted teamwork can help on some benchmarks, while model-directed teamwork may fail to materialize. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更宏观的启示在于方法论层面：关于多智能体系统的论断，不应只报告任务是否成功，还应报告所提出的组织方式是否真正落实、消耗了哪些资源。OpenCollab 提供了共享的运行时控制、可检查的轨迹以及明确的遵循度度量，来支撑这类评估。其结果提示，脚本化的团队协作在某些基准上确有帮助，而由模型自主主导的团队协作则可能根本没能真正发生。感谢收听。如果还有进一步的问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{hsu2026opencollabmultiagentcodingframework,\n      title={OpenCollab: A Multi-Agent Coding Framework with Programmable Collaboration and Controllable Runtime}, \n      author={Chun-Wah Hsu and Kai Gong and Yu Wu and Xianhe Chen and Mengyang Liu and Jie Li and Hanyu Li and Zhixuan Liu and Naisheng Tang and Jiaying Chi and Ziheng Fan and Xuning He and Xiaokang Yang and Xue Jiang and Yihong Dong},\n      year={2026},\n      eprint={2609.38345},\n      archivePrefix={arXiv},\n      primaryClass={cs.SE},\n      url={https://arxiv.org/abs/2609.38345}, \n}",
+  "topics": [
+    "Agents",
+    "Causal Inference",
+    "ML Systems"
+  ],
+  "peaks": [
+    0.828,
+    0.521,
+    0.47,
+    0.308,
+    0.285,
+    0.613,
+    0.386,
+    0.481,
+    0.254,
+    0.625,
+    0.626,
+    0.502,
+    0.445,
+    0.53,
+    0.445,
+    0.446,
+    0.375,
+    0.384,
+    0.291,
+    0.77,
+    1.0,
+    0.666,
+    0.902,
+    0.622,
+    0.707,
+    0.956,
+    0.64,
+    0.665,
+    0.691,
+    0.283,
+    0.819,
+    0.281,
+    0.502,
+    0.474,
+    0.36,
+    0.339,
+    0.443,
+    0.264,
+    0.391,
+    0.332,
+    0.256,
+    0.452,
+    0.747,
+    0.33,
+    0.351,
+    0.253,
+    0.2,
+    0.929,
+    0.652,
+    0.59,
+    0.701,
+    0.413,
+    0.66,
+    0.446,
+    0.55,
+    0.63,
+    0.463,
+    0.387,
+    0.422,
+    0.344,
+    0.438,
+    0.805,
+    0.679,
+    0.415,
+    0.444,
+    0.547,
+    0.381,
+    0.707,
+    0.578,
+    0.202,
+    0.271,
+    0.201
+  ],
+  "published": "2026-09-29",
+  "views": 230,
+  "license": "arXiv 默认许可"
+}

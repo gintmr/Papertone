@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 480.574,
+  "word_match_rate": 0.9191,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Advanced Robotics and Vision-Language Models, today's lecture is on V-L-A delta: Learning Physical State Transition for Vision-Language-Action Models. Recent work such as C-O-T V-L-A: Visual Chain-of-Thought Reasoning for Vision-Language-Action Models and V-L-A jepa: Enhancing Vision-Language-Action Model with Latent World Model explores subgoals and learned dynamics. This paper, from researchers at Zhejiang University and Central South University, shifts attention toward physical changes themselves. That matters when a robot must verify that an intended grasp or placement actually happened. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 40.4
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what problem is V-L-A delta trying to solve?",
+      "start": 41.38,
+      "end": 45.36
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The central concern is that a policy can imitate actions associated with familiar images without tracking whether the physical situation supports those actions. It might close its gripper before reaching an object, or continue toward a placement after a failed grasp. V-L-A delta asks the model to learn what changes between observations, such as object motion, contact, and gripper state, rather than relying on action prediction alone. The aim is to connect a language-level goal to the physical transitions needed to achieve it.",
+      "start": 46.16,
+      "end": 80.2
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So is it predicting future images, or something more specific?",
+      "start": 80.2,
+      "end": 84.04
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Something more specific. The model learns a shared transition representation, but it does not need to reconstruct a future image during deployment. Its vision-language backbone is Qwen three V-L two B Instruct, paired with a nine-layer Diffusion Transformer action expert. The model receives multi-view images, an instruction, and robot proprioception. Learnable Physical State Difference Queries collect information about relevant changes, and the action expert uses that representation to predict continuous action chunks.",
+      "start": 85.3,
+      "end": 118.22
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "How do the queries learn which physical changes matter?",
+      "start": 119.16,
+      "end": 121.84
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "They receive three complementary kinds of supervision. Structured slots cover nine categories, including task progress, target and gripper positions, motion, contact transitions, and obstacle risk. Dense optical flow adds localized motion information between frames. Future-State Difference Text describes changes in task progress, spatial relationships, contact, and constraints. Together, these targets act like several views of the same event: a structured record, a motion field, and a concise account of what changed and why it matters to the task.",
+      "start": 122.64,
+      "end": 158.64
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Does the robot still have to generate all three during control?",
+      "start": 159.6,
+      "end": 162.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. The transition objectives are used during joint pretraining, alongside action learning. Downstream fine-tuning uses action learning alone, and inference does not decode the text, slots, or flow targets. The representation is meant to retain useful transition information without adding auxiliary generation during control. The training corpus draws on Droid, MolmoAct, and R-H twenty T, and is reported as about 484 hours and 24 million frames, standardized and filtered for aligned video, instructions, robot state, and actions.",
+      "start": 162.54,
+      "end": 199.42
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The annotation pipeline combines automated tools: Qwen three point eight segments manipulation phases and selects keyframes, while S-A-M three localizes objects and grippers, UniDepth V two estimates depth, and MegaFlow estimates optical flow. The authors also describe automated checks and a manual audit of 300 current–future pairs. That audit reports most valid-field proportions above 93%, but validity is not the same as localization accuracy, and some bounding-box references were model-generated rather than independent human ground truth.",
+      "start": 200.44,
+      "end": 239.22
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "What does the evaluation show in simulation?",
+      "start": 239.22,
+      "end": 242.18
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "On Libero, V-L-A delta reports 98.4% average success across four suites, ahead of the listed comparison methods. On Libero-Plus, it leads under language variation and remains competitive under lighting changes, but does not lead for background or layout changes. On RoboTwin two point zero, it reaches 90.06% in the Clean setting and 89.74% in the Random setting. The pattern is encouraging but uneven: robustness depends on the perturbation, so one aggregate score would hide useful differences.",
+      "start": 243.26,
+      "end": 280.24
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Real-robot tests use an AgileX Piper dual-arm platform and five tasks covering obstacle avoidance, long-horizon execution, fine manipulation, spatial reasoning, and background generalization. Across 200 trials, the reported average success rate is 68%. The model leads the comparisons on obstacle avoidance, spatial reasoning, and fine-grained manipulation, and ranks second on two other tasks. The paper reports a 5.5 percentage-point advantage over pi zero point five, while the limited task set means these results do not yet establish broad transfer.",
+      "start": 281.9,
+      "end": 316.16
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Could the gains come from the data annotations rather than transition learning itself?",
+      "start": 317.08,
+      "end": 321.04
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That is a reasonable concern. The LIBERO ablations offer some evidence: a dense-feature baseline scores 95.70%, the query-only version 96.25%, and the full system 98.40%. Adding text, structured slots, or optical flow separately also improves on the query-based baseline. Still, these results do not isolate every interaction between supervision and data quality. The annotations rely substantially on automated models, and the audit is relatively small, so stronger localization checks and sensitivity tests would help clarify what drives the gains.",
+      "start": 322.08,
+      "end": 361.66
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Conceptually, V-L-A delta sits between language planning and visual prediction. CoT-VLA uses visual subgoals, while V-L-A jepa emphasizes latent future representations; this paper instead explicitly supervises task-relevant physical transitions using structured state, motion, and text. It then keeps deployment action-focused. That distinction may be useful for contact-rich manipulation, where knowing that an object moved or a grasp succeeded matters more than producing a plausible future scene. Whether it scales across robots and task distributions remains an open empirical question.",
+      "start": 362.9,
+      "end": 403.68
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "What should researchers test next to establish whether this approach generalizes?",
+      "start": 403.68,
+      "end": 408.7
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "A useful next step is broader evaluation across robots, environments, and task distributions, paired with clearer accounting of the reported corpus: the paper's total of about 484 hours and 24 million frames differs from larger source totals in its appendix. Researchers could also test annotation sensitivity and compare models at different data and parameter scales. The larger takeaway is methodological: pretraining can ask a robot not only which action to imitate, but which physical change makes that action appropriate.",
+      "start": 409.6,
+      "end": 443.16
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "V-L-A delta presents physical transition learning as a complement to action imitation, not a replacement for it. Its results suggest that structured state changes, dense motion, and language descriptions can provide useful, partly complementary signals, while its evaluation and annotation limits call for cautious interpretation. For PhD researchers, the enduring question is how to represent the gap between an instruction and the real-world event that fulfills it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 444.86,
+      "end": 480.574
+    }
+  ]
+}

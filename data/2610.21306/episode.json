@@ -1,0 +1,259 @@
+{
+  "id": "2610.21306",
+  "title": "VLA-$Δ$: Learning Physical State Transition for Vision-Language-Action Models",
+  "authors": [
+    "Qi Lu",
+    "Jiarun Li",
+    "Ce Zhang",
+    "Miao Pan",
+    "Yi Pan",
+    "Xu Wang",
+    "Wenqi Zhang",
+    "Xuhong Zhang"
+  ],
+  "abstract": "Vision-language-action (VLA) models transfer semantic knowledge acquired through vision-language pretraining to robot control, achieving strong performance across various benchmarks. However, most VLAs directly map observations to demonstrated actions without explicit supervision of intermediate physical state changes, making them prone to overfitting observation-action correspondences. Some methods introduce intermediate reasoning or future-state prediction in language, visual, or latent spaces to guide action generation, but do not explicitly supervise the physical state transition itself. We therefore propose VLA-$\\Delta$, a general framework that uses physical changes between current and future states as explicit learning targets. To support this objective, we construct a large-scale pretraining dataset and derive physical state-transition annotations covering task-relevant semantics and visual motion changes, providing more direct supervision for continuous action generation. During inference, the model generates actions directly from current observations without additional inference overhead. VLA-$\\Delta$ achieves performance competitive with the state of the art on LIBERO and RoboTwin, and outperforms $\\pi_{0.5}$ in real-robot experiments. Our code is available at this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.21306",
+    "arxiv": "https://arxiv.org/abs/2610.21306"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a14259-9b8d-74ed-a2bd-1f3027032a3b/podcast.mp3",
+  "duration": 480.574,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 40.4,
+      "en": "In Advanced Robotics and Vision-Language Models, today's lecture is on V-L-A delta: Learning Physical State Transition for Vision-Language-Action Models. Recent work such as C-O-T V-L-A: Visual Chain-of-Thought Reasoning for Vision-Language-Action Models and V-L-A jepa: Enhancing Vision-Language-Action Model with Latent World Model explores subgoals and learned dynamics. This paper, from researchers at Zhejiang University and Central South University, shifts attention toward physical changes themselves. That matters when a robot must verify that an intended grasp or placement actually happened. Go ahead, Noah.",
+      "zh": "在高级机器人与视觉语言模型课上，今天讲的是V-L-A delta：为视觉-语言-动作模型学习物理状态转移。近期的工作，比如C-O-T V-L-A：面向视觉-语言-动作模型的视觉思维链推理，以及V-L-A jepa：用潜在世界模型增强视觉-语言-动作模型，探索了子目标和学习到的动力学。这篇论文来自浙江大学和中南大学的研究人员，把注意力转向了物理变化本身。当机器人必须确认一次预期的抓取或放置是否真的发生时，这一点很重要。诺亚，你继续吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 41.38,
+      "end": 45.36,
+      "en": "Hi Professor, what problem is V-L-A delta trying to solve?",
+      "zh": "教授您好，V-L-A delta想解决什么问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.16,
+      "end": 80.2,
+      "en": "The central concern is that a policy can imitate actions associated with familiar images without tracking whether the physical situation supports those actions. It might close its gripper before reaching an object, or continue toward a placement after a failed grasp. V-L-A delta asks the model to learn what changes between observations, such as object motion, contact, and gripper state, rather than relying on action prediction alone. The aim is to connect a language-level goal to the physical transitions needed to achieve it.",
+      "zh": "核心问题在于，策略可能会模仿与熟悉图像相关的动作，却不追踪物理情境是否支持这些动作。它可能在还没碰到物体时就合上夹爪，或者在抓取失败后仍继续朝放置位置移动。V-L-A delta要求模型学习观测之间的变化，比如物体运动、接触和夹爪状态，而不是只依赖动作预测。目标是让语言层面的目标与实现它所需的物理状态变化建立联系。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 80.2,
+      "end": 84.04,
+      "en": "So is it predicting future images, or something more specific?",
+      "zh": "所以它是在预测未来的图像，还是更具体的东西？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 85.3,
+      "end": 118.22,
+      "en": "Something more specific. The model learns a shared transition representation, but it does not need to reconstruct a future image during deployment. Its vision-language backbone is Qwen three V-L two B Instruct, paired with a nine-layer Diffusion Transformer action expert. The model receives multi-view images, an instruction, and robot proprioception. Learnable Physical State Difference Queries collect information about relevant changes, and the action expert uses that representation to predict continuous action chunks.",
+      "zh": "更具体一些。模型学习的是共享的转移表示，但在部署阶段不需要重建未来图像。它的视觉语言主干是Qwen 3 VL 2B Instruct，搭配一个九层Diffusion Transformer动作专家。模型接收多视角图像、一条指令和机器人本体感知信息。可学习的物理状态差异查询会收集相关变化的信息，动作专家则利用这一表示来预测连续的动作块。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 119.16,
+      "end": 121.84,
+      "en": "How do the queries learn which physical changes matter?",
+      "zh": "这些查询是如何学会判断哪些物理变化是重要的？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 122.64,
+      "end": 158.64,
+      "en": "They receive three complementary kinds of supervision. Structured slots cover nine categories, including task progress, target and gripper positions, motion, contact transitions, and obstacle risk. Dense optical flow adds localized motion information between frames. Future-State Difference Text describes changes in task progress, spatial relationships, contact, and constraints. Together, these targets act like several views of the same event: a structured record, a motion field, and a concise account of what changed and why it matters to the task.",
+      "zh": "它们会接收到三种互补的监督信号。结构化槽位涵盖九类信息，包括任务进度、目标和夹爪位置、运动、接触转换以及障碍物风险。稠密光流补充了帧与帧之间的局部运动信息。未来状态差异文本则描述任务进度、空间关系、接触和约束方面的变化。这些目标合在一起，就像是对同一事件从多个视角进行观察：一份结构化记录、一个运动场，以及一段简洁的说明，讲清楚发生了什么变化，以及为什么这对任务很重要。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 159.6,
+      "end": 162.54,
+      "en": "Does the robot still have to generate all three during control?",
+      "zh": "机器人在控制过程中还需要生成这三种内容吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 162.54,
+      "end": 199.42,
+      "en": "No. The transition objectives are used during joint pretraining, alongside action learning. Downstream fine-tuning uses action learning alone, and inference does not decode the text, slots, or flow targets. The representation is meant to retain useful transition information without adding auxiliary generation during control. The training corpus draws on Droid, MolmoAct, and R-H twenty T, and is reported as about 484 hours and 24 million frames, standardized and filtered for aligned video, instructions, robot state, and actions.",
+      "zh": "不需要。过渡目标只在联合预训练时与动作学习一起使用。下游微调只使用动作学习，推理时也不解码文本、槽位或光流目标。这种表示旨在保留有用的过渡信息，同时不在控制过程中增加辅助生成。训练语料来自Droid、MolmoAct和R-H二十T，据报道约484小时、2400万帧，并经过标准化和过滤，以确保视频、指令、机器人状态和动作对齐。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 200.44,
+      "end": 239.22,
+      "en": "The annotation pipeline combines automated tools: Qwen three point eight segments manipulation phases and selects keyframes, while S-A-M three localizes objects and grippers, UniDepth V two estimates depth, and MegaFlow estimates optical flow. The authors also describe automated checks and a manual audit of 300 current–future pairs. That audit reports most valid-field proportions above 93%, but validity is not the same as localization accuracy, and some bounding-box references were model-generated rather than independent human ground truth.",
+      "zh": "标注流程结合了多种自动化工具：Qwen 3.8负责切分操作阶段并选取关键帧，SAM 3定位物体和夹爪，UniDepth V2估计深度，MegaFlow估计光流。作者还介绍了自动化检查以及对300对当前-未来帧的人工审核。审核报告称大多数有效字段的比例超过93%，但有效并不等同于定位准确，而且部分边界框参考是模型生成的，而非独立的人工真值。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 239.22,
+      "end": 242.18,
+      "en": "What does the evaluation show in simulation?",
+      "zh": "评估在仿真中显示了什么？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 243.26,
+      "end": 280.24,
+      "en": "On Libero, V-L-A delta reports 98.4% average success across four suites, ahead of the listed comparison methods. On Libero-Plus, it leads under language variation and remains competitive under lighting changes, but does not lead for background or layout changes. On RoboTwin two point zero, it reaches 90.06% in the Clean setting and 89.74% in the Random setting. The pattern is encouraging but uneven: robustness depends on the perturbation, so one aggregate score would hide useful differences.",
+      "zh": "在Libero上，V-L-A delta报告了四个套件平均98.4%的成功率，领先于所列的比较方法。在Libero-Plus上，它在语言变化下领先，在光照变化下保持竞争力，但在背景或布局变化下未能领先。在RoboTwin 2.0上，它在Clean设置下达到90.06%，在Random设置下达到89.74%。这一模式令人鼓舞但并不均衡：鲁棒性取决于具体的扰动类型，因此单一的汇总分数会掩盖有用的差异。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 281.9,
+      "end": 316.16,
+      "en": "Real-robot tests use an AgileX Piper dual-arm platform and five tasks covering obstacle avoidance, long-horizon execution, fine manipulation, spatial reasoning, and background generalization. Across 200 trials, the reported average success rate is 68%. The model leads the comparisons on obstacle avoidance, spatial reasoning, and fine-grained manipulation, and ranks second on two other tasks. The paper reports a 5.5 percentage-point advantage over pi zero point five, while the limited task set means these results do not yet establish broad transfer.",
+      "zh": "真实机器人测试使用AgileX Piper双臂平台和五项任务，涵盖避障、长时程执行、精细操作、空间推理和背景泛化。在200次试验中，报告的平均成功率为68%。该模型在避障、空间推理和细粒度操作上领先于对比方法，在另外两项任务上排名第二。论文报告称相比pi zero point five有5.5个百分点的优势，但有限的任务集意味着这些结果尚不能确立广泛的迁移能力。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 317.08,
+      "end": 321.04,
+      "en": "Could the gains come from the data annotations rather than transition learning itself?",
+      "zh": "收益会不会来自数据标注，而不是迁移学习本身？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 322.08,
+      "end": 361.66,
+      "en": "That is a reasonable concern. The LIBERO ablations offer some evidence: a dense-feature baseline scores 95.70%, the query-only version 96.25%, and the full system 98.40%. Adding text, structured slots, or optical flow separately also improves on the query-based baseline. Still, these results do not isolate every interaction between supervision and data quality. The annotations rely substantially on automated models, and the audit is relatively small, so stronger localization checks and sensitivity tests would help clarify what drives the gains.",
+      "zh": "这个担忧是合理的。LIBERO的消融实验提供了一些证据：密集特征基线的得分是95.70%，仅查询版本是96.25%，而完整系统达到98.40%。单独加入文本、结构化槽位或光流，也都能在基于查询的基线上带来提升。不过，这些结果并没有把监督信号与数据质量之间的所有交互作用单独分离出来。标注在很大程度上依赖自动化模型，而且审计规模相对较小，因此更强的定位检查和敏感性测试会有助于厘清究竟是什么在推动这些提升。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 362.9,
+      "end": 403.68,
+      "en": "Conceptually, V-L-A delta sits between language planning and visual prediction. CoT-VLA uses visual subgoals, while V-L-A jepa emphasizes latent future representations; this paper instead explicitly supervises task-relevant physical transitions using structured state, motion, and text. It then keeps deployment action-focused. That distinction may be useful for contact-rich manipulation, where knowing that an object moved or a grasp succeeded matters more than producing a plausible future scene. Whether it scales across robots and task distributions remains an open empirical question.",
+      "zh": "从概念上看，V-L-A delta介于语言规划和视觉预测之间。CoT-VLA使用视觉子目标，而V-L-A jepa强调潜在未来表征；本文则利用结构化状态、运动和文本，显式监督与任务相关的物理变化，然后在部署时保持以动作为中心。这一区别可能对接触丰富操作有用，因为知道物体移动了或抓取成功了，比生成一个看似合理的未来场景更重要。它能否跨机器人和任务分布扩展，仍是一个有待实证的问题。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 403.68,
+      "end": 408.7,
+      "en": "What should researchers test next to establish whether this approach generalizes?",
+      "zh": "研究人员接下来应该测试什么，才能确定这种方法是否具有泛化能力？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 409.6,
+      "end": 443.16,
+      "en": "A useful next step is broader evaluation across robots, environments, and task distributions, paired with clearer accounting of the reported corpus: the paper's total of about 484 hours and 24 million frames differs from larger source totals in its appendix. Researchers could also test annotation sensitivity and compare models at different data and parameter scales. The larger takeaway is methodological: pretraining can ask a robot not only which action to imitate, but which physical change makes that action appropriate.",
+      "zh": "一个有用的下一步是在不同机器人、环境和任务分布上做更广泛的评估，同时对所报告的语料库做更清晰的说明：论文中总计约484小时、2400万帧的数据与其附录中更大的来源总量并不一致。研究者还可以测试标注敏感性，并在不同数据和参数规模下比较模型。更大的启示在于方法论：预训练不仅能让机器人知道该模仿哪个动作，还能让它知道是哪种物理变化使这个动作变得恰当。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 444.86,
+      "end": 480.574,
+      "en": "V-L-A delta presents physical transition learning as a complement to action imitation, not a replacement for it. Its results suggest that structured state changes, dense motion, and language descriptions can provide useful, partly complementary signals, while its evaluation and annotation limits call for cautious interpretation. For PhD researchers, the enduring question is how to represent the gap between an instruction and the real-world event that fulfills it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "V-L-A delta把物理变化学习定位为动作模仿的补充，而非替代。其结果提示，结构化的状态变化、密集运动和语言描述能够提供有用且部分互补的信号，而其评估和标注上的局限则要求我们谨慎解读。对博士生研究者而言，一个长期存在的问题是：如何表征指令与实现该指令的现实世界事件之间的差距。感谢收听。如果还有进一步的问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lu2026vladeltalearningphysicalstate,\n      title={VLA-$\\Delta$: Learning Physical State Transition for Vision-Language-Action Models}, \n      author={Qi Lu and Jiarun Li and Ce Zhang and Miao Pan and Yi Pan and Xu Wang and Wenqi Zhang and Xuhong Zhang},\n      year={2026},\n      eprint={2610.21306},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.21306}, \n}",
+  "topics": [
+    "Imitation Learning",
+    "Multimodal Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    0.543,
+    0.29,
+    0.344,
+    0.354,
+    0.239,
+    0.222,
+    0.522,
+    0.477,
+    0.326,
+    0.399,
+    0.283,
+    0.269,
+    0.688,
+    0.968,
+    0.728,
+    0.653,
+    0.584,
+    0.562,
+    0.428,
+    0.288,
+    0.246,
+    0.274,
+    0.254,
+    0.329,
+    0.494,
+    0.349,
+    0.265,
+    0.32,
+    0.354,
+    0.204,
+    0.885,
+    0.546,
+    0.677,
+    0.589,
+    0.396,
+    0.374,
+    1.0,
+    0.356,
+    0.47,
+    0.413,
+    0.208,
+    0.329,
+    0.712,
+    0.397,
+    0.505,
+    0.3,
+    0.421,
+    0.696,
+    0.541,
+    0.359,
+    0.205,
+    0.362,
+    0.2,
+    0.25,
+    0.68,
+    0.659,
+    0.632,
+    0.365,
+    0.588,
+    0.689,
+    0.444,
+    0.678,
+    0.408,
+    0.474,
+    0.399,
+    0.387,
+    0.651,
+    0.463,
+    0.41,
+    0.445,
+    0.574,
+    0.34
+  ],
+  "published": "2026-10-15",
+  "views": 370,
+  "license": "arXiv 默认许可"
+}
