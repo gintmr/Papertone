@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 522.71,
+  "word_match_rate": 0.9175,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Computer Vision and Neural Networks, today's lecture is on InfiniSplat version 2: Analyzing and Improving Feed-Forward Three-Dimensional Gaussian Splatting from Any Views. Recent work such as NoPoSplat and ReSplat reflects a shift toward producing renderable three-dimensional scenes directly from images. This paper, from researchers affiliated with Zhejiang University and Shenzhen University, asks how to make those scenes reliable when their predicted geometry is imperfect. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 30.98
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the main challenge that the geometry is wrong, or that the rendered scene does not use it well?",
+      "start": 32.1,
+      "end": 37.94
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Both matter, but InfiniSplat v2 focuses on the second while trying not to worsen the first. A geometry model estimates depth and camera positions, giving the system three-dimensional point locations. The model then learns Gaussian attributes such as color, opacity, size, and orientation to render images. The central design choice is to keep those point locations fixed during attribute learning, rather than letting image reconstruction losses move them to compensate for errors.",
+      "start": 38.8,
+      "end": 68.28
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So it treats the geometry estimate as a fixed scaffold?",
+      "start": 69.34,
+      "end": 72.1
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The geometry branch uses D-A-three, a pretrained multi-view model, and stays frozen. A separately initialized attribute branch sees the same input images; its later Transformer blocks and Gaussian decoder are fine-tuned. This division resembles a pipeline with a stable map and an adaptable rendering layer. It does not claim the map is perfectly accurate. Instead, it tests whether learning the rendering properties around imperfect points is safer than changing the points themselves.",
+      "start": 73.16,
+      "end": 105.38
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Quick question: why not let the model adjust centers a little, if the initial points are noisy?",
+      "start": 105.38,
+      "end": 111.06
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The authors tested learned position offsets and found worse results, including blur and depth distortions in examples. Their interpretation is that appearance losses can encourage point movements that make particular training views look better without improving the scene’s underlying structure. The primary model therefore back-projects predicted depth to get centers, without offsets. This is a useful distinction: the system learns how each primitive contributes to an image, but does not use that learning to rewrite its geometry.",
+      "start": 112.02,
+      "end": 143.38
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "A second insight concerns camera alignment. In training, the model constructs points using predicted depths but uses ground-truth camera poses for input and target views. Since predicted depths and camera translations may have different scales, the authors normalize the point cloud and fit a scale between predicted and ground-truth camera trajectories. They preserve camera rotations and intrinsics. This reduces coordinate mismatch between the scene being rendered and the views used for supervision.",
+      "start": 144.44,
+      "end": 176.32
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Can you clarify why using predicted cameras for everything would not solve that mismatch?",
+      "start": 177.4,
+      "end": 182.08
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "Predicted cameras can be useful, especially when poses are unavailable at inference, but they may not match the ground-truth cameras used to supervise training images. A scene built in one frame and judged from another can receive misleading rendering feedback. InfiniSplat v2 aligns the training setup, then supports both pose-conditioned inference with supplied cameras and pose-free inference with predicted cameras. On the tested ablations, ground-truth camera back-projection improved results, including a reported 36.1% reduction in L-P-I-P-S on D-T-U.",
+      "start": 182.08,
+      "end": 218.4
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The third insight is to constrain Gaussians from more than nearby viewpoints. Training samples target views with a bias toward larger angular differences from the input cameras. Those views reveal when a Gaussian’s scale or orientation only works from one direction. The pipeline also merges redundant points in voxel groups and prunes low-opacity Gaussians. Ground-truth depth masks the target-view loss, focusing supervision on regions with valid support from at least one input view.",
+      "start": 219.94,
+      "end": 250.38
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Does opacity simply become a learned way to remove unreliable points?",
+      "start": 251.18,
+      "end": 254.68
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "That is the evidence the authors investigate. Using ground-truth depth to classify points independently, they found that pruning at opacity 0.01 removed 51.8% of geometrically inconsistent points, while removing 7.5% of all points and retaining 93.3% of surface-consistent points. Opacity is not trained with an explicit inconsistency label; it emerges through image reconstruction supervision. So it can act as a filter, though it should not be mistaken for a complete geometric correction mechanism.",
+      "start": 255.58,
+      "end": 289.1
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The practical payoff is fast scene production without optimizing each scene separately at inference. That could support visualization, simulation, or scene-understanding workflows where a user needs a renderable environment from a few photographs. Across six datasets, the feed-forward model had the lowest mean L-P-I-P-S and D-I-S-T-S among the compared methods in both pose settings. In the pose-conditioned setting, its mean scores were 0.2472 and 0.1163; in pose-free inference, they were 0.3026 and 0.1341.",
+      "start": 290.06,
+      "end": 328.6
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "How much should we trust those comparisons, given the range of datasets and input views?",
+      "start": 331.4,
+      "end": 335.68
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The evaluation spans D-L-three-D-V, E-T-H-three-D, N-R-G-B-D, Mip-NeRF 360, RealEstate10K, and D-T-U, with four, eight, or sixteen inputs. That breadth is useful, and comparisons include systems such as AnySplat, DepthSplat, and ReSplat. Still, the component ablations are limited to E-T-H-three-D and D-T-U, and results depend on the paper’s training and evaluation protocols. The gains are evidence for this design, not proof that it resolves every reconstruction setting.",
+      "start": 335.68,
+      "end": 374.79
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The learned refiner adds another practical option. It renders the current scene, uses image feedback and gradients of rendering losses with respect to Gaussian attributes, and predicts updates through a recurrent spatial network. Those gradients inform its updates rather than being applied as ordinary gradient descent. The refiner keeps centers and point counts fixed, and uses three steps at inference. Its results are mixed: it improves both perceptual averages in pose-conditioned evaluation, but in pose-free evaluation the unrefined scene has slightly better mean D-I-S-T-S.",
+      "start": 375.61,
+      "end": 410.31
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does that learned refinement relate to ReSplat?",
+      "start": 411.17,
+      "end": 414.13
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Both use rendered-image feedback to guide learned scene updates, but InfiniSplat v2 places that idea after a geometry-first, fixed-center construction. ReSplat is a relevant example of recurrent Gaussian refinement; here, the refiner is optional and changes attributes rather than geometry. The paper also reports that its refiner beats three-step Adam refinement on E-T-H-three-D across the listed metrics, while Adam makes only small changes. That comparison suggests learned update rules can use feedback more effectively in this setup.",
+      "start": 415.05,
+      "end": 448.55
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "What remains the biggest limitation if the geometry prior fails badly?",
+      "start": 449.51,
+      "end": 453.35
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "Fixed centers preserve the geometry branch’s predictions, but they also limit recovery from severe depth or camera errors. Sparse image coverage can leave unseen regions incomplete, and voxel grouping does not remove every redundant point. This frames the paper’s broader contribution as a refinement of feed-forward reconstruction, not a replacement for geometry estimation. Compared with approaches that chiefly change how Gaussians are placed, InfiniSplat v2 emphasizes how to learn their rendering attributes without letting appearance supervision distort the geometric scaffold.",
+      "start": 454.61,
+      "end": 489.47
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The takeaway is that better novel-view rendering does not always require a more flexible geometry model. In this study, stable point centers, aligned camera supervision, and views from wider angles help the attribute learner produce more consistent scenes, while opacity can suppress some unreliable points. The remaining challenge is to correct substantial geometric errors and fill regions the cameras never observed. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 490.53,
+      "end": 522.71
+    }
+  ]
+}

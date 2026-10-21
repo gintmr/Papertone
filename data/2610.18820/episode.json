@@ -1,0 +1,236 @@
+{
+  "id": "2610.18820",
+  "title": "Read the Room Before Your Model Generates",
+  "authors": [
+    "Muyao Kong",
+    "Zhihao Lin"
+  ],
+  "abstract": "Large language models (LLMs) generally rely on sampling temperature to regulate the amount of randomness in their outputs. Mainstream methods for selecting temperature typically involve fixed, heuristic global settings and context or token-level calibration, rather than a geometrically interpretable representation of the communicative scenario. In this work, we introduce a simple and interpretable temperature selection framework, the Scenario-Actor, which adapts decoding to the inferred situational characteristics. Scenario-Actor extracts scenario-relevant structures from Transformer hidden states and determines the temperature from scenario embedding, a structured geometric representation of the communicative setting. Empirical results show that on Llama-3.1-8B-Instruct, Scenario-Actor achieves strong goal-completion performance in interactive social scenarios, significant gains on open-ended instruction following, and competitive performance on multi-turn conversation compared to multiple baselines.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.18820",
+    "arxiv": "https://arxiv.org/abs/2610.18820"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a138d6-e779-7c59-988a-9db6f1b7ad41/podcast.mp3",
+  "duration": 409.887,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.68,
+      "en": "In our graduate course on Language Model Decoding, today's lecture is on Scenario-Actor, a method for choosing a language model's temperature from the communicative situation described in a prompt. Recent work such as The End of Manual Decoding and EDT explores adaptive decoding, through dynamic sampling controls or token uncertainty. Scenario-Actor takes a different route: infer the broader scenario before generation. That matters because one randomness setting may help in one conversation and undermine the goal in another. Yes, Noah?",
+      "zh": "在我们关于语言模型解码的研究生课程中，今天的讲座讲的是Scenario-Actor，一种根据提示中描述的交际情境来选择语言模型温度的方法。最近的工作，比如《手动解码的终结》和EDT，通过动态采样控制或token不确定性来探索自适应解码。Scenario-Actor走的是另一条路：在生成之前先推断更宏观的场景。这很重要，因为同一种随机性设置可能在一个对话中有帮助，在另一个对话中却会损害目标。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.76,
+      "end": 42.12,
+      "en": "Hi Professor, is the basic idea that the model changes how random it is depending on what the conversation calls for?",
+      "zh": "教授您好，基本思路是不是模型会根据对话的需要来改变自身的随机程度？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.76,
+      "end": 73.86,
+      "en": "Exactly. Temperature changes how concentrated the next-token choices are: lower values make the distribution sharper, while higher values make it more even. In 245 AgentSense social interactions, changing a fixed setting flipped goal outcomes in 16.3% to 21.5% of cases, depending on the pair of settings. The best fixed setting varied across interactions, so the authors ask whether a model can infer the situation and set temperature before it responds.",
+      "zh": "没错。温度改变的是下一个token选择的集中程度：数值越低，分布越尖锐；数值越高，分布越均匀。在245个AgentSense社交互动中，改变固定设置会让目标结果在16.3%到21.5%的情况下发生翻转，具体取决于所比较的两组设置。最佳固定设置因互动而异，因此作者提出一个问题：模型能否在回应之前推断出情境并设定温度。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 74.8,
+      "end": 104.36,
+      "en": "The method has two central components. First, Scenarize turns the prompt into a representation of its scenario. It uses hidden states from layer 16 of Llama three point one eight B Instruct, updating its estimate as it reads tokens; the final state represents the prompt. The authors train this encoder with triplets: a base prompt, a prompt with a similar scenario, and one with an opposite scenario. Similar cases are encouraged to sit closer in the representation space.",
+      "zh": "这个方法有两个核心组件。首先，Scenarize会把提示词转化为其场景的表示。它使用Llama 3.1 8B Instruct第16层的隐藏状态，在读取token的过程中不断更新估计值，最终状态就代表了这个提示词。作者用三元组来训练这个编码器：一个基础提示词、一个场景相似的提示词，以及一个场景相反的提示词。相似样本被鼓励在表示空间中靠得更近。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 105.28,
+      "end": 110.8,
+      "en": "Quick question: does the representation estimate the topic, or the kind of interaction the prompt implies?",
+      "zh": "快速问一下：这个表示估计的是主题，还是提示所暗示的互动类型？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 111.78,
+      "end": 142.38,
+      "en": "It is intended to capture the communicative scenario, not simply the topic. Actout compares the normalized representation with five scenario axes. They cover contrasts such as institutional versus casual conversation, rigorous versus brainstorming, and positive versus negative emotional support. Each axis has hand-set endpoint temperatures. The method interpolates between those endpoints according to the prompt's alignment with the axis, then combines the estimates into one prompt-level temperature.",
+      "zh": "它的目的是捕捉交流场景，而不只是主题。Actout把归一化后的表示与五个场景轴进行比较。这些轴涵盖的对比包括正式机构对话与随意对话、严谨讨论与头脑风暴，以及正向与负向情感支持。每个轴都有手动设定的端点温度。该方法根据提示词与轴的对齐程度在这些端点之间进行插值，然后把各项估计合并成一个提示词级别的温度。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 143.46,
+      "end": 174.66,
+      "en": "That distinction separates Scenario-Actor from approaches that react to local uncertainty alone. For example, E-D-T adjusts temperature using token-level entropy, while Scenario-Actor aims to estimate a situation for the whole prompt. Its temperature is bounded between 0.30 and 1.50, and its endpoint values are fixed across the reported benchmarks. So the intended control is not a new decision at every token; it is a setting selected before generation based on the inferred scenario.",
+      "zh": "这一区分将Scenario-Actor与仅对局部不确定性做出反应的方法区别开来。例如，E-D-T利用token级熵来调整温度，而Scenario-Actor旨在估计整个提示的情境。其温度被限制在0.30到1.50之间，且在各报告的基准上端点值固定不变。因此，其预期的控制并非在每个token处做出新决策，而是在生成之前基于推断出的情境选择一个设定。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 175.8,
+      "end": 182.0,
+      "en": "How do we know the geometric interpolation itself helps, rather than just having a useful encoder and temperature choices?",
+      "zh": "我们怎么知道是几何插值本身起了作用，而不只是有了一个有用的编码器和温度选择？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 182.98,
+      "end": 217.12,
+      "en": "The key test is a class-conditioned control. It keeps the same scenario encoder and endpoint temperatures, but replaces continuous geometric interpolation with a nearest-centroid label and lookup. Scenario-Actor scores 0.8015 on AgentSense, compared with 0.7536 for that control. The reported difference is statistically significant, with a 95% confidence interval of 1.85 to 7.88 percentage points and a p-value of 1.85 times ten to the minus three.",
+      "zh": "关键测试是类别条件对照。它保持相同的场景编码器和端点温度，但把连续的几何插值换成了最近质心标签和查表。Scenario-Actor在AgentSense上得分0.8015，而该对照组为0.7536。报告的差异具有统计显著性，95%置信区间为1.85到7.88个百分点，p值为1.85乘以10的负3次方。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 218.54,
+      "end": 224.18,
+      "en": "So that supports interpolation over lookup, but it doesn't prove interpolation is the only reason for the gain?",
+      "zh": "所以这能说明插值比查表更好，但并不能证明插值是带来提升的唯一原因？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 224.98,
+      "end": 260.78,
+      "en": "Right. The comparison isolates an important difference, but the interpretation should remain bounded: it supports geometric interpolation over class-level lookup, not the claim that geometry is the sole cause. Across the three main benchmarks, the paired scores also favor Scenario-Actor: 30.03% versus 27.10% on AlpacaEval's length-controlled win rate, and 7.91 versus 7.64 on M-T-Bench's G-P-T four score. The reported improvements over the control are significant on all three benchmarks.",
+      "zh": "对。这个对比隔离出了一个重要差异，但解读应当保持克制：它支持几何插值优于类别级查找，而不是说几何是唯一原因。在三个主要基准上，配对分数也更有利于Scenario-Actor：在AlpacaEval的长度控制胜率上是30.03%对27.10%，在M-T-Bench的G-P-T四分上是7.91对7.64。报告的相对对照组的提升在三个基准上都显著。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 262.0,
+      "end": 296.28,
+      "en": "The broader pattern is more qualified than a universal win. Scenario-Actor scores highest among tested methods on AlpacaEval. On AgentSense, it exceeds the tested fixed settings and adaptive baselines, but its 0.8015 score is not significantly better than fixed temperature 0.7 at 0.7801. On M-T-Bench, it is not significantly better than greedy decoding or fixed temperatures 0.5 and 0.7. The experiments use one backbone, Llama three point one eight B Instruct.",
+      "zh": "整体趋势并没有呈现出全面胜出的局面，情况要更有限一些。在AlpacaEval上，Scenario-Actor在受测方法中得分最高。在AgentSense上，它超过了受测的固定设置和自适应基线，但其0.8015的得分并不显著优于固定温度0.7的0.7801。在M-T-Bench上，它并不显著优于贪心解码或固定温度0.5和0.7。实验使用的是单一骨干模型Llama 3.1 8B Instruct。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 297.4,
+      "end": 302.98,
+      "en": "Could this kind of situation-aware setting be unreliable when the prompt doesn't reveal a clear situation?",
+      "zh": "当提示词没有揭示出明确的情境时，这种情境感知的设置会不会不可靠？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 302.98,
+      "end": 338.16,
+      "en": "Yes, and GSM8K illustrates that boundary. Scenario-Actor reaches 65.28% accuracy there, below greedy decoding at 77.18%, fixed temperature 0.5 at 69.52%, and E-D-T at 69.14%. The authors interpret their diagnostic as showing that math prompts were not reliably mapped to a low-temperature rigorous scenario. That is a plausible explanation from their analysis, not proof that scenario inference alone caused the lower score.",
+      "zh": "是的，GSM8K 恰好说明了这个边界。Scenario-Actor 在该数据集上的准确率只有 65.28%，低于贪心解码的 77.18%、固定温度 0.5 的 69.52% 以及 E-D-T 的 69.14%。作者将其诊断结果解读为：数学提示词未能被可靠地映射到低温严谨场景。这是他们分析中一个合理的解释，但并不能证明分数偏低 solely 由场景推断造成。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 339.04,
+      "end": 371.68,
+      "en": "This work adds a prompt-level, interpretable scenario estimate to a field exploring adaptive decoding. It is conceptually related to Dynamic Stochastic Decoding Strategy, which uses conversational context to distinguish two situations, but the paper does not directly compare against it. Its class-conditioned ablation offers a more relevant test of its own mechanism. The results suggest that continuous scenario geometry may help on interactive and open-ended tasks, while the scope remains one model and one five-axis taxonomy.",
+      "zh": "这项工作为探索自适应解码的领域增加了一个提示词层面的、可解释的场景估计。它在概念上与动态随机解码策略相关，后者利用对话上下文来区分两种情境，但论文并未直接与之比较。其按类别条件的消融实验为自身机制提供了更相关的检验。结果表明，连续的场景几何可能有助于交互式和开放式任务，但其范围仍限于一个模型和一套五轴分类体系。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 372.62,
+      "end": 375.74,
+      "en": "What should researchers take away when designing the next evaluation?",
+      "zh": "研究者在设计下一轮评估时应该记住什么？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 376.82,
+      "end": 409.887,
+      "en": "Evaluate both the situations where prompts provide useful communicative cues and the cases where they do not, and compare continuous controls with simpler lookups. Scenario-Actor shows a way to choose how much latitude a model has before it speaks, while its math result reminds us that not every task supplies a readable social situation. The memorable point is simple: adaptive decoding is only as useful as the context it can reliably infer. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "要同时评估提示能提供有用交流线索的情境和不能提供的情境，并把连续控制与更简单的查找方式做比较。Scenario-Actor展示了一种方法，用来选择模型在开口前拥有多大自由度，而它的数学结果提醒我们，并非每个任务都会提供可读的社会情境。值得记住的一点很简单：自适应解码的有用程度，取决于它能可靠推断出的上下文。感谢收听。如果还有问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{kong2026readroommodelgenerates,\n      title={Read the Room Before Your Model Generates}, \n      author={Muyao Kong and Zhihao Lin},\n      year={2026},\n      eprint={2610.18820},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.18820}, \n}",
+  "topics": [
+    "NLP",
+    "AI"
+  ],
+  "peaks": [
+    1.0,
+    0.706,
+    0.733,
+    0.528,
+    0.581,
+    0.53,
+    0.58,
+    0.57,
+    0.688,
+    0.505,
+    0.405,
+    0.371,
+    0.514,
+    0.597,
+    0.474,
+    0.411,
+    0.658,
+    0.52,
+    0.319,
+    0.648,
+    0.691,
+    0.426,
+    0.427,
+    0.617,
+    0.473,
+    0.795,
+    0.42,
+    0.525,
+    0.333,
+    0.286,
+    0.486,
+    0.569,
+    0.569,
+    0.517,
+    0.629,
+    0.423,
+    0.354,
+    0.256,
+    0.522,
+    0.619,
+    0.387,
+    0.356,
+    0.341,
+    0.256,
+    0.22,
+    0.298,
+    0.636,
+    0.255,
+    0.352,
+    0.283,
+    0.221,
+    0.362,
+    0.443,
+    0.436,
+    0.564,
+    0.349,
+    0.282,
+    0.414,
+    0.355,
+    0.698,
+    0.686,
+    0.369,
+    0.378,
+    0.585,
+    0.408,
+    0.501,
+    0.41,
+    0.273,
+    0.272,
+    0.2,
+    0.212,
+    0.238
+  ],
+  "published": "2026-10-13",
+  "views": 152,
+  "license": "CC BY"
+}

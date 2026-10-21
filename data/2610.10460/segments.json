@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 504.424,
+  "word_match_rate": 0.8764,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Advanced Methods for Language Model Training, today's lecture is on delta M-O-P-D: multi-teacher on-policy distillation with teacher-relative shifts. Recent work such as On-Policy Delta Distillation and D-O-P-D reflects a growing interest in shaping teacher feedback around the student’s own responses. This paper asks a further question: when specialists come from different starting models, what should their feedback contribute? Yes, Noah?",
+      "start": 0.0,
+      "end": 31.98
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the problem that a specialist may bring old habits from its starting model, not just what it learned during training?",
+      "start": 33.16,
+      "end": 39.6
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. On-policy distillation trains a student using responses it generated itself, while frozen teachers score those responses. That makes the feedback relevant to states the student actually visits. The opening diagnostic gives a sense of the issue: endpoint composition has a 5.2-to-1 teacher-term norm ratio and target-to-student K-L of 0.152, compared with 1.44-to-1 and 0.031 for shifts. K-L here measures distributional distance, not benchmark accuracy.",
+      "start": 40.6,
+      "end": 75.4
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The key distinction is between a teacher’s endpoint and its base. The endpoint is the model after post-training; the base is the exact checkpoint that entered that stage. Endpoint supervision can carry both the post-training changes and differences that were already present between the teacher’s base and the student’s initialization. Delta M-O-P-D subtracts the teacher’s base logits from its endpoint logits, then applies that shift at the student’s frozen starting point.",
+      "start": 76.54,
+      "end": 105.16
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if a teacher starts from the student’s exact checkpoint, does this subtraction change its target?",
+      "start": 106.0,
+      "end": 111.98
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. For a same-origin teacher, the base is the student initialization, so re-anchoring its shift reproduces the endpoint target. The difference appears in cross-origin terms, where the teacher began elsewhere. The paper’s schematic contrasts endpoint composition with shift composition: the anchor is the student initialization, each teacher has a base and endpoint, and arrows show signals added tail-to-head. The drawing is conceptual; its positions are not measurements.",
+      "start": 113.12,
+      "end": 144.16
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "So the shift is not a pure capability signal; it can include changes in style or calibration too?",
+      "start": 145.36,
+      "end": 151.24
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That’s right. The shift includes every effect of post-training, not capability or reasoning alone. The three-panel diagnostic supports the authors’ proposed mechanism without proving it is the only cause. In the mechanism run, inherited base pull has a component gradient norm of 3.04, while the post-training shift is 1.51. The endpoint mixture’s realized teacher-weight ratio is 5.2-to-1; the anchored shift ratio is 1.44-to-1, closer to the nominal 1-to-1.",
+      "start": 151.98,
+      "end": 183.0
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The third panel measures student-to-target K-L: 0.152 for endpoint composition and 0.031 for shifts. These are late-training averages across steps 300, 320, 340, 360, and 380, computed on student-visited prefixes. The authors interpret the gradients as evidence that inherited differences can dominate, and the lower K-L as closer target tracking. They are diagnostics under this protocol, not a universal causal rule or the training objective.",
+      "start": 184.72,
+      "end": 221.38
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify how they test whether that mechanism matters for benchmark performance?",
+      "start": 221.38,
+      "end": 226.52
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The most informative test holds teacher selection fixed and changes the representation of the cross-origin signal. At step 100, using greedy pass-at-1, the three-teacher shift arm scores 33.50% on the Math macro and 26.19% on the five-suite macro. Endpoint composition scores 29.39% and 24.24%, differences of 4.11 and 1.95 percentage points. All teachers score the same BigMath rollouts.",
+      "start": 227.64,
+      "end": 260.88
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "What goes into those macros, and is the improvement consistent across tasks?",
+      "start": 261.84,
+      "end": 265.62
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The Math macro is the unweighted mean of A-M-C 2023, MATH-500, and A-I-M-E 2025. The five-suite macro is the unweighted mean of those three plus G-P-Q-A-Diamond and I-F-Eval, not an average of two group scores. The improvement is not uniform: the Science and instruction-following macro is 15.22% with shifts versus 16.51% with endpoints, and the Math gain is concentrated in A-I-M-E 2025.",
+      "start": 265.62,
+      "end": 307.04
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Since JustRL is unchanged, is Polaris the term that actually differs between the two arms?",
+      "start": 308.38,
+      "end": 313.3
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Yes. The same-origin JustRL term is identical in the paired arms; Polaris supplies the cross-origin term whose representation changes. With two teachers, aggregate accuracy is comparable rather than a clear shift advantage. Routing tests add context: in interleaved routing, each update sees one teacher, and the five-suite scores are 26.29% for shifts and 25.67% for endpoints. That small gap is consistent with the clearest benefits appearing when multiple teachers contribute at one state.",
+      "start": 314.24,
+      "end": 350.5
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "In phased routing, teacher-domain pairs occupy successive training phases. Shifts score higher in both tested orders: 29.79% versus 24.11% for Science and instruction-following followed by Math, and 36.21% versus 34.61% for the reverse order. The gap between orders narrows from 10.50 to 6.42 points. Treat this as supporting evidence that shifts may help signals accumulate across phases, not proof of a general routing benefit.",
+      "start": 351.5,
+      "end": 386.3
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How should we weigh those routing results given the significance testing and earlier delta-distillation work?",
+      "start": 387.32,
+      "end": 392.4
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "There is an important limit: only one benchmark-by-order comparison had an uncorrected p-value below 0.05, and it did not survive correction across ten comparisons. Also, the idea of a teacher-minus-base signal is not new: On-Policy Delta Distillation studies that idea for a single teacher. The contribution here is extending teacher-relative shifts to multi-teacher composition and routed-domain distillation, anchored at the student’s initialization.",
+      "start": 392.4,
+      "end": 425.0
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "So the main implication is about changing what a chosen teacher contributes, rather than changing which teacher is selected?",
+      "start": 426.14,
+      "end": 432.24
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "Precisely. The closest multi-teacher precedent, M-O-P-D, routes prompts to domain specialists sharing the student’s initialization. In that same-origin setting, shifts reduce to endpoint supervision. This paper tests a different case: specialists from different origins, while holding selection fixed. Its results suggest that removing inherited base differences can matter most when cross-origin signals are combined; the phase-routing evidence is promising but remains limited.",
+      "start": 433.22,
+      "end": 465.44
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The practical takeaway is to distinguish what a specialist acquired during post-training from what it inherited before that stage. A teacher-relative shift preserves the former as a complete post-training change, then anchors it to the student’s starting behavior. Same-origin teachers keep their original signal, while cross-origin composition changes. Remember the evidence boundary: the controlled three-teacher result is encouraging, the Sci/IF exception matters, and routing does not yet establish a general advantage. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 466.52,
+      "end": 504.424
+    }
+  ]
+}

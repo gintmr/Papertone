@@ -1,0 +1,179 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 495.438,
+  "word_match_rate": 0.9156,
+  "line_count": 24,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on embodied world models, today’s lecture is on Ropedia W-zero: Scaling Loco-Manipulation World Models across Embodiments with Human Experience. Work such as DreamDojo: A Generalist Robot World Model from Large-Scale Human Videos and Qwen-RobotWorld Technical Report: Unifying Embodied World Modeling through Language-Conditioned Video Generation reflects a trend toward learning predictive models from broad video data. Researchers from Nanyang Technological University and Duke University take a complementary direction, focusing on shared visual motion conditions across people and robots. Noah, I see your hand; go ahead.",
+      "start": 0.0,
+      "end": 42.66
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what exactly does a world model predict in this paper?",
+      "start": 43.66,
+      "end": 47.18
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It predicts future egocentric video: given an image, a text instruction, and motion conditions, it generates what the scene may look like as the body moves and the hands interact with objects. The aim is to handle locomotion and manipulation together, rather than predicting a tabletop action from a fixed camera. That matters because a walking robot must anticipate both where its viewpoint will move and how its hands will affect the scene.",
+      "start": 48.08,
+      "end": 75.76
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So what lets one model work across bodies with very different joints?",
+      "start": 76.68,
+      "end": 80.24
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The key idea is to describe motion in image-aligned terms instead of forcing every embodiment into the same joint-action vector. Camera movement is represented by per-pixel Plücker-ray maps, while hand or gripper movement is represented by projected skeletons. A human hand, parallel gripper, and dexterous robot hand keep their own underlying kinematics, but the model sees visual representations that occupy a common format.",
+      "start": 80.24,
+      "end": 107.66
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Does the model learn that interface from human footage first, or from mixed robot data?",
+      "start": 107.66,
+      "end": 113.16
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Both, in sequence. The team curates Xp-Data, with about 10,000 hours of human egocentric video and 3,000 hours of robot video. First, the model learns from human recordings conditioned on text, camera trajectories, and projected hand skeletons. Then it trains on a balanced human-and-robot mixture. This preserves broad human interaction patterns while introducing the appearances and motion characteristics of different robot platforms.",
+      "start": 114.06,
+      "end": 142.16
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How do they make such varied human recordings consistent enough to train on?",
+      "start": 143.34,
+      "end": 147.1
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They filter footage for visual quality and task relevance, then standardize geometry, motion, and task descriptions. Camera paths come from calibration or are estimated with S-L-A-M and depth-based methods. Human hand poses are reconstructed and projected into the image; robot keypoints use kinematics where possible, with manual correction when needed. Automated checks and human review examine alignment and caption quality before verified tasks become synchronized 81-frame clips.",
+      "start": 147.92,
+      "end": 181.12
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Could you clarify what information the video model actually receives at each step?",
+      "start": 182.1,
+      "end": 185.94
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The model builds on pretrained Wan 2.2 latent video diffusion transformers. It receives an initial image and text, plus time-aligned camera and skeleton conditions. These conditions enter spatially aligned video tokens, while text and optional context use cross-attention. The paper tests a dense model with about 5 billion parameters and an A14B mixture-of-experts model with about 14 billion active parameters. Optional wrist-pose renderings and wider-view skeletons provide additional motion context.",
+      "start": 185.94,
+      "end": 219.94
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How does this become useful for interactive control rather than just offline video generation?",
+      "start": 221.02,
+      "end": 225.6
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "For streaming use, the authors distill the video model into a four-step autoregressive generator. The student model is extended for long-horizon generation and is reported to produce about 21.3 frames per second at 640 by 480 resolution. That supports interactive headset-based control and minute-long rollouts. The work also introduces Xp-Teleop, with 27 Unitree G-one teleoperation takes that include walking, dexterous manipulation, failed grasps, and recovery.",
+      "start": 226.56,
+      "end": 258.6
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Are the results measuring whether the generated video is physically accurate?",
+      "start": 259.62,
+      "end": 263.16
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The evaluation measures image prediction, hand-following, and camera-trajectory accuracy across five robot benchmarks and held-out human video. On an eight-embodiment comparison, the 5-billion-parameter and A14B midtrained models report P-S-N-R scores of 19.83 and 21.98 decibels, compared with 19.02 for the matched Cosmos3 comparison. These results support transfer across embodiments, but image similarity alone does not establish accurate contact physics or reliable real-world outcomes.",
+      "start": 263.16,
+      "end": 300.16
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "What do the ablations tell us about which conditions matter most?",
+      "start": 301.26,
+      "end": 304.12
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Skeleton conditioning has a substantial measured effect: removing it lowers cross-embodiment P-S-N-R by 3.8 decibels for the larger model and 1.8 for the 5-billion-parameter model. Camera conditioning has a smaller average effect, though it matters more when the viewpoint changes. The authors also report gains as human-video pretraining grows from 1,000 to 10,000 hours. Together, these findings suggest that motion-aligned visual structure and data scale both contribute.",
+      "start": 305.06,
+      "end": 337.34
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Can predictions guide decisions, or are they only useful for visual evaluation?",
+      "start": 338.32,
+      "end": 342.44
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The paper tests several decision-support uses. Predicted task progress correlates strongly with ground-truth progress in simulation and a real-robot comparison. In planning experiments, choosing actions by their predicted outcomes improves progress over selecting random candidates. Initializing a world-action model with Ropedia W-zero also raises reported full-data success on LIBERO-Plus from 50.06% to 56.82%. These are encouraging signals, though they do not replace closed-loop deployment tests.",
+      "start": 342.44,
+      "end": 378.1
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "How does this approach differ conceptually from DreamDojo’s use of human video?",
+      "start": 379.04,
+      "end": 383.0
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "DreamDojo infers continuous latent proxy actions from changes between video frames, then adapts those representations to robot controls. Ropedia W-zero instead conditions prediction on explicit camera poses and image-projected skeletons, seeking a consistent visual interface across embodiments. Both make human footage useful for robot world modeling, but they expose motion differently. The comparison highlights a broader design question: whether a shared representation should be inferred implicitly from video or supplied through structured geometry.",
+      "start": 385.14,
+      "end": 417.84
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "What limitation should researchers keep in mind when interpreting this benchmark?",
+      "start": 418.88,
+      "end": 422.38
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "The central limitation is that camera and manipulator motion are represented, but contact and object dynamics are not explicitly modeled. A plausible-looking forecast might therefore miss whether a grasp will slip or an object will respond correctly. Xp-Teleop adds valuable long-horizon, synchronized humanoid data, including failures, but it contains about one hour of recordings. Broader embodiment coverage, physical consistency, longer-horizon stability, and closed-loop real-world evaluation remain important next steps.",
+      "start": 422.38,
+      "end": 455.8
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "text": "The broader contribution is a way to connect large human-video collections with robot prediction while avoiding a single shared joint space. That shifts attention toward standardized data and visually grounded motion interfaces as foundations for reusable world models. The results also connect video prediction to policy comparison and planning, not just image generation. The memorable takeaway is that a common visual description of motion may let one predictive model reason across bodies, even when their mechanisms differ. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 456.7,
+      "end": 495.438
+    }
+  ]
+}

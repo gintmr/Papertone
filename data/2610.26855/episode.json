@@ -1,0 +1,306 @@
+{
+  "id": "2610.26855",
+  "title": "Ropedia W0: Scaling Loco-Manipulation World Models across Embodiments with Human Experience",
+  "authors": [
+    "Tianqi Liu",
+    "Hanfei Zhao",
+    "Qifeng Liang",
+    "Hui En Pang",
+    "Jiarui Xu",
+    "Sayang Mu",
+    "Penghao Qiu",
+    "YingSheng Zhang",
+    "Jun Wang",
+    "Ziang Cao",
+    "Mingze Sun",
+    "Yukang Cao",
+    "Fangzhou Hong",
+    "Zhaoxi Chen",
+    "Ziwei Liu"
+  ],
+  "abstract": "World models enable embodied agents to anticipate action consequences, yet jointly modeling locomotion and manipulation across diverse embodiments remains challenging due to heterogeneous action spaces and limited multimodal supervision. We present Ropedia W0, the first egocentric loco-manipulation world foundation model spanning humans and robots with diverse embodiments. We curate Xp-Data, comprising 10k hours of egocentric human data and 3k hours of robot data with unified multimodal annotations and systematic quality control. A unified kinematic representation encodes locomotion through camera poses and manipulation through projected skeletons, with robot skeletons combining embodiment-specific forward kinematics with extensive manual keypoint annotation and correction. We also introduce Xp-Teleop, a long-horizon loco-manipulation benchmark based on high-quality dexterous humanoid teleoperation data. Evaluations demonstrate state-of-the-art performance across five cross-embodiment benchmarks (DreamDojo, $\\Psi_0$, $\\omega$-HOME, Xp-Teleop, and AgiBot) and on held-out human egocentric video, from zero-shot inference to few-shot and full-data post-training. Scaling human pre-training data improves performance on both human and robot evaluations. After distillation, our model supports real-time, minute-long rollouts, enabling live VR interaction. Applications in policy evaluation, model-based planning, and world-action modeling further demonstrate the model's utility for embodied decision-making.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.26855",
+    "arxiv": "https://arxiv.org/abs/2610.26855"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a15792-dc98-75cd-9255-5260526dad5a/podcast.mp3",
+  "duration": 495.438,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 42.66,
+      "en": "In a graduate course on embodied world models, today’s lecture is on Ropedia W-zero: Scaling Loco-Manipulation World Models across Embodiments with Human Experience. Work such as DreamDojo: A Generalist Robot World Model from Large-Scale Human Videos and Qwen-RobotWorld Technical Report: Unifying Embodied World Modeling through Language-Conditioned Video Generation reflects a trend toward learning predictive models from broad video data. Researchers from Nanyang Technological University and Duke University take a complementary direction, focusing on shared visual motion conditions across people and robots. Noah, I see your hand; go ahead.",
+      "zh": "在一门关于具身世界模型的研究生课程上，今天的讲座讲的是Ropedia W-zero：用人类经验跨具身扩展移动操作世界模型。像DreamDojo：从大规模人类视频构建的通用机器人世界模型，以及Qwen-RobotWorld技术报告：通过语言条件视频生成统一具身世界建模这样的工作，反映出一个趋势——从广泛的视频数据中学习预测模型。南洋理工大学和杜克大学的研究者走了一个互补的方向，聚焦于人和机器人之间共享的视觉运动条件。Noah，我看到你举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 43.66,
+      "end": 47.18,
+      "en": "Hi Professor, what exactly does a world model predict in this paper?",
+      "zh": "教授您好，这篇论文里的世界模型具体预测的是什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 48.08,
+      "end": 75.76,
+      "en": "It predicts future egocentric video: given an image, a text instruction, and motion conditions, it generates what the scene may look like as the body moves and the hands interact with objects. The aim is to handle locomotion and manipulation together, rather than predicting a tabletop action from a fixed camera. That matters because a walking robot must anticipate both where its viewpoint will move and how its hands will affect the scene.",
+      "zh": "它预测的是未来的第一人称视频：给定一张图像、一条文本指令和运动条件，它会生成当身体移动、双手与物体交互时场景可能呈现的样子。目标是同时处理移动和操作，而不是从固定相机预测桌面动作。这很重要，因为行走的机器人必须同时预判它的视角会往哪移动，以及它的手会如何影响场景。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 76.68,
+      "end": 80.24,
+      "en": "So what lets one model work across bodies with very different joints?",
+      "zh": "那么，是什么让同一个模型能够适用于关节结构差异巨大的不同身体呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 80.24,
+      "end": 107.66,
+      "en": "The key idea is to describe motion in image-aligned terms instead of forcing every embodiment into the same joint-action vector. Camera movement is represented by per-pixel Plücker-ray maps, while hand or gripper movement is represented by projected skeletons. A human hand, parallel gripper, and dexterous robot hand keep their own underlying kinematics, but the model sees visual representations that occupy a common format.",
+      "zh": "关键思路是用与图像对齐的方式来描述运动，而不是把每种具身形态都强行塞进同一个关节动作向量里。相机运动用逐像素的Plücker射线图表示，手或夹爪的运动则用投影后的骨架表示。人类的手、平行夹爪和灵巧机械手各自保留底层的运动学结构，但模型看到的是处于统一格式下的视觉表示。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 107.66,
+      "end": 113.16,
+      "en": "Does the model learn that interface from human footage first, or from mixed robot data?",
+      "zh": "模型是先通过人类视频学会这个接口，还是先从混合机器人数据里学到的？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 114.06,
+      "end": 142.16,
+      "en": "Both, in sequence. The team curates Xp-Data, with about 10,000 hours of human egocentric video and 3,000 hours of robot video. First, the model learns from human recordings conditioned on text, camera trajectories, and projected hand skeletons. Then it trains on a balanced human-and-robot mixture. This preserves broad human interaction patterns while introducing the appearances and motion characteristics of different robot platforms.",
+      "zh": "两者都有，按顺序进行。团队整理了Xp-Data，包含约1万小时的人类第一视角视频和3000小时的机器人视频。首先，模型基于文本、相机轨迹和投影手部骨架等条件，从人类录像中学习。然后在均衡的人类与机器人混合数据上训练。这样既保留了广泛的人类交互模式，又引入了不同机器人平台的外观和运动特征。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 143.34,
+      "end": 147.1,
+      "en": "How do they make such varied human recordings consistent enough to train on?",
+      "zh": "他们怎么让这些五花八门的人类录像变得足够一致，从而能用来训练呢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 147.92,
+      "end": 181.12,
+      "en": "They filter footage for visual quality and task relevance, then standardize geometry, motion, and task descriptions. Camera paths come from calibration or are estimated with S-L-A-M and depth-based methods. Human hand poses are reconstructed and projected into the image; robot keypoints use kinematics where possible, with manual correction when needed. Automated checks and human review examine alignment and caption quality before verified tasks become synchronized 81-frame clips.",
+      "zh": "他们先按视觉质量和任务相关性筛选素材，再对几何、运动和任务描述做标准化处理。相机路径来自标定，或用SLAM和基于深度的方法估计。人手姿态经过重建后投影到图像中；机器人关键点尽量用运动学求解，必要时人工修正。自动检查和人工审核会核对对齐情况和描述质量，通过验证的任务随后被整理成同步的81帧片段。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 182.1,
+      "end": 185.94,
+      "en": "Could you clarify what information the video model actually receives at each step?",
+      "zh": "你能具体说明一下，视频模型在每一步实际接收到的信息是什么吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 185.94,
+      "end": 219.94,
+      "en": "The model builds on pretrained Wan 2.2 latent video diffusion transformers. It receives an initial image and text, plus time-aligned camera and skeleton conditions. These conditions enter spatially aligned video tokens, while text and optional context use cross-attention. The paper tests a dense model with about 5 billion parameters and an A14B mixture-of-experts model with about 14 billion active parameters. Optional wrist-pose renderings and wider-view skeletons provide additional motion context.",
+      "zh": "该模型基于预训练的Wan 2.2潜在视频扩散Transformer构建。它接收初始图像和文本，以及时间对齐的相机和骨架条件。这些条件进入空间对齐的视频token，而文本和可选上下文则使用交叉注意力。论文测试了一个约50亿参数的稠密模型和一个约140亿激活参数的A14B混合专家模型。可选的手腕姿态渲染和更宽视角的骨架提供了额外的运动上下文。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 221.02,
+      "end": 225.6,
+      "en": "How does this become useful for interactive control rather than just offline video generation?",
+      "zh": "这怎么才能真正用于交互式控制，而不只是离线视频生成呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 226.56,
+      "end": 258.6,
+      "en": "For streaming use, the authors distill the video model into a four-step autoregressive generator. The student model is extended for long-horizon generation and is reported to produce about 21.3 frames per second at 640 by 480 resolution. That supports interactive headset-based control and minute-long rollouts. The work also introduces Xp-Teleop, with 27 Unitree G-one teleoperation takes that include walking, dexterous manipulation, failed grasps, and recovery.",
+      "zh": "为了支持流式使用，作者把视频模型蒸馏成一个四步自回归生成器。学生模型被扩展用于长时程生成，据报告在640×480分辨率下能达到约21.3帧每秒。这支持了基于头显的交互式控制和长达一分钟的轨迹。这项工作还引入了Xp-Teleop，包含27段Unitree G-one遥操作片段，涵盖行走、灵巧操作、失败的抓取以及恢复。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 259.62,
+      "end": 263.16,
+      "en": "Are the results measuring whether the generated video is physically accurate?",
+      "zh": "这些结果衡量的是生成的视频在物理上是否准确吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 263.16,
+      "end": 300.16,
+      "en": "The evaluation measures image prediction, hand-following, and camera-trajectory accuracy across five robot benchmarks and held-out human video. On an eight-embodiment comparison, the 5-billion-parameter and A14B midtrained models report P-S-N-R scores of 19.83 and 21.98 decibels, compared with 19.02 for the matched Cosmos3 comparison. These results support transfer across embodiments, but image similarity alone does not establish accurate contact physics or reliable real-world outcomes.",
+      "zh": "评估衡量的是图像预测、手部跟随和相机轨迹的准确性，覆盖五个机器人基准和留出的人类视频。在八种具身配置的对比中，50亿参数模型和A14B中间训练模型报告的P-S-N-R分数分别为19.83和21.98分贝，而对应的Cosmos3对比模型为19.02。这些结果支持跨具身的迁移，但仅凭图像相似度并不能确立准确的接触物理特性或可靠的现实世界结果。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 301.26,
+      "end": 304.12,
+      "en": "What do the ablations tell us about which conditions matter most?",
+      "zh": "消融实验告诉我们哪些条件最重要？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 305.06,
+      "end": 337.34,
+      "en": "Skeleton conditioning has a substantial measured effect: removing it lowers cross-embodiment P-S-N-R by 3.8 decibels for the larger model and 1.8 for the 5-billion-parameter model. Camera conditioning has a smaller average effect, though it matters more when the viewpoint changes. The authors also report gains as human-video pretraining grows from 1,000 to 10,000 hours. Together, these findings suggest that motion-aligned visual structure and data scale both contribute.",
+      "zh": "骨架条件的影响在测量上相当显著：去掉它会让较大模型的跨具身PSNR下降3.8分贝，让50亿参数模型下降1.8分贝。相机条件的平均影响较小，不过当视角变化时它更重要。作者还报告，随着人类视频预训练数据从1000小时增长到10000小时，性能也有所提升。综合来看，这些发现表明，运动对齐的视觉结构和数据规模都有贡献。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 338.32,
+      "end": 342.44,
+      "en": "Can predictions guide decisions, or are they only useful for visual evaluation?",
+      "zh": "预测能指导决策，还是只对视觉评估有用？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 342.44,
+      "end": 378.1,
+      "en": "The paper tests several decision-support uses. Predicted task progress correlates strongly with ground-truth progress in simulation and a real-robot comparison. In planning experiments, choosing actions by their predicted outcomes improves progress over selecting random candidates. Initializing a world-action model with Ropedia W-zero also raises reported full-data success on LIBERO-Plus from 50.06% to 56.82%. These are encouraging signals, though they do not replace closed-loop deployment tests.",
+      "zh": "论文测试了几种决策支持的用途。预测的任务进度在仿真和真实机器人对比中与真实进度高度相关。在规划实验中，根据预测结果选择动作比随机选择候选动作能带来更好的进度。用Ropedia W-zero初始化世界动作模型，也将LIBERO-Plus上报告的全数据成功率从50.06%提升到56.82%。这些都是令人鼓舞的信号，尽管它们不能替代闭环部署测试。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 379.04,
+      "end": 383.0,
+      "en": "How does this approach differ conceptually from DreamDojo’s use of human video?",
+      "zh": "这种方法在概念上与DreamDojo利用人类视频的方式有何不同？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 385.14,
+      "end": 417.84,
+      "en": "DreamDojo infers continuous latent proxy actions from changes between video frames, then adapts those representations to robot controls. Ropedia W-zero instead conditions prediction on explicit camera poses and image-projected skeletons, seeking a consistent visual interface across embodiments. Both make human footage useful for robot world modeling, but they expose motion differently. The comparison highlights a broader design question: whether a shared representation should be inferred implicitly from video or supplied through structured geometry.",
+      "zh": "DreamDojo从视频帧之间的变化中推断出连续的潜在代理动作，再将这些表征适配到机器人控制上。而Ropedia W-zero则以显式的相机位姿和图像投影骨架作为预测条件，试图在不同具身形态之间建立一致的视觉接口。两者都让人体视频对机器人世界建模变得有用，但它们暴露运动信息的方式不同。这一对比凸显了一个更广泛的设计问题：共享表征应该从视频中隐式推断，还是通过结构化几何显式提供。"
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "start": 418.88,
+      "end": 422.38,
+      "en": "What limitation should researchers keep in mind when interpreting this benchmark?",
+      "zh": "研究人员在解读这个基准时，应该注意什么局限？"
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "start": 422.38,
+      "end": 455.8,
+      "en": "The central limitation is that camera and manipulator motion are represented, but contact and object dynamics are not explicitly modeled. A plausible-looking forecast might therefore miss whether a grasp will slip or an object will respond correctly. Xp-Teleop adds valuable long-horizon, synchronized humanoid data, including failures, but it contains about one hour of recordings. Broader embodiment coverage, physical consistency, longer-horizon stability, and closed-loop real-world evaluation remain important next steps.",
+      "zh": "核心局限在于，它只表示了相机和机械臂的运动，却没有显式建模接触和物体动力学。因此，一个看起来合理的预测，可能无法判断抓取会不会打滑，或者物体是否会做出正确响应。Xp-Teleop 增加了有价值的长时程、同步的人形数据，包括失败案例，但其中只有大约一小时的记录。更广的具身覆盖、物理一致性、更长时程的稳定性，以及闭环的真实世界评估，仍然是重要的下一步。"
+    },
+    {
+      "i": 23,
+      "speaker": "John",
+      "start": 456.7,
+      "end": 495.438,
+      "en": "The broader contribution is a way to connect large human-video collections with robot prediction while avoiding a single shared joint space. That shifts attention toward standardized data and visually grounded motion interfaces as foundations for reusable world models. The results also connect video prediction to policy comparison and planning, not just image generation. The memorable takeaway is that a common visual description of motion may let one predictive model reason across bodies, even when their mechanisms differ. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的贡献在于，它提供了一种将大规模人类视频集合与机器人预测相连接的方式，同时避免了单一的共享联合空间。这将注意力转向标准化数据和基于视觉的运动接口，作为可复用世界模型的基础。研究结果还将视频预测与策略比较和规划联系起来，而不仅仅是图像生成。最值得记住的要点是，对运动的共同视觉描述可能让一个预测模型跨不同身体进行推理，即使它们的机制各不相同。感谢收听。如果你还有任何问题，请询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{liu2026ropediaw0scalinglocomanipulation,\n      title={Ropedia W0: Scaling Loco-Manipulation World Models across Embodiments with Human Experience}, \n      author={Tianqi Liu and Hanfei Zhao and Qifeng Liang and Hui En Pang and Jiarui Xu and Sayang Mu and Penghao Qiu and YingSheng Zhang and Jun Wang and Ziang Cao and Mingze Sun and Yukang Cao and Fangzhou Hong and Zhaoxi Chen and Ziwei Liu},\n      year={2026},\n      eprint={2610.26855},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.26855}, \n}",
+  "topics": [
+    "Few Shot Learning",
+    "Generative Models",
+    "Imitation Learning"
+  ],
+  "peaks": [
+    0.603,
+    0.543,
+    0.525,
+    0.423,
+    0.329,
+    0.319,
+    0.308,
+    0.742,
+    1.0,
+    0.639,
+    0.779,
+    0.364,
+    0.325,
+    0.402,
+    0.275,
+    0.309,
+    0.468,
+    0.552,
+    0.365,
+    0.564,
+    0.348,
+    0.538,
+    0.812,
+    0.481,
+    0.543,
+    0.584,
+    0.596,
+    0.516,
+    0.269,
+    0.23,
+    0.259,
+    0.2,
+    0.576,
+    0.47,
+    0.372,
+    0.332,
+    0.336,
+    0.336,
+    0.449,
+    0.314,
+    0.239,
+    0.282,
+    0.256,
+    0.245,
+    0.567,
+    0.399,
+    0.455,
+    0.495,
+    0.317,
+    0.538,
+    0.521,
+    0.4,
+    0.419,
+    0.292,
+    0.234,
+    0.896,
+    0.647,
+    0.634,
+    0.712,
+    0.874,
+    0.41,
+    0.455,
+    0.238,
+    0.35,
+    0.324,
+    0.294,
+    0.388,
+    0.45,
+    0.305,
+    0.251,
+    0.267,
+    0.202
+  ],
+  "published": "2026-10-19",
+  "views": 163,
+  "license": "arXiv 默认许可"
+}

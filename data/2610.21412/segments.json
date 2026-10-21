@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 507.715,
+  "word_match_rate": 0.9361,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Advanced Topics in L-L-M Agents, today’s lecture is on JevAgentHarness: Benchmarking, Deploying and Training Decision Models That Share Control with L-L-Ms. AgentBench evaluates models acting across interactive environments, while HarnessDev examines how models build and revise their agent harnesses. This paper, from researchers at the University of Illinois Urbana-Champaign, Princeton, and Google, asks a related but narrower question: which routine choices inside an agent can a smaller model safely handle? Yes, Noah?",
+      "start": 0.0,
+      "end": 37.48
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why focus on these small choices instead of making the whole agent model cheaper?",
+      "start": 38.6,
+      "end": 43.36
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because an agent repeatedly makes bounded decisions, such as choosing a tool from a known menu, and each call to a large language model adds cost and latency. The field is exploring more capable harnesses and longer interactive tasks, but this work looks inside the operating loop. Its central point is that a decision that seems simple in isolation may alter later observations, so cost savings have to be judged by what happens to the task, not just by answer accuracy.",
+      "start": 44.3,
+      "end": 73.4
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper’s first contribution is Agent Decision Bench, an evaluation organized into 3 levels. At the first level, models answer isolated multiple-choice questions. At the second, they answer questions from recorded agent states, with decisions scored but not executed. At the third, models make choices in a live agent, where an action changes what the system encounters next. The progression resembles testing a driver on rules, a replayed route, and then actual traffic.",
+      "start": 74.44,
+      "end": 102.9
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the middle level separates decision quality from the consequences of changing the agent’s path?",
+      "start": 103.92,
+      "end": 108.68
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. The middle level compares models on shared states, which makes step-level differences easier to interpret. But only live execution reveals how one wrong choice can redirect later steps or cause an irreversible outcome. To study this, the authors built DecisionGym, a simulated customer-service setting with a database and typed tools. Tasks include distractor tools, similar options, and situations where the agent must ask for missing information before taking action.",
+      "start": 109.42,
+      "end": 140.7
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "A second contribution is a framework for delegating selected decisions rather than handing off the whole agent. The study considers 8 decision points, including tool choice, some tool arguments, memory operations, stopping, and routing between models. It also defines several ways to integrate a decision model. The central strategy is a cascade: the smaller model proposes an option first, and the larger model takes over when confidence is below a fitted threshold.",
+      "start": 141.54,
+      "end": 170.88
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: how do they know a confidence threshold is safe enough to use?",
+      "start": 172.02,
+      "end": 175.92
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They estimate it from shadow-mode trajectories. During calibration, the decision model answers, but the harness does not follow those answers. The researchers compare its accuracy with the larger model’s, estimate the cost of a larger-model call, and assess how mistakes affect task success. Thresholds are specific to each decision point. If the model, agent, or task rules change, the threshold needs to be fitted again rather than treated as a universal setting.",
+      "start": 176.78,
+      "end": 205.88
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The third contribution is Agent Decision, a 4-billion-parameter model trained on states from agent runs. The authors fine-tuned Qwen three on 15,694 decision states from 587 tasks, including states reached after injected mistakes. This matters because a model can encounter unfamiliar situations when its own earlier error changes the trajectory. Training included supervised fine-tuning with probability calibration, followed by group-relative policy optimization in the agent loop.",
+      "start": 206.7,
+      "end": 240.96
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify whether the reinforcement-learning stage drove most of the improvement?",
+      "start": 240.96,
+      "end": 245.64
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "In the reported comparison, most of the gain came from supervised fine-tuning; the later optimization stage did not produce a measurable additional success improvement. On shifted DecisionGym tasks, fine-tuning raised success from 13.5% to 96%. Step-level accuracy rose from 52.9% to 98.4%. Yet adding public tool-use data later raised isolated accuracy while lowering shifted-task success to 91.5%. That contrast shows why optimizing a familiar benchmark score may not improve decisions in the agent’s actual operating conditions.",
+      "start": 246.68,
+      "end": 286.7
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The deployment results show both the promise and the need for caution. With Gemini 3.5 Flash, a thresholded cascade using the existing decision model delegated 27.2% of tool choices and 20.8% of argument choices. It cut cost by 14.2% without changing outcomes on 500 tasks in one test. But a fixed confidence threshold reduced success by 21.5 percentage points, and unthresholded delegation also caused substantial losses.",
+      "start": 287.84,
+      "end": 321.92
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Hold on, did that initial cost-saving setup also pass the later test on new tasks?",
+      "start": 322.9,
+      "end": 327.46
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "No. The combined configuration using the existing model did not pass the registered non-inferiority test on new tasks; its success rate fell by 2.2 percentage points, with uncertainty extending beyond the allowed margin. Replacing it with the agent-trained model changed the result: on 500 new tasks, success was 100% compared with 99.4% for the large-model-only baseline, while cost fell by 81.1%. The comparison underscores the value of agent-specific training and properly staged evaluation.",
+      "start": 328.6,
+      "end": 364.3
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "These results suggest a practical rule: delegate frequent, structured choices when the harness can measure uncertainty and recover by escalating to a stronger model. The payoff depends on the task. In tested coding-agent settings, where actions include more free-form commands, routing savings were smaller, around 7% to 10.5%. Shared-G-P-U queues also made some executions slower despite lower model cost, so cost and latency should be measured separately.",
+      "start": 364.3,
+      "end": 397.54
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this connect to AgentBench, and what should researchers be cautious about when applying the framework?",
+      "start": 398.76,
+      "end": 403.5
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "AgentBench established the importance of evaluating models through interaction, while this paper adds a closer examination of individual decisions within that interaction. Its three levels connect isolated tests to live outcomes, helping diagnose where a failure emerges. But the evidence is mostly in English and uses Gemini agent models. Thresholds and trained models depend on particular task rules, and the work did not directly compare with learned routers such as RouteLLM on the same tasks.",
+      "start": 405.12,
+      "end": 433.74
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "There is also a safety boundary to keep clear. The authors found confident, irreversible errors when a model faced a new business rule it had not learned. Calibration helped in some settings, and training on the new rule improved decisions, but neither removes distribution-shift risk. The system was not tested against adversarial observations or prompt injection. A decision-model guard can accept an unsafe proposal, so it should not be treated as a security mechanism, especially for actions that cannot be undone.",
+      "start": 434.76,
+      "end": 464.26
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "So the main lesson is to evaluate the decision inside the agent, not just the model’s confidence?",
+      "start": 465.26,
+      "end": 469.98
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "That is the key takeaway. JevAgentHarness offers a way to benchmark, train, and selectively deploy smaller decision models while tracking task outcomes, cost, and latency. Its evidence supports delegation when choices are structured, thresholds are calibrated for the actual agent, and fallback behavior is available. But the evaluation must include new tasks and consequential failures. A decision that looks easy on a static question can still steer an agent somewhere it cannot recover from. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 471.08,
+      "end": 507.715
+    }
+  ]
+}

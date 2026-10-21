@@ -1,0 +1,273 @@
+{
+  "id": "2610.10460",
+  "title": "Composing What Each Teacher Learned: Delta Distillation for Multi-Teacher On-Policy Learning",
+  "authors": [
+    "Yuanda Xu",
+    "Hejian Sang",
+    "Zhengze Zhou",
+    "Shayan Mohajer Hamidi",
+    "Xiaomin Li",
+    "Rohit Jain",
+    "Alborz Geramifard"
+  ],
+  "abstract": "Multi-teacher on-policy distillation (MOPD) is used in two settings. In common-domain composition, several teachers score each student rollout from one prompt domain and their signals form a single target; in routed-domain distillation, prompts from different domains are assigned to the corresponding specialist. Both settings usually transfer each teacher's endpoint policy, which mixes what post-training changed with preferences inherited from the teacher's base. We introduce $\\Delta$-MOPD, which transfers each teacher's teacher-minus-base logit shift re-anchored at the student's frozen initialization, and compare it with endpoint supervision in both settings while holding teacher selection fixed. We first expose the mechanism that impedes endpoint transfer: inherited base pull can exceed the post-training shift. Removing it reduces the teacher-term norm ratio and target--student KL.\nAcross our experiments, the results suggest that shift targets are particularly useful when teacher signals are combined at a state. With three composed teachers, $\\Delta$-MOPD exceeds endpoint composition by $4.11$ Math and $1.95$ five-benchmark points; with two, it matches endpoint accuracy. Under phased routing, it achieves higher mean performance in both phase orders and reduces the observed order gap from $10.50$ to $6.42$ points. Under interleaved routing, where each update involves one teacher, the two targets perform comparably. The phased results provide supporting evidence that the benefit may extend to signals accumulated across training phases. Target construction is thus an independent design axis in MOPD, complementary to teacher selection. The experiment repo could be find at this https URL",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10460",
+    "arxiv": "https://arxiv.org/abs/2610.10460"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11933-7a21-7da2-8ff3-adce17d14de9/podcast.mp3",
+  "duration": 504.424,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.98,
+      "en": "In a hypothetical graduate course called Advanced Methods for Language Model Training, today's lecture is on delta M-O-P-D: multi-teacher on-policy distillation with teacher-relative shifts. Recent work such as On-Policy Delta Distillation and D-O-P-D reflects a growing interest in shaping teacher feedback around the student’s own responses. This paper asks a further question: when specialists come from different starting models, what should their feedback contribute? Yes, Noah?",
+      "zh": "在一门假设的研究生课程“语言模型训练高级方法”中，今天的讲座讲的是delta M-O-P-D：带教师相对偏移的多教师同策略蒸馏。On-Policy Delta Distillation和D-O-P-D等近期工作反映出，人们越来越关注围绕学生自己的回答来塑造教师反馈。这篇论文进一步提出一个问题：当专家模型来自不同的起始模型时，它们的反馈应该贡献什么？好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.16,
+      "end": 39.6,
+      "en": "Hi Professor, is the problem that a specialist may bring old habits from its starting model, not just what it learned during training?",
+      "zh": "教授您好，问题是不是在于，专家模型可能会把它起始模型带来的旧习惯也带进来，而不只是它在训练中学到的东西？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.6,
+      "end": 75.4,
+      "en": "Exactly. On-policy distillation trains a student using responses it generated itself, while frozen teachers score those responses. That makes the feedback relevant to states the student actually visits. The opening diagnostic gives a sense of the issue: endpoint composition has a 5.2-to-1 teacher-term norm ratio and target-to-student K-L of 0.152, compared with 1.44-to-1 and 0.031 for shifts. K-L here measures distributional distance, not benchmark accuracy.",
+      "zh": "正是如此。同策略蒸馏用学生自己生成的回答来训练它，再由冻结的教师模型给这些回答打分。这样一来，反馈就与学生实际经历的状态相关。开头的诊断能说明问题所在：端点组合的教师项范数比为5.2比1，目标与学生的K-L为0.152，而偏移的对应数值是1.44比1和0.031。这里的K-L衡量的是分布距离，不是基准准确率。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 76.54,
+      "end": 105.16,
+      "en": "The key distinction is between a teacher’s endpoint and its base. The endpoint is the model after post-training; the base is the exact checkpoint that entered that stage. Endpoint supervision can carry both the post-training changes and differences that were already present between the teacher’s base and the student’s initialization. Delta M-O-P-D subtracts the teacher’s base logits from its endpoint logits, then applies that shift at the student’s frozen starting point.",
+      "zh": "关键区别在于教师的终点和基座。终点是后训练之后的模型；基座是进入那个阶段时的确切检查点。终点监督既可能带上后训练带来的变化，也可能带上教师基座与学生初始化之间本来就存在的差异。Delta M-O-P-D 把教师基座的 logits 从终点 logits 中减去，再把这一偏移施加到学生冻结的起始点上。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 106.0,
+      "end": 111.98,
+      "en": "Quick question: if a teacher starts from the student’s exact checkpoint, does this subtraction change its target?",
+      "zh": "快速问一下：如果一个老师模型从学生模型完全相同的检查点开始，这个减法会改变它的目标吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 113.12,
+      "end": 144.16,
+      "en": "No. For a same-origin teacher, the base is the student initialization, so re-anchoring its shift reproduces the endpoint target. The difference appears in cross-origin terms, where the teacher began elsewhere. The paper’s schematic contrasts endpoint composition with shift composition: the anchor is the student initialization, each teacher has a base and endpoint, and arrows show signals added tail-to-head. The drawing is conceptual; its positions are not measurements.",
+      "zh": "不会。对于同源教师来说，基线就是学生的初始化，所以重新锚定它的偏移就能复现终点目标。差异出现在跨源项中，因为教师是从别处开始的。论文的示意图对比了终点合成与偏移合成：锚点是学生的初始化，每个教师都有一个基线和终点，箭头表示从头到尾相加的信号。这张图是概念性的，其位置并非测量值。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 145.36,
+      "end": 151.24,
+      "en": "So the shift is not a pure capability signal; it can include changes in style or calibration too?",
+      "zh": "所以这个偏移并不是纯粹的能力信号，它也可能包含风格或校准方面的变化，对吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 151.98,
+      "end": 183.0,
+      "en": "That’s right. The shift includes every effect of post-training, not capability or reasoning alone. The three-panel diagnostic supports the authors’ proposed mechanism without proving it is the only cause. In the mechanism run, inherited base pull has a component gradient norm of 3.04, while the post-training shift is 1.51. The endpoint mixture’s realized teacher-weight ratio is 5.2-to-1; the anchored shift ratio is 1.44-to-1, closer to the nominal 1-to-1.",
+      "zh": "没错。这个偏移包含了后训练带来的所有效应，而不只是能力或推理的变化。三面板诊断支持作者提出的机制，但并不能证明它是唯一原因。在机制实验中，继承的基座拉力的分量梯度范数为3.04，而后训练偏移为1.51。端点混合的实际教师权重比为5.2比1；锚定偏移比为1.44比1，更接近名义上的1比1。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 184.72,
+      "end": 221.38,
+      "en": "The third panel measures student-to-target K-L: 0.152 for endpoint composition and 0.031 for shifts. These are late-training averages across steps 300, 320, 340, 360, and 380, computed on student-visited prefixes. The authors interpret the gradients as evidence that inherited differences can dominate, and the lower K-L as closer target tracking. They are diagnostics under this protocol, not a universal causal rule or the training objective.",
+      "zh": "第三幅图衡量的是学生模型到目标模型的K-L散度：端点组合是0.152，而各种偏移是0.031。这些是训练后期在300、320、340、360和380步上的平均值，基于学生模型实际访问过的前缀计算。作者把梯度解读为继承来的差异可能占主导的证据，把更低的K-L解读为更贴近目标跟踪。这些只是该协议下的诊断指标，不是普适的因果规律，也不是训练目标。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 221.38,
+      "end": 226.52,
+      "en": "Can you clarify how they test whether that mechanism matters for benchmark performance?",
+      "zh": "你能说明一下他们是如何检验这一机制对基准表现是否重要的吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 227.64,
+      "end": 260.88,
+      "en": "The most informative test holds teacher selection fixed and changes the representation of the cross-origin signal. At step 100, using greedy pass-at-1, the three-teacher shift arm scores 33.50% on the Math macro and 26.19% on the five-suite macro. Endpoint composition scores 29.39% and 24.24%, differences of 4.11 and 1.95 percentage points. All teachers score the same BigMath rollouts.",
+      "zh": "最有信息量的测试是固定教师选择、只改变跨源信号的表示方式。在第100步，使用贪心pass@1，三教师切换组在数学宏指标上得分33.50%，在五套件宏指标上得分26.19%。端点组合得分分别为29.39%和24.24%，相差4.11和1.95个百分点。所有教师都对相同的BigMath轨迹打分。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 261.84,
+      "end": 265.62,
+      "en": "What goes into those macros, and is the improvement consistent across tasks?",
+      "zh": "这些宏指标里都包含什么，改进在不同任务上是否一致？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 265.62,
+      "end": 307.04,
+      "en": "The Math macro is the unweighted mean of A-M-C 2023, MATH-500, and A-I-M-E 2025. The five-suite macro is the unweighted mean of those three plus G-P-Q-A-Diamond and I-F-Eval, not an average of two group scores. The improvement is not uniform: the Science and instruction-following macro is 15.22% with shifts versus 16.51% with endpoints, and the Math gain is concentrated in A-I-M-E 2025.",
+      "zh": "数学宏指标是A-M-C 2023、MATH-500和A-I-M-E 2025的未加权平均值。五套件宏指标是这三项再加上G-P-Q-A-Diamond和I-F-Eval的未加权平均值，而不是两个分组得分的平均。提升并不均匀：科学和指令遵循宏指标在带偏移时是15.22%，在带端点时是16.51%，而数学方面的增益集中在A-I-M-E 2025上。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 308.38,
+      "end": 313.3,
+      "en": "Since JustRL is unchanged, is Polaris the term that actually differs between the two arms?",
+      "zh": "既然JustRL没有变化，那Polaris才是两组之间真正有差异的那一项吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 314.24,
+      "end": 350.5,
+      "en": "Yes. The same-origin JustRL term is identical in the paired arms; Polaris supplies the cross-origin term whose representation changes. With two teachers, aggregate accuracy is comparable rather than a clear shift advantage. Routing tests add context: in interleaved routing, each update sees one teacher, and the five-suite scores are 26.29% for shifts and 25.67% for endpoints. That small gap is consistent with the clearest benefits appearing when multiple teachers contribute at one state.",
+      "zh": "是的。同源的JustRL项在配对的两组中完全相同；Polaris提供的是跨源项，其表示会发生变化。在两个教师的情况下，总体准确率相当，而非明显的偏移优势。路由测试补充了背景：在交错路由中，每次更新只看到一个教师，五套件的分数为偏移26.29%、端点25.67%。这一小差距与“多个教师在同一状态下共同贡献时收益最明显”相符。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 351.5,
+      "end": 386.3,
+      "en": "In phased routing, teacher-domain pairs occupy successive training phases. Shifts score higher in both tested orders: 29.79% versus 24.11% for Science and instruction-following followed by Math, and 36.21% versus 34.61% for the reverse order. The gap between orders narrows from 10.50 to 6.42 points. Treat this as supporting evidence that shifts may help signals accumulate across phases, not proof of a general routing benefit.",
+      "zh": "在分阶段路由中，教师-领域对依次占据连续的训练阶段。无论采用哪种测试顺序，Shifts的得分都更高：先科学和指令跟随再数学的顺序下为29.79%对24.11%，反过来则为36.21%对34.61%。两种顺序之间的差距从10.50个百分点缩小到6.42个百分点。这可以作为支持性证据，说明Shifts可能有助于信号跨阶段累积，但不能证明存在普遍的路由收益。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 387.32,
+      "end": 392.4,
+      "en": "How should we weigh those routing results given the significance testing and earlier delta-distillation work?",
+      "zh": "考虑到显著性检验和早前的delta蒸馏工作，我们该如何权衡这些路由结果？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 392.4,
+      "end": 425.0,
+      "en": "There is an important limit: only one benchmark-by-order comparison had an uncorrected p-value below 0.05, and it did not survive correction across ten comparisons. Also, the idea of a teacher-minus-base signal is not new: On-Policy Delta Distillation studies that idea for a single teacher. The contribution here is extending teacher-relative shifts to multi-teacher composition and routed-domain distillation, anchored at the student’s initialization.",
+      "zh": "这里有一个重要限制：在基准与顺序的对比中，只有一个比较的未校正p值低于0.05，而且它在十次比较的校正后没能存活。另外，教师减基线的信号这个想法并不新：On-Policy Delta Distillation 已经针对单个教师研究过这个想法。这里的贡献在于把教师相对偏移扩展到多教师组合和路由域蒸馏，并以学生的初始化为锚点。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 426.14,
+      "end": 432.24,
+      "en": "So the main implication is about changing what a chosen teacher contributes, rather than changing which teacher is selected?",
+      "zh": "所以主要含义是改变所选教师所贡献的内容，而不是改变选择哪位教师？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 433.22,
+      "end": 465.44,
+      "en": "Precisely. The closest multi-teacher precedent, M-O-P-D, routes prompts to domain specialists sharing the student’s initialization. In that same-origin setting, shifts reduce to endpoint supervision. This paper tests a different case: specialists from different origins, while holding selection fixed. Its results suggest that removing inherited base differences can matter most when cross-origin signals are combined; the phase-routing evidence is promising but remains limited.",
+      "zh": "正是如此。最接近的多教师先例M-O-P-D，是把提示路由给与学生共享初始化的领域专家。在这种同源设定下，偏移就退化为对端点的监督。本文测试的是另一种情况：来自不同来源的专家，同时保持选择固定不变。其结果提示，当跨来源信号被组合时，去除继承的基座差异可能最为关键；阶段路由的证据令人鼓舞，但仍然有限。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 466.52,
+      "end": 504.424,
+      "en": "The practical takeaway is to distinguish what a specialist acquired during post-training from what it inherited before that stage. A teacher-relative shift preserves the former as a complete post-training change, then anchors it to the student’s starting behavior. Same-origin teachers keep their original signal, while cross-origin composition changes. Remember the evidence boundary: the controlled three-teacher result is encouraging, the Sci/IF exception matters, and routing does not yet establish a general advantage. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "实际启示在于，要把专家在后期训练阶段学到的东西，和它在那之前继承来的东西区分开。教师相对偏移把前者完整保留为后期训练带来的变化，再把它锚定到学生的起始行为上。同源教师保留原有信号，而异源组合则会改变。记住证据边界：受控的三教师结果令人鼓舞，Sci/IF 的例外值得注意，而路由尚未确立普遍优势。感谢收听。如果还有问题，可以问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{sang2026composingteacherlearnedmultiteacher,\n      title={Composing What Each Teacher Learned: Multi-Teacher On-Policy Distillation through Teacher-Relative Shifts}, \n      author={Hejian Sang and Zhengze Zhou and Shayan Mohajer Hamidi and Xiaomin Li and Rohit Jain and Alborz Geramifard},\n      year={2026},\n      eprint={2610.10460},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.10460}, \n}",
+  "topics": [
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.691,
+    0.468,
+    0.5,
+    0.348,
+    0.432,
+    0.708,
+    0.527,
+    0.5,
+    0.409,
+    0.599,
+    0.383,
+    0.353,
+    0.338,
+    0.302,
+    0.227,
+    0.486,
+    0.594,
+    0.365,
+    0.26,
+    0.313,
+    0.483,
+    0.47,
+    0.387,
+    0.361,
+    0.335,
+    0.298,
+    0.744,
+    0.56,
+    0.299,
+    0.537,
+    0.639,
+    0.621,
+    0.53,
+    0.483,
+    0.455,
+    0.453,
+    0.49,
+    0.488,
+    0.567,
+    0.325,
+    0.362,
+    0.395,
+    0.25,
+    0.208,
+    0.577,
+    1.0,
+    0.51,
+    0.554,
+    0.429,
+    0.474,
+    0.625,
+    0.65,
+    0.446,
+    0.662,
+    0.524,
+    0.59,
+    0.872,
+    0.629,
+    0.628,
+    0.481,
+    0.508,
+    0.471,
+    0.608,
+    0.382,
+    0.412,
+    0.409,
+    0.364,
+    0.318,
+    0.221,
+    0.349,
+    0.2,
+    0.242
+  ],
+  "published": "2026-10-07",
+  "views": 173,
+  "license": "CC BY"
+}

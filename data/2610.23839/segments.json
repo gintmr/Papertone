@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 452.728,
+  "word_match_rate": 0.9378,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called AI for Scientific Discovery, we would ask how an agent can move beyond producing plausible ideas toward developing testable investigations. Today's lecture is on Discovery R-S-I. Recent work such as Accelerating Scientific Discovery with Co-Scientist and Toward Generalist Autonomous Research via Hypothesis-Tree Refinement reflects a trend toward agents that generate and organize research ideas. This paper adds a focus on carrying lessons from one research process into later ones. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 37.42
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does it mean to preserve the research process rather than just its final hypothesis?",
+      "start": 38.58,
+      "end": 43.44
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It means treating a hypothesis as more than a sentence. A useful, testable proposal connects a claim to evidence, lays out how to investigate it, specifies what results would count for or against it, and considers alternative explanations. Those pieces make the proposal assessable and revisable; they do not make the claim true. Discovery R-S-I keeps versions of these proposals and records how they relate, so later feedback can address the development, not only the final wording.",
+      "start": 44.64,
+      "end": 75.8
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: does a compiled investigation mean the proposed science has already been tested?",
+      "start": 76.68,
+      "end": 81.24
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "No. The research tree records successive hypothesis versions, with links to earlier versions; some revisions may combine more than one parent. Different agents have distinct roles: one selects directions, others generate or repair proposals, critique scientific merit, or assess progress relative to a proposal’s ancestry. Selected computational plans can be compiled into tasks with inputs, environments, outputs, and checks. Compilation shows that a plan is specified for execution, not that it has run or confirmed the hypothesis.",
+      "start": 82.28,
+      "end": 116.06
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The system’s learning loop uses these records to connect assessments with documented contributions. In hypothesis-credit optimization, evidence about a proposal and its development helps assign bounded credit to supported agent actions, which become training targets. A separate process, harness replay, examines recurring workflow failures while holding model weights fixed, then tests targeted changes under matched development conditions. Rediscovery applies accepted changes to fresh questions. The acceptance step can keep the model, the workflow, both, or neither.",
+      "start": 116.06,
+      "end": 151.3
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How can the system tell which contribution deserves credit when several agents and revisions are involved?",
+      "start": 152.26,
+      "end": 157.58
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "That is exactly why provenance matters, but the records should not be mistaken for perfect causal attribution. The system uses documented contributions and assessments to select supported histories for training, rather than rewarding every action associated with a successful final score. A useful analogy is reviewing a lab notebook: it helps identify which steps were relevant, yet the record alone cannot prove that one step caused the outcome. The paper’s approach makes feedback more specific, while leaving credit assignment as a methodological challenge.",
+      "start": 158.52,
+      "end": 191.28
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "A second contribution is a measurement framework called D-F-M Bench. It evaluates five kinds of objects: individual hypotheses, parent-child revisions, ordered development paths, complete research runs, and scientific-contribution families. The distinction matters because one proposal’s quality is not the same as the quality of its revision history or a complete run. The benchmark also separates delivery maturity from scientific quality, so a runnable plan is not automatically treated as a supported scientific contribution.",
+      "start": 192.2,
+      "end": 228.22
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can you clarify what the main quality results actually show, rather than what the system aims to do?",
+      "start": 229.2,
+      "end": 235.2
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Across 241 research questions in four life-science domains, an automated grader rated hypothesis quality on a 1 to 10 scale across eight dimensions. The weighted average rose from 4.86 for the base model to 5.18 after the first round and 5.39 after the second. The largest gains were in falsifiability, from 4.00 to 6.20, and data resolvability, from 3.73 to 4.99. These scores assess proposal quality, not truth or completed discovery.",
+      "start": 235.78,
+      "end": 275.62
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "The score rises overall, but did every dimension improve, and do human reviewers agree?",
+      "start": 276.58,
+      "end": 281.48
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "No: importance fell from 6.48 to 6.04, and novelty from 4.87 to 4.58, so the gains point more clearly to better-specified tests than to more important or original questions. In a separate review of 292 proposals, 27 medically or bioscience-trained reviewers assessed revisions without seeing model identities or automated scores. Mean parent-child change was plus 0.07 for Discovery R-S-I-27B, plus 0.03 for G-P-T-5.6 Sol, and minus 0.01 for G-P-T-6 Luna. These are dependent revisions within research trees, not independent project outcomes.",
+      "start": 282.34,
+      "end": 330.78
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The broader connection is that iterative hypothesis generation is not new. Co-Scientist already combines generation, critique, comparison, and refinement, while ScienceBuddy also describes coupled improvement of a model and its research workflow. Discovery R-S-I’s more specific emphasis is retaining evidence and contribution histories across investigations, then using assessments to shape training targets and workflow changes. That focus makes the path from critique to later behavior more explicit, but it does not by itself show which part of the learning loop produced the measured gains.",
+      "start": 330.78,
+      "end": 369.9
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "So what experiment would help establish whether credit optimization, workflow replay, or rediscovery is responsible for the improvement?",
+      "start": 370.84,
+      "end": 378.42
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Ablations that isolate those components would help answer that question, alongside evaluation on fresh research questions and careful tracking of dependencies between revisions. The reported base-to-round-two increase accompanies a system combining credit-weighted training, harness replay, and rediscovery; it does not isolate their individual effects. The authors also report shifts toward more evolution and repair and fewer restarts, but operation frequency alone does not establish that any one strategy caused better research.",
+      "start": 378.42,
+      "end": 412.24
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The key takeaway is that preserving how a testable question develops creates a route for feedback to influence later work. Yet a better-specified proposal remains a proposal. This paper reaches concrete hypotheses and compiled plans; executing those plans, assessing supportive, negative, or inconclusive outcomes, and validating wet-lab claims remain future work. The useful next question is not only whether agents can propose research, but how well their records help us learn from what happens next. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 413.2,
+      "end": 452.728
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "id": "2610.21412",
+  "title": "JevAgentHarness: Benchmarking, Deploying and Training Decision Models That Share Control with LLMs",
+  "authors": [
+    "Kunlun Zhu",
+    "Tao Feng",
+    "Xu Han",
+    "Heng Wang",
+    "Ling Yang",
+    "Xiangru Tang",
+    "Jiaxuan You",
+    "Heng Ji"
+  ],
+  "abstract": "Large language model (LLM) agents now fix software, operate computers and serve customers, but their harnesses, the programs that run them, call a large LLM at every step, which makes long tasks slow and costly. Most of these calls end in a multiple-choice decision, such as which tool to call next. Decision models such as Jev answer these questions directly, at a fraction of an LLM call's time and price. We ask how a harness can delegate these decisions to a decision model with little loss of success. To evaluate decision models in agentic tasks, we build AgentDecisionBench, which tests them from isolated questions up to control of a running agent, on public benchmarks and our DecisionGym environment. The decision model most accurate on isolated questions solved only 69.5% of agent tasks, and without a fitted confidence threshold, delegating tool choices lowered success by 19.0 points. Building on these findings, we then design JevAgentHarness, which fits this threshold for each choice on the agent's own trajectories and lets the LLM decide below it. Because existing decision models never see the states an agent reaches after its own mistakes, we train AgentDecision-4B, an open 4B model, on such states with Jev's answers as labels. On tasks unlike its training data, the agent solved 91.5% of them with AgentDecision-4B and 82.0% with Jev. On tasks like their training data, 4B models trained this way made agents 81.1-89.0% cheaper and up to 2.5 times faster, without losing 3 or more points of task success. The models, data, and harness will be released at this https URL.",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.21412",
+    "arxiv": "https://arxiv.org/abs/2610.21412"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1425a-55fc-7543-a5db-300665dc51d3/podcast.mp3",
+  "duration": 507.715,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.48,
+      "en": "In Advanced Topics in L-L-M Agents, today’s lecture is on JevAgentHarness: Benchmarking, Deploying and Training Decision Models That Share Control with L-L-Ms. AgentBench evaluates models acting across interactive environments, while HarnessDev examines how models build and revise their agent harnesses. This paper, from researchers at the University of Illinois Urbana-Champaign, Princeton, and Google, asks a related but narrower question: which routine choices inside an agent can a smaller model safely handle? Yes, Noah?",
+      "zh": "在《LLM智能体进阶专题》课上，今天的讲座主题是JevAgentHarness：对与LLM共享控制权的决策模型进行基准测试、部署与训练。AgentBench评估模型在交互式环境中的行为表现，而HarnessDev则考察模型如何构建和修改自己的智能体框架。这篇论文来自伊利诺伊大学厄巴纳-香槟分校、普林斯顿和谷歌的研究人员，提出了一个相关但更窄的问题：智能体内部哪些常规选择可以由更小的模型安全地处理？好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.6,
+      "end": 43.36,
+      "en": "Hi Professor, why focus on these small choices instead of making the whole agent model cheaper?",
+      "zh": "教授您好，为什么关注这些小选择，而不是让整个智能体模型变得更便宜？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.3,
+      "end": 73.4,
+      "en": "Because an agent repeatedly makes bounded decisions, such as choosing a tool from a known menu, and each call to a large language model adds cost and latency. The field is exploring more capable harnesses and longer interactive tasks, but this work looks inside the operating loop. Its central point is that a decision that seems simple in isolation may alter later observations, so cost savings have to be judged by what happens to the task, not just by answer accuracy.",
+      "zh": "因为智能体会反复做出有边界的决策，比如从已知菜单里选一个工具，而每次调用大语言模型都会增加成本和延迟。这个领域正在探索更强的框架和更长的交互任务，但这项工作关注的是运行循环内部。它的核心观点是，一个孤立看似乎简单的决策，可能会改变后续的观察结果，所以判断成本节省，必须看任务最终发生了什么，而不只是看答案准确率。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 74.44,
+      "end": 102.9,
+      "en": "The paper’s first contribution is Agent Decision Bench, an evaluation organized into 3 levels. At the first level, models answer isolated multiple-choice questions. At the second, they answer questions from recorded agent states, with decisions scored but not executed. At the third, models make choices in a live agent, where an action changes what the system encounters next. The progression resembles testing a driver on rules, a replayed route, and then actual traffic.",
+      "zh": "这篇论文的第一个贡献是 Agent Decision Bench，一个分为 3 个层级的评估体系。第一层，模型回答孤立的选择题。第二层，模型基于记录下来的智能体状态回答问题，决策会被打分但不实际执行。第三层，模型在真实运行的智能体中做选择，此时动作会改变系统接下来遇到的情况。这个递进过程类似于先考交规、再跑回放路线、最后上真实路况来测试一名司机。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 103.92,
+      "end": 108.68,
+      "en": "So the middle level separates decision quality from the consequences of changing the agent’s path?",
+      "zh": "所以中间这一层是把决策质量与改变智能体路径所带来的后果区分开了？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 109.42,
+      "end": 140.7,
+      "en": "Exactly. The middle level compares models on shared states, which makes step-level differences easier to interpret. But only live execution reveals how one wrong choice can redirect later steps or cause an irreversible outcome. To study this, the authors built DecisionGym, a simulated customer-service setting with a database and typed tools. Tasks include distractor tools, similar options, and situations where the agent must ask for missing information before taking action.",
+      "zh": "正是如此。中间层在共享状态上比较模型，这让步骤层面的差异更容易解读。但只有实际执行才能揭示一个错误选择如何改变后续步骤的走向，或导致不可逆的结果。为了研究这一点，作者构建了DecisionGym，一个带有数据库和类型化工具的模拟客服环境。任务中包含干扰工具、相似选项，以及智能体必须先询问缺失信息才能采取行动的情境。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 141.54,
+      "end": 170.88,
+      "en": "A second contribution is a framework for delegating selected decisions rather than handing off the whole agent. The study considers 8 decision points, including tool choice, some tool arguments, memory operations, stopping, and routing between models. It also defines several ways to integrate a decision model. The central strategy is a cascade: the smaller model proposes an option first, and the larger model takes over when confidence is below a fitted threshold.",
+      "zh": "第二个贡献是一个框架，它把选定的决策委托出去，而不是把整个智能体交出去。这项研究考察了8个决策点，包括工具选择、部分工具参数、记忆操作、停止，以及模型之间的路由。它还定义了几种集成决策模型的方式。核心策略是级联：小模型先提出一个选项，当置信度低于拟合出的阈值时，大模型接手。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 172.02,
+      "end": 175.92,
+      "en": "Quick question: how do they know a confidence threshold is safe enough to use?",
+      "zh": "快速问一下：他们怎么知道某个置信度阈值足够安全、可以拿来用呢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 176.78,
+      "end": 205.88,
+      "en": "They estimate it from shadow-mode trajectories. During calibration, the decision model answers, but the harness does not follow those answers. The researchers compare its accuracy with the larger model’s, estimate the cost of a larger-model call, and assess how mistakes affect task success. Thresholds are specific to each decision point. If the model, agent, or task rules change, the threshold needs to be fitted again rather than treated as a universal setting.",
+      "zh": "他们通过影子模式轨迹来估计这个阈值。在校准期间，决策模型会给出答案，但执行框架不会真的照这些答案去做。研究人员把它的准确率和更大模型的准确率做比较，估算调用一次更大模型的成本，并评估错误会如何影响任务成功率。阈值是针对每个决策点单独设定的。如果模型、智能体或任务规则发生变化，阈值就需要重新拟合，而不能当作一个通用设置来用。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 206.7,
+      "end": 240.96,
+      "en": "The third contribution is Agent Decision, a 4-billion-parameter model trained on states from agent runs. The authors fine-tuned Qwen three on 15,694 decision states from 587 tasks, including states reached after injected mistakes. This matters because a model can encounter unfamiliar situations when its own earlier error changes the trajectory. Training included supervised fine-tuning with probability calibration, followed by group-relative policy optimization in the agent loop.",
+      "zh": "第三个贡献是Agent Decision，一个40亿参数的模型，基于智能体运行过程中的状态训练而成。作者在来自587个任务的15694个决策状态上对Qwen three进行了微调，其中包括注入错误后到达的状态。这一点很重要，因为当模型自己先前的错误改变了轨迹时，它可能会遇到不熟悉的情况。训练包括带概率校准的监督微调，随后在智能体循环中进行组相对策略优化。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 240.96,
+      "end": 245.64,
+      "en": "Can you clarify whether the reinforcement-learning stage drove most of the improvement?",
+      "zh": "你能说明一下，大部分提升是不是来自强化学习阶段吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 246.68,
+      "end": 286.7,
+      "en": "In the reported comparison, most of the gain came from supervised fine-tuning; the later optimization stage did not produce a measurable additional success improvement. On shifted DecisionGym tasks, fine-tuning raised success from 13.5% to 96%. Step-level accuracy rose from 52.9% to 98.4%. Yet adding public tool-use data later raised isolated accuracy while lowering shifted-task success to 91.5%. That contrast shows why optimizing a familiar benchmark score may not improve decisions in the agent’s actual operating conditions.",
+      "zh": "在报告的对比中，大部分提升来自监督微调；后续的优化阶段并未带来可测量的额外成功率提升。在偏移后的DecisionGym任务上，微调将成功率从13.5%提升到96%。步骤级准确率从52.9%升至98.4%。但后来加入公开的工具使用数据虽然提高了孤立准确率，却使偏移任务的成功率降至91.5%。这一对比说明，为什么优化一个熟悉的基准分数未必能改善智能体在实际运行条件下的决策。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 287.84,
+      "end": 321.92,
+      "en": "The deployment results show both the promise and the need for caution. With Gemini 3.5 Flash, a thresholded cascade using the existing decision model delegated 27.2% of tool choices and 20.8% of argument choices. It cut cost by 14.2% without changing outcomes on 500 tasks in one test. But a fixed confidence threshold reduced success by 21.5 percentage points, and unthresholded delegation also caused substantial losses.",
+      "zh": "部署结果既显示了潜力，也说明需要谨慎。在使用Gemini 3.5 Flash时，一个基于现有决策模型、带阈值的级联方案委托了27.2%的工具选择和20.8%的参数选择。在一次测试中，它在500个任务上把成本降低了14.2%，且没有改变结果。但固定的置信度阈值使成功率下降了21.5个百分点，而不设阈值的委托也造成了相当大的损失。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 322.9,
+      "end": 327.46,
+      "en": "Hold on, did that initial cost-saving setup also pass the later test on new tasks?",
+      "zh": "等等，那个最初省钱的配置后来在新任务测试里也通过了吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 328.6,
+      "end": 364.3,
+      "en": "No. The combined configuration using the existing model did not pass the registered non-inferiority test on new tasks; its success rate fell by 2.2 percentage points, with uncertainty extending beyond the allowed margin. Replacing it with the agent-trained model changed the result: on 500 new tasks, success was 100% compared with 99.4% for the large-model-only baseline, while cost fell by 81.1%. The comparison underscores the value of agent-specific training and properly staged evaluation.",
+      "zh": "没有。使用现有模型的组合配置在新任务上未通过预设的非劣效性检验，成功率下降了2.2个百分点，不确定性超出了允许的误差范围。换成经过智能体训练的模型后，结果发生了改变：在500个新任务上，成功率达到100%，而仅使用大模型的基线为99.4%，同时成本下降了81.1%。这一对比凸显了针对智能体专门训练以及合理分阶段评估的价值。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 364.3,
+      "end": 397.54,
+      "en": "These results suggest a practical rule: delegate frequent, structured choices when the harness can measure uncertainty and recover by escalating to a stronger model. The payoff depends on the task. In tested coding-agent settings, where actions include more free-form commands, routing savings were smaller, around 7% to 10.5%. Shared-G-P-U queues also made some executions slower despite lower model cost, so cost and latency should be measured separately.",
+      "zh": "这些结果表明了一条实用规则：当框架能够测量不确定性，并能通过升级到更强模型来恢复时，就把频繁、结构化的选择交给下级模型处理。收益大小取决于任务。在测试过的编程智能体场景中，动作包含更多自由形式的命令，路由带来的节省较小，约为7%到10.5%。共享GPU队列还导致部分执行变慢，尽管模型成本更低，因此成本和延迟应分开衡量。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 398.76,
+      "end": 403.5,
+      "en": "How does this connect to AgentBench, and what should researchers be cautious about when applying the framework?",
+      "zh": "这与AgentBench有什么联系？研究人员在应用该框架时应注意哪些问题？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 405.12,
+      "end": 433.74,
+      "en": "AgentBench established the importance of evaluating models through interaction, while this paper adds a closer examination of individual decisions within that interaction. Its three levels connect isolated tests to live outcomes, helping diagnose where a failure emerges. But the evidence is mostly in English and uses Gemini agent models. Thresholds and trained models depend on particular task rules, and the work did not directly compare with learned routers such as RouteLLM on the same tasks.",
+      "zh": "AgentBench确立了通过交互来评估模型的重要性，而这篇论文则进一步深入考察了交互过程中的单个决策。它的三个层级把孤立测试和真实结果连接起来，有助于诊断失败究竟出在哪里。但证据主要是英文的，而且用的是Gemini agent模型。阈值和训练好的模型依赖于特定任务规则，这项工作也没有在同一批任务上直接跟RouteLLM这类学习型路由器做比较。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 434.76,
+      "end": 464.26,
+      "en": "There is also a safety boundary to keep clear. The authors found confident, irreversible errors when a model faced a new business rule it had not learned. Calibration helped in some settings, and training on the new rule improved decisions, but neither removes distribution-shift risk. The system was not tested against adversarial observations or prompt injection. A decision-model guard can accept an unsafe proposal, so it should not be treated as a security mechanism, especially for actions that cannot be undone.",
+      "zh": "这里还有一条需要划清的安全边界。作者发现，当模型面对一条它没学过的新业务规则时，会出现自信且不可逆的错误。校准在某些场景下有帮助，针对新规则做训练也能改善决策，但两者都无法消除分布偏移的风险。系统没有针对对抗性观测或提示注入做过测试。决策模型作为一道防护，可能会接受不安全的提议，所以不应把它当作安全机制，尤其是对那些无法撤销的操作。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 465.26,
+      "end": 469.98,
+      "en": "So the main lesson is to evaluate the decision inside the agent, not just the model’s confidence?",
+      "zh": "所以主要的教训是，要在智能体内部评估决策，而不只是看模型的置信度？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 471.08,
+      "end": 507.715,
+      "en": "That is the key takeaway. JevAgentHarness offers a way to benchmark, train, and selectively deploy smaller decision models while tracking task outcomes, cost, and latency. Its evidence supports delegation when choices are structured, thresholds are calibrated for the actual agent, and fallback behavior is available. But the evaluation must include new tasks and consequential failures. A decision that looks easy on a static question can still steer an agent somewhere it cannot recover from. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这就是关键结论。JevAgentHarness 提供了一种方法，可以对更小的决策模型进行基准测试、训练和有选择地部署，同时跟踪任务结果、成本和延迟。它的证据支持在选项结构化、阈值针对实际智能体校准、并且有回退行为可用时进行委托。但评估必须包含新任务和后果严重的失败。一个在静态问题上看起来简单的决策，仍然可能把智能体引向无法恢复的境地。感谢收听。如果还有任何问题，请询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhu2026jevagentharnessbenchmarkingdeployingtraining,\n      title={JevAgentHarness: Benchmarking, Deploying and Training Decision Models That Share Control with LLMs}, \n      author={Kunlun Zhu and Tao Feng and Xu Han and Heng Wang and Ling Yang and Xiangru Tang and Jiaxuan You and Heng Ji},\n      year={2026},\n      eprint={2610.21412},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.21412}, \n}",
+  "topics": [
+    "Agents",
+    "Fine Tuning",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    0.741,
+    0.531,
+    0.457,
+    0.375,
+    0.463,
+    0.399,
+    0.635,
+    0.743,
+    0.548,
+    0.666,
+    0.594,
+    0.601,
+    0.353,
+    0.398,
+    0.524,
+    0.833,
+    0.626,
+    0.589,
+    0.41,
+    0.413,
+    0.464,
+    0.361,
+    0.299,
+    0.403,
+    0.489,
+    0.748,
+    0.658,
+    0.501,
+    0.441,
+    0.627,
+    0.477,
+    0.337,
+    0.454,
+    0.453,
+    0.703,
+    1.0,
+    0.589,
+    0.534,
+    0.774,
+    0.605,
+    0.559,
+    0.61,
+    0.448,
+    0.507,
+    0.381,
+    0.476,
+    0.466,
+    0.258,
+    0.264,
+    0.2,
+    0.208,
+    0.361,
+    0.813,
+    0.545,
+    0.559,
+    0.423,
+    0.464,
+    0.692,
+    0.455,
+    0.566,
+    0.47,
+    0.512,
+    0.939,
+    0.495,
+    0.528,
+    0.291,
+    0.612,
+    0.583,
+    0.364,
+    0.475,
+    0.304,
+    0.367
+  ],
+  "published": "2026-10-15",
+  "views": 294,
+  "license": "CC BY-NC-SA"
+}
