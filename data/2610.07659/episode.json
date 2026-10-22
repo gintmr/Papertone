@@ -1,0 +1,242 @@
+{
+  "id": "2610.07659",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.07659",
+    "arxiv": "https://arxiv.org/abs/2610.07659"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a114f3-6b55-700c-a621-fa26303631b5/podcast.mp3",
+  "duration": 401.606,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.06,
+      "en": "In Deep Learning Systems, we study how to make large language model inference faster without changing what the model says. Today's lecture is on DLoop: Looped Speculative Decoding. Recent work such as DFlash: Block Diffusion for Flash Speculative Decoding and DSpark: Confidence-Scheduled Speculative Decoding with Semi-Autoregressive Generation reflects a shift toward parallel drafting and adaptive verification. The Naver A-I Lab and Korea University team asks whether verification can wait across multiple draft blocks. I see your hand, Noah; go ahead.",
+      "zh": "在深度学习系统这门课里，我们研究的是如何在不改变模型输出的前提下，让大语言模型的推理变得更快。今天的课讲的是DLoop，也就是循环投机解码。最近的一些工作，比如DFlash：用于快速投机解码的块扩散，以及DSpark：带有半自回归生成的置信度调度投机解码，反映出一种转向并行起草和自适应验证的趋势。Naver AI实验室和韩国大学的团队提出的问题是，验证能否跨多个起草块等待。我看到Noah举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.86,
+      "end": 43.4,
+      "en": "Hi Professor, why does delaying verification matter if the draft model might make mistakes?",
+      "zh": "教授您好，如果草稿模型可能会出错，那为什么延迟验证很重要呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.56,
+      "end": 69.82,
+      "en": "Because verification requires a forward pass through the larger target model, and that pass is often the expensive part of generation. Speculative decoding lets a smaller drafter propose tokens for the target to check. DLoop notices that sometimes every token in a draft block is accepted. In those cases, the target has spent a pass verifying a block that could potentially have been joined with another before verification.",
+      "zh": "因为验证需要对更大的目标模型做一次前向传播，而这一步往往是生成过程中最耗时的部分。投机解码让较小的草稿模型先提出token，再由目标模型来检查。DLoop注意到，有时候一个草稿块里的每个token都会被接受。在这种情况下，目标模型花了一次前向传播去验证一个块，而这个块其实有可能在验证之前先和另一个块合并。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.02,
+      "end": 96.64,
+      "en": "The paper’s central change is to make the drafting schedule adaptive. Rather than verify after every block, DLoop may run another whole drafting stage and then verify the accumulated tokens together. This differs from adapting how many tokens a single stage drafts. The distinction matters for parallel drafters, which have already computed a full block and cannot simply stop midway without wasting some of that work.",
+      "zh": "这篇论文的核心改动是让起草调度变得自适应。DLoop不再每起草一个块就验证一次，而是可能再跑一整个起草阶段，然后把累积的token一起验证。这和调整单个阶段起草多少token不同。这个区别对并行起草器很重要，因为它们已经算完了一整个块，没法中途直接停下而不浪费一部分工作。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 97.5,
+      "end": 102.8,
+      "en": "Quick question: does DLoop decide that the extra tokens are correct, or does the target still check them?",
+      "zh": "快速问一下：DLoop是直接认定这些多出来的token正确，还是目标模型仍会检查它们？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 103.38,
+      "end": 131.14,
+      "en": "The target still checks them all. DLoop uses the drafter’s token log probabilities to estimate whether another stage is worth attempting. It sums the confidence scores for the latest block and compares the result with a threshold. If confidence is high enough, drafting continues; otherwise, the accumulated block goes to verification. The gate is only a scheduling decision, not a substitute for the usual acceptance rule.",
+      "zh": "目标模型仍然会检查所有这些token。DLoop利用草稿模型的token对数概率来估计是否值得再尝试一个阶段。它把最新块的置信度分数加起来，再和阈值比较。如果置信度足够高，就继续起草；否则，累积的块就送去验证。这个门控只是一个调度决策，并不能替代通常的接受规则。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 131.14,
+      "end": 137.4,
+      "en": "So if the target rejects an early token, later tokens from that loop are discarded just as before?",
+      "zh": "那么如果目标模型拒绝了前面某个token，那一轮里后面那些token还是像以前一样直接丢掉吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 138.18,
+      "end": 163.6,
+      "en": "Exactly. The standard speculative decoding acceptance rule remains unchanged, preserving the target model’s output distribution. The second key idea is to continue later stages using the drafter’s own hidden states for tokens the target has not processed. That creates a training challenge: a drafter accustomed to target-model hidden states may not behave reliably when its own states become the input.",
+      "zh": "正是如此。标准的投机解码接受规则保持不变，从而保留了目标模型的输出分布。第二个关键思路是，对于目标模型尚未处理的token，后续阶段改用草稿模型自身的隐藏状态来继续。这就带来了一个训练上的挑战：一个习惯了目标模型隐藏状态的草稿模型，当它自己的状态成为输入时，可能表现不可靠。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 165.12,
+      "end": 194.0,
+      "en": "Loop-aware training addresses that mismatch. The authors unroll the drafter through multiple stages: the first stage uses target-model hidden states, and later stages use the drafter’s own. Training uses ground-truth tokens at those positions, so the drafter learns to continue from its own hidden-state chain without needing to simulate incorrect proposals. The loss includes the first and final stages, training both ordinary drafting and the most extended setting.",
+      "zh": "循环感知训练解决了这一不匹配问题。作者将草稿模型展开为多个阶段：第一阶段使用目标模型的隐藏状态，后续阶段则使用草稿模型自身的隐藏状态。训练时在这些位置使用真实token，因此草稿模型学会从自身的隐藏状态链继续生成，而无需模拟错误的候选。损失函数涵盖第一阶段和最后阶段，同时训练普通草稿生成和最扩展的设置。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 194.88,
+      "end": 198.48,
+      "en": "How costly is that training, and does it change the draft model’s architecture?",
+      "zh": "这种训练成本高吗？会改变草稿模型的架构吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 199.34,
+      "end": 226.84,
+      "en": "It does not change the architecture or parameter count, and it requires no extra target-model passes during training. The reported setup generally samples up to 3 additional stages and uses 1 epoch of fine-tuning. At inference, the drafter uses hidden states it has already computed, and the confidence gate adds only a sum and comparison. The tradeoff is that extra drafting still consumes computation, even when its tokens are ultimately discarded.",
+      "zh": "它不改变架构或参数数量，训练时也不需要额外的目标模型前向计算。报告的设置通常最多采样3个额外阶段，并使用1个epoch的微调。推理时，草稿模型使用已经计算好的隐藏状态，置信门只增加一次求和与比较。代价是额外的草稿生成仍会消耗计算，即使这些token最终被丢弃。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 227.92,
+      "end": 262.02,
+      "en": "Across tested systems, the combination of looping and loop-aware training improves average speedup by 5 to 41% and acceptance length by 12 to 102% over the original drafters. For the Qwen three, four-billion-parameter target, DFlash improves from 4.19 times to 4.67 times speedup, while DSpark rises from 3.77 times to 4.76 times. These results suggest that the added stages help most when the original drafter leaves room to improve acceptance.",
+      "zh": "在测试过的系统中，循环与循环感知训练的结合，相比原始草稿模型，平均加速提升了5%到41%，接受长度提升了12%到102%。对于Qwen3 40亿参数目标模型，DFlash的加速从4.19倍提升到4.67倍，而DSpark从3.77倍提升到4.76倍。这些结果表明，当原始草稿模型在提升接受率方面仍有空间时，额外阶段带来的帮助最大。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 262.98,
+      "end": 266.68,
+      "en": "Does the loop alone provide those gains, or is the training part essential?",
+      "zh": "仅靠循环本身就能带来这些收益，还是训练部分必不可少？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 267.52,
+      "end": 294.96,
+      "en": "The ablations show why both parts matter. Looping without loop-aware training generally increases acceptance length, but does not reliably improve speed, because extra draft computation can cancel out the saved verification time. Training alone produces comparatively small changes. Together, the methods make the drafter better suited to its own later-stage hidden states, while reducing the number of costly target-model verifications.",
+      "zh": "消融实验说明了这两部分为何都重要。只做循环、不做循环感知训练，通常会拉长接受长度，但速度不一定能稳定提升，因为额外的草稿计算可能抵消掉省下的验证时间。只做训练，带来的变化相对较小。两者结合，能让草稿模型更好地适配自己后续阶段的隐藏状态，同时减少代价高昂的目标模型验证次数。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 296.18,
+      "end": 327.1,
+      "en": "The evaluation also points to practical boundaries. On math benchmarks, DLoop reduces total decode time by 4.9 to 24.3% across 4 principal draft models, and 34 to 71% of generated tokens come from loops with multiple stages. It also improves speed when paired with tree verification. But in SGLang serving tests, benefits shrink at higher concurrency, and some settings are marginally slower at the highest tested concurrency.",
+      "zh": "评估结果也揭示了实际边界。在数学基准上，DLoop 在4个主要草稿模型上将总解码时间减少了4.9%到24.3%，并且34%到71%的生成token来自具有多个阶段的循环。与树验证配合使用时，它也能提升速度。但在SGLang服务测试中，并发越高收益越小，在测试的最高并发下，某些配置甚至略慢。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 328.08,
+      "end": 331.7,
+      "en": "Could that concurrency result mean adaptive loops are hard to batch efficiently?",
+      "zh": "这个并发结果是否说明自适应循环很难高效批处理？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 332.8,
+      "end": 362.04,
+      "en": "That is a reasonable interpretation. Variable loop lengths can make requests less uniform, which may complicate batching as concurrency rises. More broadly, DLoop extends adaptive speculation to parallel drafters by choosing whether to run another block, rather than trying to interrupt a block already computed. That complements approaches such as DFlash and DSpark, while highlighting that scheduling gains depend on the drafter, target model, workload, and serving system.",
+      "zh": "这是一个合理的解读。可变的循环长度会让请求变得不那么统一，随着并发升高，批处理可能因此更复杂。更广泛地说，DLoop 通过选择是否再运行一个块，而不是试图中断已经计算完的块，把自适应推测扩展到了并行草稿器上。这与 DFlash 和 DSpark 等方法形成互补，同时凸显出调度收益取决于草稿器、目标模型、工作负载和服务系统。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 362.96,
+      "end": 401.606,
+      "en": "The broader lesson is that speculative decoding has two useful levers: improve which tokens a drafter proposes, and decide how many drafting stages to attempt before verification. DLoop focuses on the second, and its training method makes that choice more viable for different drafter types. Its results are promising within the tested models and hardware, but deployment-specific measurement remains essential. The memorable takeaway is simple: sometimes the fastest verification is the one you can safely postpone. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的启示是，投机解码有两个有用的杠杆：一是改进草稿模型提议哪些token，二是决定在验证之前尝试多少个起草阶段。DLoop聚焦于第二个杠杆，其训练方法让这一选择对不同类型的草稿模型更加可行。在测试的模型和硬件范围内，其结果令人期待，但针对具体部署的测量仍然必不可少。最值得记住的一点很简单：有时候，最快的验证正是你可以安全推迟的那一个。感谢收听。如果还有任何问题，请询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{gu2026dlooploopedspeculativedecoding,\n      title={DLoop: Looped Speculative Decoding}, \n      author={Geonmo Gu and Byeongho Heo and HeeJae Jun and Yoohoon Kang and Sangmin Lee and Sangdoo Yun and Dongyoon Han},\n      year={2026},\n      eprint={2610.07659},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.07659}, \n}",
+  "topics": [
+    "Transformers",
+    "Inference Optimization",
+    "ML Systems"
+  ],
+  "peaks": [
+    0.673,
+    0.41,
+    0.332,
+    0.318,
+    0.368,
+    0.37,
+    0.301,
+    0.531,
+    0.759,
+    0.476,
+    0.488,
+    0.404,
+    0.425,
+    0.687,
+    0.665,
+    0.382,
+    0.487,
+    0.479,
+    0.449,
+    0.727,
+    0.471,
+    0.377,
+    0.505,
+    0.498,
+    0.572,
+    0.816,
+    0.42,
+    0.42,
+    0.578,
+    0.663,
+    0.715,
+    0.498,
+    0.432,
+    0.581,
+    0.546,
+    0.652,
+    0.953,
+    0.912,
+    0.619,
+    0.656,
+    0.57,
+    0.366,
+    0.263,
+    0.273,
+    0.252,
+    0.206,
+    0.2,
+    0.691,
+    1.0,
+    0.459,
+    0.462,
+    0.426,
+    0.328,
+    0.45,
+    0.489,
+    0.385,
+    0.376,
+    0.292,
+    0.412,
+    0.647,
+    0.484,
+    0.458,
+    0.314,
+    0.267,
+    0.263,
+    0.58,
+    0.385,
+    0.434,
+    0.337,
+    0.381,
+    0.371,
+    0.319
+  ],
+  "published": "2026-10-06",
+  "views": 160,
+  "license": "arXiv 默认许可"
+}

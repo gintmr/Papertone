@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 496.221,
+  "word_match_rate": 0.8761,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Computer Vision and Neural Networks, today’s lecture is on Halcyon: Text-to-Image Generation Without Language Pretraining. Many image generators first rely on a text model trained on enormous text collections, then connect it to image generation. Work such as BLIP-2 and Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation reflects the field’s growing interest in how language and vision systems can be combined. Halcyon questions whether a separate text-only training stage is needed. Yes, Noah?",
+      "start": 0.0,
+      "end": 33.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the main issue that this separate language training makes image generation too expensive?",
+      "start": 34.2,
+      "end": 39.38
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is one part of the motivation. The authors report that language pretraining accounts for over 80% of total pretraining computation in representative systems, though not in every system. They ask whether a model can instead learn the word-image connection directly from paired captions and pictures. Their results suggest a promising route in the tested setting: strong image generation with substantially less total pretraining computation, without first training the generative model on internet-scale text alone.",
+      "start": 40.5,
+      "end": 70.8
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central design choice is early fusion: Halcyon is one decoder-only Transformer that models captions and images as a shared token sequence. It does not send captions through a separately pretrained language model. A discrete image tokenizer converts each 256-by-256 picture into 1,024 tokens. The caption comes first, and the model predicts the image tokens that follow. Both tokenizers and the multimodal generator start from scratch, with an important qualification about text data.",
+      "start": 71.76,
+      "end": 105.3
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if everything starts from scratch, does the model’s text tokenizer see no text-only data at all?",
+      "start": 106.06,
+      "end": 112.24
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It does see text-only data, but only in tokenizer training. The text tokenizer learns from G-P-I-C captions and OpenWebText; OpenWebText does not train the multimodal generative model. That distinction matters because the paper’s claim concerns language pretraining of the model, not the absence of all text-only resources. The sequence format also supports image-to-text training: image tokens can come first, followed by the caption, while text-to-image examples place the caption first.",
+      "start": 112.24,
+      "end": 144.54
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "To assess the generation recipe, the authors retrain comparison systems on the same G-P-I-C training data and evaluate images at 256-by-256 resolution. Every generator receives one training epoch. Their total-compute accounting includes the language model, image tokenizer, and image generator. For Halcyon, the text-related computation is part of joint multimodal training, not a separately pretrained text encoder. Guidance settings are selected on validation data, then applied to the test evaluation.",
+      "start": 145.42,
+      "end": 180.52
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The reported comparison is Halcyon at 1.6 billion parameters against the JiT model with XXL capacity and 8-by-8 patches. Halcyon scores 35.28 on G-F-D, compared with 40.97 for JiT, and the authors report 275 times less total pretraining computation. Lower G-F-D means the generated images better match the real-image distribution; it does not mean they follow prompts better. These are full-system comparisons, not an experiment isolating the effect of language pretraining alone.",
+      "start": 181.66,
+      "end": 218.84
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Can you clarify how the paper checks prompt following separately from image-distribution quality?",
+      "start": 219.66,
+      "end": 224.32
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "It reports GenEval, which tests compositional cases such as object counts, colors, and positions, along with D-P-G-Bench for complex prompt adherence. At 1.6 billion parameters, Halcyon scores 53.48 on GenEval and 77.90 on D-P-G-Bench, while JiT scores 43.17 and 76.85. These measures give a more relevant basis for prompt-following claims than G-F-D. Taken together, the results support a cost-and-quality argument, but only under this data, resolution, and training setup.",
+      "start": 225.34,
+      "end": 260.98
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The authors also test whether text-only training helps within smaller, controlled recipes. In a fixed budget for Halcyon at 0.52 billion parameters, spending 10%, 20%, or 50% on language-first training worsens G-F-D from 48.02 to 51.56, 52.76, or 65.13. But those choices leave less budget for paired image-caption training. When they add language training and preserve a full text-to-image epoch, total computation rises to 1.5 times the baseline, yet G-F-D still does not improve: 49.22 versus 48.02.",
+      "start": 261.84,
+      "end": 301.82
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "So is there a cleaner test of whether pretrained language-model initialization helps?",
+      "start": 304.52,
+      "end": 308.92
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "A second test compares matching Qwen three models with the same architecture and vocabulary. One starts randomly; the other starts from a model pretrained on 36 trillion text tokens. After the same G-P-I-C training recipe, their G-F-D scores are 46.61 for random initialization and 47.81 for the pretrained model. Lowering the continual-training peak learning rate does not rescue that result. This is evidence of no benefit in these evaluated settings, not proof that language pretraining can never help.",
+      "start": 309.82,
+      "end": 343.04
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The study also reuses the image-generation training path for captioning. In classifier-free guidance, some examples normally omit captions; Halcyon can instead put the caption after the image tokens, teaching image-to-text prediction. At 0.52 billion parameters, image-conditioned text N-L-L falls from 18.414 to 1.102. Generation metrics remain comparable rather than uniformly better: G-F-D is 48.02 versus 46.48, while GenEval and D-P-G-Bench shift slightly downward. Caption alignment remains below the ground-truth-caption reference.",
+      "start": 343.9,
+      "end": 386.14
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "This connects to broader efforts to combine visual and language abilities, including BLIP-2, which links visual features with a large language model. Halcyon takes a different route: it learns image and caption tokens in one model rather than importing a separately pretrained language model. Still, the evidence has clear boundaries. The language-pretraining interventions focus on models around 0.5 to 0.6 billion parameters, and evaluations use G-P-I-C at 256-by-256 resolution. The paper does not settle comparisons between autoregressive and diffusion generators.",
+      "start": 387.08,
+      "end": 423.98
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Could these results change how researchers budget training for future image generators?",
+      "start": 425.16,
+      "end": 429.3
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "They suggest a useful question for future system design: when should compute go to text-only training, and when should it go directly to paired multimodal learning? The paper’s controls support the latter under its tested recipes, while its larger comparisons show that a low-cost full system can still perform well. But the comparisons vary in generator family and other design choices, and the controlled tests are narrow. Tests on other datasets, resolutions, scales, and model families are needed before drawing broader conclusions.",
+      "start": 430.36,
+      "end": 462.18
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The key takeaway is not that language pretraining is useless, but that it is not automatically required for strong text-to-image results in every recipe. Halcyon learns captions and pictures together, and the same image-token path can also support captioning when the caption follows the image. That offers a practical alternative worth testing, with careful attention to total computation and evaluation boundaries. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 463.38,
+      "end": 496.221
+    }
+  ]
+}

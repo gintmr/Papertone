@@ -1,0 +1,242 @@
+{
+  "id": "2610.26863",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.26863",
+    "arxiv": "https://arxiv.org/abs/2610.26863"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1575c-47d8-735e-b405-f0adc6f72925/podcast.mp3",
+  "duration": 496.221,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.12,
+      "en": "In Computer Vision and Neural Networks, today’s lecture is on Halcyon: Text-to-Image Generation Without Language Pretraining. Many image generators first rely on a text model trained on enormous text collections, then connect it to image generation. Work such as BLIP-2 and Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation reflects the field’s growing interest in how language and vision systems can be combined. Halcyon questions whether a separate text-only training stage is needed. Yes, Noah?",
+      "zh": "在计算机视觉和神经网络课程中，今天的讲座是关于Halcyon：无需语言预训练的文生图。许多图像生成器首先依赖一个在海量文本集合上训练过的文本模型，然后再把它连接到图像生成上。像BLIP-2以及《自回归模型胜过扩散模型：用于可扩展图像生成的Llama》这样的工作，反映了该领域对语言和视觉系统如何结合越来越感兴趣。Halcyon质疑是否真的需要一个单独的纯文本训练阶段。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.2,
+      "end": 39.38,
+      "en": "Hi Professor, is the main issue that this separate language training makes image generation too expensive?",
+      "zh": "教授您好，主要问题是不是这种单独的语言训练让图像生成变得太贵了？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.5,
+      "end": 70.8,
+      "en": "That is one part of the motivation. The authors report that language pretraining accounts for over 80% of total pretraining computation in representative systems, though not in every system. They ask whether a model can instead learn the word-image connection directly from paired captions and pictures. Their results suggest a promising route in the tested setting: strong image generation with substantially less total pretraining computation, without first training the generative model on internet-scale text alone.",
+      "zh": "这是动机的一部分。作者指出，在具有代表性的系统中，语言预训练占总预训练计算量的80%以上，不过并非每个系统都如此。他们提出的问题是，模型能否改为直接从配对的描述和图片中学习词语与图像之间的联系。他们的结果表明，在测试设定下有一条有前景的路径：在总预训练计算量大幅减少的情况下实现强大的图像生成，而且无需先在互联网规模的文本上单独训练生成模型。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.76,
+      "end": 105.3,
+      "en": "The central design choice is early fusion: Halcyon is one decoder-only Transformer that models captions and images as a shared token sequence. It does not send captions through a separately pretrained language model. A discrete image tokenizer converts each 256-by-256 picture into 1,024 tokens. The caption comes first, and the model predicts the image tokens that follow. Both tokenizers and the multimodal generator start from scratch, with an important qualification about text data.",
+      "zh": "核心设计选择是早期融合：Halcyon 是一个仅解码器的 Transformer，把描述文本和图像建模为共享的 token 序列。它不把描述文本送进单独预训练的语言模型。一个离散图像 tokenizer 把每张 256×256 的图片转成 1,024 个 token。描述文本在前，模型预测后续的图像 token。两个 tokenizer 和多模态生成器都从头开始训练，不过文本数据方面有一个重要限定。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 106.06,
+      "end": 112.24,
+      "en": "Quick question: if everything starts from scratch, does the model’s text tokenizer see no text-only data at all?",
+      "zh": "快速问一下：如果一切都是从零开始，那模型的文本tokenizer到底有没有见过纯文本数据？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 112.24,
+      "end": 144.54,
+      "en": "It does see text-only data, but only in tokenizer training. The text tokenizer learns from G-P-I-C captions and OpenWebText; OpenWebText does not train the multimodal generative model. That distinction matters because the paper’s claim concerns language pretraining of the model, not the absence of all text-only resources. The sequence format also supports image-to-text training: image tokens can come first, followed by the caption, while text-to-image examples place the caption first.",
+      "zh": "它确实会看到纯文本数据，但仅限于tokenizer训练阶段。文本tokenizer从G-P-I-C的caption和OpenWebText中学习；OpenWebText并不参与多模态生成模型的训练。这个区分很重要，因为论文的主张针对的是模型的语言预训练，而不是说完全没有用到任何纯文本资源。序列格式也支持图像到文本的训练：图像token可以放在前面，后面跟caption，而文本到图像的样本则把caption放在前面。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 145.42,
+      "end": 180.52,
+      "en": "To assess the generation recipe, the authors retrain comparison systems on the same G-P-I-C training data and evaluate images at 256-by-256 resolution. Every generator receives one training epoch. Their total-compute accounting includes the language model, image tokenizer, and image generator. For Halcyon, the text-related computation is part of joint multimodal training, not a separately pretrained text encoder. Guidance settings are selected on validation data, then applied to the test evaluation.",
+      "zh": "为了评估生成方案，作者在同一份G-P-I-C训练数据上重新训练了对比系统，并在256×256分辨率下评估图像。每个生成器都训练一个epoch。他们的总计算量统计包括语言模型、图像tokenizer和图像生成器。对Halcyon来说，文本相关计算是联合多模态训练的一部分，而不是单独预训练的文本编码器。引导参数在验证数据上选定，然后应用于测试评估。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 181.66,
+      "end": 218.84,
+      "en": "The reported comparison is Halcyon at 1.6 billion parameters against the JiT model with XXL capacity and 8-by-8 patches. Halcyon scores 35.28 on G-F-D, compared with 40.97 for JiT, and the authors report 275 times less total pretraining computation. Lower G-F-D means the generated images better match the real-image distribution; it does not mean they follow prompts better. These are full-system comparisons, not an experiment isolating the effect of language pretraining alone.",
+      "zh": "论文报告的比较是16亿参数的Halcyon与XXL容量、8×8 patch的JiT模型之间的对比。Halcyon在G-F-D上得分35.28，而JiT为40.97，作者报告总预训练计算量少了275倍。G-F-D越低意味着生成图像与真实图像分布匹配得越好，但这并不代表模型更好地遵循提示词。这些是全系统层面的比较，并非单独隔离语言预训练效果的实验。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 219.66,
+      "end": 224.32,
+      "en": "Can you clarify how the paper checks prompt following separately from image-distribution quality?",
+      "zh": "你能说明一下论文是如何把提示词遵循和图像分布质量分开检验的吗？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 225.34,
+      "end": 260.98,
+      "en": "It reports GenEval, which tests compositional cases such as object counts, colors, and positions, along with D-P-G-Bench for complex prompt adherence. At 1.6 billion parameters, Halcyon scores 53.48 on GenEval and 77.90 on D-P-G-Bench, while JiT scores 43.17 and 76.85. These measures give a more relevant basis for prompt-following claims than G-F-D. Taken together, the results support a cost-and-quality argument, but only under this data, resolution, and training setup.",
+      "zh": "文中报告了GenEval，它测试物体数量、颜色和位置等组合性案例，还有D-P-G-Bench用于复杂提示遵循。在16亿参数下，Halcyon在GenEval上得分53.48，在D-P-G-Bench上得分77.90，而JiT得分43.17和76.85。这些指标为提示遵循的主张提供了比G-F-D更相关的基础。综合来看，结果支持成本与质量的论点，但仅限于这一数据、分辨率和训练设置下。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 261.84,
+      "end": 301.82,
+      "en": "The authors also test whether text-only training helps within smaller, controlled recipes. In a fixed budget for Halcyon at 0.52 billion parameters, spending 10%, 20%, or 50% on language-first training worsens G-F-D from 48.02 to 51.56, 52.76, or 65.13. But those choices leave less budget for paired image-caption training. When they add language training and preserve a full text-to-image epoch, total computation rises to 1.5 times the baseline, yet G-F-D still does not improve: 49.22 versus 48.02.",
+      "zh": "作者还在更小规模、受控的训练方案中测试了纯文本训练是否有帮助。在Halcyon固定为5.2亿参数、固定预算的条件下，把10%、20%或50%的预算用于语言优先训练，会让G-F-D从48.02变差到51.56、52.76或65.13。但这些选择会挤占配对图文训练所需的预算。当他们加入语言训练、同时保留完整的文生图训练轮次时，总计算量升到基线的1.5倍，但G-F-D依然没有改善：49.22对48.02。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 304.52,
+      "end": 308.92,
+      "en": "So is there a cleaner test of whether pretrained language-model initialization helps?",
+      "zh": "那么，有没有更干净的测试来判断预训练语言模型初始化是否有帮助呢？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 309.82,
+      "end": 343.04,
+      "en": "A second test compares matching Qwen three models with the same architecture and vocabulary. One starts randomly; the other starts from a model pretrained on 36 trillion text tokens. After the same G-P-I-C training recipe, their G-F-D scores are 46.61 for random initialization and 47.81 for the pretrained model. Lowering the continual-training peak learning rate does not rescue that result. This is evidence of no benefit in these evaluated settings, not proof that language pretraining can never help.",
+      "zh": "第二个测试比较了三个架构和词表都相同的Qwen模型。一个从随机初始化开始，另一个从在36万亿文本token上预训练的模型开始。经过相同的G-P-I-C训练方案后，随机初始化的G-F-D分数是46.61，预训练模型是47.81。降低持续训练的峰值学习率也没能挽回这个结果。这说明在这些评估设置下没有收益，但并不能证明语言预训练永远不会有帮助。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 343.9,
+      "end": 386.14,
+      "en": "The study also reuses the image-generation training path for captioning. In classifier-free guidance, some examples normally omit captions; Halcyon can instead put the caption after the image tokens, teaching image-to-text prediction. At 0.52 billion parameters, image-conditioned text N-L-L falls from 18.414 to 1.102. Generation metrics remain comparable rather than uniformly better: G-F-D is 48.02 versus 46.48, while GenEval and D-P-G-Bench shift slightly downward. Caption alignment remains below the ground-truth-caption reference.",
+      "zh": "这项研究还把图像生成的训练路径复用到图像描述上。在无分类器引导中，通常会有一些样本省略描述文本；Halcyon 则可以把描述放在图像 token 之后，从而教会模型做图到文的预测。在 5.2 亿参数规模下，以图像为条件的文本负对数似然从 18.414 降到 1.102。生成指标保持相当，而不是全面变好：G-F-D 为 48.02 对 46.48，而 GenEval 和 D-P-G-Bench 略有下降。描述对齐仍低于真实描述参考。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 387.08,
+      "end": 423.98,
+      "en": "This connects to broader efforts to combine visual and language abilities, including BLIP-2, which links visual features with a large language model. Halcyon takes a different route: it learns image and caption tokens in one model rather than importing a separately pretrained language model. Still, the evidence has clear boundaries. The language-pretraining interventions focus on models around 0.5 to 0.6 billion parameters, and evaluations use G-P-I-C at 256-by-256 resolution. The paper does not settle comparisons between autoregressive and diffusion generators.",
+      "zh": "这与更广泛的多模态能力整合研究相呼应，比如BLIP-2将视觉特征与大语言模型连接起来。Halcyon走的是另一条路：它在单一模型中学习图像和描述文本的token，而不是引入一个单独预训练的语言模型。不过，证据仍有明确的边界。语言预训练干预集中在约5亿到6亿参数的模型上，评估使用的是256×256分辨率的G-P-I-C。论文并未解决自回归生成器与扩散生成器之间的比较问题。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 425.16,
+      "end": 429.3,
+      "en": "Could these results change how researchers budget training for future image generators?",
+      "zh": "这些结果会不会改变研究人员为未来图像生成器分配训练预算的方式？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 430.36,
+      "end": 462.18,
+      "en": "They suggest a useful question for future system design: when should compute go to text-only training, and when should it go directly to paired multimodal learning? The paper’s controls support the latter under its tested recipes, while its larger comparisons show that a low-cost full system can still perform well. But the comparisons vary in generator family and other design choices, and the controlled tests are narrow. Tests on other datasets, resolutions, scales, and model families are needed before drawing broader conclusions.",
+      "zh": "他们为未来的系统设计提出了一个有用的问题：计算资源什么时候该用于纯文本训练，什么时候该直接用于配对的多模态学习？论文中的对照实验在其测试的方案下支持后者，而更大规模的比较则表明，低成本完整系统仍然可以有不错的表现。但这些比较在生成器家族和其他设计选择上各不相同，受控测试的范围也比较窄。在得出更广泛的结论之前，还需要在其他数据集、分辨率、规模和模型家族上做测试。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 463.38,
+      "end": 496.221,
+      "en": "The key takeaway is not that language pretraining is useless, but that it is not automatically required for strong text-to-image results in every recipe. Halcyon learns captions and pictures together, and the same image-token path can also support captioning when the caption follows the image. That offers a practical alternative worth testing, with careful attention to total computation and evaluation boundaries. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键结论不是说语言预训练没用，而是说它并非在每个配方里都自动成为强文本到图像结果的必要条件。Halcyon把描述和图片放在一起学习，而同一条图像token路径在描述跟在图片后面时也能支持图像描述。这提供了一种值得测试的实用替代方案，但需要仔细关注总计算量和评估边界。感谢收听。如果还有问题，可以问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{chandrasegaran2026texttoimagegenerativemodelinglanguage,\n      title={Text-to-Image Generative Modeling Without Language Pretraining}, \n      author={Keshigeyan Chandrasegaran and Yue Zhao and Armin W. Thomas and Ehsan Adeli and Jiajun Wu and Juan Carlos Niebles and Li Fei-Fei and Michael Poli},\n      year={2026},\n      eprint={2610.26863},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.26863}, \n}",
+  "topics": [
+    "Generative Models",
+    "Image Generation",
+    "Multimodal Learning"
+  ],
+  "peaks": [
+    0.972,
+    0.747,
+    0.738,
+    0.677,
+    0.358,
+    0.927,
+    0.613,
+    0.693,
+    0.387,
+    0.423,
+    0.579,
+    0.368,
+    0.217,
+    0.251,
+    0.323,
+    0.432,
+    0.668,
+    0.742,
+    0.455,
+    0.383,
+    0.4,
+    0.718,
+    0.251,
+    0.333,
+    0.217,
+    0.2,
+    0.96,
+    0.496,
+    0.681,
+    0.657,
+    0.5,
+    0.582,
+    0.954,
+    0.516,
+    0.635,
+    0.504,
+    0.572,
+    0.567,
+    0.92,
+    0.408,
+    0.512,
+    0.425,
+    0.606,
+    0.535,
+    0.682,
+    0.577,
+    0.349,
+    0.321,
+    0.321,
+    0.647,
+    0.83,
+    0.556,
+    1.0,
+    0.927,
+    0.561,
+    0.441,
+    0.904,
+    0.529,
+    0.504,
+    0.412,
+    0.584,
+    0.548,
+    0.601,
+    0.689,
+    0.507,
+    0.478,
+    0.362,
+    0.894,
+    0.556,
+    0.444,
+    0.365,
+    0.431
+  ],
+  "published": "2026-10-19",
+  "views": 426,
+  "license": "arXiv 默认许可"
+}
