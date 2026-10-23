@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 445.231,
+  "word_match_rate": 0.9432,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate-level course on computer vision and neural networks, today’s lecture is on Learning the 4D World through Point Trajectory Forecasting. Recent systems such as Qwen-RobotWorld and PointWorld illustrate a field moving toward predictive video and explicit motion representations. This paper asks whether multiple camera views can describe one shared future, rather than merely produce plausible images separately. That distinction matters when an object disappears from one view but keeps moving in the scene. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.18
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does it mean for different views to share a future?",
+      "start": 35.1,
+      "end": 38.54
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The authors’ model, V-P-M, forecasts video and the paths of selected physical points together. Imagine choosing a mark on a moving object: the model predicts where that same mark will be in later frames and across camera views. Those points are not just visual decorations; their persistent identities give the model a shared motion description to work with. The paper’s claim is that this supervision can help the video forecasts agree more closely about the scene’s motion.",
+      "start": 39.38,
+      "end": 69.14
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The model processes video tokens from different cameras in a shared sequence, with camera geometry and a view identity to distinguish each stream. A user selects points in observed frames, and a trajectory head predicts their future positions, depths, and confidence across views. The system uses known camera parameters to express those predictions in a shared reference frame. So this is forecasting unseen motion, not simply following points through frames that have already been observed.",
+      "start": 69.92,
+      "end": 101.82
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does point supervision influence the video generator itself?",
+      "start": 102.68,
+      "end": 107.16
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The trajectory head uses intermediate features from the video generator, and training connects point prediction to the generator in two ways. One signal supervises the predicted point motion; another encourages features to associate the same physical point across visible views and times. Training proceeds in stages: first adapting multi-view video generation, then training the trajectory head, and finally optimizing both together. At inference, the model generates future video and decodes trajectories from the resulting features.",
+      "start": 107.88,
+      "end": 141.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The evaluation pairs video forecasting with 3D motion accuracy on V-P WorldBench. On its 500-clip simulated Robot split, video-only V-P-M has an F-V-D score of 78.52 and a 3D point-accuracy score of 43.62%. With trajectory supervision, those become 67.35 and 50.05%. Lower F-V-D means better video fidelity; higher point accuracy means more predicted positions fall within depth-adjusted error thresholds. Both models use the same training budget, and the improvement’s direction holds on the other three splits.",
+      "start": 142.3,
+      "end": 184.56
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Does that show that persistent point identity matters, or could any geometric supervision explain the gain?",
+      "start": 184.56,
+      "end": 190.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The controlled ablation helps separate those possibilities. On simulated General, video-only V-P-M scores 101.37 on F-V-D and 28.71% on 3D point accuracy. Per-frame point maps improve those to 99.35 and 29.69%, but they do not link a point’s identity through time. Trajectory supervision without the correspondence loss reaches 85.73 and 31.54%; the full model reaches 81.92 and 36.80%. Geometry helps, while persistent trajectories do better.",
+      "start": 191.6,
+      "end": 235.18
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The authors interpret that extra improvement as evidence that temporal identity constrains how the same point moves across frames. It is support for their explanation, not proof that identity alone caused the entire difference. The design also extends to robot actions: action tokens share the predictive backbone and are generated jointly with future video. The reported action results favor the version with point supervision on simulated manipulation suites and on all 3 real pick-and-place tasks.",
+      "start": 235.18,
+      "end": 265.82
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can we treat those robot scores as ordinary all-or-nothing success rates?",
+      "start": 266.76,
+      "end": 270.4
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Not quite. In the real tasks, a trial can receive full credit for reaching the goal without hitting a box pile, partial credit for a successful placement that hits the pile, or no credit otherwise. So those figures are fractional outcome scores, not standard binary success rates. The paper also describes a Franka robot setup using a subset of DROID trajectories for training. Predicted point paths can be converted into commands, but those zero-shot rollouts were not consistent enough for quantitative policy evaluation.",
+      "start": 271.34,
+      "end": 304.32
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "There are practical assumptions to keep in view. V-P-M requires known camera intrinsics and poses at inference, while the main evaluation does not provide future camera parameters to any method. Its point labels cover the robot and annotated objects, not every element of the scene. Computational cost also grows with the number of views. These boundaries matter: the results support improved forecasting under the tested conditions, not a guarantee of complete physical consistency or dense motion for every scene element.",
+      "start": 305.3,
+      "end": 338.12
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does this differ from multi-view point tracking used to guide video generation?",
+      "start": 339.02,
+      "end": 342.82
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "A nearby example is MVTrack4Gen, which uses multi-view point tracking to supervise novel-view video generation. V-P-M extends the task: it forecasts future frames, supervises metric 3D trajectories that preserve point identity across views and time, and shares its predictive representation with action learning. That places it alongside work such as PointWorld, which uses point motion in robotic planning, while focusing on how trajectory supervision can shape multi-view video forecasting.",
+      "start": 342.82,
+      "end": 376.84
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So is the main shift toward making motion a training signal for the whole predictive model?",
+      "start": 377.94,
+      "end": 382.3
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Yes. The paper treats persistent point motion as a way to connect camera streams, rather than relying on image appearance alone to carry all the information about a scene’s future. Its measurements show gains in both video fidelity and point accuracy, and the ablation suggests that linking points through time adds value beyond per-frame geometry. The broader research question is how to combine such shared motion representations with video and action prediction while respecting calibration and coverage limits.",
+      "start": 383.06,
+      "end": 412.8
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The central takeaway is modest but useful: a future made of several plausible images is not necessarily one coherent event. V-P-M ties its multi-view video forecasts to predicted motion of identifiable physical points, giving the model an explicit signal about what should persist across time and views. The benchmark results support that approach under the paper’s evaluation conditions. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 413.7,
+      "end": 445.231
+    }
+  ]
+}

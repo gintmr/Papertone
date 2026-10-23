@@ -1,0 +1,250 @@
+{
+  "id": "2610.meta2-online-harness-evolution",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.meta2-online-harness-evolution",
+    "arxiv": "https://arxiv.org/abs/2610.meta2-online-harness-evolution"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a15f7b-f67e-7240-885e-b62e921e585d/podcast.mp3",
+  "duration": 471.745,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 26.2,
+      "en": "In a hypothetical graduate course called Adaptive Agents and Tool-Using Models, today's lecture is on Meta squared. A command-line agent may discover halfway through a task that it lacks a tool, missed a requirement, or has a flawed check. A fixed setup cannot react; an improvised fix may disrupt useful work or leak into the next task. The paper asks how to make adaptation more deliberate. Yes, Noah?",
+      "zh": "在一门假设叫“自适应智能体与工具使用模型”的研究生课程里，今天的课讲的是Meta squared。一个命令行智能体可能在任务进行到一半时发现它缺一个工具、漏了一个要求，或者检查逻辑有缺陷。固定的设置没法做出反应；临时凑合的修补又可能打乱有用的工作，或者泄漏到下一个任务里。这篇论文问的是，怎么让适应变得更审慎。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 27.38,
+      "end": 32.1,
+      "en": "Hi Professor, is this mainly about changing the model, or changing the setup around it?",
+      "zh": "教授您好，这主要是关于改变模型本身，还是改变它周围的配置？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 32.62,
+      "end": 66.72,
+      "en": "The model stays fixed; the surrounding harness changes. Here, a harness means the prompts, tools, memory, context policy, and hooks that shape how an agent works. Recent work such as Meta-Harness searches offline for a harness to deploy, while Continual Harness already adapts during a run. Meta squared combines these directions differently: it learns reusable guidance for deciding when to intervene, then applies that guidance locally. This matters as agents take on longer tasks, where both inaction and poorly timed edits can be costly.",
+      "zh": "模型本身保持不变，改变的是它周围的框架。这里的框架指的是提示词、工具、记忆、上下文策略以及钩子，它们共同塑造了智能体的工作方式。近期的工作如Meta-Harness在离线阶段搜索一个可部署的框架，而Continual Harness则能在运行过程中实时适应。Meta squared以不同的方式结合了这两个方向：它学习可复用的指导，用来判断何时应当介入，然后在本地应用这些指导。这一点很重要，因为智能体承担的任务越来越长，在这种情况下，不作为和时机不当的修改都可能代价高昂。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 67.76,
+      "end": 95.9,
+      "en": "The central distinction is between what persists and what does not. Offline, the authors build a textual Meta-Skill: guidance about when to act, avoid an intervention, or hold steady. Online, a separate evolver consults that frozen guidance and evidence from the current run. It may keep the harness unchanged or make a bounded edit. The edit belongs only to that task; the reusable guidance carries forward, not the task-specific fix.",
+      "zh": "核心区别在于什么会保留下来，什么不会。离线阶段，作者构建了一个文本形式的元技能：关于何时行动、何时避免干预或保持稳定的指导。在线阶段，一个独立的演化器会参考这份冻结的指导以及当前运行中的证据。它可能保持框架不变，也可能做有限度的修改。修改只属于那个任务；向前传递的是可复用的指导，而不是针对具体任务的修复。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 96.84,
+      "end": 100.2,
+      "en": "Quick question: does the evolver see whether the task ultimately passes?",
+      "zh": "快速问一下：进化器能看到任务最终有没有通过吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 101.38,
+      "end": 127.44,
+      "en": "No. At checkpoints, the evolver sees the agent's trajectory, permitted read-only observations of the workspace, and the status of earlier edits. It does not see the held-out verifier's verdict. The agent continues in its environment, and an edit can change an instruction, add a hook or tool, or provide a notice. At a completion claim, the evolver can accept the artifact or send the agent back to work in the same environment.",
+      "zh": "不会。在检查点上，演化器看到的是智能体的轨迹、对工作区被允许的只读观察，以及此前编辑的状态。它看不到留出验证器的判定结果。智能体会在其环境中继续运行，而一次编辑可以更改指令、添加钩子或工具，或者提供一条通知。当智能体声称完成时，演化器可以接受产物，也可以把智能体送回同一环境中继续工作。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 128.46,
+      "end": 134.2,
+      "en": "How can a final pass or fail teach the system what to do at a checkpoint if it cannot see that verdict online?",
+      "zh": "如果系统在线时看不到最终判定，那这个最终的通过或失败结果又怎么能教会它在检查点该怎么做呢？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 135.06,
+      "end": 165.94,
+      "en": "The verdicts are used offline to learn guidance. For each training task, the authors compare three runs: A has no evolver, B has an evolver guided by the current Meta-Skill, and C gives the evolver privileged verifier information during training. C can reveal recoveries that B misses, but it is training-only; verifier details are not passed to the task agent, and leakage-audited C runs are excluded. The final outcomes suggest lessons, rather than being available to the live evolver.",
+      "zh": "这些判定结果会在离线状态下用来学习指导策略。对每个训练任务，作者比较三种运行：A没有进化器，B有一个由当前元技能引导的进化器，C在训练期间给进化器提供特权验证器信息。C能揭示B漏掉的恢复情况，但它只用于训练；验证器的细节不会传给任务智能体，而且经过泄漏审计的C运行会被排除。最终结果只是用来提炼经验教训，并不会提供给实时运行的进化器。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 167.32,
+      "end": 204.32,
+      "en": "The comparisons map to three kinds of guidance. If B succeeds where A fails, or C succeeds where B fails, that supports acting. If B fails where A passes, or C passes where B fails, that supports avoiding a particular intervention. If A and B both pass, that supports holding the harness steady. A reflection stage proposes lessons, an aggregation stage looks for recurring patterns across tasks, and an update stage revises the Meta-Skill. These are directional signals: whole runs differ, so they do not prove that one checkpoint edit caused an outcome.",
+      "zh": "这些对比对应三种指导。如果B在A失败的地方成功，或者C在B失败的地方成功，那就支持采取行动。如果B在A通过的地方失败，或者C在B通过的地方失败，那就支持避免某种特定干预。如果A和B都通过，那就支持保持框架稳定。反思阶段提出经验教训，聚合阶段寻找跨任务的重复模式，更新阶段修订元技能。这些都是方向性信号：整次运行存在差异，因此它们不能证明某一次检查点修改导致了某个结果。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 205.44,
+      "end": 211.16,
+      "en": "So an avoid lesson rules out one kind of edit, rather than claiming that every possible intervention would be harmful?",
+      "zh": "所以一条“避免”类的经验教训是排除某一种编辑方式，而不是声称所有可能的干预都会有害，对吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 211.9,
+      "end": 242.54,
+      "en": "Exactly. Consider a repository agent that repeatedly overlooks a project-specific test command. A learned lesson might recommend a small instruction change when the trajectory shows that pattern. It should not become a universal rule to add instructions whenever a task is difficult. At each new task, the agent starts without the previous task's edits, while the frozen Meta-Skill remains available. That separation is designed to preserve useful learning without carrying local workarounds into unrelated runs.",
+      "zh": "正是如此。设想一个仓库智能体反复忽略某个项目特定的测试命令。当轨迹显示出这种模式时，学到的经验可能会建议做一处小的指令修改。它不应变成一条通用规则，只要任务困难就添加指令。每开始一个新任务，智能体都从没有上一个任务编辑的状态开始，而冻结的Meta-Skill始终可用。这种分离旨在保留有用的学习成果，同时不把局部的变通做法带入不相关的运行中。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 243.52,
+      "end": 282.0,
+      "en": "The reported results are encouraging within the tested settings, but the metric needs care. Terminal-Bench uses mean at five: each task's binary verifier outcomes are averaged across five independent runs, then task scores are averaged across the test set. DeepSWE uses the same procedure with three runs, or mean at three. With G-P-T five point six Terra on Terminal-Bench 2.1, Meta squared reports 81%, compared with 73.33% for Meta-Harness. It also has the highest reported point estimate on Deep S-W-E.",
+      "zh": "在测试设置范围内，报告的结果令人鼓舞，但这个指标需要谨慎看待。Terminal-Bench采用五次取平均：每个任务的二元验证器结果在五次独立运行中取平均，然后任务分数在测试集上取平均。DeepSWE采用相同流程，但只跑三次，即三次取平均。在Terminal-Bench 2.1上使用GPT-5.6 Terra时，Meta Squared报告了81%，而Meta-Harness为73.33%。它在DeepSWE上也报告了最高的点估计值。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 282.42,
+      "end": 286.56,
+      "en": "Can we tell from those comparisons which particular edit produced the improvement?",
+      "zh": "从这些对比中，我们能判断出是哪个具体的修改带来了提升吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 287.62,
+      "end": 326.7,
+      "en": "No. The A, B, and C contrasts compare complete runs, and independently sampled trajectories can diverge for reasons beyond an edit. The ablation gives a different, though still limited, view: on Terminal-Bench, the task agent alone scores 66.33%, adding an evolver reaches 74.67%, and the contrastive Meta-Skill reaches 81%. The self-distilled version scores 77%. On both benchmarks, contrastive guidance beats self-distillation; on DeepSWE, self-distillation slightly lowers performance relative to the evolver alone.",
+      "zh": "不能。A、B、C三组对比比较的是完整运行，而独立采样的轨迹可能因编辑之外的原因出现分歧。消融实验提供了一个不同但仍有限的视角：在Terminal-Bench上，仅任务智能体得分66.33%，加入演化器后达到74.67%，对比式元技能达到81%。自蒸馏版本得分77%。在两个基准上，对比式引导都优于自蒸馏；在DeepSWE上，自蒸馏相比仅用演化器还略微降低了性能。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 328.58,
+      "end": 367.34,
+      "en": "The task-locality test also supports the design choice, without isolating its cause. On Terminal-Bench, retaining edits from earlier tasks scores 78.33%, below Meta squared's 81%; on DeepSWE, the reported score falls from 44.44% to 39.11%. These findings are consistent with reusing guidance while resetting edits between tasks. They do not establish that edit carryover alone explains the difference, and the scores do not show that the method uses fewer tokens, attempts, or less elapsed time.",
+      "zh": "任务局部性测试也支持这一设计选择，但并未分离出它的具体原因。在Terminal-Bench上，保留早期任务的编辑得分为78.33%，低于Meta squared的81%；在DeepSWE上，报告得分从44.44%降到39.11%。这些结果与“任务之间重置编辑、同时复用指导”的做法一致。但它们并不能证明仅靠编辑沿用就能解释这一差异，这些得分也没有表明该方法使用了更少的token、尝试次数或更短的耗时。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 367.34,
+      "end": 373.22,
+      "en": "How should we place this next to Meta-Harness and Continual Harness when thinking about future systems?",
+      "zh": "在思考未来系统时，我们该如何把它与Meta-Harness和Continual Harness放在一起看待？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 374.32,
+      "end": 407.06,
+      "en": "Meta-Harness looks for a strong harness offline, while Continual Harness demonstrates adaptation within a run. Meta squared asks a more specific question: can outcomes from earlier tasks teach an overseer when to change a harness during later tasks? That makes its contribution a policy for adaptation, not simply a shared optimized setup or permission to edit at any time. Its evidence is limited to two terminal and repository-focused benchmarks and particular model settings; broader domains still need evaluation.",
+      "zh": "Meta-Harness在离线阶段寻找一个强大的harness，而Continual Harness则展示了在一次运行过程中的自适应。Meta squared提出了一个更具体的问题：早期任务的结果能否教会一个监督者在后续任务中何时更换harness？这使得它的贡献成为一种自适应策略，而不只是一个共享的优化配置或随时可编辑的许可。它的证据仅限于两个终端和仓库相关的基准以及特定的模型设置；更广泛的领域仍需评估。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 408.1,
+      "end": 440.9,
+      "en": "For future work, the key test is whether this kind of guidance remains useful when task structure, tools, or model backbones change. The authors build separate Meta-Skills for the evaluated backbones, so the results do not demonstrate zero-shot transfer of one skill across models. There is also a practical cost tradeoff: the evolver adds model calls, and total costs depend on checkpoint frequency and reuse. The broader lesson is to measure adaptation quality alongside performance, cost, and how well guidance transfers.",
+      "zh": "未来工作中，关键要测试的是：当任务结构、工具或模型骨干发生变化时，这类指导是否仍然有用。作者为所评估的各个骨干分别构建了独立的元技能，因此结果并不能证明同一技能可以零样本跨模型迁移。此外还存在实际的成本权衡：演化器会增加模型调用，而总成本取决于检查点频率和复用程度。更广泛的启示是，在衡量性能的同时，也要衡量适应质量、成本以及指导的可迁移性。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 442.82,
+      "end": 471.745,
+      "en": "Meta squared offers a useful design principle for long-running agents: learn from outcomes across tasks, but keep each task's actual edits local. Its benchmark results support that approach in the settings tested, while leaving questions about causality, cost, and generalization open. The memorable distinction is simple: reuse the rule, not the fix. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "zh": "Meta squared 为长期运行的智能体提供了一个有用的设计原则：从跨任务的结果中学习，但每个任务的实际修改保持局部化。它的基准结果在测试过的设置中支持这一方法，同时留下了关于因果关系、成本和泛化性的开放问题。令人印象深刻的区分很简单：复用规则，而不是修复方案。感谢收听。如果你还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{yuan2026meta2,\n  title  = {Meta$^2$: Precomputing Reusable Knowledge for Online Harness Evolution in Long-Horizon Agents},\n  author = {Yuan, Lingzhi and Cai, Yiguang and Liu, Weize and Yang, Siqi and Han, Feijiang and Lee, Yongkyun and Sehwag, Udari Madhushani and Huang, Furong},\n  year   = {2026},\n  note   = {Preprint},\n  url    = {https://meta-square.github.io/paper.pdf}\n}",
+  "topics": [
+    "NLP",
+    "Machine Learning",
+    "AI"
+  ],
+  "peaks": [
+    0.76,
+    0.454,
+    0.303,
+    0.371,
+    0.675,
+    0.619,
+    0.554,
+    0.696,
+    0.719,
+    0.589,
+    0.433,
+    0.789,
+    0.67,
+    0.638,
+    0.587,
+    0.529,
+    0.479,
+    0.388,
+    0.356,
+    0.495,
+    0.756,
+    0.645,
+    0.575,
+    0.382,
+    0.28,
+    0.603,
+    0.669,
+    0.792,
+    0.832,
+    0.626,
+    0.8,
+    1.0,
+    0.808,
+    0.341,
+    0.2,
+    0.35,
+    0.285,
+    0.699,
+    0.555,
+    0.262,
+    0.358,
+    0.419,
+    0.301,
+    0.668,
+    0.574,
+    0.684,
+    0.406,
+    0.281,
+    0.354,
+    0.41,
+    0.565,
+    0.544,
+    0.598,
+    0.481,
+    0.505,
+    0.352,
+    0.627,
+    0.555,
+    0.433,
+    0.305,
+    0.295,
+    0.445,
+    0.575,
+    0.732,
+    0.652,
+    0.676,
+    0.53,
+    0.777,
+    0.476,
+    0.563,
+    0.477,
+    0.505
+  ],
+  "published": "2026-10-21",
+  "views": 327,
+  "license": "User Uploaded"
+}

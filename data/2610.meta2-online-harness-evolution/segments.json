@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 471.745,
+  "word_match_rate": 0.9149,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Adaptive Agents and Tool-Using Models, today's lecture is on Meta squared. A command-line agent may discover halfway through a task that it lacks a tool, missed a requirement, or has a flawed check. A fixed setup cannot react; an improvised fix may disrupt useful work or leak into the next task. The paper asks how to make adaptation more deliberate. Yes, Noah?",
+      "start": 0.0,
+      "end": 26.2
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is this mainly about changing the model, or changing the setup around it?",
+      "start": 27.38,
+      "end": 32.1
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The model stays fixed; the surrounding harness changes. Here, a harness means the prompts, tools, memory, context policy, and hooks that shape how an agent works. Recent work such as Meta-Harness searches offline for a harness to deploy, while Continual Harness already adapts during a run. Meta squared combines these directions differently: it learns reusable guidance for deciding when to intervene, then applies that guidance locally. This matters as agents take on longer tasks, where both inaction and poorly timed edits can be costly.",
+      "start": 32.62,
+      "end": 66.72
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central distinction is between what persists and what does not. Offline, the authors build a textual Meta-Skill: guidance about when to act, avoid an intervention, or hold steady. Online, a separate evolver consults that frozen guidance and evidence from the current run. It may keep the harness unchanged or make a bounded edit. The edit belongs only to that task; the reusable guidance carries forward, not the task-specific fix.",
+      "start": 67.76,
+      "end": 95.9
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the evolver see whether the task ultimately passes?",
+      "start": 96.84,
+      "end": 100.2
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. At checkpoints, the evolver sees the agent's trajectory, permitted read-only observations of the workspace, and the status of earlier edits. It does not see the held-out verifier's verdict. The agent continues in its environment, and an edit can change an instruction, add a hook or tool, or provide a notice. At a completion claim, the evolver can accept the artifact or send the agent back to work in the same environment.",
+      "start": 101.38,
+      "end": 127.44
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "How can a final pass or fail teach the system what to do at a checkpoint if it cannot see that verdict online?",
+      "start": 128.46,
+      "end": 134.2
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The verdicts are used offline to learn guidance. For each training task, the authors compare three runs: A has no evolver, B has an evolver guided by the current Meta-Skill, and C gives the evolver privileged verifier information during training. C can reveal recoveries that B misses, but it is training-only; verifier details are not passed to the task agent, and leakage-audited C runs are excluded. The final outcomes suggest lessons, rather than being available to the live evolver.",
+      "start": 135.06,
+      "end": 165.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The comparisons map to three kinds of guidance. If B succeeds where A fails, or C succeeds where B fails, that supports acting. If B fails where A passes, or C passes where B fails, that supports avoiding a particular intervention. If A and B both pass, that supports holding the harness steady. A reflection stage proposes lessons, an aggregation stage looks for recurring patterns across tasks, and an update stage revises the Meta-Skill. These are directional signals: whole runs differ, so they do not prove that one checkpoint edit caused an outcome.",
+      "start": 167.32,
+      "end": 204.32
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "So an avoid lesson rules out one kind of edit, rather than claiming that every possible intervention would be harmful?",
+      "start": 205.44,
+      "end": 211.16
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Exactly. Consider a repository agent that repeatedly overlooks a project-specific test command. A learned lesson might recommend a small instruction change when the trajectory shows that pattern. It should not become a universal rule to add instructions whenever a task is difficult. At each new task, the agent starts without the previous task's edits, while the frozen Meta-Skill remains available. That separation is designed to preserve useful learning without carrying local workarounds into unrelated runs.",
+      "start": 211.9,
+      "end": 242.54
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The reported results are encouraging within the tested settings, but the metric needs care. Terminal-Bench uses mean at five: each task's binary verifier outcomes are averaged across five independent runs, then task scores are averaged across the test set. DeepSWE uses the same procedure with three runs, or mean at three. With G-P-T five point six Terra on Terminal-Bench 2.1, Meta squared reports 81%, compared with 73.33% for Meta-Harness. It also has the highest reported point estimate on Deep S-W-E.",
+      "start": 243.52,
+      "end": 282.0
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Can we tell from those comparisons which particular edit produced the improvement?",
+      "start": 282.42,
+      "end": 286.56
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "No. The A, B, and C contrasts compare complete runs, and independently sampled trajectories can diverge for reasons beyond an edit. The ablation gives a different, though still limited, view: on Terminal-Bench, the task agent alone scores 66.33%, adding an evolver reaches 74.67%, and the contrastive Meta-Skill reaches 81%. The self-distilled version scores 77%. On both benchmarks, contrastive guidance beats self-distillation; on DeepSWE, self-distillation slightly lowers performance relative to the evolver alone.",
+      "start": 287.62,
+      "end": 326.7
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The task-locality test also supports the design choice, without isolating its cause. On Terminal-Bench, retaining edits from earlier tasks scores 78.33%, below Meta squared's 81%; on DeepSWE, the reported score falls from 44.44% to 39.11%. These findings are consistent with reusing guidance while resetting edits between tasks. They do not establish that edit carryover alone explains the difference, and the scores do not show that the method uses fewer tokens, attempts, or less elapsed time.",
+      "start": 328.58,
+      "end": 367.34
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How should we place this next to Meta-Harness and Continual Harness when thinking about future systems?",
+      "start": 367.34,
+      "end": 373.22
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "Meta-Harness looks for a strong harness offline, while Continual Harness demonstrates adaptation within a run. Meta squared asks a more specific question: can outcomes from earlier tasks teach an overseer when to change a harness during later tasks? That makes its contribution a policy for adaptation, not simply a shared optimized setup or permission to edit at any time. Its evidence is limited to two terminal and repository-focused benchmarks and particular model settings; broader domains still need evaluation.",
+      "start": 374.32,
+      "end": 407.06
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "For future work, the key test is whether this kind of guidance remains useful when task structure, tools, or model backbones change. The authors build separate Meta-Skills for the evaluated backbones, so the results do not demonstrate zero-shot transfer of one skill across models. There is also a practical cost tradeoff: the evolver adds model calls, and total costs depend on checkpoint frequency and reuse. The broader lesson is to measure adaptation quality alongside performance, cost, and how well guidance transfers.",
+      "start": 408.1,
+      "end": 440.9
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Meta squared offers a useful design principle for long-running agents: learn from outcomes across tasks, but keep each task's actual edits local. Its benchmark results support that approach in the settings tested, while leaving questions about causality, cost, and generalization open. The memorable distinction is simple: reuse the rule, not the fix. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "start": 442.82,
+      "end": 471.745
+    }
+  ]
+}

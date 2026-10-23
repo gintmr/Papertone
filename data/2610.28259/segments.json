@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 411.924,
+  "word_match_rate": 0.9423,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Robot Learning and Embodied AI, today’s lecture is on G-P-T Gear: Systematically Exploring the Capabilities of G-P-T Six Astra as Embodied Policies. Imagine a robot asked to place a block inside a close-fitting cup. Recognizing the block and cup is not enough: the robot must approach and rotate its wrist without creating a posture that prevents insertion. This paper studies how a general-purpose model can participate directly in that action loop. I see Noah’s hand—go ahead, Noah.",
+      "start": 0.0,
+      "end": 34.08
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes this different from having a robot policy choose the movements?",
+      "start": 35.52,
+      "end": 39.6
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "The distinction is that Astra proposes movements from observations and instructions, rather than relying on a separately trained, task-specific action policy in the control path. This fits a wider trend toward testing multimodal models as embodied agents. EmbodiedBench evaluates agents across household tasks and manipulation, while An Unexpected Robot Policy evaluates Astra on RoboDojo. This paper adds targeted tests of geometry, feedback, and demonstrations, asking not just whether a model understands a goal, but whether it can execute it.",
+      "start": 40.62,
+      "end": 75.68
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The authors connect the model to the robot through G-P-T Gear, a lightweight execution framework. The model receives camera observations and robot state, then issues motion and gripper commands. The robot acts, returns new observations and execution feedback, and the model can revise its next move. It can also inspect stored observations without advancing the simulator. A completion check helps determine whether the episode is finished. The important idea is a feedback loop, not a one-shot instruction.",
+      "start": 76.32,
+      "end": 106.68
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the framework itself plan a safe path around obstacles?",
+      "start": 106.68,
+      "end": 111.36
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. The controller bounds and checks motions, but task-dependent planning remains the model’s responsibility. Those safeguards do not guarantee a collision-free movement or a successful grasp. Think of them as guardrails around the commands, not a substitute for knowing how an object must be approached and moved. The framework’s contribution is to make model proposals executable and to return information about what happened, so the next decision can respond to the result.",
+      "start": 112.74,
+      "end": 141.96
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The authors probe three kinds of information that might improve this loop. Depth and camera information test spatial grounding; demonstrations test whether context changes the model’s strategy; tactile feedback tests whether contact information can help it correct an action. They report useful depth use, adaptation to contextual examples, and tactile correction. But these are bounded tests: performance depends on how information is represented, and none of these inputs makes physical execution reliable by itself.",
+      "start": 142.9,
+      "end": 173.4
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How do they separate understanding the goal from handling the geometry?",
+      "start": 174.3,
+      "end": 177.68
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They use Libero GeoMotion, a benchmark with 36 scene variants across nine task families. The objects and goals are familiar, while the difficulty comes from grasp orientation, object reorientation, and coordinated movement under geometric and sequential constraints. Instructions specify the outcome, not a trajectory. Without contextual demonstrations, Astra succeeds on 4 of 36 variants, or 11.1%. With demonstrations, it succeeds on 18 of 36, or 50%. That is a substantial improvement, but still leaves many failures.",
+      "start": 178.72,
+      "end": 217.56
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Wait, if demonstrations help in most task families, what remains difficult?",
+      "start": 218.68,
+      "end": 222.72
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Gains appear in eight of the nine families, but package storage remains at 0%. The failure traces help explain why. A vase is knocked over through unintended contact; a long bar stalls near a narrow passage when translation and rotation are not coordinated; a book tips during upright placement; and a package remains outside a drawer, so closure is incomplete. These are observed examples, not a count of how often each failure occurs. The authors connect them to weak pose control and multi-step coordination.",
+      "start": 223.96,
+      "end": 255.62
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A separate test on a ROKAE Helios robot checks whether the pattern appears on hardware. The study covers five tasks, with five trials per task in each condition. Without a demonstration, the robot succeeds in 10 of 25 trials, or 40%; with one related example, it succeeds in 20 of 25, or 80%. Basic pick-and-place succeeds in 5 of 5 trials in both conditions, but constrained tasks still fail. These small trial counts are evidence about this evaluation, not a deployment guarantee.",
+      "start": 256.64,
+      "end": 292.8
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How should we compare that benefit from examples with the earlier RoboDojo study?",
+      "start": 293.76,
+      "end": 297.86
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Carefully. An Unexpected Robot Policy reported 22.48% average success across 2,100 RoboDojo trials and found no aggregate benefit from its one-shot demonstration experiment in its tested setup. The tasks, layouts, and protocols differ, so these results are not a direct contradiction and do not explain why outcomes differ. The present work extends the examination with geometry-focused tests, different demonstration conditions, and a separate hardware study. Its sharper finding is that contextual guidance can help while leaving serious execution limits.",
+      "start": 298.64,
+      "end": 336.34
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "So does this shift what researchers should prioritize in embodied models?",
+      "start": 337.42,
+      "end": 341.1
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "It suggests that evaluation should look beyond whether a model can identify an intended outcome or produce plausible actions. Researchers also need to test whether movements respect object geometry, preserve feasible future motions, and recover when execution feedback reveals a problem. The results do not show that general models are ready to replace reliable robot controllers. Instead, they give a systematic account of emerging abilities and practical boundaries, including the limits of demonstrations and the risk of unintended contact.",
+      "start": 341.98,
+      "end": 375.42
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The central takeaway is that a general-purpose model can take part in a robot’s action loop without a separately trained action policy, and feedback or demonstrations can improve its choices. Yet understanding what should happen is not the same as carrying it out precisely. A wrist can reach a joint limit; a grasp can be misaligned; a sequence can stop short of completion. The gap between a clear goal and reliable physical motion is the problem this work makes visible. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 375.42,
+      "end": 411.924
+    }
+  ]
+}
