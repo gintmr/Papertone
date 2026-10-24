@@ -1,0 +1,232 @@
+{
+  "id": "2610.22155",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.22155",
+    "arxiv": "https://arxiv.org/abs/2610.22155"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a14263-8abe-70b3-801f-5c7d049033ad/podcast.mp3",
+  "duration": 415.451,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.4,
+      "en": "In a hypothetical graduate course on Interactive AI Systems, today's lecture is on Realtime-Bench: Can Frontier Models Solve Real-Time Interactive Problems? The field is moving from models that analyze completed inputs toward agents that perceive and act while the world keeps changing. Recent work such as Gaia2: Benchmarking LLM Agents on Dynamic and Asynchronous Environments and τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains reflects that shift. This paper asks whether agents can act before an opportunity disappears. Yes, Noah?",
+      "zh": "在一门假设的交互式AI系统研究生课程中，今天的讲座主题是Realtime-Bench：前沿模型能解决实时交互问题吗？这个领域正从分析已完成输入的模型，转向在世界不断变化时进行感知和行动的智能体。近期的工作，比如Gaia2：在动态和异步环境中对LLM智能体进行基准测试，以及τ-bench：真实世界领域中工具-智能体-用户交互的基准，都反映了这一转变。这篇论文问的是：智能体能否在机会消失之前采取行动。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.64,
+      "end": 43.32,
+      "en": "Hi Professor, why isn't low latency enough to make an agent effective in a changing environment?",
+      "zh": "教授您好，为什么在变化的环境中，低延迟不足以让智能体变得有效？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.2,
+      "end": 70.88,
+      "en": "Because speed is only one part of the problem. An agent might respond quickly but misunderstand the current state, choose a poor action, or fail to notice that the situation has changed. Realtime-Bench was developed by researchers affiliated with institutions including the University of Texas at Austin and NVIDIA. Its central contribution is to evaluate perception, deliberation, and action together, under conditions where delay can change the outcome.",
+      "zh": "因为速度只是问题的一部分。智能体可能反应很快，却误解了当前状态、选择了糟糕的动作，或者没能注意到情况已经发生变化。Realtime-Bench 由包括德克萨斯大学奥斯汀分校和英伟达在内的多家机构的研究人员开发。它的核心贡献是在延迟可能改变结果的情况下，把感知、思考和行动放在一起评估。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.76,
+      "end": 98.6,
+      "en": "The paper frames real-time ability in three connected ways. First, an agent must track what has changed and whether its information is still current. Second, it must adapt how long it reasons to the urgency and value of the decision. Third, it must select an action, or choose to wait, that will still be useful when it takes effect. Think of crossing a busy street: seeing a gap is not enough if you step into it too late.",
+      "zh": "论文从三个相互关联的层面来界定实时能力。第一，智能体必须追踪哪些东西发生了变化，以及自己的信息是否仍然是最新的。第二，它必须根据决策的紧迫程度和价值来调整推理的时长。第三，它必须选择一个在生效时仍然有用的动作，或者选择等待。想象一下穿过一条繁忙的街道：看到空隙还不够，如果你迈步太晚，照样没用。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.54,
+      "end": 104.66,
+      "en": "Quick question: does the benchmark test these abilities separately, or only through task success?",
+      "zh": "快速问一下：这个基准是单独测试这些能力，还是只通过任务成功率来体现？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.66,
+      "end": 135.92,
+      "en": "Mostly through task success in interactive environments, then with trajectory analysis to identify recurring errors. The benchmark has 50 tasks: 30 web tasks and 20 games. The settings include travel, shopping, security, arcade play, puzzles, strategy, and simulation. A model receives a screenshot and a read-only Set-of-Marks representation of available controls, then returns an action such as a click, key press, typed input, scroll, or wait.",
+      "zh": "主要通过交互环境中的任务成功率来评估，然后用轨迹分析来识别反复出现的错误。这个基准包含50个任务：30个网页任务和20个游戏任务。场景涵盖旅行、购物、安全、街机游戏、解谜、策略和模拟。模型会收到一张截图和一份只读的可用控件标记集表示，然后返回一个动作，比如点击、按键、输入文本、滚动或等待。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.88,
+      "end": 165.32,
+      "en": "That shared interface helps keep the evaluation focused on decisions and timing rather than on whether a model can locate every control unaided. Observations arrive at one frame per simulated second, and older visual history is removed in blocks to constrain context. Some systems can reuse cached context. Tasks include winning an auction before bidding closes or steering a snake to eat five apples. In each case, the environment can change while the model is deciding.",
+      "zh": "这个共享接口有助于让评估聚焦于决策和时机，而不是模型能否在没有辅助的情况下定位每一个控件。观测以每个模拟秒一帧的速度到达，较早的视觉历史会按块移除以限制上下文长度。有些系统可以复用缓存的上下文。任务包括在竞拍结束前赢得拍卖，或操控蛇吃到五个苹果。在每种情况下，环境都可能在模型做决策时发生变化。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 166.46,
+      "end": 170.54,
+      "en": "Can you clarify how the three clock protocols separate different sources of delay?",
+      "zh": "你能说明一下这三种时钟协议是如何区分不同延迟来源的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 171.4,
+      "end": 202.94,
+      "en": "Wall Clock advances the environment during actual inference, so results reflect both model behavior and serving latency. Paused Clock freezes the environment while the model thinks, giving an idealized comparison. Token Clock instead charges simulated time for the model's generated tokens, regardless of physical serving speed. It lets researchers ask how much generation itself delays an action. In the main experiments, 64 generated tokens correspond to one simulated second.",
+      "zh": "挂钟时钟在实际推理过程中推进环境，因此结果既反映模型行为，也反映服务延迟。暂停时钟在模型思考时冻结环境，给出理想化的对比。token时钟则按模型生成的token计收模拟时间，与实际服务速度无关。它让研究者得以追问生成本身会让动作延迟多少。在主实验中，64个生成的token对应一秒模拟时间。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 203.84,
+      "end": 234.18,
+      "en": "The authors evaluate 12 models with Wall Clock, then compare six models across all three clocks and low versus high reasoning effort. Some decision models cannot join that comparison because they do not report the token counts needed for Token Clock. Under Wall Clock, G-P-T six Astra at high reasoning effort leads with 44% single-run success, but its three-run all-success rate is 36%. That gap reminds us that a good result on one attempt does not guarantee dependable performance.",
+      "zh": "作者用挂钟时间评估了12个模型，然后比较了六个模型在三种时钟下以及低推理努力与高推理努力的表现。一些决策模型无法加入这项比较，因为它们没有报告Token Clock所需的token数量。在挂钟时间下，GPT-6 Astra在高推理努力下以44%的单次运行成功率领先，但其三次运行全部成功的比率是36%。这个差距提醒我们，一次尝试取得好结果并不保证性能可靠。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 235.24,
+      "end": 241.22,
+      "en": "Wait, if more reasoning can improve decisions, why would high reasoning effort sometimes reduce success?",
+      "zh": "等等，如果更多推理能改善决策，那为什么高推理投入有时反而会降低成功率呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 242.1,
+      "end": 275.28,
+      "en": "Because reasoning consumes time that could be used to act. Under Paused Clock, higher effort improves success for all six compared models; Claude Opus 5 rises from 62% to 70%. Under Token Clock, its success falls from 44% at low effort to 30% at high effort. Effects differ by model, however: Kimi-K3 improves from 24% to 36%. The practical question is not simply whether to reason more, but when extra reasoning is worth its temporal cost.",
+      "zh": "因为推理会占用本可以用来行动的时间。在暂停时钟下，更高的推理投入让全部六个对比模型的成功率都提升了；Claude Opus 5从62%升到70%。而在token时钟下，它的成功率却从低投入时的44%降到高投入时的30%。不过不同模型的表现并不一样：Kimi-K3从24%提升到了36%。真正实际的问题不是简单地要不要多推理，而是多出来的推理在什么时候值得它带来的时间代价。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 276.22,
+      "end": 307.94,
+      "en": "The recorded trajectories make that trade-off concrete. Some models reasoned past a game's ten-second move limit before making a first move. Others continued in an outdated direction in Snake, despite a changed game state, or waited through a brief chance to avoid a hazard. A token-budget ablation supports the timing argument: with low reasoning effort, Claude Opus 5 improves from 30% at a budget of 32 tokens per simulated second to 62% when generation delay is removed.",
+      "zh": "记录下来的轨迹让这种权衡变得具体。有些模型在第一次行动前推理太久，超过了游戏十秒的走子时限。另一些在贪吃蛇里，尽管游戏状态已经改变，仍沿着过时的方向继续走，或者错过了一个短暂的机会来避开危险。一项token预算消融实验支持了时机方面的论点：在低推理努力下，Claude Opus 5从每模拟秒32个token预算时的30%，提升到移除生成延迟后的62%。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 308.96,
+      "end": 313.48,
+      "en": "How does this relate to Gaia2, and what should we be cautious about when interpreting the results?",
+      "zh": "这和Gaia2有什么关系，我们在解读结果时又该注意些什么？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 314.46,
+      "end": 347.6,
+      "en": "Like Gaia2, Realtime-Bench evaluates agents while environments advance during generation, making stale observations and delayed actions consequential. Its three clocks add a way to distinguish physical serving delay from the time spent generating. That distinction is useful, but Token Clock's fixed conversion is an experimental approximation, not a universal measure of deployment time. The benchmark also uses curated tasks and one-frame-per-second observations, so conclusions should not automatically extend to every interactive setting.",
+      "zh": "和Gaia2一样，Realtime-Bench在环境于生成过程中持续推进的情况下评估智能体，因此过时的观察和延迟的动作都会带来实际后果。它的三个时钟增加了一种区分物理服务延迟与生成所花时间的方式。这种区分很有用，但Token Clock的固定换算是一种实验性近似，并非部署时间的通用度量。该基准还使用了精选任务和每秒一帧的观察，因此结论不应自动推广到所有交互场景。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 347.6,
+      "end": 382.44,
+      "en": "The broader implication is that strong static performance or fluent streaming conversation does not establish reliable closed-loop action. Researchers may need agents that adjust reasoning to urgency, preserve the visual details that matter for later decisions, and handle observations that arrive while they are busy responding. Higher observation rates could reveal brief events, but they also increase processing and context demands. Realtime-Bench therefore treats timely action as a distinct capability worth measuring, not an automatic byproduct of model scale.",
+      "zh": "更广泛的含义在于，强大的静态性能或流畅的流式对话并不能确立可靠的闭环行动能力。研究者可能需要这样的智能体：能根据紧迫程度调整推理，保留对后续决策重要的视觉细节，并处理在它们忙于响应时到达的观察信息。更高的观察频率可能揭示短暂事件，但也会增加处理和上下文需求。因此，Realtime-Bench 将及时行动视为一种值得衡量的独立能力，而不是模型规模自动带来的副产品。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 383.3,
+      "end": 415.451,
+      "en": "The central takeaway is simple: in a changing environment, a correct answer delivered too late can be the wrong action. Realtime-Bench makes that cost visible by comparing actual latency, deliberation time, and an idealized pause, then testing whether models can respond to evolving states. Its results point toward systems that know not only what to do, but also when further thought is useful and when it is time to act. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论很简单：在变化的环境中，一个正确答案如果来得太晚，就可能变成错误的行动。Realtime-Bench通过比较实际延迟、思考时间和理想化的暂停，让这种代价变得可见，然后测试模型能否对不断变化的状态做出响应。其结果指向这样的系统：不仅知道该做什么，还知道什么时候进一步思考是有用的，什么时候该采取行动。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{tang2026realtimebenchfrontiermodelssolve,\n      title={Realtime-Bench: Can Frontier Models Solve Real-time Interactive Problems?}, \n      author={Jingyu Tang and Xu Yang and Zhehao Zhang and Zheng Wang and Qi Cheng and Haozhe Zhao and Manling Li and Wenxuan Li and Xide Xia and Jiaxin Pei},\n      year={2026},\n      eprint={2610.22155},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.22155}, \n}",
+  "topics": [
+    "AI"
+  ],
+  "peaks": [
+    0.687,
+    0.424,
+    0.41,
+    0.283,
+    0.204,
+    0.294,
+    0.396,
+    0.757,
+    0.536,
+    0.666,
+    0.322,
+    0.354,
+    0.679,
+    0.466,
+    0.414,
+    0.424,
+    0.358,
+    0.588,
+    0.609,
+    0.603,
+    0.514,
+    0.601,
+    0.652,
+    0.686,
+    0.85,
+    0.645,
+    0.33,
+    0.547,
+    0.625,
+    1.0,
+    0.671,
+    0.742,
+    0.56,
+    0.521,
+    0.465,
+    0.714,
+    0.446,
+    0.277,
+    0.273,
+    0.255,
+    0.276,
+    0.534,
+    0.525,
+    0.358,
+    0.32,
+    0.463,
+    0.264,
+    0.382,
+    0.348,
+    0.245,
+    0.355,
+    0.338,
+    0.2,
+    0.401,
+    0.761,
+    0.46,
+    0.381,
+    0.39,
+    0.406,
+    0.354,
+    0.441,
+    0.397,
+    0.373,
+    0.457,
+    0.381,
+    0.205,
+    0.602,
+    0.818,
+    0.539,
+    0.578,
+    0.477,
+    0.37
+  ],
+  "published": "2026-10-15",
+  "views": 152,
+  "license": "CC BY"
+}

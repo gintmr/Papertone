@@ -1,0 +1,248 @@
+{
+  "id": "2610.31642",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.31642",
+    "arxiv": "https://arxiv.org/abs/2610.31642"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a166da-aa7c-7295-8fe2-71663f320235/podcast.mp3",
+  "duration": 442.801,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.82,
+      "en": "In our graduate course on Numerical Methods for Deep Learning, today’s lecture is on A Fix for Softmax and Cross-Entropy. Recent work such as Softpick: No Attention Sink, No Massive Activations with Rectified Softmax and Decoupled Weight Decay Regularization shows how researchers are revisiting familiar components of training. This paper, from Google DeepMind, focuses instead on numerical accuracy inside common loss calculations. Those details matter when gradients become tiny. Yes, Noah?",
+      "zh": "在我们深度学习数值方法的研究生课程中，今天的讲座主题是“Softmax与交叉熵的一个修复方案”。近期的一些工作，比如《Softpick：用修正Softmax和解耦权重衰减正则化实现无注意力汇、无大规模激活》，展示了研究者们正在重新审视训练中那些熟悉的组件。而这篇来自Google DeepMind的论文，则把焦点放在了常见损失计算中的数值精度问题上。当梯度变得非常小时，这些细节就很重要了。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.16,
+      "end": 38.22,
+      "en": "Hi Professor, why can a loss calculation fail if the implementation already prevents overflow?",
+      "zh": "教授您好，既然实现已经防止了溢出，为什么损失计算还是会失败呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.02,
+      "end": 70.28,
+      "en": "Preventing overflow is only one part of numerical stability. Standard softmax implementations shift logits before exponentiating, which controls excessively large intermediate values. But precision can still be lost in two other ways: a tiny probability contribution can disappear when added to one, and two nearly equal probabilities can round to the same value before they are subtracted. The paper names these problems Softmax Collapse and Softmax Cancellation, and offers alternative calculations for each.",
+      "zh": "防止溢出只是数值稳定性的一部分。标准softmax实现会在取指数之前先对logits做平移，这能控制中间值过大的问题。但精度还可能以另外两种方式丢失：一个极小的概率贡献在加到1上时可能直接消失，而两个几乎相等的概率在被相减之前可能舍入成同一个值。论文把这两个问题分别命名为Softmax Collapse和Softmax Cancellation，并针对每一种都给出了替代的计算方法。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 71.16,
+      "end": 101.78,
+      "en": "Consider a model that is very confident about the correct class. Its target probability is mathematically just below one, so the target gradient is small but meaningful. The standard calculation subtracts one from that rounded probability. At sufficiently high confidence, rounding turns the probability into exactly one, erasing the gradient. The other class gradients can remain nonzero, so the computed gradients no longer sum to zero. The authors call this Softmax Collapse.",
+      "zh": "设想一个模型对正确类别非常有信心。它的目标概率在数学上只是略低于一，所以目标梯度虽小但仍有意义。标准计算会从这个经过舍入的概率中减去一。当置信度足够高时，舍入会把该概率变成恰好为一，从而抹掉梯度。其他类别的梯度可能仍然非零，因此计算出的梯度不再求和为零。作者把这种现象称为 Softmax 坍缩。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 102.7,
+      "end": 107.02,
+      "en": "Is that the same as the loss becoming infinite, or is the failure specifically in the gradient?",
+      "zh": "这和损失变成无穷大是一回事吗，还是说问题具体出在梯度上？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.82,
+      "end": 138.2,
+      "en": "The key failure is in the gradient, though the loss calculation is involved. The authors report precision cliffs around a target-logit margin of 5.5 in B-F sixteen, 16.6 in F-P thirty-two, and 36.7 in F-P sixty-four. Beyond those points, the small target gradient can vanish even though the non-target gradients remain. Their proposed hard-target calculations avoid obtaining that gradient by subtracting one from a rounded probability.",
+      "zh": "关键在于梯度出了问题，虽然损失计算也牵涉其中。作者报告了精度悬崖：在B-F十六中出现在目标logit差值约5.5处，F-P三十二中约16.6处，F-P六十四中约36.7处。超过这些点后，即使非目标梯度仍然存在，很小的目标梯度也可能消失。他们提出的硬目标计算方法避免了通过对四舍五入后的概率减一来获得该梯度。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.2,
+      "end": 169.02,
+      "en": "For hard targets, the revised formulas use differences between logits and a stable softplus calculation. For softmax and log-softmax, they handle the largest logit separately; for cross-entropy, they use the target logit as a reference and calculate across the other logits. This lets automatic differentiation recover the target gradient as the negative sum of the others. The gradient is preserved until exponential underflow, rather than disappearing at the earlier precision cliff.",
+      "zh": "对于硬目标，修订后的公式使用logit之间的差值以及稳定的softplus计算。对于softmax和log-softmax，它们单独处理最大的logit；对于交叉熵，它们以目标logit为参考，对其他logit进行计算。这使得自动微分能够将目标梯度恢复为其他梯度之和的负值。梯度会一直保留到指数下溢，而不是在之前的精度悬崖处消失。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 169.86,
+      "end": 173.76,
+      "en": "Quick question: does that require casting the calculation to a higher precision?",
+      "zh": "快速问一下：这需要把计算转换成更高的精度吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 174.6,
+      "end": 204.54,
+      "en": "No. The goal is to preserve the relevant small quantities within the original floating-point format. Softmax Cancellation addresses a different case: soft-target cross-entropy, including distillation. When student and teacher logits are close, their probabilities are close too. Computing both distributions separately and subtracting them can erase the small difference that carries the learning signal. The paper instead computes from the logit differences, using functions designed to retain small changes.",
+      "zh": "不需要。目标是保留原始浮点格式中那些相关的小量。Softmax Cancellation 处理的是另一种情况：软目标交叉熵，包括蒸馏。当学生和教师的 logit 接近时，它们的概率也接近。分别计算两个分布再相减，可能会抹掉携带学习信号的那点微小差异。论文改为从 logit 差异出发进行计算，使用专门设计来保留微小变化的函数。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 205.44,
+      "end": 235.62,
+      "en": "The implementation also centers those differences under the teacher distribution, corrects small floating-point drift so the gradient sums to zero, and uses a custom gradient for the backward pass. A useful check is exact equality: if student and teacher logits match, the proposed method returns a zero gradient. The authors test both issues across B-F sixteen, F-P thirty-two, and F-P sixty-four, using grokking tasks and a controlled distillation setup.",
+      "zh": "实现上还会在教师分布下对这些差值做中心化处理，修正微小的浮点漂移，使梯度之和为零，并在反向传播中使用自定义梯度。一个有用的检验是精确相等：如果学生和教师的logit完全一致，该方法会返回零梯度。作者在B-F十六、F-P三十二和F-P六十四三种精度下，用grokking任务和受控蒸馏设置对这两个问题都做了测试。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 236.48,
+      "end": 239.6,
+      "en": "How do they connect the missing gradient to the loss spikes observed during grokking?",
+      "zh": "他们如何把梯度缺失与grokking过程中观察到的损失尖峰联系起来？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 240.86,
+      "end": 274.54,
+      "en": "With standard cross-entropy, Adam’s running estimate of squared gradients can decay while the target gradient is absent. If an example later moves back below the precision cliff, that gradient reappears while the optimizer’s denominator may be small, allowing a large update and a loss spike. In the reported modular-addition experiments, fixed cross-entropy avoids those spikes and progresses more smoothly. On one task, standard-loss test accuracy fell from 61% to 23%, while the fixed-loss run continued to 85%.",
+      "zh": "使用标准交叉熵时，Adam对梯度平方的运行估计可能在目标梯度缺失时衰减。如果某个样本后来回到精度悬崖以下，该梯度会重新出现，而优化器的分母可能很小，从而导致大幅更新和损失尖峰。在报告的模加法实验中，固定交叉熵避免了这些尖峰，进展更平滑。在一个任务上，标准损失的测试准确率从61%降到23%，而固定损失的运行继续达到85%。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 274.54,
+      "end": 305.96,
+      "en": "Across four grokking benchmarks, the authors report that fixed cross-entropy in F-P thirty-two matches standard cross-entropy in F-P sixty-four and reaches 100% test accuracy in those runs. They also find that, with weight decay, margins settle near a value predicted by Adam’s epsilon parameter. Without weight decay, margins continue to grow. These results show how numerical precision, optimizer settings, and regularization can interact, rather than acting as isolated parts of training.",
+      "zh": "在四个grokking基准上，作者报告说，F-P三十二下的固定交叉熵与F-P六十四下的标准交叉熵表现相当，并在这些运行中达到了100%的测试准确率。他们还发现，在有权重衰减的情况下，margin会稳定在Adam的epsilon参数所预测的值附近。没有权重衰减时，margin会持续增长。这些结果表明，数值精度、优化器设置和正则化之间会相互作用，而不是作为训练中彼此孤立的部分。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 305.96,
+      "end": 311.38,
+      "en": "And in distillation, does the difference matter even when the student starts exactly at the teacher?",
+      "zh": "而在蒸馏中，即使学生模型一开始就和教师模型完全一样，这个差异还会有影响吗？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 312.24,
+      "end": 341.26,
+      "en": "Yes. In the experiment, standard soft-target cross-entropy creates a small residual gradient even at equality. Adam can amplify it through normalization: the B-F sixteen student drifts from the teacher and loses test accuracy, while the F-P thirty-two run briefly increases in K-L divergence. With the proposed loss, the gradient is zero at equality, and the student retains zero held-out K-L divergence and 100% test accuracy across tested precisions.",
+      "zh": "是的。在实验中，标准软目标交叉熵即使在相等时也会产生一个很小的残差梯度。Adam 可以通过归一化将其放大：B-F 16 位的学生模型会偏离教师模型并损失测试准确率，而 F-P 32 位的运行中 K-L 散度会短暂上升。使用所提出的损失函数时，相等处的梯度为零，学生模型在测试的各个精度下都保持零的留出 K-L 散度和 100% 的测试准确率。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 342.72,
+      "end": 373.4,
+      "en": "The broader lesson is that training instabilities can sometimes originate in how a familiar operation is evaluated, not only in the model or optimizer. This complements work such as Softpick, which changes a normalization used in attention, while this paper repairs loss calculations. It also gives a numerical perspective on grokking that can be considered alongside work explicitly examining numerical stability in grokking. The contribution is a change to the calculation, not a new architecture or optimizer.",
+      "zh": "更广泛的启示是，训练不稳定性有时源于一个常见运算的求值方式，而不只是模型或优化器本身。这与Softpick等工作形成互补——后者改的是注意力中用到的归一化，而这篇论文修的是损失计算。它还为grokking提供了一个数值视角，可以与那些明确考察grokking中数值稳定性的工作放在一起看。这项贡献是对计算方式的改动，而不是新架构或新优化器。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 374.18,
+      "end": 377.7,
+      "en": "Could these fixes be assumed to help large-scale training just as much?",
+      "zh": "这些修复方法能假定在大规模训练中同样有效吗？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 378.4,
+      "end": 410.52,
+      "en": "Not from these experiments alone. The evidence centers on small algorithmic grokking tasks and targeted distillation, where high confidence and tiny gradients are observable. The paper does not establish how often the same numerical regimes affect large production workloads, or provide broad cost evaluations across hardware and frameworks. That leaves an important next step: test whether the safer formulas improve reliability in real training settings, and verify their behavior in each implementation.",
+      "zh": "仅凭这些实验还不足以得出这个结论。证据主要集中在小型算法grokking任务和有针对性的蒸馏上，在这些场景中，高置信度和微小梯度是可以观察到的。这篇论文并未确定同样的数值状态在大型生产工作负载中出现的频率，也没有提供跨硬件和框架的广泛成本评估。这就留下了一个重要的下一步：测试更安全的公式能否在真实训练环境中提升可靠性，并在每种实现中验证其行为。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 410.52,
+      "end": 442.801,
+      "en": "The takeaway is simple: a stable calculation must preserve the small differences that learning depends on, not merely avoid overflow. This paper shows how losing those differences can disrupt optimizer behavior, and how reformulating the loss can address both collapsed target gradients and cancellation between similar distributions. For researchers, numerical details are part of the training method itself. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论很简单：稳定的计算必须保留学习所依赖的微小差异，而不只是避免溢出。这篇论文展示了丢失这些差异会如何扰乱优化器行为，以及重新构造损失函数如何同时解决目标梯度塌缩和相似分布之间的相消问题。对研究者来说，数值细节本身就是训练方法的一部分。感谢收听。如果还有问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{barron2026fixsoftmaxcrossentropy,\n      title={A Fix for Softmax and Cross-Entropy}, \n      author={Jonathan T. Barron and Dan Gnanapragasam and Michael Tschannen},\n      year={2026},\n      eprint={2610.31642},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.31642}, \n}",
+  "topics": [
+    "Machine Learning"
+  ],
+  "peaks": [
+    0.872,
+    0.414,
+    0.315,
+    0.363,
+    0.225,
+    0.389,
+    1.0,
+    0.642,
+    0.5,
+    0.458,
+    0.331,
+    0.598,
+    0.354,
+    0.334,
+    0.372,
+    0.463,
+    0.502,
+    0.715,
+    0.439,
+    0.233,
+    0.2,
+    0.432,
+    0.563,
+    0.511,
+    0.723,
+    0.666,
+    0.451,
+    0.554,
+    0.641,
+    0.258,
+    0.368,
+    0.324,
+    0.274,
+    0.554,
+    0.659,
+    0.399,
+    0.517,
+    0.298,
+    0.687,
+    0.582,
+    0.595,
+    0.587,
+    0.601,
+    0.294,
+    0.417,
+    0.524,
+    0.414,
+    0.341,
+    0.525,
+    0.528,
+    0.976,
+    0.71,
+    0.544,
+    0.564,
+    0.468,
+    0.51,
+    0.658,
+    0.362,
+    0.486,
+    0.36,
+    0.464,
+    0.821,
+    0.675,
+    0.593,
+    0.849,
+    0.813,
+    0.742,
+    0.563,
+    0.602,
+    0.546,
+    0.298,
+    0.376
+  ],
+  "published": "2026-10-22",
+  "views": 363,
+  "license": "CC BY"
+}

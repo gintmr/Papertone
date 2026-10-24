@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 442.801,
+  "word_match_rate": 0.9301,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Numerical Methods for Deep Learning, today’s lecture is on A Fix for Softmax and Cross-Entropy. Recent work such as Softpick: No Attention Sink, No Massive Activations with Rectified Softmax and Decoupled Weight Decay Regularization shows how researchers are revisiting familiar components of training. This paper, from Google DeepMind, focuses instead on numerical accuracy inside common loss calculations. Those details matter when gradients become tiny. Yes, Noah?",
+      "start": 0.0,
+      "end": 31.82
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why can a loss calculation fail if the implementation already prevents overflow?",
+      "start": 33.16,
+      "end": 38.22
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Preventing overflow is only one part of numerical stability. Standard softmax implementations shift logits before exponentiating, which controls excessively large intermediate values. But precision can still be lost in two other ways: a tiny probability contribution can disappear when added to one, and two nearly equal probabilities can round to the same value before they are subtracted. The paper names these problems Softmax Collapse and Softmax Cancellation, and offers alternative calculations for each.",
+      "start": 39.02,
+      "end": 70.28
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "Consider a model that is very confident about the correct class. Its target probability is mathematically just below one, so the target gradient is small but meaningful. The standard calculation subtracts one from that rounded probability. At sufficiently high confidence, rounding turns the probability into exactly one, erasing the gradient. The other class gradients can remain nonzero, so the computed gradients no longer sum to zero. The authors call this Softmax Collapse.",
+      "start": 71.16,
+      "end": 101.78
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Is that the same as the loss becoming infinite, or is the failure specifically in the gradient?",
+      "start": 102.7,
+      "end": 107.02
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The key failure is in the gradient, though the loss calculation is involved. The authors report precision cliffs around a target-logit margin of 5.5 in B-F sixteen, 16.6 in F-P thirty-two, and 36.7 in F-P sixty-four. Beyond those points, the small target gradient can vanish even though the non-target gradients remain. Their proposed hard-target calculations avoid obtaining that gradient by subtracting one from a rounded probability.",
+      "start": 107.82,
+      "end": 138.2
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "For hard targets, the revised formulas use differences between logits and a stable softplus calculation. For softmax and log-softmax, they handle the largest logit separately; for cross-entropy, they use the target logit as a reference and calculate across the other logits. This lets automatic differentiation recover the target gradient as the negative sum of the others. The gradient is preserved until exponential underflow, rather than disappearing at the earlier precision cliff.",
+      "start": 138.2,
+      "end": 169.02
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does that require casting the calculation to a higher precision?",
+      "start": 169.86,
+      "end": 173.76
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. The goal is to preserve the relevant small quantities within the original floating-point format. Softmax Cancellation addresses a different case: soft-target cross-entropy, including distillation. When student and teacher logits are close, their probabilities are close too. Computing both distributions separately and subtracting them can erase the small difference that carries the learning signal. The paper instead computes from the logit differences, using functions designed to retain small changes.",
+      "start": 174.6,
+      "end": 204.54
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The implementation also centers those differences under the teacher distribution, corrects small floating-point drift so the gradient sums to zero, and uses a custom gradient for the backward pass. A useful check is exact equality: if student and teacher logits match, the proposed method returns a zero gradient. The authors test both issues across B-F sixteen, F-P thirty-two, and F-P sixty-four, using grokking tasks and a controlled distillation setup.",
+      "start": 205.44,
+      "end": 235.62
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How do they connect the missing gradient to the loss spikes observed during grokking?",
+      "start": 236.48,
+      "end": 239.6
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "With standard cross-entropy, Adam’s running estimate of squared gradients can decay while the target gradient is absent. If an example later moves back below the precision cliff, that gradient reappears while the optimizer’s denominator may be small, allowing a large update and a loss spike. In the reported modular-addition experiments, fixed cross-entropy avoids those spikes and progresses more smoothly. On one task, standard-loss test accuracy fell from 61% to 23%, while the fixed-loss run continued to 85%.",
+      "start": 240.86,
+      "end": 274.54
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Across four grokking benchmarks, the authors report that fixed cross-entropy in F-P thirty-two matches standard cross-entropy in F-P sixty-four and reaches 100% test accuracy in those runs. They also find that, with weight decay, margins settle near a value predicted by Adam’s epsilon parameter. Without weight decay, margins continue to grow. These results show how numerical precision, optimizer settings, and regularization can interact, rather than acting as isolated parts of training.",
+      "start": 274.54,
+      "end": 305.96
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "And in distillation, does the difference matter even when the student starts exactly at the teacher?",
+      "start": 305.96,
+      "end": 311.38
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Yes. In the experiment, standard soft-target cross-entropy creates a small residual gradient even at equality. Adam can amplify it through normalization: the B-F sixteen student drifts from the teacher and loses test accuracy, while the F-P thirty-two run briefly increases in K-L divergence. With the proposed loss, the gradient is zero at equality, and the student retains zero held-out K-L divergence and 100% test accuracy across tested precisions.",
+      "start": 312.24,
+      "end": 341.26
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader lesson is that training instabilities can sometimes originate in how a familiar operation is evaluated, not only in the model or optimizer. This complements work such as Softpick, which changes a normalization used in attention, while this paper repairs loss calculations. It also gives a numerical perspective on grokking that can be considered alongside work explicitly examining numerical stability in grokking. The contribution is a change to the calculation, not a new architecture or optimizer.",
+      "start": 342.72,
+      "end": 373.4
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could these fixes be assumed to help large-scale training just as much?",
+      "start": 374.18,
+      "end": 377.7
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Not from these experiments alone. The evidence centers on small algorithmic grokking tasks and targeted distillation, where high confidence and tiny gradients are observable. The paper does not establish how often the same numerical regimes affect large production workloads, or provide broad cost evaluations across hardware and frameworks. That leaves an important next step: test whether the safer formulas improve reliability in real training settings, and verify their behavior in each implementation.",
+      "start": 378.4,
+      "end": 410.52
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The takeaway is simple: a stable calculation must preserve the small differences that learning depends on, not merely avoid overflow. This paper shows how losing those differences can disrupt optimizer behavior, and how reformulating the loss can address both collapsed target gradients and cancellation between similar distributions. For researchers, numerical details are part of the training method itself. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 410.52,
+      "end": 442.801
+    }
+  ]
+}

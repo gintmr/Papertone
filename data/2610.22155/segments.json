@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 415.451,
+  "word_match_rate": 0.9583,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course on Interactive AI Systems, today's lecture is on Realtime-Bench: Can Frontier Models Solve Real-Time Interactive Problems? The field is moving from models that analyze completed inputs toward agents that perceive and act while the world keeps changing. Recent work such as Gaia2: Benchmarking LLM Agents on Dynamic and Asynchronous Environments and τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains reflects that shift. This paper asks whether agents can act before an opportunity disappears. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.4
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why isn't low latency enough to make an agent effective in a changing environment?",
+      "start": 38.64,
+      "end": 43.32
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because speed is only one part of the problem. An agent might respond quickly but misunderstand the current state, choose a poor action, or fail to notice that the situation has changed. Realtime-Bench was developed by researchers affiliated with institutions including the University of Texas at Austin and NVIDIA. Its central contribution is to evaluate perception, deliberation, and action together, under conditions where delay can change the outcome.",
+      "start": 44.2,
+      "end": 70.88
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The paper frames real-time ability in three connected ways. First, an agent must track what has changed and whether its information is still current. Second, it must adapt how long it reasons to the urgency and value of the decision. Third, it must select an action, or choose to wait, that will still be useful when it takes effect. Think of crossing a busy street: seeing a gap is not enough if you step into it too late.",
+      "start": 71.76,
+      "end": 98.6
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the benchmark test these abilities separately, or only through task success?",
+      "start": 99.54,
+      "end": 104.66
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Mostly through task success in interactive environments, then with trajectory analysis to identify recurring errors. The benchmark has 50 tasks: 30 web tasks and 20 games. The settings include travel, shopping, security, arcade play, puzzles, strategy, and simulation. A model receives a screenshot and a read-only Set-of-Marks representation of available controls, then returns an action such as a click, key press, typed input, scroll, or wait.",
+      "start": 104.66,
+      "end": 135.92
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "That shared interface helps keep the evaluation focused on decisions and timing rather than on whether a model can locate every control unaided. Observations arrive at one frame per simulated second, and older visual history is removed in blocks to constrain context. Some systems can reuse cached context. Tasks include winning an auction before bidding closes or steering a snake to eat five apples. In each case, the environment can change while the model is deciding.",
+      "start": 136.88,
+      "end": 165.32
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the three clock protocols separate different sources of delay?",
+      "start": 166.46,
+      "end": 170.54
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Wall Clock advances the environment during actual inference, so results reflect both model behavior and serving latency. Paused Clock freezes the environment while the model thinks, giving an idealized comparison. Token Clock instead charges simulated time for the model's generated tokens, regardless of physical serving speed. It lets researchers ask how much generation itself delays an action. In the main experiments, 64 generated tokens correspond to one simulated second.",
+      "start": 171.4,
+      "end": 202.94
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The authors evaluate 12 models with Wall Clock, then compare six models across all three clocks and low versus high reasoning effort. Some decision models cannot join that comparison because they do not report the token counts needed for Token Clock. Under Wall Clock, G-P-T six Astra at high reasoning effort leads with 44% single-run success, but its three-run all-success rate is 36%. That gap reminds us that a good result on one attempt does not guarantee dependable performance.",
+      "start": 203.84,
+      "end": 234.18
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Wait, if more reasoning can improve decisions, why would high reasoning effort sometimes reduce success?",
+      "start": 235.24,
+      "end": 241.22
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Because reasoning consumes time that could be used to act. Under Paused Clock, higher effort improves success for all six compared models; Claude Opus 5 rises from 62% to 70%. Under Token Clock, its success falls from 44% at low effort to 30% at high effort. Effects differ by model, however: Kimi-K3 improves from 24% to 36%. The practical question is not simply whether to reason more, but when extra reasoning is worth its temporal cost.",
+      "start": 242.1,
+      "end": 275.28
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The recorded trajectories make that trade-off concrete. Some models reasoned past a game's ten-second move limit before making a first move. Others continued in an outdated direction in Snake, despite a changed game state, or waited through a brief chance to avoid a hazard. A token-budget ablation supports the timing argument: with low reasoning effort, Claude Opus 5 improves from 30% at a budget of 32 tokens per simulated second to 62% when generation delay is removed.",
+      "start": 276.22,
+      "end": 307.94
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does this relate to Gaia2, and what should we be cautious about when interpreting the results?",
+      "start": 308.96,
+      "end": 313.48
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Like Gaia2, Realtime-Bench evaluates agents while environments advance during generation, making stale observations and delayed actions consequential. Its three clocks add a way to distinguish physical serving delay from the time spent generating. That distinction is useful, but Token Clock's fixed conversion is an experimental approximation, not a universal measure of deployment time. The benchmark also uses curated tasks and one-frame-per-second observations, so conclusions should not automatically extend to every interactive setting.",
+      "start": 314.46,
+      "end": 347.6
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader implication is that strong static performance or fluent streaming conversation does not establish reliable closed-loop action. Researchers may need agents that adjust reasoning to urgency, preserve the visual details that matter for later decisions, and handle observations that arrive while they are busy responding. Higher observation rates could reveal brief events, but they also increase processing and context demands. Realtime-Bench therefore treats timely action as a distinct capability worth measuring, not an automatic byproduct of model scale.",
+      "start": 347.6,
+      "end": 382.44
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The central takeaway is simple: in a changing environment, a correct answer delivered too late can be the wrong action. Realtime-Bench makes that cost visible by comparing actual latency, deliberation time, and an idealized pause, then testing whether models can respond to evolving states. Its results point toward systems that know not only what to do, but also when further thought is useful and when it is time to act. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 383.3,
+      "end": 415.451
+    }
+  ]
+}

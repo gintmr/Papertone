@@ -2,6 +2,21 @@
   "generated_at": null,
   "episodes": [
     {
+      "id": "2610.31642",
+      "title": null,
+      "authors": [],
+      "duration": 442.801,
+      "license": "CC BY",
+      "topics": [
+        "Machine Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.31642",
+      "published": "2026-10-22",
+      "views": 363,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a166da-aa7c-7295-8fe2-71663f320235/podcast.mp3"
+    },
+    {
       "id": "2610.meta2-online-harness-evolution",
       "title": null,
       "authors": [],
@@ -15,7 +30,7 @@
       "cover": "cover.png",
       "path": "2610.meta2-online-harness-evolution",
       "published": "2026-10-21",
-      "views": 327,
+      "views": 409,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15f7b-f67e-7240-885e-b62e921e585d/podcast.mp3"
     },
     {
@@ -32,7 +47,7 @@
       "cover": "cover.png",
       "path": "2610.28594",
       "published": "2026-10-20",
-      "views": 519,
+      "views": 564,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15c7b-d1d7-7964-8818-4eb2094f25cc/podcast.mp3"
     },
     {
@@ -47,7 +62,7 @@
       "cover": "cover.png",
       "path": "2610.28259",
       "published": "2026-10-20",
-      "views": 208,
+      "views": 222,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15c71-bf6f-7f25-81bf-aaec091e4b66/podcast.mp3"
     },
     {
@@ -64,7 +79,7 @@
       "cover": "cover.png",
       "path": "2610.26863",
       "published": "2026-10-19",
-      "views": 520,
+      "views": 536,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1575c-47d8-735e-b405-f0adc6f72925/podcast.mp3"
     },
     {
@@ -97,7 +112,7 @@
       "cover": "cover.png",
       "path": "2610.26855",
       "published": "2026-10-19",
-      "views": 222,
+      "views": 234,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15792-dc98-75cd-9255-5260526dad5a/podcast.mp3"
     },
     {
@@ -114,7 +129,7 @@
       "cover": "cover.png",
       "path": "2610.calm",
       "published": "2026-10-17",
-      "views": 263,
+      "views": 264,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14833-f21f-7bc8-876b-52551292a6cc/podcast.mp3"
     },
     {
@@ -460,7 +475,7 @@
       "cover": "cover.png",
       "path": "2610.24628",
       "published": "2026-10-17",
-      "views": 653,
+      "views": 728,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a156e5-8055-71bd-8823-3d5e35c1a204/podcast.mp3"
     },
     {
@@ -499,7 +514,7 @@
       "cover": "cover.png",
       "path": "2610.23839",
       "published": "2026-10-16",
-      "views": 608,
+      "views": 633,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a151db-c068-7c7c-97e7-f5992ad33d8d/podcast.mp3"
     },
     {
@@ -535,7 +550,7 @@
       "cover": "cover.png",
       "path": "2610.22496",
       "published": "2026-10-15",
-      "views": 509,
+      "views": 543,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a151d7-9afe-7242-a158-31c4db524dae/podcast.mp3"
     },
     {
@@ -615,7 +630,7 @@
       "cover": "cover.png",
       "path": "2610.22471",
       "published": "2026-10-15",
-      "views": 822,
+      "views": 864,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a151d7-7edd-7325-a6fe-2cf0bf4e698d/podcast.mp3"
     },
     {
@@ -645,7 +660,7 @@
       "cover": "cover.png",
       "path": "2610.22364",
       "published": "2026-10-15",
-      "views": 670,
+      "views": 687,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14260-79a6-70d0-9522-fe46431364f9/podcast.mp3"
     },
     {
@@ -666,7 +681,7 @@
       "cover": "cover.png",
       "path": "2610.22319",
       "published": "2026-10-15",
-      "views": 499,
+      "views": 508,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1425f-f16a-7d68-89ab-e911b7074de7/podcast.mp3"
     },
     {
@@ -690,7 +705,7 @@
       "cover": "cover.png",
       "path": "2610.22273",
       "published": "2026-10-15",
-      "views": 440,
+      "views": 457,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14264-c468-7217-b331-5ac19bdee73c/podcast.mp3"
     },
     {
@@ -728,7 +743,7 @@
       "cover": "cover.png",
       "path": "2610.22194",
       "published": "2026-10-15",
-      "views": 463,
+      "views": 470,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14263-f66b-7c73-8bb5-44f97e46a9aa/podcast.mp3"
     },
     {
@@ -753,8 +768,23 @@
       "cover": "cover.png",
       "path": "2610.22192",
       "published": "2026-10-15",
-      "views": 883,
+      "views": 908,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14263-f829-73b6-baf6-d55bfe59e987/podcast.mp3"
+    },
+    {
+      "id": "2610.22155",
+      "title": null,
+      "authors": [],
+      "duration": 415.450938,
+      "license": "CC BY",
+      "topics": [
+        "AI"
+      ],
+      "cover": "cover.png",
+      "path": "2610.22155",
+      "published": "2026-10-15",
+      "views": 152,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a14263-8abe-70b3-801f-5c7d049033ad/podcast.mp3"
     },
     {
       "id": "2610.21412",
@@ -779,7 +809,7 @@
       "cover": "cover.png",
       "path": "2610.21412",
       "published": "2026-10-15",
-      "views": 357,
+      "views": 374,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1425a-55fc-7543-a5db-300665dc51d3/podcast.mp3"
     },
     {
@@ -805,7 +835,7 @@
       "cover": "cover.png",
       "path": "2610.21306",
       "published": "2026-10-15",
-      "views": 548,
+      "views": 571,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14259-9b8d-74ed-a2bd-1f3027032a3b/podcast.mp3"
     },
     {
@@ -837,7 +867,7 @@
       "cover": "cover.png",
       "path": "2610.20442",
       "published": "2026-10-14",
-      "views": 1184,
+      "views": 1223,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d67-574b-7834-8dcc-1807c9a7efa5/podcast.mp3"
     },
     {
@@ -865,7 +895,7 @@
       "cover": "cover.png",
       "path": "2610.20341",
       "published": "2026-10-14",
-      "views": 322,
+      "views": 332,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d69-2c67-7b54-844a-af5ea157ac9a/podcast.mp3"
     },
     {
@@ -888,7 +918,7 @@
       "cover": "cover.png",
       "path": "2610.20331",
       "published": "2026-10-14",
-      "views": 2125,
+      "views": 2202,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d81-0715-7a25-936a-43666043a92c/podcast.mp3"
     },
     {
@@ -965,7 +995,7 @@
       "cover": "cover.png",
       "path": "2610.19005",
       "published": "2026-10-13",
-      "views": 449,
+      "views": 454,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d3c-1871-749c-8996-d8a9550257ea/podcast.mp3"
     },
     {
@@ -1014,7 +1044,7 @@
       "cover": "cover.png",
       "path": "2610.18861",
       "published": "2026-10-13",
-      "views": 3678,
+      "views": 3722,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a138dc-8d7d-7d16-90ce-58dfef8fb294/podcast.mp3"
     },
     {
@@ -1053,7 +1083,7 @@
       "cover": "cover.png",
       "path": "2610.18773",
       "published": "2026-10-13",
-      "views": 433,
+      "views": 437,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a138e3-84c8-7038-ac6c-7eb20ec253e6/podcast.mp3"
     },
     {
@@ -1089,7 +1119,7 @@
       "cover": "cover.png",
       "path": "2610.18615",
       "published": "2026-10-13",
-      "views": 1698,
+      "views": 1703,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a138a1-6e1e-775b-8d05-b895075d778c/podcast.mp3"
     },
     {
