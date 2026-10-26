@@ -1,0 +1,266 @@
+{
+  "id": "2609.37647",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.37647",
+    "arxiv": "https://arxiv.org/abs/2609.37647"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f059-00de-766c-94f2-9a3a1f9d5a22/podcast.mp3",
+  "duration": 540.473,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 37.86,
+      "en": "In a hypothetical course called Language Models for Structured Decisions, today’s lecture is on “Evaluating and Benchmarking the System One Model Jev.” Recent work such as “Jev-as-a-Judge: Accept When Confident, Escalate When Unsure” explores routing uncertain decisions, while “Jev for Scientific Decisions” studies structured choices in research workflows. This paper, from researchers at the University of Bonn and the Lamarr Institute, asks how well Jev performs across varied tasks. The field is moving beyond text generation toward direct, measurable decisions. Yes, Noah?",
+      "zh": "在一门假设的课程“面向结构化决策的语言模型”中，今天的讲座主题是“评估与基准测试系统一模型Jev”。近期的工作如《Jev作为评判者：自信时接受，不确定时上报》探讨了不确定决策的路由，而《Jev用于科学决策》则研究了研究工作流中的结构化选择。这篇论文来自波恩大学和拉马尔研究所的研究人员，探讨了Jev在各类任务上的表现如何。该领域正从文本生成迈向直接、可衡量的决策。好，诺亚？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 38.9,
+      "end": 43.8,
+      "en": "Hi Professor, what makes a decision model different from asking a regular language model a question?",
+      "zh": "教授您好，决策模型和直接问普通语言模型一个问题，区别到底在哪？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 44.7,
+      "end": 76.02,
+      "en": "A generative model usually answers in text, so a system must prompt it, interpret the response, and often infer how confident it is. Jev instead accepts a state and typed questions, then returns structured choices and probabilities. The paper’s main contribution is an independent evaluation of this commercial model, whose training data are not public. The authors also release evaluation templates, software, and raw responses, giving researchers a reusable baseline rather than relying on vendor claims.",
+      "zh": "生成模型通常用文本作答，所以系统必须给它提示、解读它的回答，还往往要推断它有多自信。Jev 则不同，它接收状态和带类型的问题，然后返回结构化的选项和概率。这篇论文的主要贡献是对这个商业模型做独立评估，而它的训练数据并不公开。作者还发布了评估模板、软件和原始回答，给研究者提供了一个可复用的基线，而不是依赖厂商的说法。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 77.1,
+      "end": 81.3,
+      "en": "So Jev is designed to return a decision directly, not explain it in prose?",
+      "zh": "所以Jev的设计目标是直接给出决策，而不是用文字解释决策？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 82.08,
+      "end": 113.24,
+      "en": "Exactly. Jev offers three question types. Choice selects among options and returns probabilities for each. Score places an example on an ordered rubric, such as levels of offensiveness. Noul estimates whether a yes-or-no statement is true. A request can contain several questions about one state, which is useful for evaluating multiple labels together. Think of it as a form with clearly defined fields: the system fills in decisions and confidence values rather than composing an open-ended response.",
+      "zh": "正是如此。Jev提供三种问题类型。Choice从选项中做出选择，并返回每个选项的概率。Score把样本放到有序的评分量表上，比如冒犯程度的分级。Noul估计一个是或否的陈述是否为真。一个请求可以包含关于同一状态的多个问题，这对于一起评估多个标签很有用。可以把它想象成一张字段定义清晰的表单：系统填写的是决策和置信度数值，而不是撰写一段开放式的回答。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 114.2,
+      "end": 150.56,
+      "en": "The benchmark covers 37 datasets and more than 200 language varieties, spanning classification, intent routing, inference, comprehension, safety, legal analysis, and rubric scoring. The researchers used fixed templates, checked them on training or validation examples, and then froze them before evaluation. They gave Jev no in-context examples and did not tune prompts on test data. In total, the model answered 346,009 requests, providing a broad test of its decision interface under a consistent protocol.",
+      "zh": "这个基准涵盖37个数据集和200多种语言变体，覆盖分类、意图路由、推理、理解、安全、法律分析和评分量表打分。研究人员使用固定模板，在训练或验证样本上检查过这些模板，然后在评估前将其冻结。他们没有给Jev任何上下文示例，也没有在测试数据上调整提示词。模型总共回答了346,009个请求，在一致的协议下对其决策接口进行了广泛测试。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 151.5,
+      "end": 154.78,
+      "en": "Quick question: were the comparison models tested in the same way?",
+      "zh": "快速问一下：那些对比模型也是用同样的方式测试的吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 155.54,
+      "end": 187.52,
+      "en": "The researchers evaluated Qwen and Gemma on those same requests, converting each question into a prompt and using probabilities for coded answers. That makes the comparison more aligned, but it is not a full test of either model’s capabilities: neither was allowed to generate explanations or use reasoning. Jev also had an interface advantage because the templates were designed for it. The authors report standard task metrics, confidence calibration, and selective prediction, so performance means more than a single accuracy score.",
+      "zh": "研究人员用同样的请求评估了Qwen和Gemma，把每个问题转成提示词，并用概率来对应编码后的答案。这让比较更对齐，但并不是对两个模型能力的完整测试：两者都不被允许生成解释或使用推理。Jev还因为模板是为它设计的而拥有界面优势。作者报告了标准任务指标、置信度校准和选择性预测，所以性能不只是单一的准确率分数。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 188.36,
+      "end": 231.78,
+      "en": "On familiar, short tasks, Jev performs well: it reaches 96.5% accuracy on IMDB sentiment, 95.5% on HellaSwag, and 99.6% on language identification. But performance drops on ambiguous or fine-grained labels: accuracy is 58.5% on a noisy emotion dataset and 79.7% on Banking77’s overlapping intent categories. Legal classification is especially difficult, with an F-one score of 0.204 on German consumer-contract clauses. The practical lesson is that success on simple benchmarks does not guarantee success on specialized decisions.",
+      "zh": "在熟悉且简短的任务上，Jev表现不错：在IMDB情感分类上达到96.5%的准确率，在HellaSwag上达到95.5%，在语言识别上达到99.6%。但遇到模糊或细粒度标签时，表现就会下降：在噪声较大的情感数据集上准确率为58.5%，在Banking77重叠意图类别上为79.7%。法律分类尤其困难，在德国消费者合同条款上的F1分数只有0.204。实际教训是，在简单基准上成功，并不保证在专业决策上也能成功。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 232.76,
+      "end": 236.02,
+      "en": "Can the probabilities help when Jev gets some of those decisions wrong?",
+      "zh": "当Jev在某些判断上出错时，这些概率能帮上忙吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 236.74,
+      "end": 277.06,
+      "en": "Sometimes. Across Choice tasks, the probabilities are generally well calibrated, with pooled expected calibration error of 0.028. Binary outputs are less consistent: single-question probabilities tend to be cautious, while multi-label questions can overstate positive labels. Consequently, a default threshold can produce modest F-one scores even when the model ranks examples usefully. On the UNFAIR-ToS dataset, tuning thresholds on training data raises micro-F-one from 0.499 to 0.748. That improvement still needs validation before anyone carries the thresholds into a different deployment.",
+      "zh": "有时候确实有帮助。在各类Choice任务上，这些概率总体上校准得不错，合并后的期望校准误差为0.028。二元输出的表现则不太一致：单问题概率往往偏保守，而多标签问题可能会高估正标签。因此，即便模型能有效地对样本排序，用默认阈值也可能只得到一般的F1分数。在UNFAIR-ToS数据集上，在训练数据上调阈值可将micro-F1从0.499提升到0.748。不过，在有人把这些阈值带到不同部署环境之前，这一改进仍需验证。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 278.04,
+      "end": 282.48,
+      "en": "At what point does confidence become useful for deciding which cases need human review?",
+      "zh": "置信度在什么情况下才能真正用于判断哪些案例需要人工审核？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 283.32,
+      "end": 322.86,
+      "en": "The study tests selective prediction by withholding the least confident answers. At 50% coverage, Banking77 accuracy rises from 79.7% to 96.3%, and accuracy on the adversarial inference benchmark ANLI rises from 73.9% to 86.9%. This suggests a practical workflow: handle clear cases automatically and send uncertain ones to a reviewer or another model. Yet confidence-based routing must be tested on the actual application, because the costs of missed errors and unnecessary escalation differ across settings.",
+      "zh": "这项研究通过扣留置信度最低的答案来测试选择性预测。在50%覆盖率下，Banking77的准确率从79.7%升至96.3%，对抗性推理基准ANLI的准确率从73.9%升至86.9%。这表明一种实用的工作流程：自动处理明确的案例，将不确定的案例交给审核员或另一个模型。然而，基于置信度的路由必须在实际应用中测试，因为漏判错误和过度升级的代价因场景而异。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 322.86,
+      "end": 361.54,
+      "en": "The Score interface also has mixed results. It correlates strongly with human ratings for text similarity and offensiveness, but less consistently when judging generated answers: average correlations are 0.554 across SummEval dimensions and 0.412 on HelpSteer2. Language coverage is uneven as well. Belebele accuracy has a median of 91.1% across 122 varieties, but some languages fall below 70%; performance on Santali in Ol Chiki is just 19.6%. These findings caution against treating one overall benchmark score as evidence of broad reliability.",
+      "zh": "Score 接口的结果同样好坏参半。它在文本相似度和冒犯性判断上与人工评分的相关性很强，但在评判生成答案时一致性就没那么高了：在 SummEval 各维度上的平均相关性为 0.554，在 HelpSteer2 上为 0.412。语言覆盖也不均衡。Belebele 在 122 种语言变体上的准确率中位数为 91.1%，但有些语言低于 70%；桑塔利语奥尔奇基文的表现仅为 19.6%。这些发现提醒我们，不能把单一的总体基准分数当作广泛可靠性的证据。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 362.72,
+      "end": 368.56,
+      "en": "And what should we make of the unusually high result on calculation-heavy M-M-L-U questions?",
+      "zh": "那么，对于计算密集型MMLU题目上异常高的成绩，我们该如何解读呢？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 369.68,
+      "end": 412.2,
+      "en": "Jev scores 94.3% on calculation-heavy M-M-L-U subjects, higher than on other subjects, while the open comparison models show the opposite pattern. Rotating answer options leaves Jev’s score unchanged, but removing the questions drops performance to 31.5%. That rules out simple answer-position or option-only explanations, but not memorization of question-and-answer pairs. Because Jev’s training data are unavailable, the authors appropriately leave the cause unresolved. This is a useful example of why benchmark performance and evidence of general problem-solving are not the same thing.",
+      "zh": "Jev在计算量大的M-M-L-U科目上得分94.3%，高于其他科目，而开源对比模型则呈现相反的模式。轮换答案选项后Jev的分数保持不变，但移除问题后性能降至31.5%。这排除了简单的答案位置或仅凭选项的解释，但无法排除对问答对的记忆。由于Jev的训练数据不可获取，作者恰当地未对原因下定论。这是一个有用的例子，说明基准性能和通用问题解决能力的证据并不是一回事。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 413.18,
+      "end": 417.1,
+      "en": "How does releasing the templates and responses help researchers assess those limitations?",
+      "zh": "发布模板和回答如何帮助研究者评估这些局限？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 418.32,
+      "end": 457.9,
+      "en": "The released templates, evaluation harness, analysis scripts, and raw responses let others reproduce the study offline and compare systems on identical requests. The evaluation cost US$9.15, or US$9.40 including pilots and additional analyses, with mean client-side latency of 0.36 seconds per request. Those details make the benchmark practical to revisit, though reproducibility cannot reveal Jev’s hidden training data or remove every concern about contamination. The comparison also remains limited to two open models and one evaluation setup.",
+      "zh": "公开的模板、评估工具、分析脚本和原始回复让其他人能够离线复现这项研究，并在完全相同的请求上比较不同系统。评估成本为9.15美元，若计入试点和额外分析则为9.40美元，平均客户端延迟为每请求0.36秒。这些细节使该基准易于重新审视，尽管可复现性无法揭示Jev隐藏的训练数据，也无法消除所有关于数据污染的担忧。比较也仍仅限于两个开源模型和一种评估设置。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 458.86,
+      "end": 463.74,
+      "en": "Does this shift the field toward decision-only systems instead of general-purpose language models?",
+      "zh": "这是否会让该领域转向只做决策的系统，而不是通用语言模型？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 464.68,
+      "end": 499.94,
+      "en": "It makes a case for treating structured decisions as a distinct interface worth evaluating, not for replacing general-purpose models. The related work “Jev-as-a-Judge” studies escalation when confidence is low, a natural extension of this paper’s selective-prediction results. Together, these directions ask whether a smaller decision step can handle routine cases while a more capable system addresses uncertainty. This paper contributes a broad baseline, but its uneven language and task results argue for application-specific testing, calibration checks, and explicit review pathways.",
+      "zh": "这篇论文主张把结构化决策视为一种值得评估的独立接口，而不是要取代通用模型。相关研究“Jev-as-a-Judge”探讨了置信度低时如何升级处理，这是本文选择性预测结果的自然延伸。这两个方向共同追问的是：能否让较小的决策步骤处理常规情况，而由能力更强的系统应对不确定性。本文提供了一个覆盖面较广的基线，但其在语言和任务上参差不齐的结果说明，有必要做针对具体应用的测试、校准检查以及明确的复核流程。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 501.0,
+      "end": 540.473,
+      "en": "The central takeaway is that structured outputs and probabilities can make model decisions easier to integrate, measure, and route—but they do not make those decisions automatically dependable. Jev is strong on many common tasks, less reliable on fine-grained, noisy, lower-resource-language, and specialized judgments, and some benchmark results remain difficult to interpret. For researchers and practitioners, the responsible next step is to test the exact task, inspect calibration, and decide how uncertain cases will be handled. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是：结构化输出和概率能让模型的决策更容易整合、衡量和分流，但这并不意味着这些决策就自动可靠了。Jev在许多常见任务上表现很强，但在细粒度、噪声大、低资源语言和专业化判断上就没那么可靠，而且有些基准结果仍然很难解读。对研究者和从业者来说，负责任的下一步是测试具体任务、检查校准情况，并决定如何处理不确定的案例。感谢收听。如果还有问题，可以问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{deußer2026evaluatingbenchmarkingmodeljev,\n      title={Evaluating and Benchmarking the System One Model Jev}, \n      author={Tobias Deußer and Lorenz Sparrenberg and Rafet Sifa},\n      year={2026},\n      eprint={2609.37647},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2609.37647}, \n}",
+  "topics": [
+    "Text Classification",
+    "Uncertainty Estimation",
+    "Zero Shot Learning"
+  ],
+  "peaks": [
+    0.802,
+    0.551,
+    0.561,
+    0.488,
+    0.384,
+    0.83,
+    0.828,
+    0.721,
+    0.808,
+    0.68,
+    0.69,
+    0.592,
+    0.475,
+    0.549,
+    0.376,
+    0.513,
+    0.36,
+    0.493,
+    0.362,
+    0.325,
+    0.714,
+    0.427,
+    0.411,
+    0.32,
+    0.2,
+    0.791,
+    0.437,
+    0.595,
+    0.322,
+    0.659,
+    0.358,
+    0.863,
+    0.708,
+    0.366,
+    0.484,
+    0.474,
+    0.34,
+    0.908,
+    0.605,
+    0.514,
+    0.411,
+    0.601,
+    0.393,
+    0.875,
+    0.76,
+    0.714,
+    0.424,
+    0.337,
+    0.8,
+    0.827,
+    0.749,
+    0.625,
+    0.551,
+    0.52,
+    0.49,
+    0.63,
+    0.927,
+    0.75,
+    0.456,
+    0.593,
+    0.632,
+    0.928,
+    0.668,
+    0.718,
+    0.576,
+    0.536,
+    0.622,
+    1.0,
+    0.969,
+    0.594,
+    0.525,
+    0.533
+  ],
+  "published": "2026-09-29",
+  "views": 471,
+  "license": "arXiv 默认许可"
+}

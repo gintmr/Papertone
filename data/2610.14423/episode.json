@@ -1,0 +1,233 @@
+{
+  "id": "2610.14423",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.14423",
+    "arxiv": "https://arxiv.org/abs/2610.14423"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a137eb-0cf5-78a8-9e76-3108c4e17ac0/podcast.mp3",
+  "duration": 424.176,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.48,
+      "en": "In our hypothetical course, Scaling Laws for Multimodal Learning, today's lecture is on “Scaling Laws for Multimodal Data Mixtures.” Researchers at McGill University and ETH Zurich study how text, vision, and audio interact during pretraining. Recent work such as “Scaling Laws for Native Multimodal Models” and “Scaling Laws for Optimal Data Mixtures” reflects a field increasingly focused on joint training and resource allocation. I see Noah raising a hand. Yes, Noah?",
+      "zh": "在我们这门假设的课程“多模态学习的缩放定律”中，今天的讲座主题是“多模态数据混合的缩放定律”。麦吉尔大学和苏黎世联邦理工学院的研究人员正在研究预训练过程中文本、视觉和音频是如何相互作用的。近期的一些工作，比如“原生多模态模型的缩放定律”和“最优数据混合的缩放定律”，反映出这个领域越来越关注联合训练和资源分配。我看到Noah举手了。Yes，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.74,
+      "end": 38.8,
+      "en": "Hi Professor, why do multimodal systems need a different scaling analysis from text-only models?",
+      "zh": "教授您好，为什么多模态系统需要和纯文本模型不同的缩放分析？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.76,
+      "end": 69.74,
+      "en": "Because a token is not the whole story when training combines different modalities. A text example, an image-caption pair, and an audio segment may each use data and model capacity differently, and training one can help or hinder another. Text-only scaling frameworks give useful foundations, but they do not directly tell us how to allocate scarce multimodal data or what happens when examples are repeated. This paper tries to make those trade-offs predictable.",
+      "zh": "因为训练结合不同模态时，token并不能说明全部问题。一个文本样本、一个图文对和一段音频，各自对数据和模型容量的利用方式可能不同，训练其中一个模态可能帮助也可能妨碍另一个。纯文本的缩放框架提供了有用的基础，但它们并不能直接告诉我们如何分配稀缺的多模态数据，也无法说明样本重复时会发生什么。这篇论文试图让这些权衡变得可预测。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.84,
+      "end": 99.88,
+      "en": "The central contribution is a fitted scaling framework that predicts each modality’s validation loss using more than its own data volume and model size. It also accounts for how much other modalities contribute, how repeated examples lose value over time, and how sharing a model can reduce a target modality’s effective capacity. Think of it as planning a shared research budget: adding resources to one project can change what remains available to the others.",
+      "zh": "核心贡献是一个拟合的缩放框架，它不仅用自身的数据量和模型规模，还结合其他因素来预测每种模态的验证损失。该框架还考虑了其他模态的贡献程度、重复样本的价值如何随时间衰减，以及共享模型如何降低目标模态的有效容量。可以把它想象成规划一份共享的研究预算：给一个项目增加资源，就会改变其他项目可用的资源。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.74,
+      "end": 105.48,
+      "en": "Quick question: does the framework assume that cross-modal help works equally in both directions?",
+      "zh": "快速问一下：这个框架是否假设跨模态的帮助在两个方向上效果相同？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 105.82,
+      "end": 137.76,
+      "en": "No. Transfer is directional, so vision helping text can have a different estimated effect from text helping vision. The authors model that separately from capacity sharing and repetition. Their experiments cover 268 controlled runs with sparse expert models ranging from 457 million to 8.3 billion total parameters, and up to 150 billion training tokens per run. They jointly fit the scaling and interaction terms against held-out validation losses.",
+      "zh": "不是。迁移是有方向性的，所以视觉帮助文本和文本帮助视觉的估计效果可能不同。作者把这种方向性影响与容量共享、重复训练分开建模。他们的实验覆盖了268次受控运行，使用稀疏专家模型，总参数量从4.57亿到83亿不等，每次运行最多使用1500亿个训练token。他们针对留出验证损失联合拟合了缩放项和交互项。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.8,
+      "end": 171.24,
+      "en": "A first practical insight concerns compute allocation. In these experiments, text and vision favor roughly balanced increases in model size and training data. Audio is more model-heavy: the fitted compute-optimal allocation assigns about 62% of additional compute to model size and 38% to data. These are results for this particular setup, not universal constants. They give practitioners a reason to test modality-specific budgets instead of assuming one allocation rule fits all.",
+      "zh": "第一个实用洞见关乎算力分配。在这些实验中，文本和视觉大致都倾向于模型规模与训练数据均衡增长。音频则更偏重模型规模：拟合出的算力最优分配将约62%的额外算力分配给模型规模，38%分配给数据。这些结果仅适用于这一特定设置，并非普遍常数。它们为从业者提供了一个理由，去测试针对不同模态的预算，而不是假定一种分配规则适用于所有情况。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 172.02,
+      "end": 176.7,
+      "en": "Can you clarify what the experiments found about repeating scarce vision and audio data?",
+      "zh": "你能具体说说实验在重复使用稀缺的视觉和音频数据方面发现了什么吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 177.56,
+      "end": 206.08,
+      "en": "Repeated examples help, but each additional pass contributes less than the previous one. The fitted results suggest that vision gains the equivalent of about 2 fresh-data epochs at most, and audio about 2.76. By a fifth pass, the estimated marginal value is only about 3% of a unique-data epoch for vision and 14% for audio. In direct comparisons, more unique examples often beat repeatedly sampling the same small non-text dataset.",
+      "zh": "重复样本有帮助，但每多一遍带来的收益都比上一遍更少。拟合结果表明，视觉最多相当于获得了约2个全新数据轮次的增益，音频约为2.76个。到第五遍时，视觉的估计边际价值仅为唯一数据轮次的约3%，音频为14%。在直接对比中，更多独特样本往往胜过对同一小规模非文本数据集反复采样。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 208.26,
+      "end": 240.28,
+      "en": "A second important insight is that modalities compete for effective capacity as well as data. All three estimated capacity-sharing effects are negative, with the strongest penalty for audio. When a target accounts for 10% of mixture tokens, its fitted effective capacity is about 66% of nominal capacity for text, 47% for vision, and 19% for audio. The analysis also found little modality-specific expert separation, suggesting substantial sharing in this model setup.",
+      "zh": "第二个重要发现是，不同模态不仅在数据上竞争，也在有效容量上竞争。三个估计出的容量共享效应都是负的，其中音频受到的惩罚最强。当一个目标占混合token的10%时，其拟合的有效容量大约是标称容量的66%（文本）、47%（视觉）和19%（音频）。分析还发现，模态专属专家的分离程度很小，说明在这个模型设置中存在大量共享。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 241.3,
+      "end": 248.5,
+      "en": "So if vision is especially disruptive to audio, should a training team simply reduce vision data in every audio-focused mixture?",
+      "zh": "那么，如果视觉对音频的干扰特别大，训练团队是否就应该在每一个以音频为主的混合数据中都减少视觉数据呢？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 249.58,
+      "end": 280.3,
+      "en": "Not automatically. The fitted transfer estimates show vision as the most disruptive source for audio, while text’s estimated interference is smaller. But a useful allocation depends on the target quality and data available for every modality. Audio’s estimated transfer to text and vision is slightly positive, yet unstable across analyses and statistically indistinguishable from negligible. The framework can guide comparisons, but teams should validate its estimates on their own architecture and data.",
+      "zh": "不一定。拟合出的迁移估计显示，视觉对音频的干扰最大，而文本的估计干扰较小。但有用的分配取决于目标质量以及每种模态可用的数据。音频对文本和视觉的估计迁移略为正，但在不同分析中不稳定，统计上与可忽略不计无法区分。该框架可以指导比较，但团队应在其自己的架构和数据上验证其估计。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 281.22,
+      "end": 311.88,
+      "en": "For a real-world user, that means the model can help compare whether to add unique data, repeat scarce examples, or spend compute on more parameters before committing to expensive training runs. The authors tested predictions on three held-out settings, including a larger model trained from scratch and continual pretraining from a text-only checkpoint. Across nine modality-level predictions, predicted and observed losses had a Pearson correlation of 0.999; eight predictions were within 2.6%.",
+      "zh": "对真实用户来说，这意味着模型能帮助比较：在投入昂贵的训练之前，是增加独特数据、重复稀缺样本，还是把算力花在更多参数上。作者在三个留出设置上测试了预测，包括从头训练一个更大的模型，以及从纯文本检查点进行持续预训练。在九项模态级预测中，预测损失与观测损失的皮尔逊相关系数为0.999；其中八项预测的误差在2.6%以内。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 313.82,
+      "end": 318.58,
+      "en": "How should we interpret that strong validation, given the limited number of held-out runs?",
+      "zh": "考虑到留出运行次数有限，我们该如何解读这一强有力的验证结果？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 319.54,
+      "end": 355.28,
+      "en": "As encouraging evidence, not a guarantee of generality. One text prediction in a non-text-heavy continual-pretraining run was off by 6.73%, as text loss rose substantially and did not stabilize during training. The study also covers a particular family of expert models, selected datasets, and a next-token objective. Related work such as “Scaling Laws for Optimal Data Mixtures” shares the goal of predicting mixture effects, while this paper explicitly separates cross-modal transfer, repetition, and capacity dilution.",
+      "zh": "这算是有力的证据，但不能保证普遍适用。在一次文本占比不高的持续预训练中，有一项文本预测偏差达到6.73%，原因是文本损失大幅上升，并且在训练过程中始终没有稳定下来。这项研究还只覆盖了某一类专家模型、特定数据集以及下一token预测目标。“Scaling Laws for Optimal Data Mixtures”等相关工作同样以预测混合效果为目标，而本文则明确区分了跨模态迁移、重复和容量稀释。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 356.98,
+      "end": 389.8,
+      "en": "That separation is the broader contribution: multimodal scaling is not simply a matter of counting all tokens together. Future studies can test whether these fitted relationships hold at larger scales, with other architectures, or with modalities such as video. They can also investigate why audio appears comparatively inert as a source of help or interference here. For PhD researchers, the main lesson is to treat mixture design as an empirical, modality-specific problem, and to test predictions beyond the data used to fit them.",
+      "zh": "这种区分才是更广泛的贡献所在：多模态扩展并不是简单地把所有token加在一起数。未来的研究可以检验这些拟合出的关系在更大规模、其他架构或视频等模态下是否成立。他们也可以探究为什么音频在这里作为帮助或干扰的来源显得相对不起作用。对于博士生研究者来说，主要的教训是把混合设计当作一个经验性的、特定模态的问题，并在用于拟合的数据之外检验预测。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 390.42,
+      "end": 424.176,
+      "en": "The paper offers a practical way to reason about multimodal training budgets while making clear that its coefficients belong to a specific experimental setting. Before repeating data or adding another modality, ask what that choice does to unique information, effective capacity, and the other objectives in the mixture. The memorable takeaway is simple: in multimodal pretraining, every token has a context, and every shared resource has a cost. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这篇论文提供了一种实用的方法来权衡多模态训练预算，同时明确指出其系数只适用于特定的实验设置。在重复数据或加入另一种模态之前，先问问这个选择会对独特信息、有效容量以及混合中的其他目标产生什么影响。值得记住的要点很简单：在多模态预训练中，每个token都有其上下文，每份共享资源都有代价。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{khandelwal2026scalinglawsmultimodaldata,\n      title={Scaling Laws for Multimodal Data Mixtures}, \n      author={Aditi Khandelwal and Ayush K. Tarun and Yixuan Xu and Imanol Schlag and Golnoosh Farnadi and Siva Reddy and Luke Zettlemoyer and Antoine Bosselut},\n      year={2026},\n      eprint={2610.14423},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.14423}, \n}",
+  "topics": [
+    "NLP",
+    "Machine Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.846,
+    0.452,
+    0.674,
+    0.245,
+    0.642,
+    0.637,
+    0.609,
+    0.668,
+    0.772,
+    0.668,
+    0.359,
+    0.507,
+    0.47,
+    0.353,
+    0.388,
+    0.27,
+    0.493,
+    0.503,
+    0.354,
+    0.383,
+    0.23,
+    0.246,
+    0.578,
+    0.618,
+    0.695,
+    0.444,
+    0.541,
+    0.34,
+    0.833,
+    0.346,
+    0.29,
+    0.339,
+    0.226,
+    0.329,
+    0.431,
+    0.392,
+    0.317,
+    0.208,
+    0.443,
+    0.207,
+    0.752,
+    0.426,
+    0.388,
+    0.48,
+    0.227,
+    0.211,
+    0.5,
+    0.479,
+    0.331,
+    0.406,
+    0.408,
+    0.353,
+    0.652,
+    0.619,
+    0.531,
+    0.342,
+    0.399,
+    0.341,
+    0.295,
+    0.516,
+    0.648,
+    0.66,
+    0.636,
+    0.5,
+    0.28,
+    0.541,
+    0.57,
+    0.365,
+    0.339,
+    0.206,
+    0.2
+  ],
+  "published": "2026-10-10",
+  "views": 544,
+  "license": "CC BY"
+}

@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 395.99,
+  "word_match_rate": 0.9585,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course on Reinforcement Learning for Multimodal Systems, today’s lecture is on “Reinforcement Learning from Intermediate Renders for Image-to-Code Generation.” The field is moving from training models to imitate reference programs toward training them against what their programs actually produce. Papers such as “The Image as Its Own Reward” and “Visual-ERM” reflect that interest in visual feedback. This paper, from researchers at the Weizmann Institute of Science and M-I-T, asks how to make that feedback more informative. Yes, Noah?",
+      "start": 0.0,
+      "end": 36.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why isn’t a final image similarity score enough to train the model?",
+      "start": 37.14,
+      "end": 41.32
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A final score tells us whether the completed rendering resembles the target, but not which parts of the program helped or hurt. Imagine a drawing with several accurate shapes followed by one misplaced object: a single outcome reward spreads the same broad signal across the entire sequence. The authors propose I-R-four-R-L, using intermediate renders to estimate the visual contribution of newly generated code. That matters because image-to-code systems should produce useful programs, not merely plausible-looking text.",
+      "start": 42.24,
+      "end": 74.84
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The key idea is to treat a program as a sequence of visual decisions. In S-V-G, a completed drawing command can often be rendered before the rest of the file exists; TikZ supports a similar pattern with completed drawing statements. The researchers close each partial prefix with any missing syntax, render it, and compare it with the input image. This creates a record of how visual similarity changes as the program grows.",
+      "start": 75.78,
+      "end": 104.06
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the model gets rewarded whenever a new segment makes the picture more similar?",
+      "start": 105.1,
+      "end": 108.78
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That is the basic intuition, with an important qualification: the method measures the difference between consecutive prefix scores, rather than rewarding every prefix for its absolute quality. A positive change suggests the new segment helped; a negative change suggests it hurt. The researchers then propagate these segment-level signals backward to the tokens that produced them. The final outcome reward remains in the training objective, so local progress does not replace judging the completed image.",
+      "start": 108.78,
+      "end": 139.78
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "For policy optimization, the paper uses G-R-P-O, which compares several sampled programs for the same input and forms relative advantages from their rewards. In ordinary outcome-based training, the resulting advantage is applied broadly across a sequence. I-R-four-R-L adds a token-specific process advantage, with a decay parameter controlling how far credit travels back from each drawing boundary. The combined signal rewards both a strong final reconstruction and useful intermediate steps.",
+      "start": 140.7,
+      "end": 172.08
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How does the method handle a prefix that is incomplete or invalid code?",
+      "start": 173.08,
+      "end": 176.94
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "It uses a closure procedure to make partial programs executable. For S-V-G, that can mean supplying missing path wrappers or container tags; for TikZ, it tracks and closes braces, option blocks, and environments. This lets the renderer inspect a consistent partial state instead of failing on unfinished syntax. The assumption is that these closures preserve the visual meaning of the completed operations so far, which is practical for the representations studied but may not hold for every programming language.",
+      "start": 177.84,
+      "end": 208.86
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The experiments test the method on two different generation settings. For S-V-G, they start from an S-F-T model and train with a scale-invariant image score; for TikZ, they use a patch-feature similarity measure. Across the reported tests, process rewards improve on outcome-only reinforcement learning, and combining process and outcome feedback works best. The S-V-G model also produces shorter programs, while the TikZ model improves visual scores despite weaker similarity to reference code.",
+      "start": 209.86,
+      "end": 242.92
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Does rendering every drawing operation make training prohibitively expensive?",
+      "start": 243.78,
+      "end": 247.38
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "It does add computation, because each candidate program may need multiple renders and image comparisons. The ablations show that rendering after every available drawing command performs best; rendering less often consistently reduces performance. The authors also find that reward propagation should remain somewhat local: a decay setting of 0.9 works best, while giving distant tokens undiminished credit performs worse. So the approach trades additional training-time rendering for denser feedback, without changing inference.",
+      "start": 248.5,
+      "end": 280.28
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The results suggest an important distinction between visual equivalence and code equivalence. A generated diagram can look right while using a different construction from the reference, so declining reference-code scores do not necessarily mean the output is worse for the stated visual objective. In the S-V-G human study, participants preferred the method to outcome-only reinforcement learning in 74% of comparisons. That complements automated metrics, though evaluations on more tasks and broader notions of code quality remain necessary.",
+      "start": 281.3,
+      "end": 314.22
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does this relate to process reward models such as Visual-ERM?",
+      "start": 315.4,
+      "end": 318.26
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Both approaches seek finer-grained visual feedback than a single sequence-level score, but I-R-four-R-L derives its signal directly from changes in rendered prefixes rather than relying on a learned reward model. That makes its feedback automatic and tied to executable program states. It also connects to the broader trend represented by “The Image as Its Own Reward,” while applying visual feedback to code generation rather than image synthesis. The method’s reach depends on whether partial states are renderable and their changes meaningfully reflect progress.",
+      "start": 320.06,
+      "end": 355.7
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader lesson is that an executable intermediate state can serve as supervision, even when no person labels each step. For S-V-G and TikZ, successive renders offer a practical way to localize credit while preserving the final visual objective. Future work could test settings such as interfaces, animations, or 3D scenes, where partial programs may be less additive or more expensive to render. The memorable takeaway is simple: don’t just score the finished picture; learn from how each step changes it. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 356.72,
+      "end": 395.99
+    }
+  ]
+}

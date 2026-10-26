@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 540.473,
+  "word_match_rate": 0.9157,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical course called Language Models for Structured Decisions, today’s lecture is on “Evaluating and Benchmarking the System One Model Jev.” Recent work such as “Jev-as-a-Judge: Accept When Confident, Escalate When Unsure” explores routing uncertain decisions, while “Jev for Scientific Decisions” studies structured choices in research workflows. This paper, from researchers at the University of Bonn and the Lamarr Institute, asks how well Jev performs across varied tasks. The field is moving beyond text generation toward direct, measurable decisions. Yes, Noah?",
+      "start": 0.0,
+      "end": 37.86
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what makes a decision model different from asking a regular language model a question?",
+      "start": 38.9,
+      "end": 43.8
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A generative model usually answers in text, so a system must prompt it, interpret the response, and often infer how confident it is. Jev instead accepts a state and typed questions, then returns structured choices and probabilities. The paper’s main contribution is an independent evaluation of this commercial model, whose training data are not public. The authors also release evaluation templates, software, and raw responses, giving researchers a reusable baseline rather than relying on vendor claims.",
+      "start": 44.7,
+      "end": 76.02
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So Jev is designed to return a decision directly, not explain it in prose?",
+      "start": 77.1,
+      "end": 81.3
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. Jev offers three question types. Choice selects among options and returns probabilities for each. Score places an example on an ordered rubric, such as levels of offensiveness. Noul estimates whether a yes-or-no statement is true. A request can contain several questions about one state, which is useful for evaluating multiple labels together. Think of it as a form with clearly defined fields: the system fills in decisions and confidence values rather than composing an open-ended response.",
+      "start": 82.08,
+      "end": 113.24
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The benchmark covers 37 datasets and more than 200 language varieties, spanning classification, intent routing, inference, comprehension, safety, legal analysis, and rubric scoring. The researchers used fixed templates, checked them on training or validation examples, and then froze them before evaluation. They gave Jev no in-context examples and did not tune prompts on test data. In total, the model answered 346,009 requests, providing a broad test of its decision interface under a consistent protocol.",
+      "start": 114.2,
+      "end": 150.56
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: were the comparison models tested in the same way?",
+      "start": 151.5,
+      "end": 154.78
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "The researchers evaluated Qwen and Gemma on those same requests, converting each question into a prompt and using probabilities for coded answers. That makes the comparison more aligned, but it is not a full test of either model’s capabilities: neither was allowed to generate explanations or use reasoning. Jev also had an interface advantage because the templates were designed for it. The authors report standard task metrics, confidence calibration, and selective prediction, so performance means more than a single accuracy score.",
+      "start": 155.54,
+      "end": 187.52
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "On familiar, short tasks, Jev performs well: it reaches 96.5% accuracy on IMDB sentiment, 95.5% on HellaSwag, and 99.6% on language identification. But performance drops on ambiguous or fine-grained labels: accuracy is 58.5% on a noisy emotion dataset and 79.7% on Banking77’s overlapping intent categories. Legal classification is especially difficult, with an F-one score of 0.204 on German consumer-contract clauses. The practical lesson is that success on simple benchmarks does not guarantee success on specialized decisions.",
+      "start": 188.36,
+      "end": 231.78
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can the probabilities help when Jev gets some of those decisions wrong?",
+      "start": 232.76,
+      "end": 236.02
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Sometimes. Across Choice tasks, the probabilities are generally well calibrated, with pooled expected calibration error of 0.028. Binary outputs are less consistent: single-question probabilities tend to be cautious, while multi-label questions can overstate positive labels. Consequently, a default threshold can produce modest F-one scores even when the model ranks examples usefully. On the UNFAIR-ToS dataset, tuning thresholds on training data raises micro-F-one from 0.499 to 0.748. That improvement still needs validation before anyone carries the thresholds into a different deployment.",
+      "start": 236.74,
+      "end": 277.06
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "At what point does confidence become useful for deciding which cases need human review?",
+      "start": 278.04,
+      "end": 282.48
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The study tests selective prediction by withholding the least confident answers. At 50% coverage, Banking77 accuracy rises from 79.7% to 96.3%, and accuracy on the adversarial inference benchmark ANLI rises from 73.9% to 86.9%. This suggests a practical workflow: handle clear cases automatically and send uncertain ones to a reviewer or another model. Yet confidence-based routing must be tested on the actual application, because the costs of missed errors and unnecessary escalation differ across settings.",
+      "start": 283.32,
+      "end": 322.86
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The Score interface also has mixed results. It correlates strongly with human ratings for text similarity and offensiveness, but less consistently when judging generated answers: average correlations are 0.554 across SummEval dimensions and 0.412 on HelpSteer2. Language coverage is uneven as well. Belebele accuracy has a median of 91.1% across 122 varieties, but some languages fall below 70%; performance on Santali in Ol Chiki is just 19.6%. These findings caution against treating one overall benchmark score as evidence of broad reliability.",
+      "start": 322.86,
+      "end": 361.54
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "And what should we make of the unusually high result on calculation-heavy M-M-L-U questions?",
+      "start": 362.72,
+      "end": 368.56
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Jev scores 94.3% on calculation-heavy M-M-L-U subjects, higher than on other subjects, while the open comparison models show the opposite pattern. Rotating answer options leaves Jev’s score unchanged, but removing the questions drops performance to 31.5%. That rules out simple answer-position or option-only explanations, but not memorization of question-and-answer pairs. Because Jev’s training data are unavailable, the authors appropriately leave the cause unresolved. This is a useful example of why benchmark performance and evidence of general problem-solving are not the same thing.",
+      "start": 369.68,
+      "end": 412.2
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does releasing the templates and responses help researchers assess those limitations?",
+      "start": 413.18,
+      "end": 417.1
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The released templates, evaluation harness, analysis scripts, and raw responses let others reproduce the study offline and compare systems on identical requests. The evaluation cost US$9.15, or US$9.40 including pilots and additional analyses, with mean client-side latency of 0.36 seconds per request. Those details make the benchmark practical to revisit, though reproducibility cannot reveal Jev’s hidden training data or remove every concern about contamination. The comparison also remains limited to two open models and one evaluation setup.",
+      "start": 418.32,
+      "end": 457.9
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "text": "Does this shift the field toward decision-only systems instead of general-purpose language models?",
+      "start": 458.86,
+      "end": 463.74
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "text": "It makes a case for treating structured decisions as a distinct interface worth evaluating, not for replacing general-purpose models. The related work “Jev-as-a-Judge” studies escalation when confidence is low, a natural extension of this paper’s selective-prediction results. Together, these directions ask whether a smaller decision step can handle routine cases while a more capable system addresses uncertainty. This paper contributes a broad baseline, but its uneven language and task results argue for application-specific testing, calibration checks, and explicit review pathways.",
+      "start": 464.68,
+      "end": 499.94
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The central takeaway is that structured outputs and probabilities can make model decisions easier to integrate, measure, and route—but they do not make those decisions automatically dependable. Jev is strong on many common tasks, less reliable on fine-grained, noisy, lower-resource-language, and specialized judgments, and some benchmark results remain difficult to interpret. For researchers and practitioners, the responsible next step is to test the exact task, inspect calibration, and decide how uncertain cases will be handled. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 501.0,
+      "end": 540.473
+    }
+  ]
+}

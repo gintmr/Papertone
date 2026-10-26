@@ -1,0 +1,266 @@
+{
+  "id": "2609.32771",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.32771",
+    "arxiv": "https://arxiv.org/abs/2609.32771"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0ead1-b0fd-7cf7-b184-5ac125017ef6/podcast.mp3",
+  "duration": 478.928,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.4,
+      "en": "In a hypothetical graduate course called Continual Learning for Language Models, today's lecture is on C-plus, a method for updating released models when much of their past training data is unavailable. Work such as Continual Learning via Sparse Memory Finetuning and Retaining by Doing shows the field exploring selective updates and training strategies that reduce forgetting. C-plus takes a different route: it uses a frozen model’s own behavior to inform an update. I see Noah raising a hand. Yes, Noah?",
+      "zh": "在一门假设的研究生课程“语言模型的持续学习”中，今天的讲座讲的是C-plus，一种在已发布模型的大部分历史训练数据不可用时对其进行更新的方法。像《通过稀疏记忆微调实现持续学习》和《在做中保留》这样的工作表明，该领域正在探索选择性更新和减少遗忘的训练策略。C-plus走了一条不同的路：它利用冻结模型自身的行为来指导更新。我看到Noah举手了。Yes，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.88,
+      "end": 38.56,
+      "en": "Hi Professor, if the model can generate examples, why not just train on its generated answers?",
+      "zh": "教授您好，如果模型能生成样本，为什么不直接用生成的答案来训练呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.68,
+      "end": 68.18,
+      "en": "That is the key distinction. Generated answers can be wrong, so treating them as labels risks teaching the model to reproduce its own mistakes. C-plus instead uses generated examples as a preservation signal: they help decide which parts of a new-data update to soften. The practical problem is that a handful of retained examples, called anchors, cannot represent everything the original model knew. The method tries to broaden that evidence without pretending it is verified truth.",
+      "zh": "这就是关键区别。生成的答案可能是错的，所以把它们当作标签，就有让模型学会复制自身错误的风险。C-plus 则不同，它把生成的例子当作一种保持信号：用它们来判断在新数据的更新中，哪些部分应当被减弱。实际问题是，少量被保留的样本（称为锚点）无法代表原始模型所知道的一切。该方法试图拓宽这一证据基础，同时又不假装这些证据是经过验证的事实。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 69.04,
+      "end": 98.58,
+      "en": "The procedure begins with a frozen base model and a small set of anchors that represent past behavior. The model sees those anchors as in-context demonstrations, then generates additional inputs and records its own predictions. Those inputs and predictions form a fixed self-probe bank. The probes are not added as targets to the new-task training objective. Instead, gradients from the anchors and probes help assess which parameter changes may conflict with the behavior they represent.",
+      "zh": "整个过程从一个冻结的基础模型和一小批代表过往行为的锚点开始。模型把这些锚点当作上下文中的示例，然后生成额外的输入并记录自己的预测。这些输入和预测构成一个固定的自探针库。探针并不会作为目标加入新任务的训练目标中。相反，来自锚点和探针的梯度帮助判断哪些参数变化可能与它们所代表的行为发生冲突。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.6,
+      "end": 103.52,
+      "en": "So the probes guide the update, but the model is not trained to copy their answers?",
+      "zh": "所以这些探针只是用来指导参数更新，模型并不会被训练去照搬它们的答案？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.48,
+      "end": 134.32,
+      "en": "Exactly. During adaptation, the new examples alone determine the optimizer’s proposed parameter change. Separately, C-plus combines the anchor and probe gradients with equal weight to form a preservation signal. It compares that signal with the proposed change, then attenuates coordinates judged to conflict. Think of it as a filter on the update, not a second source of answers. The mask is recalculated as learning proceeds and smoothed over time.",
+      "zh": "正是如此。在适配过程中，仅由新样本决定优化器提出的参数变更。另外，C-plus 以相等权重结合锚点和探针梯度，形成一个保持信号。它将该信号与提出的变更进行比较，然后减弱被认为存在冲突的坐标。可以把它看作对更新的一种过滤，而不是第二个答案来源。掩码会随着学习的推进重新计算，并随时间进行平滑处理。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 135.22,
+      "end": 165.2,
+      "en": "That filter has limits worth keeping in view. It can reduce a proposed change, but it cannot amplify it or reverse its direction. And the compatibility test is an estimate based on the available signal, not a guarantee that every old capability is safe. The default setup uses 512 probes, two in-context examples, and exponential moving-average smoothing. Because probes inherit the frozen model’s predictions, they may preserve behavior that is itself mistaken.",
+      "zh": "这个过滤器有一些值得留意的局限。它能削弱提议的改动，但没法放大改动，也没法扭转改动的方向。而且兼容性检验只是基于现有信号做出的估计，并不能保证每一项旧能力都安然无恙。默认配置使用512个探针、两个上下文示例，以及指数移动平均平滑。由于探针继承的是冻结模型的预测，它们可能把本身就错误的行为一并保留下来。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 166.14,
+      "end": 170.72,
+      "en": "Quick question: does using probes work better than ordinary replay with generated answers?",
+      "zh": "快速问一下：用探针比用生成答案做普通回放效果更好吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 171.76,
+      "end": 205.5,
+      "en": "The paper compares those approaches directly on Qwen three, adapted to CommonsenseQA. C-plus has higher Retention than probe replay and anchor-plus-probe replay across four anchor budgets, using the same probes and update budget; those replay methods achieve near-perfect Acquisition. The comparison averages three matched seeds. The distinction is how generated data are used: replay trains on the generated inputs and answers, while C-plus uses probe gradients to shape which parts of the new-data update are applied.",
+      "zh": "论文在适配到CommonsenseQA的Qwen 3上直接比较了这些方法。在四个锚点预算下，C-plus的保留率都高于probe replay和anchor-plus-probe replay，且使用相同的探针和更新预算；这些replay方法则达到了近乎完美的习得率。比较结果取三个匹配随机种子的平均值。区别在于生成数据的使用方式：replay在生成的输入和答案上训练，而C-plus用探针梯度来塑造新数据更新中哪些部分被应用。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 206.46,
+      "end": 210.02,
+      "en": "And could C-plus look better simply because it makes smaller updates overall?",
+      "zh": "那C-plus看起来更好，会不会只是因为它整体上更新幅度更小？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 210.84,
+      "end": 249.36,
+      "en": "That is a useful challenge, and the authors include a matched diagnostic. In one Qwen three 0.6-billion-parameter CommonsenseQA setting with eight anchors, every method reaches 100% Acquisition. C-plus retains 71.05%. Norm-matched S-F-T retains 45.45%, while a randomized C-plus mask retains 47.13%. The randomized control keeps the same per-tensor mask-coefficient values but permutes where they are placed, helping test whether coordinate placement matters beyond aggregate attenuation.",
+      "zh": "这是个有用的质疑，作者也加入了一个匹配的诊断实验。在一个Qwen3 0.6B参数、八个锚点的CommonsenseQA设置中，所有方法都达到了100%的习得率。C-plus保留了71.05%。范数匹配的S-F-T保留了45.45%，而随机化的C-plus掩码保留了47.13%。随机化对照组保持相同的逐张量掩码系数值，但打乱它们的放置位置，这有助于检验坐标放置是否在整体衰减之外还有影响。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 250.32,
+      "end": 280.7,
+      "en": "This control supports the importance of probe-informed placement in that particular comparison, but it does not establish that placement is the sole cause of gains everywhere. It uses one seed, one anchor budget, and one model-task setting. The broader scarce-anchor result is stronger evidence of consistency: across 24 tested Qwen three settings with four or eight anchors, C-plus gains an average 7.73 percentage points in Retention, while all methods achieve 100% Acquisition.",
+      "zh": "这一对照支持了在该特定比较中探针引导放置的重要性，但并不能证明放置是所有场景下收益的唯一原因。它只使用了一个随机种子、一个锚点预算和一个模型任务设置。更广泛的稀缺锚点结果才是一致性的更强证据：在24个测试的Qwen three设置中（使用四个或八个锚点），C-plus在保留率上平均提升7.73个百分点，而所有方法都达到了100%的习得率。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 281.56,
+      "end": 284.02,
+      "en": "How broad is that evidence beyond Qwen three and CommonsenseQA?",
+      "zh": "这一证据在Qwen three和CommonsenseQA之外有多大普遍性？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 285.94,
+      "end": 317.32,
+      "en": "The main evaluation covers five models: three Qwen three sizes, Gemma two 2-billion-parameter instruction-tuned, and Phi three point five Mini. It tests adaptation on CommonsenseQA, ARC-Challenge, MMLU, and MedQA, with anchor budgets from four to 128. Retention is the share of examples correct before adaptation that remain correct afterward. Acquisition is the share of initially incorrect new-task examples made correct afterward.",
+      "zh": "主要评估覆盖了五个模型：三个不同规模的Qwen3、Gemma 2的20亿参数指令微调版，以及Phi 3.5 Mini。在CommonsenseQA、ARC-Challenge、MMLU和MedQA上测试了适配效果，锚点预算从4到128不等。保持率是指适配前答对、适配后仍然答对的样本占比。习得率是指初始答错的新任务样本在适配后答对的占比。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 318.14,
+      "end": 322.62,
+      "en": "Can we take the external-benchmark results to mean the model preserves all its other abilities?",
+      "zh": "我们能不能根据外部基准的结果，就认为模型保留了它所有其他能力？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 323.86,
+      "end": 359.84,
+      "en": "No. After CommonsenseQA adaptation, the paper reports that C-plus stays closest to the base model across five benchmarks that were neither adaptation data nor anchors. That is encouraging evidence in this setting, not proof of universal preservation. The self-probes report the frozen model’s own predictions, not independently checked facts. The authors also report a trend within the tested Qwen three sizes: C-plus recovers a larger share of S-F-T forgetting in larger models. That should not be treated as a general law about scale.",
+      "zh": "不能。在CommonsenseQA适配之后，论文报告说，在五个既不是适配数据也不是锚点的基准上，C-plus与基础模型最为接近。在这个设定下，这是令人鼓舞的证据，但不是普遍保留下来的证明。自探针报告的是冻结模型自己的预测，而不是经过独立核查的事实。作者还报告了在所测试的Qwen三个规模上呈现的一个趋势：在更大的模型中，C-plus恢复了S-F-T遗忘中更大的一部分。这不应被当作关于规模的普遍规律。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 360.78,
+      "end": 365.4,
+      "en": "How does this fit with earlier approaches like Collaborative Parameter Learning or replay methods?",
+      "zh": "这与协作参数学习或回放方法等早期方法如何契合？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 366.42,
+      "end": 400.1,
+      "en": "Collaborative Parameter Learning compares parameter-wise gradients to protect behavior represented by retained examples; C-plus extends that basic idea when access to past examples is limited, by adding gradients from model-generated probes. Self-Synthesized Rehearsal is a different use of generation: it trains on generated examples as rehearsal data. These methods reflect a broader search for ways to adapt models without discarding useful behavior, but their mechanisms and evidence should not be collapsed into one category.",
+      "zh": "协作参数学习通过比较参数级梯度来保护保留样例所代表的行为；C-plus在难以获取过往样例时扩展了这一基本思路，加入了模型生成探针产生的梯度。自合成 rehearsa（自合成排练）则是对生成的另一种用法：把生成的样例当作排练数据来训练。这些方法反映出一种更广泛的探索，即在不丢弃有用行为的前提下适配模型，但它们的机制和证据不应被归为同一类。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 401.14,
+      "end": 432.04,
+      "en": "The broader implication is that generated data need not serve only as synthetic labels. They can also provide fallible evidence for deciding how to modify a model. That distinction may be useful when organizations retain only a small sample of prior interactions, though the probes remain tied to the model’s own behavior. Future evaluations should test whether probe signals remain helpful across more tasks, longer adaptation sequences, and cases where the original model’s behavior is unreliable.",
+      "zh": "更广泛的意义在于，生成数据不必只作为合成标签使用，它们也可以为决定如何修改模型提供可能出错的证据。当组织只保留少量过往交互样本时，这一区分可能很有用，尽管这些探针仍然与模型自身的行为绑定。未来的评估应当检验探针信号在更多任务、更长的适应序列，以及原始模型行为不可靠的情况下是否仍然有帮助。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 433.1,
+      "end": 437.64,
+      "en": "So the main takeaway is that probes can help guide an update without being trusted as truth?",
+      "zh": "所以主要的结论是，探针可以帮助指导更新，而不必被当作真理来信任？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 438.6,
+      "end": 478.928,
+      "en": "That is the concise takeaway. C-plus uses anchors and self-generated probes to estimate which parts of a new-task update may conflict with represented past behavior, then softens those parts. Its results suggest this can improve retention under scarce-anchor conditions while still learning the new examples. But the signal is imperfect, and the evidence has defined experimental boundaries. Generated probes need not be trusted as new answers to learn; they can still offer additional, fallible evidence for choosing how to update. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "这就是简明的结论。C-plus 用锚点和自生成的探针来估计新任务更新中哪些部分可能与已表示的过往行为冲突，然后对这些部分进行软化。其结果暗示，在锚点稀缺的条件下，这能在仍学习新样例的同时提升保持效果。但这一信号并不完美，证据也有明确的实验边界。生成的探针不必被当作新答案来信任以供学习；它们仍可为选择如何更新提供额外的、可能出错的证据。感谢收听。如果还有问题，可以问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{cho2026continuallearningselfprobegradients,\n      title={Continual Learning via Self-Probe Gradients}, \n      author={Dongkyu Cho and Rumi Chunara and Sungmin Cha},\n      year={2026},\n      eprint={2609.32771},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2609.32771}, \n}",
+  "topics": [
+    "Continual Learning",
+    "Fine Tuning",
+    "Optimization Methods"
+  ],
+  "peaks": [
+    0.68,
+    0.536,
+    0.523,
+    0.316,
+    0.381,
+    0.587,
+    0.496,
+    0.415,
+    0.355,
+    0.486,
+    0.52,
+    0.35,
+    0.358,
+    0.386,
+    0.278,
+    0.673,
+    0.533,
+    0.645,
+    0.491,
+    0.401,
+    0.677,
+    0.468,
+    0.495,
+    0.439,
+    0.472,
+    0.81,
+    0.39,
+    0.384,
+    0.308,
+    0.311,
+    0.2,
+    0.583,
+    0.544,
+    0.358,
+    0.423,
+    0.4,
+    0.34,
+    0.57,
+    0.444,
+    0.539,
+    0.421,
+    0.411,
+    0.587,
+    1.0,
+    0.7,
+    0.664,
+    0.63,
+    0.586,
+    0.646,
+    0.461,
+    0.415,
+    0.453,
+    0.377,
+    0.417,
+    0.538,
+    0.907,
+    0.52,
+    0.703,
+    0.653,
+    0.458,
+    0.697,
+    0.41,
+    0.321,
+    0.319,
+    0.267,
+    0.871,
+    0.454,
+    0.293,
+    0.277,
+    0.278,
+    0.269,
+    0.28
+  ],
+  "published": "2026-09-26",
+  "views": 493,
+  "license": "CC BY"
+}

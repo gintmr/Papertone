@@ -1,0 +1,258 @@
+{
+  "id": "2609.38597",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.38597",
+    "arxiv": "https://arxiv.org/abs/2609.38597"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f533-f4fa-7c50-bc93-0b547b32f2db/podcast.mp3",
+  "duration": 492.408,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 34.22,
+      "en": "In our graduate course on Transformer Architectures, today’s lecture is on Pixel U-M-M. Recent work such as “The Scalability of Simplicity” and “Tuna two” reflects a move toward simpler, more unified visual representations. Pixel U-M-M, from researchers at NVIDIA and the University of Waterloo, asks whether one raw-pixel interface can support both understanding and generation across images and video. That matters because maintaining separate visual streams can add tokens and complicate training. Yes, Noah?",
+      "zh": "在我们关于Transformer架构的研究生课程中，今天的讲座讲的是Pixel U-M-M。近期的一些工作，比如《The Scalability of Simplicity》和《Tuna two》，反映出一种趋势，即朝着更简单、更统一的视觉表示发展。Pixel U-M-M来自NVIDIA和滑铁卢大学的研究人员，它要探讨的是，一个原始像素接口能否同时支持图像和视频的理解与生成。这一点很重要，因为维护彼此独立的视觉流会增加token数量，并使训练复杂化。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 35.3,
+      "end": 41.48,
+      "en": "Hi Professor, does “one interface” mean the model uses exactly the same components for understanding and generation?",
+      "zh": "教授您好，“一个接口”是指模型在理解和生成时使用完全相同的组件吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.64,
+      "end": 75.78,
+      "en": "Not exactly. The shared idea is the pixel representation and multimodal attention, not one undifferentiated set of parameters. Pixel U-M-M avoids a pretrained vision encoder, a variational autoencoder, and a discrete visual tokenizer. But it retains separate understanding and generation experts, each with task-specific components. So the paper tests a more focused form of unification: can images and videos enter through a common pixel-based interface while the model still specializes computation where tasks differ?",
+      "zh": "不完全是。共享的理念是像素表示和多模态注意力，而不是一套不加区分的参数。Pixel U-M-M 避开了预训练的视觉编码器、变分自编码器和离散视觉tokenizer。但它保留了各自独立的理解专家和生成专家，每个专家都有针对具体任务的组件。所以这篇论文测试的是一种更聚焦的统一形式：图像和视频能否通过一个共同的基于像素的接口进入，同时模型仍然在任务存在差异的地方进行专门化的计算？"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 76.68,
+      "end": 107.76,
+      "en": "For images, the model divides pixels into non-overlapping patches measuring 16 by 16 pixels. For video, it groups 4 consecutive frames into tubelets that also cover 16 by 16 pixels spatially. A linear projection maps each flattened patch or tubelet into the Transformer’s hidden representation. You can think of this as feeding carefully arranged pixel blocks directly into the model, rather than first translating them into a separate visual vocabulary.",
+      "zh": "对于图像，模型把像素划分成互不重叠的16乘16像素小块。对于视频，它把连续4帧归为一组，形成在空间上也覆盖16乘16像素的管状小块。一个线性投影会把每个展平的小块或管状小块映射到Transformer的隐藏表示中。你可以把这理解为把精心排列的像素块直接喂给模型，而不是先把它们转换成一套单独的视觉词表。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 108.86,
+      "end": 115.04,
+      "en": "Quick question: if the model works directly with pixels, how does it keep track of where and when each block belongs?",
+      "zh": "快速问一下：如果模型直接处理像素，那它怎么知道每个块在什么位置、属于哪个时间点呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 116.1,
+      "end": 147.22,
+      "en": "It uses positional information for time, height, and width. The architecture begins with a decoder-only quen three model. Its understanding and generation experts have separate normalization, projections, and feed-forward networks, but share multimodal self-attention. Clean visual inputs and text take the understanding route; noisy visual targets take the generation route. That shared attention lets the different token types exchange information, while separate experts preserve some task-specific processing.",
+      "zh": "它利用位置信息来区分时间、高度和宽度。这个架构以仅解码器的Qwen3模型为基础。它的理解专家和生成专家有各自的归一化、投影和前馈网络，但共享多模态自注意力。干净的视觉输入和文本走理解路径；带噪的视觉目标走生成路径。共享的注意力让不同类型的token交换信息，而独立的专家则保留了一定的任务特定处理。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 148.34,
+      "end": 181.76,
+      "en": "Training combines two objectives. The model predicts assistant text using cross-entropy, and learns to generate images and video through pixel-space flow matching: clean pixels are progressively corrupted with Gaussian noise, and the model learns to predict the corresponding change. Training unfolds in 6 stages, moving from text, image understanding, and image generation toward native-resolution images, video understanding, and video generation. The final stage includes generation at 512-by-512 resolution.",
+      "zh": "训练结合了两个目标。模型通过交叉熵预测助手文本，并通过像素空间流匹配学习生成图像和视频：干净的像素被高斯噪声逐步破坏，模型学习预测相应的变化。训练分为6个阶段，从文本、图像理解和图像生成，逐步过渡到原生分辨率图像、视频理解和视频生成。最后阶段包括512×512分辨率的生成。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 182.64,
+      "end": 189.02,
+      "en": "Another question: does this approach also handle visual references, such as an image that should guide a generated video?",
+      "zh": "另一个问题：这种方法也能处理视觉参考吗，比如用一张图片来引导生成的视频？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 189.96,
+      "end": 218.58,
+      "en": "Yes. Clean reference images can enter through the understanding pathway and condition generation, avoiding a separate variational-autoencoder stream for those inputs. This matters in editing and reference-based creation, where a model may need to interpret visual context before generating new frames. In practical terms, the design aims to reduce duplicated visual representations in the conversation, while still allowing noisy generation targets to be processed by their own expert.",
+      "zh": "可以。干净的参考图像可以通过理解通路进入并作为生成的条件，从而避免为这些输入单独走一条变分自编码器流。这在编辑和基于参考的创作中很重要，因为模型可能需要先理解视觉上下文，再生成新的帧。实际来说，这个设计旨在减少对话中重复的视觉表示，同时仍让带噪的生成目标由它们各自的专家处理。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 218.58,
+      "end": 225.08,
+      "en": "Can you clarify the trade-off between smaller patches and the model’s sequence length and computational cost?",
+      "zh": "你能解释一下更小的patch与模型的序列长度和计算成本之间的权衡吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 225.96,
+      "end": 257.3,
+      "en": "The patch-size experiments expose a real trade-off. With the same sequence-length budget, 32-by-32 image patches allow 4 times as many images per step as 16-by-16 patches, but the smaller patches produce lower training loss. For video, more aggressive spatial and temporal compression generally raises loss in the tested configurations. The final model uses 16-by-16 patches and 4-frame tubelets, balancing pixel detail against sequence demands rather than maximizing compression.",
+      "zh": "patch 大小的实验揭示了一个真实的权衡。在相同的序列长度预算下，32×32 的图像块每步能容纳的图像数量是 16×16 图像块的 4 倍，但较小的图像块会产生更低的训练损失。对于视频，在测试的配置中，更激进的空间和时间压缩通常会提高损失。最终模型使用 16×16 的图像块和 4 帧的 tubelet，在像素细节与序列需求之间取得平衡，而不是最大化压缩。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 258.42,
+      "end": 292.82,
+      "en": "The output decoder matters too. Direct linear output heads can create visible grid patterns, especially in smooth regions or when classifier-free guidance is high. Convolutional decoders reduce boundary artifacts, but the tested upsampling-and-convolution design costs more computation and has higher training loss. PixelShuffle decoders offer a compromise; in the reported comparison, temporal-first ordering performs slightly better than spatial-first. So artifact reduction is not free, and decoder design affects both quality and optimization.",
+      "zh": "输出解码器也很关键。直接用线性输出头容易产生明显的网格状伪影，尤其是在平滑区域或分类器-free引导较强的时候。卷积解码器能减少边界伪影，但测试过的上采样加卷积设计计算开销更大，训练损失也更高。PixelShuffle解码器则是一种折中方案；在报告的对比中，时间优先排序比空间优先略好一些。所以减少伪影不是没有代价的，解码器的设计同时影响生成质量和优化过程。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 293.94,
+      "end": 298.76,
+      "en": "Hold on, does using dense video frames actually improve understanding over sampling sparsely?",
+      "zh": "等一下，用密集的视频帧真的比稀疏采样更能提升理解效果吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 298.76,
+      "end": 332.82,
+      "en": "Not consistently in these experiments. Dense video input at 4 frames per second performs comparably to sparse input sampled at 1 frame per second across 4 video benchmarks. That result cautions against assuming that more temporal detail automatically improves understanding. The authors also find that adding image-to-video and editing tasks improves all 4 reported video-understanding benchmark scores, while image-understanding results are mixed. Multi-task training can help, but its effects depend on the task.",
+      "zh": "在这些实验里并不总是如此。以每秒4帧的密集视频输入，与每秒1帧采样的稀疏输入，在4个视频基准上的表现相当。这一结果提醒我们，不要想当然地认为更多的时间细节就一定会提升理解能力。作者还发现，加入图像到视频以及编辑任务，能提升全部4个已报告的视频理解基准分数，而图像理解的结果则好坏参半。多任务训练可能有帮助，但其效果取决于具体任务。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 333.74,
+      "end": 375.54,
+      "en": "The benchmark results show broad task coverage, not a universal lead. The 8-billion-parameter model scores 41.67 on M-M-M-U, 82.96 on Chart Q-A, and 90.42 on Doc V-Q-A for image understanding. Its reported video scores include 70.53 on M-V-Bench and 57.33 on Video-M-M-E without subtitles. Generation scores are also competitive in some comparisons. But systems use different training data and evaluation protocols, so these numbers should be read as evidence of capability, not a clean ranking.",
+      "zh": "基准结果显示的是任务覆盖范围广，而非全面领先。这个80亿参数模型在图像理解上，MMMU得41.67分，ChartQA得82.96分，DocVQA得90.42分。其公布的视频得分包括M-V-Bench上的70.53分，以及无字幕Video-MME上的57.33分。在一些对比中，生成得分也很有竞争力。但各系统使用的训练数据和评估协议不同，所以这些数字应被解读为能力的证据，而非清晰的排名。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 375.54,
+      "end": 384.98,
+      "en": "So is the main limitation that raw pixels create long sequences, or is there a deeper concern about comparing this with V-A-E-based models?",
+      "zh": "那么主要限制是原始像素会产生长序列，还是说与基于V-A-E的模型比较时存在更深层的顾虑？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 386.06,
+      "end": 416.08,
+      "en": "Both deserve attention. Pixel patches can create long sequences, and the study does not establish that this approach is more efficient overall than systems using a variational autoencoder. Also, training losses from pixel and latent spaces are not directly comparable. The paper’s ablations are useful for design choices, but they do not settle which representation is best across all settings. And despite the shared interface and attention, Pixel U-M-M still uses separate understanding and generation experts.",
+      "zh": "两者都值得关注。像素块会带来长序列问题，而且这项研究并未证明该方法在整体效率上优于使用变分自编码器的系统。此外，像素空间和潜空间的训练损失并不能直接比较。论文的消融实验对设计选择有帮助，但并不能确定哪种表示在所有设定下都是最优的。尽管共享了接口和注意力机制，Pixel U-M-M 仍然使用了分别用于理解和生成的独立专家模块。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 417.06,
+      "end": 450.66,
+      "en": "That makes Pixel U-M-M part of a wider exploration rather than a final answer to unified modeling. “The Scalability of Simplicity” examines benefits of a single Transformer, while “Tuna two” also studies raw-pixel visual modeling. Pixel U-M-M extends this direction to video and visual conditioning, yet preserves task-specific experts. The broader research question is not simply whether to remove every specialized component, but which representations and pathways can be shared without making perception or generation harder.",
+      "zh": "这使得Pixel U-M-M成为更广泛探索的一部分，而非统一建模的最终答案。《简单的可扩展性》探讨了单一Transformer的优势，而《Tuna two》也研究了原始像素视觉建模。Pixel U-M-M将这一方向扩展到视频和视觉条件化，但仍保留了任务特定的专家。更广泛的研究问题不仅仅是是否要移除每一个专门组件，而是哪些表示和路径可以共享，同时不会让感知或生成变得更困难。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 450.66,
+      "end": 456.3,
+      "en": "What would you want future work to measure before concluding that this pixel interface is preferable?",
+      "zh": "在得出这种像素接口更优的结论之前，你希望未来的工作衡量哪些指标？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 457.1,
+      "end": 492.408,
+      "en": "I would look for controlled comparisons using matched data, compute budgets, and evaluation procedures, alongside measures of memory and inference cost as video context grows. The key takeaway is that raw pixels can support understanding, generation, and conditioning for both images and video within one multimodal system, but the design involves choices about detail, sequence length, and specialization. Pixel U-M-M expands the options researchers can test. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "我会希望看到使用匹配数据、计算预算和评估流程进行的受控对比，同时衡量随着视频上下文增长带来的内存和推理成本。关键结论是，原始像素可以在一个多模态系统内同时支持图像和视频的理解、生成和条件控制，但设计上涉及细节、序列长度和专门化之间的取舍。Pixel U-M-M 扩展了研究者可以测试的选项。感谢收听。如果还有进一步的问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wei2026pixelummencoderfreeunifiedimage,\n      title={PixelUMM: Encoder-Free Unified Image and Video Understanding and Generation}, \n      author={Cong Wei and Xuanchi Ren and Bryan Chu and Weiming Ren and Huan Ling and Jiahui Huang and Laura Leal-Taixé and Sanja Fidler and Wenhu Chen and Zian Wang and Jay Zhangjie Wu},\n      year={2026},\n      eprint={2609.38597},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2609.38597}, \n}",
+  "topics": [
+    "Image Generation",
+    "Multimodal Learning",
+    "Multi Task Learning"
+  ],
+  "peaks": [
+    0.685,
+    0.428,
+    0.4,
+    0.361,
+    0.231,
+    0.777,
+    0.999,
+    0.796,
+    0.69,
+    0.429,
+    0.528,
+    0.919,
+    0.71,
+    0.437,
+    0.506,
+    0.414,
+    0.634,
+    0.542,
+    0.391,
+    0.328,
+    0.389,
+    0.623,
+    0.673,
+    0.7,
+    0.472,
+    0.601,
+    0.501,
+    0.618,
+    0.451,
+    0.366,
+    0.261,
+    0.236,
+    0.689,
+    0.685,
+    0.457,
+    0.68,
+    0.463,
+    0.404,
+    0.529,
+    0.351,
+    0.294,
+    0.319,
+    0.297,
+    0.699,
+    0.639,
+    0.543,
+    0.632,
+    0.557,
+    0.49,
+    0.568,
+    0.455,
+    0.351,
+    0.333,
+    0.461,
+    0.402,
+    0.928,
+    0.791,
+    0.994,
+    1.0,
+    0.822,
+    0.666,
+    0.825,
+    0.845,
+    0.743,
+    0.683,
+    0.469,
+    0.776,
+    0.407,
+    0.248,
+    0.286,
+    0.2,
+    0.236
+  ],
+  "published": "2026-09-29",
+  "views": 488,
+  "license": "arXiv 默认许可"
+}

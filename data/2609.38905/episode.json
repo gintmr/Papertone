@@ -1,0 +1,240 @@
+{
+  "id": "2609.38905",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2609.38905",
+    "arxiv": "https://arxiv.org/abs/2609.38905"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a0f538-2c71-7e36-af51-415669dd3e9b/podcast.mp3",
+  "duration": 423.68,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.44,
+      "en": "In Advanced Robot Learning, today’s lecture is on Embodi R-S-I, a paper about helping manipulation robots adapt when they reach a new workspace. A missed grasp can leave a robot in an awkward state that clean demonstrations never showed it. Recent work such as R-S-I-Anything and V-L-A-W explores self-improvement through world models and policy feedback. This paper asks how to make practice respond to failures in a specific deployment environment. I see your hand, Noah. Go ahead.",
+      "zh": "在高级机器人学习课上，今天讲的是Embodi R-S-I，这是一篇关于帮助操作机器人在到达新工作空间时进行适应的论文。一次抓取失败可能会让机器人陷入一种干净的演示从未展示过的尴尬状态。近期的工作如R-S-I-Anything和V-L-A-W通过世界模型和策略反馈来探索自我改进。这篇论文问的是如何让练习在特定部署环境中对失败做出响应。我看到你举手了，Noah。请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.54,
+      "end": 36.44,
+      "en": "Hi Professor, is the central idea simply to collect more robot experience?",
+      "zh": "教授您好，核心思路就是收集更多机器人经验吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 37.52,
+      "end": 68.94,
+      "en": "More experience matters, but the paper’s central move is to make that experience responsive. The authors build a task-specific simulator of the target workspace, then use the current policy’s behavior to shape what happens next. A failure can prompt a correction from the state the robot actually reached, while recurring weaknesses can direct later practice toward difficult configurations. The field is moving toward closed feedback loops; this work connects those loops to reusable simulation and physical deployment.",
+      "zh": "更多经验固然重要，但这篇论文的核心动作是让这些经验具备响应性。作者为目标工作空间构建了一个任务专用的模拟器，然后利用当前策略的行为来塑造接下来发生的事情。一次失败可以促使机器人从它实际到达的状态出发进行纠正，而反复出现的薄弱环节则可以把后续练习引导到困难的配置上。这个领域正在朝着闭环反馈的方向发展；这项工作把这些闭环与可复用的模拟和物理部署连接了起来。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 69.96,
+      "end": 99.62,
+      "en": "The system works on two timescales. Within an episode, a monitor checks camera observations and simulator signals for problems such as a missed grasp, slipping object, or incorrect placement. If recovery is appropriate, an agent plans a correction from the current state. The simulator does not reset first: it re-grounds the situation and replans from where the policy left the robot. That makes the failure state part of the learning opportunity, rather than a discarded interruption.",
+      "zh": "这个系统在两个时间尺度上运作。在一个回合内，监控器会检查摄像头观测和模拟器信号，看是否出现问题，比如抓取失败、物体滑落或放置位置不对。如果适合恢复，智能体会从当前状态规划一个纠正动作。模拟器不会先重置：它会重新锚定当前情况，并从策略让机器人停下的地方重新规划。这样一来，失败状态就成了学习机会的一部分，而不是被丢弃的中断。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.62,
+      "end": 103.72,
+      "en": "Quick question: does every failed rollout become training data?",
+      "zh": "快速问一下：是不是每次失败的轨迹都会变成训练数据？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.6,
+      "end": 137.18,
+      "en": "No. The distinction between informative diagnosis and retained policy training data is important. A successful episode may include the policy’s mistake followed by an agent’s correction, and that corrected trajectory can be retained. An unsuccessful monitored rollout can still inform the analysis of where the policy struggles, but it is excluded from policy training. The simulator therefore serves as a repeatable practice workspace for evaluation, recovery, diagnosis, and generating supervised trajectories.",
+      "zh": "不是。区分有信息量的诊断和保留下来用于策略训练的数据很重要。一次成功的回合可能包含策略犯错、随后由智能体纠正的过程，而这条纠正后的轨迹可以被保留。一次不成功的受监控轨迹仍然能为分析策略在哪些地方吃力提供信息，但它会被排除在策略训练之外。因此，模拟器充当了一个可重复的练习工作区，用于评估、恢复、诊断以及生成监督轨迹。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 138.16,
+      "end": 169.86,
+      "en": "Across episodes, failure analysis looks for patterns in where tasks fail, including source-object and target-anchor configurations. Later demonstrations are steered toward those weak regions. Think of it as a coach noticing that a robot repeatedly struggles with objects near one edge of a table, then arranging more practice there. This is a prioritization heuristic, not a guarantee that a configuration will improve the policy. The policy is updated, rolled out again, and the training experience can change with it.",
+      "zh": "跨回合来看，失败分析会寻找任务失败位置的模式，包括源物体和目标锚点的配置。后续示范会被引导到这些薄弱区域。可以把它想象成教练注意到机器人在桌子某一边缘附近的物体上反复出错，于是安排更多针对性的练习。这是一种优先级启发式，并不能保证某种配置一定会改进策略。策略更新后会再次展开轨迹，训练经验也会随之变化。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 170.38,
+      "end": 174.78,
+      "en": "So the policy’s weaknesses guide both immediate recovery and what it practices later?",
+      "zh": "所以策略的弱点既指导当下的恢复，也决定它之后练什么？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 175.64,
+      "end": 207.48,
+      "en": "Exactly, and the tests evaluate whether that combined loop improves autonomous task completion. In simulation, the 14 subtasks span Office, Kitchen, and Household scenes. Their scene-balanced mean success rises from 50.4% at the initial round to 70.7% and then 83.5% over two updates. All 14 subtasks improve from the first to the last round, though that does not mean every task improves at each individual update.",
+      "zh": "正是如此，这些测试评估的就是这个组合闭环能否提升自主任务完成能力。在仿真中，14个子任务覆盖了办公室、厨房和家庭场景。它们的场景均衡平均成功率从初始轮次的50.4%上升到70.7%，再经过两次更新后达到83.5%。全部14个子任务从第一轮到最后一轮都有提升，不过这并不意味着每个任务在每次单独更新时都会提升。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 207.48,
+      "end": 212.12,
+      "en": "How do we know the gain comes from feedback rather than simply adding trajectories?",
+      "zh": "我们怎么知道收益来自反馈，而不是单纯增加了轨迹？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 213.2,
+      "end": 248.4,
+      "en": "The strongest control is a matched-budget Static collection method. Both approaches begin with 50 simulation trajectories per subtask and use the same policy architecture and training recipe. At 400 retained trajectories per subtask, across the two evaluated scenes, the adaptive workflow reaches 79.9% scene-balanced autonomous simulation success, compared with 59.3% for Static. Static keeps the original reset distribution; the full workflow adds rollout-derived experience and targeted recollection.",
+      "zh": "最强的对照是预算匹配的静态收集方法。两种方法都从每个子任务50条模拟轨迹开始，并使用相同的策略架构和训练配方。在每个子任务保留400条轨迹时，在两个评估场景中，自适应工作流达到79.9%的场景平衡自主模拟成功率，而静态方法为59.3%。静态方法保持原始重置分布；完整工作流则加入了轨迹衍生的经验和定向回忆。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 249.44,
+      "end": 286.34,
+      "en": "That comparison supports the combined feedback-driven workflow, not recovery or targeted recollection in isolation. The paper does not provide a component-wise ablation, so we cannot assign the observed difference to one mechanism alone. In physical workspaces, the authors also test a small human-in-the-loop refinement: 400 retained adaptive simulation trajectories plus 10 real trajectories per subtask reach 83.1% scene-balanced success. Each physical task-setting has 10 autonomous test trials, with external recovery and human correction disabled.",
+      "zh": "这一对比支持的是组合式的反馈驱动工作流，而非单独的恢复或定向回忆。论文没有提供逐组件的消融实验，因此我们无法将观察到的差异归因于单一机制。在物理工作空间中，作者还测试了一个小型的人在回路优化：每个子任务保留400条自适应仿真轨迹，再加上10条真实轨迹，达到了83.1%的场景平衡成功率。每个物理任务设置包含10次自主测试试验，外部恢复和人工纠正均被禁用。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 287.44,
+      "end": 292.5,
+      "en": "Does that establish that this approach needs less time or computation than collecting real demonstrations?",
+      "zh": "这是否能证明该方法比采集真实示范所需的时间或计算更少？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 293.74,
+      "end": 324.42,
+      "en": "It does not. The comparison is about retained physical training trajectories, not equal total data or acquisition cost. The 83.1% result is compared with 75% for adaptation from 200 real-world demonstrations per subtask, using scene-balanced means: each scene’s task success is averaged, then the three scenes receive equal weight. The evaluation reports success rates, not fewer collection attempts, shorter elapsed time, or lower computational cost.",
+      "zh": "并不能。这一比较针对的是保留的物理训练轨迹，而非同等总数据量或采集成本。83.1%的结果是与每个子任务200次真实世界演示的适应方法所达到的75%相比，采用场景平衡均值：先对每个场景的任务成功率取平均，再让三个场景获得相同权重。评估报告的是成功率，而非更少的采集尝试、更短的耗时或更低的计算成本。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 325.46,
+      "end": 358.24,
+      "en": "The broader contribution is a way to connect improving a policy with improving its practice distribution. It complements work such as R-E-C-A-P, which combines demonstrations, autonomous experience, and expert corrections in policy training, and differs from S-O-A-R’s focus on goal-conditioned learning from autonomous experience. Embodi R-S-I’s distinctive emphasis is joining recovery from a policy-reached failure state with configuration-targeted recollection in a deployment-specific simulator.",
+      "zh": "更广泛的贡献在于提供了一种方法，将策略改进与其练习分布的改进连接起来。它补充了R-E-C-A-P等工作——后者在策略训练中结合了示范、自主经验和专家纠正——也与S-O-A-R侧重于从自主经验中进行目标条件学习有所不同。Embodi R-S-I的独特重点在于，将从策略所达失败状态中的恢复，与在部署专用模拟器中针对配置的目标回忆结合起来。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 359.24,
+      "end": 363.18,
+      "en": "Could this feedback loop work reliably in a workspace the system has never simulated?",
+      "zh": "这个反馈回路能否在系统从未模拟过的工作空间中可靠运行？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 364.26,
+      "end": 397.42,
+      "en": "That remains an open question. The experiments concern three tabletop scenes, and the paper does not establish generalization to held-out workspaces or sustained improvement over longer runs. A useful next step would test how well the reconstructed practice environment supports recovery and recollection when the real workspace changes. For now, the evidence is narrower: under the evaluated conditions, the complete adaptive workflow improves measured success, while the separate contributions and practical collection costs remain unresolved.",
+      "zh": "这仍是一个开放问题。实验只涉及三个桌面场景，论文并未证明能泛化到未见过的workspace，也未证明在更长运行中能持续改进。一个有用的下一步是测试当真实workspace发生变化时，重建的练习环境在多大程度上支持恢复与回忆。就目前而言，证据范围更窄：在评估条件下，完整的自适应工作流提升了实测成功率，而各部分的独立贡献和实际采集成本仍未解决。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 398.42,
+      "end": 423.68,
+      "en": "The takeaway is to improve the practice, not just the policy. Embodi R-S-I makes practice responsive both to the state where a robot falters and to configurations where it repeatedly falters. That link between policy improvement and experience improvement is the paper’s central idea. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "关键在于改进练习，而不只是改进策略。Embodi R-S-I让练习既能针对机器人失误的具体状态做出调整，也能针对它反复失误的配置做出调整。把策略改进与经验改进联系起来，正是这篇论文的核心思想。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{lang2026embodirsirecursiveselfimprovementdataefficient,\n      title={EmbodiRSI: Recursive Self-Improvement for Data-Efficient Robot Adaptation}, \n      author={Haoran Lang and Haotao Lu and Shiyu Sang and Haoyang Luo and Guo Chen and Qun Li and Jingyi Yu and Ye Shi and Jingya Wang},\n      year={2026},\n      eprint={2609.38905},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2609.38905}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    1.0,
+    0.599,
+    0.481,
+    0.685,
+    0.386,
+    0.624,
+    0.645,
+    0.396,
+    0.332,
+    0.33,
+    0.247,
+    0.431,
+    0.558,
+    0.318,
+    0.526,
+    0.358,
+    0.405,
+    0.537,
+    0.481,
+    0.605,
+    0.511,
+    0.493,
+    0.464,
+    0.51,
+    0.442,
+    0.431,
+    0.377,
+    0.423,
+    0.304,
+    0.493,
+    0.719,
+    0.509,
+    0.46,
+    0.528,
+    0.642,
+    0.549,
+    0.572,
+    0.587,
+    0.494,
+    0.418,
+    0.295,
+    0.551,
+    0.475,
+    0.528,
+    0.402,
+    0.459,
+    0.251,
+    0.215,
+    0.419,
+    0.47,
+    0.483,
+    0.299,
+    0.324,
+    0.383,
+    0.384,
+    0.674,
+    0.334,
+    0.393,
+    0.278,
+    0.42,
+    0.2,
+    0.734,
+    0.595,
+    0.478,
+    0.633,
+    0.644,
+    0.348,
+    0.62,
+    0.657,
+    0.551,
+    0.371,
+    0.516
+  ],
+  "published": "2026-09-30",
+  "views": 586,
+  "license": "CC BY-NC-SA"
+}

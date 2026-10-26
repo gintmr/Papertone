@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 423.68,
+  "word_match_rate": 0.9332,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Advanced Robot Learning, today’s lecture is on Embodi R-S-I, a paper about helping manipulation robots adapt when they reach a new workspace. A missed grasp can leave a robot in an awkward state that clean demonstrations never showed it. Recent work such as R-S-I-Anything and V-L-A-W explores self-improvement through world models and policy feedback. This paper asks how to make practice respond to failures in a specific deployment environment. I see your hand, Noah. Go ahead.",
+      "start": 0.0,
+      "end": 31.44
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is the central idea simply to collect more robot experience?",
+      "start": 32.54,
+      "end": 36.44
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "More experience matters, but the paper’s central move is to make that experience responsive. The authors build a task-specific simulator of the target workspace, then use the current policy’s behavior to shape what happens next. A failure can prompt a correction from the state the robot actually reached, while recurring weaknesses can direct later practice toward difficult configurations. The field is moving toward closed feedback loops; this work connects those loops to reusable simulation and physical deployment.",
+      "start": 37.52,
+      "end": 68.94
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The system works on two timescales. Within an episode, a monitor checks camera observations and simulator signals for problems such as a missed grasp, slipping object, or incorrect placement. If recovery is appropriate, an agent plans a correction from the current state. The simulator does not reset first: it re-grounds the situation and replans from where the policy left the robot. That makes the failure state part of the learning opportunity, rather than a discarded interruption.",
+      "start": 69.96,
+      "end": 99.62
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does every failed rollout become training data?",
+      "start": 99.62,
+      "end": 103.72
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. The distinction between informative diagnosis and retained policy training data is important. A successful episode may include the policy’s mistake followed by an agent’s correction, and that corrected trajectory can be retained. An unsuccessful monitored rollout can still inform the analysis of where the policy struggles, but it is excluded from policy training. The simulator therefore serves as a repeatable practice workspace for evaluation, recovery, diagnosis, and generating supervised trajectories.",
+      "start": 104.6,
+      "end": 137.18
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Across episodes, failure analysis looks for patterns in where tasks fail, including source-object and target-anchor configurations. Later demonstrations are steered toward those weak regions. Think of it as a coach noticing that a robot repeatedly struggles with objects near one edge of a table, then arranging more practice there. This is a prioritization heuristic, not a guarantee that a configuration will improve the policy. The policy is updated, rolled out again, and the training experience can change with it.",
+      "start": 138.16,
+      "end": 169.86
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the policy’s weaknesses guide both immediate recovery and what it practices later?",
+      "start": 170.38,
+      "end": 174.78
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Exactly, and the tests evaluate whether that combined loop improves autonomous task completion. In simulation, the 14 subtasks span Office, Kitchen, and Household scenes. Their scene-balanced mean success rises from 50.4% at the initial round to 70.7% and then 83.5% over two updates. All 14 subtasks improve from the first to the last round, though that does not mean every task improves at each individual update.",
+      "start": 175.64,
+      "end": 207.48
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "How do we know the gain comes from feedback rather than simply adding trajectories?",
+      "start": 207.48,
+      "end": 212.12
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "The strongest control is a matched-budget Static collection method. Both approaches begin with 50 simulation trajectories per subtask and use the same policy architecture and training recipe. At 400 retained trajectories per subtask, across the two evaluated scenes, the adaptive workflow reaches 79.9% scene-balanced autonomous simulation success, compared with 59.3% for Static. Static keeps the original reset distribution; the full workflow adds rollout-derived experience and targeted recollection.",
+      "start": 213.2,
+      "end": 248.4
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "That comparison supports the combined feedback-driven workflow, not recovery or targeted recollection in isolation. The paper does not provide a component-wise ablation, so we cannot assign the observed difference to one mechanism alone. In physical workspaces, the authors also test a small human-in-the-loop refinement: 400 retained adaptive simulation trajectories plus 10 real trajectories per subtask reach 83.1% scene-balanced success. Each physical task-setting has 10 autonomous test trials, with external recovery and human correction disabled.",
+      "start": 249.44,
+      "end": 286.34
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Does that establish that this approach needs less time or computation than collecting real demonstrations?",
+      "start": 287.44,
+      "end": 292.5
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "It does not. The comparison is about retained physical training trajectories, not equal total data or acquisition cost. The 83.1% result is compared with 75% for adaptation from 200 real-world demonstrations per subtask, using scene-balanced means: each scene’s task success is averaged, then the three scenes receive equal weight. The evaluation reports success rates, not fewer collection attempts, shorter elapsed time, or lower computational cost.",
+      "start": 293.74,
+      "end": 324.42
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The broader contribution is a way to connect improving a policy with improving its practice distribution. It complements work such as R-E-C-A-P, which combines demonstrations, autonomous experience, and expert corrections in policy training, and differs from S-O-A-R’s focus on goal-conditioned learning from autonomous experience. Embodi R-S-I’s distinctive emphasis is joining recovery from a policy-reached failure state with configuration-targeted recollection in a deployment-specific simulator.",
+      "start": 325.46,
+      "end": 358.24
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Could this feedback loop work reliably in a workspace the system has never simulated?",
+      "start": 359.24,
+      "end": 363.18
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "That remains an open question. The experiments concern three tabletop scenes, and the paper does not establish generalization to held-out workspaces or sustained improvement over longer runs. A useful next step would test how well the reconstructed practice environment supports recovery and recollection when the real workspace changes. For now, the evidence is narrower: under the evaluated conditions, the complete adaptive workflow improves measured success, while the separate contributions and practical collection costs remain unresolved.",
+      "start": 364.26,
+      "end": 397.42
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The takeaway is to improve the practice, not just the policy. Embodi R-S-I makes practice responsive both to the state where a robot falters and to configurations where it repeatedly falters. That link between policy improvement and experience improvement is the paper’s central idea. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 398.42,
+      "end": 423.68
+    }
+  ]
+}

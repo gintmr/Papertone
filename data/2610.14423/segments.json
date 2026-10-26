@@ -1,0 +1,130 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 424.176,
+  "word_match_rate": 0.9459,
+  "line_count": 17,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical course, Scaling Laws for Multimodal Learning, today's lecture is on “Scaling Laws for Multimodal Data Mixtures.” Researchers at McGill University and ETH Zurich study how text, vision, and audio interact during pretraining. Recent work such as “Scaling Laws for Native Multimodal Models” and “Scaling Laws for Optimal Data Mixtures” reflects a field increasingly focused on joint training and resource allocation. I see Noah raising a hand. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.48
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why do multimodal systems need a different scaling analysis from text-only models?",
+      "start": 33.74,
+      "end": 38.8
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because a token is not the whole story when training combines different modalities. A text example, an image-caption pair, and an audio segment may each use data and model capacity differently, and training one can help or hinder another. Text-only scaling frameworks give useful foundations, but they do not directly tell us how to allocate scarce multimodal data or what happens when examples are repeated. This paper tries to make those trade-offs predictable.",
+      "start": 39.76,
+      "end": 69.74
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central contribution is a fitted scaling framework that predicts each modality’s validation loss using more than its own data volume and model size. It also accounts for how much other modalities contribute, how repeated examples lose value over time, and how sharing a model can reduce a target modality’s effective capacity. Think of it as planning a shared research budget: adding resources to one project can change what remains available to the others.",
+      "start": 70.84,
+      "end": 99.88
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: does the framework assume that cross-modal help works equally in both directions?",
+      "start": 100.74,
+      "end": 105.48
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. Transfer is directional, so vision helping text can have a different estimated effect from text helping vision. The authors model that separately from capacity sharing and repetition. Their experiments cover 268 controlled runs with sparse expert models ranging from 457 million to 8.3 billion total parameters, and up to 150 billion training tokens per run. They jointly fit the scaling and interaction terms against held-out validation losses.",
+      "start": 105.82,
+      "end": 137.76
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "A first practical insight concerns compute allocation. In these experiments, text and vision favor roughly balanced increases in model size and training data. Audio is more model-heavy: the fitted compute-optimal allocation assigns about 62% of additional compute to model size and 38% to data. These are results for this particular setup, not universal constants. They give practitioners a reason to test modality-specific budgets instead of assuming one allocation rule fits all.",
+      "start": 138.8,
+      "end": 171.24
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify what the experiments found about repeating scarce vision and audio data?",
+      "start": 172.02,
+      "end": 176.7
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Repeated examples help, but each additional pass contributes less than the previous one. The fitted results suggest that vision gains the equivalent of about 2 fresh-data epochs at most, and audio about 2.76. By a fifth pass, the estimated marginal value is only about 3% of a unique-data epoch for vision and 14% for audio. In direct comparisons, more unique examples often beat repeatedly sampling the same small non-text dataset.",
+      "start": 177.56,
+      "end": 206.08
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "A second important insight is that modalities compete for effective capacity as well as data. All three estimated capacity-sharing effects are negative, with the strongest penalty for audio. When a target accounts for 10% of mixture tokens, its fitted effective capacity is about 66% of nominal capacity for text, 47% for vision, and 19% for audio. The analysis also found little modality-specific expert separation, suggesting substantial sharing in this model setup.",
+      "start": 208.26,
+      "end": 240.28
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So if vision is especially disruptive to audio, should a training team simply reduce vision data in every audio-focused mixture?",
+      "start": 241.3,
+      "end": 248.5
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Not automatically. The fitted transfer estimates show vision as the most disruptive source for audio, while text’s estimated interference is smaller. But a useful allocation depends on the target quality and data available for every modality. Audio’s estimated transfer to text and vision is slightly positive, yet unstable across analyses and statistically indistinguishable from negligible. The framework can guide comparisons, but teams should validate its estimates on their own architecture and data.",
+      "start": 249.58,
+      "end": 280.3
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "For a real-world user, that means the model can help compare whether to add unique data, repeat scarce examples, or spend compute on more parameters before committing to expensive training runs. The authors tested predictions on three held-out settings, including a larger model trained from scratch and continual pretraining from a text-only checkpoint. Across nine modality-level predictions, predicted and observed losses had a Pearson correlation of 0.999; eight predictions were within 2.6%.",
+      "start": 281.22,
+      "end": 311.88
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we interpret that strong validation, given the limited number of held-out runs?",
+      "start": 313.82,
+      "end": 318.58
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "As encouraging evidence, not a guarantee of generality. One text prediction in a non-text-heavy continual-pretraining run was off by 6.73%, as text loss rose substantially and did not stabilize during training. The study also covers a particular family of expert models, selected datasets, and a next-token objective. Related work such as “Scaling Laws for Optimal Data Mixtures” shares the goal of predicting mixture effects, while this paper explicitly separates cross-modal transfer, repetition, and capacity dilution.",
+      "start": 319.54,
+      "end": 355.28
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "That separation is the broader contribution: multimodal scaling is not simply a matter of counting all tokens together. Future studies can test whether these fitted relationships hold at larger scales, with other architectures, or with modalities such as video. They can also investigate why audio appears comparatively inert as a source of help or interference here. For PhD researchers, the main lesson is to treat mixture design as an empirical, modality-specific problem, and to test predictions beyond the data used to fit them.",
+      "start": 356.98,
+      "end": 389.8
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The paper offers a practical way to reason about multimodal training budgets while making clear that its coefficients belong to a specific experimental setting. Before repeating data or adding another modality, ask what that choice does to unique information, effective capacity, and the other objectives in the mixture. The memorable takeaway is simple: in multimodal pretraining, every token has a context, and every shared resource has a cost. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 390.42,
+      "end": 424.176
+    }
+  ]
+}

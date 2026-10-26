@@ -1,0 +1,273 @@
+{
+  "id": "2610.29162",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.29162",
+    "arxiv": "https://arxiv.org/abs/2610.29162"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a161ce-1d3b-7e66-a51a-aa8a5e1aa044/podcast.mp3",
+  "duration": 480.025,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.64,
+      "en": "In Psycholinguistics and Language Models, today's lecture is on “Why Is A-I-Generated Language So Hard to Understand?” Recent work such as “How LLMs Distort Our Written Language” and “Comparing Human and Language Models Sentence Processing Difficulties on Complex Structures” reflects growing interest in how model language differs from human language. This paper, by researchers at New York University and the University of Texas at Austin, connects those trends to the processing demands readers face. I see Noah has a question—go ahead, Noah.",
+      "zh": "在心理语言学与语言模型这门课上，今天的讲座主题是“为什么AI生成的语言这么难懂？”最近的一些研究，比如“大语言模型如何扭曲我们的书面语言”和“比较人类与语言模型在复杂结构上的句子处理困难”，都反映出人们对模型语言与人类语言差异的兴趣日益增长。这篇论文由纽约大学和德克萨斯大学奥斯汀分校的研究人员撰写，把这些趋势与读者面临的处理需求联系了起来。我看到Noah有问题——请讲，Noah。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.5,
+      "end": 41.06,
+      "en": "Hi Professor, are the authors actually measuring whether people understand the model responses?",
+      "zh": "教授您好，作者们真的在测量人们是否理解模型的回答吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.08,
+      "end": 72.64,
+      "en": "That distinction is central: no, the study does not directly measure comprehension accuracy or reading time. Instead, it examines language features that prior psycholinguistic research has associated with processing difficulty. The broader field often compares model text with human text or studies whether models handle complex language like people do. This paper asks a related but different question: whether model outputs repeatedly choose forms that could make human processing harder, even when those forms remain grammatical.",
+      "zh": "这个区别很关键：不，这项研究并没有直接测量理解准确率或阅读时间。它考察的是语言特征，而此前心理语言学研究已将这些特征与加工难度联系起来。更广泛的领域通常会将模型文本与人类文本进行比较，或者研究模型是否像人一样处理复杂语言。这篇论文问的是一个相关但不同的问题：模型的输出是否反复选择那些可能让人更难加工的形式，即使这些形式仍然合乎语法。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 73.48,
+      "end": 77.34,
+      "en": "So the claim is about possible difficulty, not proof that readers struggle?",
+      "zh": "所以这个说法讲的是可能存在的困难，而不是证明读者真的读起来费劲？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 77.34,
+      "end": 105.78,
+      "en": "Exactly. The paper tests two hypotheses. First, frontier and near-frontier models may overuse linguistic features associated with processing costs. Second, post-training pressure to express information compactly may shift a model toward forms people do not prefer. Think of two routes to the same destination: one may be shorter, but harder to follow. The authors look for these choices among alternatives that are broadly similar in meaning.",
+      "zh": "正是如此。这篇论文检验了两个假设。第一，前沿和接近前沿的模型可能会过度使用与处理成本相关的语言特征。第二，训练后要求信息表达紧凑的压力，可能会让模型偏向人们并不喜欢的形式。想象通往同一目的地的两条路线：一条可能更短，但更难跟得上。作者在含义大体相近的备选表达中寻找这些选择。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 105.78,
+      "end": 109.84,
+      "en": "Which language features do they treat as possible sources of difficulty?",
+      "zh": "他们把哪些语言特征视为可能的难点来源？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 110.74,
+      "end": 137.76,
+      "en": "They examine several. A model might omit an optional “that” in a relative clause, choose a long dependency between related words, or compress an idea into a stack of three or more nouns. Other measures include using a noun as a verb, giving an inanimate subject an action usually associated with an animate one, and producing rare word sequences. These are indicators drawn from earlier research, not direct measurements of a reader’s effort.",
+      "zh": "他们考察了几个方面。模型可能会在关系从句中省略可选的“that”，在相关词之间选择长距离依赖，或者把一个想法压缩成三个或更多名词堆叠的结构。其他指标还包括把名词用作动词、给无生命主语赋予通常与有生命主体关联的动作，以及生成罕见的词序列。这些都是来自早期研究的指标，而非对读者理解难度的直接测量。"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 138.58,
+      "end": 172.82,
+      "en": "The corpus spans 14 models and three settings: conversations, coding-agent sessions, and essays. For essays, the researchers compare 980 model essays with 2,934 student essays written to the same prompts. Human reference text varies by setting, including subtitles for chat and StackExchange for coding. This breadth helps test whether patterns recur across genres, while also making clear that the comparison is not one single, uniform contest between machine and human writing.",
+      "zh": "该语料库涵盖14个模型和三种场景：对话、编码智能体会话和文章写作。对于文章写作，研究人员将980篇模型文章与2934篇按相同提示词撰写的学生文章进行比较。人类参考文本因场景而异，包括用于对话的字幕和用于编码的StackExchange内容。这种广度有助于检验这些模式是否在不同文体中反复出现，同时也清楚表明，这一比较并非机器写作与人类写作之间单一而统一的较量。"
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "start": 173.66,
+      "end": 177.72,
+      "en": "How do they separate a model’s wording choices from the meaning it is trying to express?",
+      "zh": "他们如何把模型的措辞选择与它试图表达的意思区分开来？"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 178.64,
+      "end": 206.96,
+      "en": "Their main tool is round-trip translation. They translate each model sentence from English to Japanese and back to English, then compare the returned wording with the original. The premise is that meaning stays approximately similar while phrasing changes. If a feature is more common in the original, that may suggest the model selected it among alternative expressions. They also check Russian as a pivot and use another translation model, though translation can still change syntax and style.",
+      "zh": "他们的主要工具是往返翻译。他们把模型生成的每个句子从英语翻成日语，再翻回英语，然后比较返回的措辞和原文。前提是意思大致保持不变，而措辞会发生变化。如果某个特征在原文中更常见，这可能说明模型是在多种表达方式中选择了它。他们还用俄语作为中转语言，并使用了另一个翻译模型，不过翻译仍然可能改变句法和风格。"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 207.74,
+      "end": 239.7,
+      "en": "Across most frontier and near-frontier models, original text contained more rare or unattested word sequences than the translated paraphrases. Similar patterns appeared for several constructions, including omitted relativizers, denominal verbs, and inanimate subjects with animate-associated verbs. In chat and coding, long dependencies and noun stacks also tended to be more prominent in originals. Essay results were less consistent, a useful reminder that findings can depend on genre and task.",
+      "zh": "在大多数前沿和接近前沿的模型中，原文包含的罕见或未见过的词序列比翻译改写后的文本更多。类似的模式也出现在几种句法结构中，包括省略的关系词、名词化动词，以及无生命主语搭配有生命关联动词的情况。在聊天和编程场景中，长距离依赖和名词堆叠在原文里也往往更突出。议论文的结果则不太一致，这提醒我们，研究发现可能因体裁和任务而异。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 240.5,
+      "end": 243.24,
+      "en": "Could the translation process itself create those differences?",
+      "zh": "翻译过程本身会不会造成这些差异？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 243.24,
+      "end": 272.06,
+      "en": "Yes, that is an important limitation. Translation is a comparison method, not a perfect control: it can favor different constructions, so a change does not establish exactly what the model prefers. The authors report checks with a Russian pivot and another translation system, but those checks cannot eliminate the concern. They also do not adjust the translation-comparison tests for the large number of comparisons, so individual results deserve cautious interpretation.",
+      "zh": "是的，这是一个重要的局限。翻译是一种比较方法，而不是完美的控制手段：它可能偏好不同的句式结构，因此某一变化并不能确切说明模型究竟偏好什么。作者报告了用俄语中转和另一个翻译系统所做的检查，但这些检查无法消除这一顾虑。他们也没有针对大量比较对翻译比较测试做相应调整，因此个别结果需要谨慎解读。"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 272.06,
+      "end": 300.64,
+      "en": "To probe a possible cause, the team fine-tunes a relatively small Qwen two point five one point five B Instruct model. It turns structured event descriptions into English sentences, with rewards for correctness and format, alongside a penalty for longer responses. The researchers vary the penalty’s strength and whether training includes a K-L penalty that discourages the model from drifting too far from its original behavior.",
+      "zh": "为了探究可能的原因，团队微调了一个相对较小的Qwen 2.5 1.5B Instruct模型。它把结构化的事件描述转成英文句子，对正确性和格式给予奖励，同时对较长的回答施加惩罚。研究者改变了惩罚的强度，以及训练中是否加入K-L惩罚——这种惩罚会阻止模型偏离其原始行为太远。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 300.64,
+      "end": 304.88,
+      "en": "Does that pressure make the model shorter without sacrificing correctness?",
+      "zh": "这种压力会让模型输出更短，同时又不牺牲正确性吗？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 305.66,
+      "end": 334.08,
+      "en": "In the tested task, yes: stronger length penalties increased the model’s use of shorter alternatives, while it could still meet the correctness requirements. Without the K-L penalty, the model often became nearly categorical for the short forms it had practiced. With that constraint, the shift was weaker but remained. The preference also carried over to an untrained context where “that” could be omitted, suggesting training effects can generalize beyond exact examples.",
+      "zh": "在测试的任务中，确实如此：更强的长度惩罚让模型更多使用较短的替代形式，同时仍能满足正确性要求。没有K-L惩罚时，模型对练习过的短形式往往变得几乎一边倒。有了这个约束，偏移变弱了但仍然存在。这种偏好还延续到了一个未训练过的语境中，那里“that”可以省略，说明训练效果能泛化到具体样例之外。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 335.02,
+      "end": 367.62,
+      "en": "The generalization was not unlimited. The researchers tested other, untrained alternations, including genitives and passives. Without the K-L constraint, they observed a shift for the genitive alternation, but not consistently for the other forms. This experiment demonstrates a plausible mechanism: optimizing for length can change grammatical choices, not just reduce the number of words. But it uses one small model and a structured task, so it does not prove that the same mechanism caused the corpus-wide patterns.",
+      "zh": "这种泛化并非没有边界。研究者还测试了其他未经训练的交替结构，包括所有格和被动语态。在没有K-L约束的情况下，他们观察到所有格交替出现了偏移，但其他形式并未 consistently 出现这种变化。这一实验展示了一个合理的机制：针对长度的优化可以改变语法选择，而不仅仅是减少词数。但它只使用了一个小型模型和一个结构化任务，因此并不能证明同一机制造成了语料库层面的模式。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 368.48,
+      "end": 372.7,
+      "en": "How should developers use these findings if they care about people understanding model output?",
+      "zh": "如果开发者关心人们是否理解模型的输出，他们该如何利用这些发现？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 373.52,
+      "end": 406.02,
+      "en": "They could evaluate whether systems create avoidable processing demands, especially when users need to check explanations or make decisions based on them. For example, testing alternative phrasings with readers could reveal whether a compact noun stack is efficient or simply harder to unpack. The paper suggests that correctness alone may not capture communication quality. Still, its measures are proxies, so developers would need direct reader studies before treating any particular feature as a reliable measure of comprehension.",
+      "zh": "他们可以评估系统是否造成了本可避免的认知负担，尤其是当用户需要核对解释或据此做决策时。比如，用不同措辞去测试读者，就能看出紧凑的名词堆叠到底是高效，还是单纯更难拆解。论文指出，仅靠正确性可能无法反映沟通质量。不过，这些测量终究只是代理指标，开发者需要直接做读者研究，才能把某个具体特征当作可靠的理解度指标。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 406.94,
+      "end": 409.92,
+      "en": "Does this connect to research on models changing human writing?",
+      "zh": "这和关于模型改变人类写作的研究有联系吗？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 409.92,
+      "end": 447.0,
+      "en": "It connects through a shared concern with the linguistic effects of language models, but it asks a distinct question. “How LLMs Distort Our Written Language” examines changes to human writing, while this study focuses on linguistic choices in model-generated text and their possible processing costs. Its proposed explanation involving compactness is also a hypothesis about optimization pressures, not a demonstrated account of every model’s training. Comparing models during post-training could help identify which objectives encourage clarity or compression.",
+      "zh": "它通过共同关注语言模型对语言的影响而产生关联，但提出的问题不同。《大语言模型如何扭曲我们的书面语言》考察的是人类写作的变化，而这项研究关注的是模型生成文本中的语言选择及其可能的处理成本。它提出的关于紧凑性的解释，也是一种关于优化压力的假设，而不是对每个模型训练过程的已证实说明。在后期训练中比较模型，有助于识别哪些目标鼓励清晰或压缩。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 447.94,
+      "end": 480.025,
+      "en": "The main takeaway is that grammatical, correct language is not automatically easy language. This study finds recurring model choices associated with processing demands and shows, in a controlled experiment, that a length penalty can push a model toward shorter grammatical alternatives. Because the evidence relies partly on indirect measures and translation comparisons, the next step is to test readers directly and examine training processes more closely. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "zh": "主要结论是，语法正确并不等于容易理解。这项研究发现模型会反复做出一些与处理负担相关的选择，并通过一项控制实验表明，长度惩罚可以促使模型选择更短的合语法表达。由于证据部分依赖间接测量和翻译对比，下一步需要直接测试读者，并更仔细地考察训练过程。感谢收听。如果还有问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{clark2026aigeneratedlanguagehardunderstand,\n      title={Why is AI-generated language so hard to understand?}, \n      author={Thomas Hikaru Clark and Matias B. Martin and Kyle Mahowald},\n      year={2026},\n      eprint={2610.29162},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.29162}, \n}",
+  "topics": [
+    "NLP",
+    "AI"
+  ],
+  "peaks": [
+    0.639,
+    0.26,
+    0.33,
+    0.286,
+    0.214,
+    0.626,
+    0.54,
+    0.428,
+    0.466,
+    0.433,
+    0.252,
+    0.7,
+    0.758,
+    0.546,
+    0.666,
+    0.759,
+    0.805,
+    0.68,
+    0.872,
+    0.713,
+    0.779,
+    0.298,
+    0.458,
+    0.408,
+    0.342,
+    0.23,
+    0.929,
+    0.397,
+    0.428,
+    0.443,
+    0.474,
+    0.962,
+    0.547,
+    0.565,
+    0.522,
+    0.405,
+    0.684,
+    0.48,
+    0.627,
+    0.467,
+    0.328,
+    0.99,
+    0.369,
+    0.429,
+    0.469,
+    0.55,
+    0.941,
+    0.984,
+    0.747,
+    0.635,
+    0.839,
+    0.661,
+    0.554,
+    0.455,
+    0.502,
+    0.662,
+    1.0,
+    0.584,
+    0.526,
+    0.616,
+    0.41,
+    0.897,
+    0.53,
+    0.329,
+    0.441,
+    0.302,
+    0.451,
+    0.519,
+    0.45,
+    0.39,
+    0.2,
+    0.328
+  ],
+  "published": "2026-10-21",
+  "views": 379,
+  "license": "CC BY"
+}

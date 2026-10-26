@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 444.656,
+  "word_match_rate": 0.9034,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Transformer Architectures, today's lecture is on “BeNice!: KV-Cache Sharing in Looped Language Models.” Mixture-of-Recursions explores adaptive depth, while Parcae develops stable looped models; this paper asks how to make cache reuse work reliably. The field is seeking more computation without proportionally expanding model parameters or serving memory. Here, the authors target the cache cost of repeated computation. Their simulated, near-saturation test reports 23.6% higher throughput at 2 requests per second, but that result has important limits. Go ahead, Noah.",
+      "start": 0.0,
+      "end": 39.48
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say cache sharing, are the repeated computations removed?",
+      "start": 40.46,
+      "end": 44.66
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "No. A looped model repeatedly applies the same block to its hidden representation, and each recurrence ordinarily creates its own attention keys and values, or K-Vs, for later tokens to use. Sharing means retaining the final recurrence’s cache and using it in place of earlier recurrences’ caches. The model still performs the repeated computation; the change is that fewer sets of cached keys and values occupy memory.",
+      "start": 45.64,
+      "end": 74.02
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: why should the final recurrence’s cache work for the first one?",
+      "start": 74.8,
+      "end": 78.8
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The proposed intuition is that recurrent states can become similar as the block is applied repeatedly. During stochastic-depth pretraining, the model sees different recurrence depths, sampled per sequence, while using tied weights. This encourages useful states at multiple depths. If states approach a common limit, their attention caches may be similar enough to substitute. But that reasoning is conditional: the analysis assumes a contractive recurrent block and well-behaved key and value projections; it does not show every trained model meets those assumptions.",
+      "start": 79.52,
+      "end": 112.64
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The difficulty is that stochastic depth alone does not ensure compatibility. In larger released Parcae models, shared and unshared runs can settle at different hidden-state fixed points. The authors’ intervention—preserving the first-layer cache from the first recurrence—restored quality in the models they analyzed, pointing to a mismatch at that layer and recurrence. They also measured strongly aligned first-layer errors across tokens, which supports their interpretation of a shared basis shift without proving it is the universal cause.",
+      "start": 113.7,
+      "end": 144.56
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Can you clarify what BeNice! changes during training?",
+      "start": 145.38,
+      "end": 148.24
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "BeNice! fine-tunes the model with two prediction objectives. One is the usual final-depth prediction loss, which maintains the standard model. The other is an auxiliary loss on a hybrid prediction: the first recurrence uses the final recurrence’s K-V cache. That trains the first pass to tolerate the substitution it will encounter at inference. The recurrence depth is sampled from the same distribution used during pretraining, connecting the correction to the model’s earlier training conditions.",
+      "start": 150.86,
+      "end": 178.04
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The quality result is clearest on the 770-million-parameter Parcae checkpoint, evaluated on FineWeb-Edu validation data. Lower perplexity means better next-token prediction. With cache sharing, standard fine-tuning gives perplexity 21.61, while BeNice! gives 11.86. Without sharing, the corresponding values are 11.86 and 11.85. Those results, averaged over 3 fine-tuning seeds, show that this tested correction restores shared-cache quality while preserving unshared quality; they do not establish the same outcome for every model or task.",
+      "start": 178.92,
+      "end": 219.26
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "How do the authors test whether stochastic depth itself matters?",
+      "start": 220.06,
+      "end": 223.2
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "They compare size-matched stochastic-depth and static-depth training. At 770 million parameters, the stochastic-depth model’s shared-cache perplexity is 14.04 versus 14.03 without sharing. For static-depth training, it is 17.20 with sharing versus 14.10 without. The models have similar training-loss trajectories and comparable unshared quality. This is evidence that stochastic depth is associated with shareability in this comparison, not proof that it alone guarantees compatibility across architectures.",
+      "start": 224.0,
+      "end": 260.92
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "For serving, the team replays production-derived request traces in a simulated, memory-constrained setup using proxy models made by repeatedly looping the middle third of open models. Less cache storage can leave more capacity for useful prefixes, reducing eviction and recomputation. At low offered load, sharing matches the baseline. Near saturation, at 2 requests per second, throughput rises 23.6%, while the 90th-percentile wait for the first generated token falls from 139.2 to 23.2 seconds. This is not a general latency guarantee.",
+      "start": 261.74,
+      "end": 299.78
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "So the serving gain comes from cache capacity, not less model computation?",
+      "start": 300.72,
+      "end": 304.58
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Exactly. The reported benefit is that added cache capacity can improve cache hits and avoid prefix recomputation under memory pressure; the paper does not claim fewer generated tokens, fewer attempts, or less recurrent computation. Its throughput measure is tokens per second per G-P-U, and the first-token latency is the time until generation begins. The distinction matters: these simulated results describe workload behavior near saturation, not a universal speedup from changing the model’s computation.",
+      "start": 305.66,
+      "end": 338.46
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "This work adds a training route to a growing set of ideas for looped-model memory. Huginn had already reported zero-shot cache sharing with little benchmark impact using a bounded rolling cache, while work such as The Surprising Effectiveness of Shared Memory in Looped Transformers explores other sharing arrangements. BeNice! focuses on preparing the first recurrence to use the final recurrence’s cache. That emphasis shifts the question from whether caches can ever be reused to what training makes reuse reliable.",
+      "start": 339.36,
+      "end": 372.84
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "Could the fixed-point explanation guide future model design, or is it too conditional?",
+      "start": 373.66,
+      "end": 377.74
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "It is useful as a design hypothesis, but its limits should stay visible. The controlled stochastic-versus-static comparison supports a relationship between recurrence behavior and cache compatibility, while the contraction analysis depends on mathematical assumptions that may not hold for every trained model. Future evaluations can test those assumptions across architectures and scales, and distinguish cache savings from other serving effects. The main implication is practical and specific: compatibility needs measurement and, for these models, a targeted training correction.",
+      "start": 378.6,
+      "end": 413.08
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The takeaway is that a later recurrence’s cache is not automatically a safe replacement for earlier caches. BeNice! trains the first pass to work with that substitution, while the serving gains appear most clearly under simulated memory pressure near saturation. Reuse needs agreement between recurrent states, and achieving that agreement is part of the method—not an automatic consequence of looping. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 413.88,
+      "end": 444.656
+    }
+  ]
+}

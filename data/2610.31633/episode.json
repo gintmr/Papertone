@@ -1,0 +1,242 @@
+{
+  "id": "2610.31633",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.31633",
+    "arxiv": "https://arxiv.org/abs/2610.31633"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a166ac-23fd-79ff-95b5-c75b71b2d45f/podcast.mp3",
+  "duration": 444.656,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 39.48,
+      "en": "In Transformer Architectures, today's lecture is on “BeNice!: KV-Cache Sharing in Looped Language Models.” Mixture-of-Recursions explores adaptive depth, while Parcae develops stable looped models; this paper asks how to make cache reuse work reliably. The field is seeking more computation without proportionally expanding model parameters or serving memory. Here, the authors target the cache cost of repeated computation. Their simulated, near-saturation test reports 23.6% higher throughput at 2 requests per second, but that result has important limits. Go ahead, Noah.",
+      "zh": "在Transformer架构这节课上，今天讲的是《BeNice!：循环语言模型中的KV缓存共享》。Mixture-of-Recursions探索自适应深度，Parcae则开发稳定的循环模型；这篇论文要解决的问题是，如何让缓存复用可靠地发挥作用。这个领域正在寻求在不按比例扩大模型参数或服务内存的情况下增加计算量。在这里，作者针对的是重复计算带来的缓存开销。他们模拟的近饱和测试报告，在每秒2个请求时吞吐量提高了23.6%，但这个结果有重要的局限。Noah，你来吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 40.46,
+      "end": 44.66,
+      "en": "Hi Professor, when you say cache sharing, are the repeated computations removed?",
+      "zh": "教授您好，您说的缓存共享，是把重复计算去掉了吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 45.64,
+      "end": 74.02,
+      "en": "No. A looped model repeatedly applies the same block to its hidden representation, and each recurrence ordinarily creates its own attention keys and values, or K-Vs, for later tokens to use. Sharing means retaining the final recurrence’s cache and using it in place of earlier recurrences’ caches. The model still performs the repeated computation; the change is that fewer sets of cached keys and values occupy memory.",
+      "zh": "不是。循环模型会把同一个块反复作用于它的隐藏表示，而每一次循环通常都会为后续的token生成自己的注意力键和值，也就是K-V。共享的意思是保留最后一次循环的缓存，用它替代之前各次循环的缓存。模型仍然会做那些重复计算；变化在于，占用内存的缓存键值对变少了。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 74.8,
+      "end": 78.8,
+      "en": "Quick question: why should the final recurrence’s cache work for the first one?",
+      "zh": "快速问一下：为什么最后一次循环的缓存能适用于第一次循环呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 79.52,
+      "end": 112.64,
+      "en": "The proposed intuition is that recurrent states can become similar as the block is applied repeatedly. During stochastic-depth pretraining, the model sees different recurrence depths, sampled per sequence, while using tied weights. This encourages useful states at multiple depths. If states approach a common limit, their attention caches may be similar enough to substitute. But that reasoning is conditional: the analysis assumes a contractive recurrent block and well-behaved key and value projections; it does not show every trained model meets those assumptions.",
+      "zh": "作者提出的直觉是：随着模块被反复应用，循环状态可能会趋于相似。在随机深度预训练中，模型会看到不同的循环深度（按序列采样），同时使用共享权重。这促使模型在多个深度上都能形成有用的状态。如果这些状态趋近于一个共同的极限，它们的注意力缓存可能足够相似，从而可以互相替代。但这个推理是有条件的：该分析假设循环模块具有收缩性，且键和值的投影行为良好；它并没有证明每个训练好的模型都满足这些假设。"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 113.7,
+      "end": 144.56,
+      "en": "The difficulty is that stochastic depth alone does not ensure compatibility. In larger released Parcae models, shared and unshared runs can settle at different hidden-state fixed points. The authors’ intervention—preserving the first-layer cache from the first recurrence—restored quality in the models they analyzed, pointing to a mismatch at that layer and recurrence. They also measured strongly aligned first-layer errors across tokens, which supports their interpretation of a shared basis shift without proving it is the universal cause.",
+      "zh": "难点在于，仅靠随机深度并不能保证兼容性。在已发布的大型 Parcae 模型中，共享和不共享的运行可能收敛到不同的隐藏状态不动点。作者的干预措施——保留第一次循环时的第一层缓存——在他们分析的模型中恢复了质量，这表明该层和该次循环存在不匹配。他们还测量了不同 token 之间高度对齐的第一层误差，这支持了他们对共享基偏移的解释，但并未证明这是普遍原因。"
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "start": 145.38,
+      "end": 148.24,
+      "en": "Can you clarify what BeNice! changes during training?",
+      "zh": "你能说明一下BeNice!在训练过程中改动了什么吗？"
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "start": 150.86,
+      "end": 178.04,
+      "en": "BeNice! fine-tunes the model with two prediction objectives. One is the usual final-depth prediction loss, which maintains the standard model. The other is an auxiliary loss on a hybrid prediction: the first recurrence uses the final recurrence’s K-V cache. That trains the first pass to tolerate the substitution it will encounter at inference. The recurrence depth is sampled from the same distribution used during pretraining, connecting the correction to the model’s earlier training conditions.",
+      "zh": "BeNice!用两个预测目标来微调模型。一个是常规的最终深度预测损失，用来维持标准模型。另一个是混合预测上的辅助损失：第一次循环复用最终循环的K-V缓存。这训练第一遍前向计算去适应推理时会遇到的替换。循环深度从预训练时所用的同一分布中采样，从而把这一修正与模型早先的训练条件衔接起来。"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 178.92,
+      "end": 219.26,
+      "en": "The quality result is clearest on the 770-million-parameter Parcae checkpoint, evaluated on FineWeb-Edu validation data. Lower perplexity means better next-token prediction. With cache sharing, standard fine-tuning gives perplexity 21.61, while BeNice! gives 11.86. Without sharing, the corresponding values are 11.86 and 11.85. Those results, averaged over 3 fine-tuning seeds, show that this tested correction restores shared-cache quality while preserving unshared quality; they do not establish the same outcome for every model or task.",
+      "zh": "质量结果在 7.7 亿参数的 Parcae 检查点上最为清晰，评估使用的是 FineWeb-Edu 验证数据。困惑度越低，说明下一个 token 的预测越好。在缓存共享的情况下，标准微调的困惑度为 21.61，而 BeNice! 为 11.86。不共享缓存时，对应数值分别是 11.86 和 11.85。这些结果是在 3 个微调随机种子上取平均得到的，表明这一经过测试的修正既恢复了共享缓存下的质量，又保持了不共享缓存时的质量；但它们并不能证明同样的结果适用于所有模型或任务。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 220.06,
+      "end": 223.2,
+      "en": "How do the authors test whether stochastic depth itself matters?",
+      "zh": "作者们如何检验随机深度本身是否起作用？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 224.0,
+      "end": 260.92,
+      "en": "They compare size-matched stochastic-depth and static-depth training. At 770 million parameters, the stochastic-depth model’s shared-cache perplexity is 14.04 versus 14.03 without sharing. For static-depth training, it is 17.20 with sharing versus 14.10 without. The models have similar training-loss trajectories and comparable unshared quality. This is evidence that stochastic depth is associated with shareability in this comparison, not proof that it alone guarantees compatibility across architectures.",
+      "zh": "他们比较了参数量匹配的随机深度训练和静态深度训练。在7.7亿参数下，随机深度模型的共享缓存困惑度为14.04，不共享时为14.03。对于静态深度训练，共享时为17.20，不共享时为14.10。两个模型的训练损失轨迹相似，不共享时的质量也相当。这表明在这一比较中，随机深度与可共享性相关，但并不能证明仅靠它就能保证跨架构的兼容性。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 261.74,
+      "end": 299.78,
+      "en": "For serving, the team replays production-derived request traces in a simulated, memory-constrained setup using proxy models made by repeatedly looping the middle third of open models. Less cache storage can leave more capacity for useful prefixes, reducing eviction and recomputation. At low offered load, sharing matches the baseline. Near saturation, at 2 requests per second, throughput rises 23.6%, while the 90th-percentile wait for the first generated token falls from 139.2 to 23.2 seconds. This is not a general latency guarantee.",
+      "zh": "在服务部署方面，团队在模拟的内存受限环境中回放来自生产环境的请求轨迹，所用代理模型是通过反复循环开放模型的中间三分之一构建的。更少的缓存存储可以为有用的前缀留出更多容量，从而减少驱逐和重计算。在低负载下，共享与基线持平。接近饱和时，即每秒2个请求，吞吐量提升23.6%，而首个生成token的第90百分位等待时间从139.2秒降至23.2秒。这并不是通用的延迟保证。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 300.72,
+      "end": 304.58,
+      "en": "So the serving gain comes from cache capacity, not less model computation?",
+      "zh": "所以服务性能的提升来自缓存容量，而不是模型计算量减少了？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 305.66,
+      "end": 338.46,
+      "en": "Exactly. The reported benefit is that added cache capacity can improve cache hits and avoid prefix recomputation under memory pressure; the paper does not claim fewer generated tokens, fewer attempts, or less recurrent computation. Its throughput measure is tokens per second per G-P-U, and the first-token latency is the time until generation begins. The distinction matters: these simulated results describe workload behavior near saturation, not a universal speedup from changing the model’s computation.",
+      "zh": "正是如此。论文报告的收益是：增加的缓存容量可以提高缓存命中率，并在内存压力下避免前缀重计算；论文并未声称减少了生成的token数、减少了尝试次数或减少了循环计算。其吞吐量指标是每G-P-U每秒处理的token数，首token延迟是指从开始到生成启动的时间。这一区分很重要：这些模拟结果描述的是接近饱和时的工作负载行为，而不是通过改变模型计算方式带来的普遍加速。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 339.36,
+      "end": 372.84,
+      "en": "This work adds a training route to a growing set of ideas for looped-model memory. Huginn had already reported zero-shot cache sharing with little benchmark impact using a bounded rolling cache, while work such as The Surprising Effectiveness of Shared Memory in Looped Transformers explores other sharing arrangements. BeNice! focuses on preparing the first recurrence to use the final recurrence’s cache. That emphasis shifts the question from whether caches can ever be reused to what training makes reuse reliable.",
+      "zh": "这项工作为循环模型记忆这一不断丰富的思路集合增加了一条训练路径。Huginn此前已经报告过，使用有界滚动缓存可以实现零样本缓存共享，且对基准的影响很小；而《The Surprising Effectiveness of Shared Memory in Looped Transformers》等工作则探索了其他共享安排。BeNice! 专注于让第一次循环准备好使用最后一次循环的缓存。这一侧重把问题从缓存究竟能否被复用，转变为怎样的训练才能让复用变得可靠。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 373.66,
+      "end": 377.74,
+      "en": "Could the fixed-point explanation guide future model design, or is it too conditional?",
+      "zh": "这个不动点解释能指导未来的模型设计吗，还是说它的适用条件太苛刻了？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 378.6,
+      "end": 413.08,
+      "en": "It is useful as a design hypothesis, but its limits should stay visible. The controlled stochastic-versus-static comparison supports a relationship between recurrence behavior and cache compatibility, while the contraction analysis depends on mathematical assumptions that may not hold for every trained model. Future evaluations can test those assumptions across architectures and scales, and distinguish cache savings from other serving effects. The main implication is practical and specific: compatibility needs measurement and, for these models, a targeted training correction.",
+      "zh": "作为一个设计假设，它是有用的，但其局限也应保持可见。受控的随机与静态对比支持了循环行为与缓存兼容性之间的关系，而收缩分析依赖于数学假设，这些假设未必对每个训练过的模型都成立。未来的评估可以在不同架构和规模上检验这些假设，并将缓存节省与其他服务效应区分开来。主要含义是实用且具体的：兼容性需要测量，并且对这些模型而言，需要有针对性的训练修正。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 413.88,
+      "end": 444.656,
+      "en": "The takeaway is that a later recurrence’s cache is not automatically a safe replacement for earlier caches. BeNice! trains the first pass to work with that substitution, while the serving gains appear most clearly under simulated memory pressure near saturation. Reuse needs agreement between recurrent states, and achieving that agreement is part of the method—not an automatic consequence of looping. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，较晚出现的循环状态的缓存并不能自动安全地替代较早的缓存。BeNice! 通过训练第一遍来适配这种替换，而服务端的收益在接近饱和的模拟内存压力下最为明显。复用需要循环状态之间达成一致，而实现这种一致是方法的一部分，并不是循环本身自动带来的结果。感谢收听。如果还有问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{prairie2026beniceclosingloopingsinferencememory,\n      title={BeNice! Closing Looping's Inference-Memory Gap via KV-Sharing}, \n      author={Hayden Prairie and Jacob M. Ryan and Taylor Berg-Kirkpatrick and Daniel Y. Fu},\n      year={2026},\n      eprint={2610.31633},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.31633}, \n}",
+  "topics": [
+    "Transformers",
+    "Fine Tuning",
+    "Inference Optimization"
+  ],
+  "peaks": [
+    0.632,
+    0.438,
+    0.418,
+    0.385,
+    0.411,
+    0.26,
+    0.361,
+    0.396,
+    0.397,
+    0.453,
+    0.349,
+    0.233,
+    0.444,
+    0.552,
+    0.498,
+    0.528,
+    0.408,
+    0.554,
+    0.506,
+    0.747,
+    0.54,
+    0.573,
+    0.617,
+    0.577,
+    0.614,
+    0.42,
+    0.328,
+    0.314,
+    0.2,
+    1.0,
+    0.584,
+    0.401,
+    0.508,
+    0.477,
+    0.47,
+    0.489,
+    0.428,
+    0.498,
+    0.368,
+    0.356,
+    0.47,
+    0.355,
+    0.546,
+    0.652,
+    0.525,
+    0.521,
+    0.434,
+    0.463,
+    0.48,
+    0.564,
+    0.429,
+    0.317,
+    0.354,
+    0.293,
+    0.215,
+    0.901,
+    0.566,
+    0.523,
+    0.537,
+    0.315,
+    0.503,
+    0.621,
+    0.402,
+    0.372,
+    0.352,
+    0.355,
+    0.316,
+    0.881,
+    0.683,
+    0.524,
+    0.33,
+    0.412
+  ],
+  "published": "2026-10-22",
+  "views": 288,
+  "license": "CC BY"
+}

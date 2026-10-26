@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 479.398,
+  "word_match_rate": 0.9615,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a graduate course on Learning and Inference for Dynamical Systems, today's lecture is on LEAP, a method for learning a reusable action from observed trajectories. Nearby research, including Action-Minimization Meets Generative Modeling and Curly Flow Matching, reflects growing interest in combining trajectory models with inference and control. Much of that work generates paths or models dynamics; LEAP asks whether we can instead learn a cost for evaluating whole paths. That matters when a researcher needs to compare routes, not just predict the next state. Yes, Noah?",
+      "start": 0.0,
+      "end": 36.04
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why isn’t a good next-step predictor enough when we already have observed trajectories?",
+      "start": 36.96,
+      "end": 41.96
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "A next-step predictor answers a local question: given the current state, what might happen next? But a scientist may need to rank two complete routes, favor one transition, or enforce a constraint across an entire path. A trajectory generator can produce plausible examples without assigning a comparable cost to every candidate path. LEAP targets that missing object: a scalar action, interpretable as negative log probability, where lower values mean a path is more probable under the observed distribution, up to a context-specific constant.",
+      "start": 42.86,
+      "end": 75.96
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So what does leap compare the observed paths against?",
+      "start": 76.86,
+      "end": 79.32
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "It starts with a reference process chosen so its path probabilities can be evaluated and its paths can be sampled. For each observed path, the method draws reference paths under the same context and trains a neural score to distinguish the two groups. That score estimates how the path probability differs from the reference. LEAP centers the score under the reference, then combines the learned correction with the reference action to form its path cost.",
+      "start": 80.16,
+      "end": 107.62
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Does that comparison recover the actual data distribution, or just a useful ranking?",
+      "start": 108.42,
+      "end": 112.74
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "At the population level, the learned action recovers the data action up to a constant for each context, provided the data and reference have sufficient support overlap and the score model is expressive enough. That constant does not affect comparisons among paths in the same context, so the action can support ranking and optimization. In practice, recovery also depends on reference coverage, independent candidate paths, and finite-data training; it is not a guarantee for arbitrary paths far outside the observed support.",
+      "start": 112.74,
+      "end": 144.82
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: what experiment most directly tests whether the whole path matters?",
+      "start": 145.68,
+      "end": 149.84
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The clearest test uses a 31-body orbital system with a hidden solar-mass regime chosen once for each trajectory. Its effect persists across transitions, so the full path carries evidence about which regime generated it. LEAP-Global predicts corrections using accumulated features based on nominal gravitational dynamics and solar-mass sensitivity. On correction-difference normalized root mean square error, where a constant prediction scores 1, it reaches 0.228; LEAP-Local scores about 1.001, near that baseline.",
+      "start": 150.7,
+      "end": 185.96
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Could that difference come from the accumulated physical features, rather than the global path model itself?",
+      "start": 186.84,
+      "end": 191.94
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That is an important qualification. The comparison shows that transition-level models miss information needed in this constructed benchmark, but it does not isolate global architecture alone: the successful model also receives accumulated physical features. Those features do not reveal the hidden regime or provide the exact correction. The result supports a narrower conclusion: when a persistent latent factor couples transitions, modeling the complete path with informative accumulated features can recover distinctions that separate transition scores fail to capture.",
+      "start": 191.94,
+      "end": 226.94
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A double-well test illustrates another reason path-level learning can matter. The training trajectories were retained only if they reached a right-side terminal window. A cubic regression basis could represent the true drift, yet its fitted one-step dynamics described the selected process rather than automatically recovering the unselected drift. Its drift mean squared error was 0.7752, compared with 0.00033 for LEAP. The reference used Brownian motion conditioned on the same terminal window, so this is evidence for that selection setup, not every selection scheme.",
+      "start": 227.82,
+      "end": 264.2
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "Wait, does matching the terminal condition let the method infer the unconditioned dynamics?",
+      "start": 265.04,
+      "end": 269.48
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Not by itself. Matching selection preserves differences between path actions within a terminal condition, but recovering an unconditioned drift requires variation across terminal conditions and a structured drift model. The exact drift-correction result also relies on shared diffusion, time grid, and initial law. Those assumptions clarify what the double-well result demonstrates: path comparisons can avoid confusing selected one-step behavior with the original process, but extra structure is needed to make a claim about the underlying drift.",
+      "start": 270.42,
+      "end": 303.24
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "Can the same learned action answer a new request, or must the model be retrained each time?",
+      "start": 303.24,
+      "end": 308.82
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The molecular example tests reuse in reduced backbone-angle coordinates, phi and psi, where effective dynamics are not available in closed form. Using an action learned at 600 kelvin, the authors show path completion from endpoints plus 3 interior observations, preference for a chosen basin, and a constraint that keeps phi within 150 degrees of zero. Changing the preference or feasible paths changes the inference request, while keeping the learned action fixed.",
+      "start": 309.64,
+      "end": 340.44
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The comparison also sets a boundary on that claim. For endpoints-only completion, LEAP performs best among action-based approaches, but conditional diffusion models and flow matching produce lower reconstruction error. Those generators are trained with completion masks; LEAP uses its action for both the endpoints-only and interior-observation requests. The paper also reports useful temperature transfer when it uses the reference process for the target condition, rather than claiming that one unchanged full model transfers universally.",
+      "start": 341.32,
+      "end": 373.8
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does this differ from Action Matching, which also learns from dynamical data?",
+      "start": 374.68,
+      "end": 378.4
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Action Matching learns a gradient vector field for tracing time-indexed marginal distributions from snapshots. LEAP instead learns a stochastic action that scores complete observed paths and can be reused for path inference. That is a difference in learning target and intended use, not a head-to-head performance result. More broadly, the work shifts attention from asking only whether a model can forecast or generate trajectories to asking whether it can provide a consistent objective for evaluating and steering them.",
+      "start": 379.1,
+      "end": 409.44
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "What should researchers keep in mind before applying this idea to a new system?",
+      "start": 409.9,
+      "end": 413.76
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "They need a reference process with evaluable path probabilities and enough overlap with the data to make comparisons informative. They also need suitable candidate paths and a score class capable of representing the relevant path differences. In the molecular experiment, the learned action is effective in the reduced angle coordinates, not the full molecular action. Together, these conditions suggest a practical research question: can we design references and features that expose the path-level information a particular scientific task requires?",
+      "start": 414.6,
+      "end": 446.22
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The central takeaway is that a learned path action can do more than describe observed trajectories: it can evaluate candidate routes and support new inference requests with the same objective. The orbital and selection experiments show why whole-trajectory information can matter when hidden factors persist or observations are selected. LEAP offers a useful framework for those settings, with its conclusions bounded by the assumptions and evidence tested here. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 447.08,
+      "end": 479.398
+    }
+  ]
+}

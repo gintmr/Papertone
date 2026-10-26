@@ -1,0 +1,274 @@
+{
+  "id": "2610.31585",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.31585",
+    "arxiv": "https://arxiv.org/abs/2610.31585"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a166e6-6dfe-7bb7-a78d-4508e2036647/podcast.mp3",
+  "duration": 479.398,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.04,
+      "en": "In a graduate course on Learning and Inference for Dynamical Systems, today's lecture is on LEAP, a method for learning a reusable action from observed trajectories. Nearby research, including Action-Minimization Meets Generative Modeling and Curly Flow Matching, reflects growing interest in combining trajectory models with inference and control. Much of that work generates paths or models dynamics; LEAP asks whether we can instead learn a cost for evaluating whole paths. That matters when a researcher needs to compare routes, not just predict the next state. Yes, Noah?",
+      "zh": "在一门关于动力系统学习与推理的研究生课程中，今天的讲座讲的是LEAP，一种从观测轨迹中学习可复用动作的方法。相近的研究，包括Action-Minimization Meets Generative Modeling和Curly Flow Matching，反映出人们越来越关注把轨迹模型与推理和控制结合起来。这些工作大多是在生成路径或对动力学建模；LEAP则提出，我们能不能转而学习一个用于评估整条路径的代价。当研究者需要比较不同路线、而不只是预测下一个状态时，这一点就很关键。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.96,
+      "end": 41.96,
+      "en": "Hi Professor, why isn’t a good next-step predictor enough when we already have observed trajectories?",
+      "zh": "教授您好，既然我们已经有了观测到的轨迹，为什么一个优秀的下一状态预测器还不够用呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 42.86,
+      "end": 75.96,
+      "en": "A next-step predictor answers a local question: given the current state, what might happen next? But a scientist may need to rank two complete routes, favor one transition, or enforce a constraint across an entire path. A trajectory generator can produce plausible examples without assigning a comparable cost to every candidate path. LEAP targets that missing object: a scalar action, interpretable as negative log probability, where lower values mean a path is more probable under the observed distribution, up to a context-specific constant.",
+      "zh": "下一步预测器回答的是一个局部问题：给定当前状态，接下来可能发生什么？但科学家可能需要比较两条完整路径的优劣、偏好某一个转移，或者对整条路径施加约束。轨迹生成器能生成看似合理的样本，却不会给每个候选路径赋予可比较的代价。LEAP瞄准的正是这个缺失的对象：一个标量动作，可解释为负对数概率，值越低意味着该路径在观测分布下越可能，且只差一个与上下文相关的常数。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 76.86,
+      "end": 79.32,
+      "en": "So what does leap compare the observed paths against?",
+      "zh": "那么LEAP拿观测到的路径和什么做对比呢？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 80.16,
+      "end": 107.62,
+      "en": "It starts with a reference process chosen so its path probabilities can be evaluated and its paths can be sampled. For each observed path, the method draws reference paths under the same context and trains a neural score to distinguish the two groups. That score estimates how the path probability differs from the reference. LEAP centers the score under the reference, then combines the learned correction with the reference action to form its path cost.",
+      "zh": "它首先选定一个参考过程，使得该过程的路径概率可以被计算，路径也可以被采样。对于每条观测到的路径，该方法在相同上下文下抽取参考路径，并训练一个神经评分器来区分这两组路径。这个评分器估计的是路径概率相对于参考过程的差异。LEAP以参考过程为基准对评分进行中心化，然后把学到的修正与参考动作结合起来，形成自己的路径代价。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 108.42,
+      "end": 112.74,
+      "en": "Does that comparison recover the actual data distribution, or just a useful ranking?",
+      "zh": "这种比较是恢复了真实的数据分布，还是只得到一个有用的排序？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 112.74,
+      "end": 144.82,
+      "en": "At the population level, the learned action recovers the data action up to a constant for each context, provided the data and reference have sufficient support overlap and the score model is expressive enough. That constant does not affect comparisons among paths in the same context, so the action can support ranking and optimization. In practice, recovery also depends on reference coverage, independent candidate paths, and finite-data training; it is not a guarantee for arbitrary paths far outside the observed support.",
+      "zh": "在总体层面上，只要数据和参考有足够的支撑重叠，并且得分模型足够有表现力，学到的动作在每个上下文下都能恢复到数据动作，只差一个常数。这个常数不影响同一上下文内路径之间的比较，因此该动作可以支持排序和优化。在实践中，恢复还取决于参考覆盖、独立的候选路径以及有限数据的训练；对于远离观测支撑的任意路径，这并不能提供保证。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 145.68,
+      "end": 149.84,
+      "en": "Quick question: what experiment most directly tests whether the whole path matters?",
+      "zh": "快速问一下：哪个实验最直接地检验了整条路径是否重要？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 150.7,
+      "end": 185.96,
+      "en": "The clearest test uses a 31-body orbital system with a hidden solar-mass regime chosen once for each trajectory. Its effect persists across transitions, so the full path carries evidence about which regime generated it. LEAP-Global predicts corrections using accumulated features based on nominal gravitational dynamics and solar-mass sensitivity. On correction-difference normalized root mean square error, where a constant prediction scores 1, it reaches 0.228; LEAP-Local scores about 1.001, near that baseline.",
+      "zh": "最清晰的检验用一个31体轨道系统，每条轨迹都一次性选定一个隐藏的太阳质量区间。它的效应会跨越状态转换持续存在，因此整条路径都携带了关于是哪个区间生成了它的证据。LEAP-Global基于名义引力动力学和太阳质量敏感性，用累积特征来预测修正量。在修正差归一化均方根误差上（常数预测得分为1），它达到0.228；LEAP-Local约为1.001，接近该基线。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 186.84,
+      "end": 191.94,
+      "en": "Could that difference come from the accumulated physical features, rather than the global path model itself?",
+      "zh": "这个差异会不会来自累积的物理特征，而不是全局路径模型本身呢？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 191.94,
+      "end": 226.94,
+      "en": "That is an important qualification. The comparison shows that transition-level models miss information needed in this constructed benchmark, but it does not isolate global architecture alone: the successful model also receives accumulated physical features. Those features do not reveal the hidden regime or provide the exact correction. The result supports a narrower conclusion: when a persistent latent factor couples transitions, modeling the complete path with informative accumulated features can recover distinctions that separate transition scores fail to capture.",
+      "zh": "这是一个重要的限定。该对比表明，transition-level 模型在这个构造的基准中遗漏了所需信息，但它并未单独隔离出全局架构的作用：成功的模型同时还接收了累积的物理特征。这些特征既没有揭示隐藏的状态，也没有提供精确的修正。结果支持一个更窄的结论：当一个持续存在的潜在因子耦合了各次转移时，用以信息丰富的累积特征对完整路径建模，能够恢复出逐转移评分无法捕捉的区分。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 227.82,
+      "end": 264.2,
+      "en": "A double-well test illustrates another reason path-level learning can matter. The training trajectories were retained only if they reached a right-side terminal window. A cubic regression basis could represent the true drift, yet its fitted one-step dynamics described the selected process rather than automatically recovering the unselected drift. Its drift mean squared error was 0.7752, compared with 0.00033 for LEAP. The reference used Brownian motion conditioned on the same terminal window, so this is evidence for that selection setup, not every selection scheme.",
+      "zh": "双井测试说明了路径级学习之所以重要的另一个原因。训练轨迹只有在到达右侧终端窗口时才会被保留。三次回归基可以表示真实的漂移，但它拟合出的一步动力学描述的是被选中的过程，而不是自动恢复未被选中的漂移。它的漂移均方误差为0.7752，而LEAP为0.00033。参考模型使用的是以同一终端窗口为条件的布朗运动，所以这只能为那种选择设定提供证据，而不是适用于所有选择方案。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 265.04,
+      "end": 269.48,
+      "en": "Wait, does matching the terminal condition let the method infer the unconditioned dynamics?",
+      "zh": "等等，匹配终端条件就能让这个方法推断出无条件动力学吗？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 270.42,
+      "end": 303.24,
+      "en": "Not by itself. Matching selection preserves differences between path actions within a terminal condition, but recovering an unconditioned drift requires variation across terminal conditions and a structured drift model. The exact drift-correction result also relies on shared diffusion, time grid, and initial law. Those assumptions clarify what the double-well result demonstrates: path comparisons can avoid confusing selected one-step behavior with the original process, but extra structure is needed to make a claim about the underlying drift.",
+      "zh": "单靠它自己不行。匹配选择确实能在同一个终端条件下保留不同路径动作之间的差异，但要恢复无条件的漂移，需要跨终端条件的变化，以及一个结构化的漂移模型。精确的漂移修正结果还依赖于共享扩散、时间网格和初始分布。这些假设说明了双井结果到底证明了什么：路径比较可以避免把被选择的一步行为误认为原始过程，但要对底层漂移下结论，还需要额外的结构。"
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "start": 303.24,
+      "end": 308.82,
+      "en": "Can the same learned action answer a new request, or must the model be retrained each time?",
+      "zh": "同一个学到的动作能否回答新的请求，还是每次都得重新训练模型？"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 309.64,
+      "end": 340.44,
+      "en": "The molecular example tests reuse in reduced backbone-angle coordinates, phi and psi, where effective dynamics are not available in closed form. Using an action learned at 600 kelvin, the authors show path completion from endpoints plus 3 interior observations, preference for a chosen basin, and a constraint that keeps phi within 150 degrees of zero. Changing the preference or feasible paths changes the inference request, while keeping the learned action fixed.",
+      "zh": "这个分子示例在约简后的主链角坐标phi和psi上测试复用，这里有效动力学没有闭式解。作者用在600开尔文下学到的动作，展示了从端点到3个内部观测的路径补全、对选定盆地的偏好，以及一个把phi限制在零附近150度以内的约束。改变偏好或可行路径会改变推理请求，而学到的动作保持不变。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 341.32,
+      "end": 373.8,
+      "en": "The comparison also sets a boundary on that claim. For endpoints-only completion, LEAP performs best among action-based approaches, but conditional diffusion models and flow matching produce lower reconstruction error. Those generators are trained with completion masks; LEAP uses its action for both the endpoints-only and interior-observation requests. The paper also reports useful temperature transfer when it uses the reference process for the target condition, rather than claiming that one unchanged full model transfers universally.",
+      "zh": "这一对比也为该主张划定了边界。在仅给定端点的补全任务中，LEAP在基于动作的方法里表现最好，但条件扩散模型和流匹配的重建误差更低。这些生成模型是带着补全掩码训练的；而LEAP在仅端点请求和内部观测请求中都使用同一个动作。论文还报告了在使用参考过程对应目标条件时有效的温度迁移，而不是声称一个未经改动的完整模型可以普遍迁移。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 374.68,
+      "end": 378.4,
+      "en": "How does this differ from Action Matching, which also learns from dynamical data?",
+      "zh": "这与同样从动力学数据中学习的Action Matching有何不同？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 379.1,
+      "end": 409.44,
+      "en": "Action Matching learns a gradient vector field for tracing time-indexed marginal distributions from snapshots. LEAP instead learns a stochastic action that scores complete observed paths and can be reused for path inference. That is a difference in learning target and intended use, not a head-to-head performance result. More broadly, the work shifts attention from asking only whether a model can forecast or generate trajectories to asking whether it can provide a consistent objective for evaluating and steering them.",
+      "zh": "Action Matching学习的是一个梯度向量场，用来从快照中追踪按时间索引的边缘分布。LEAP则不同，它学习的是一个随机动作，对完整的观测路径进行打分，并且可以复用于路径推理。这是学习目标和预期用途上的差异，而不是头对头的性能对比结果。更广泛地说，这项工作把注意力从只问模型能否预测或生成轨迹，转向问模型能否提供一个一致的目标来评估和引导轨迹。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 409.9,
+      "end": 413.76,
+      "en": "What should researchers keep in mind before applying this idea to a new system?",
+      "zh": "研究人员在把这一思路应用到新系统之前，应该注意什么？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 414.6,
+      "end": 446.22,
+      "en": "They need a reference process with evaluable path probabilities and enough overlap with the data to make comparisons informative. They also need suitable candidate paths and a score class capable of representing the relevant path differences. In the molecular experiment, the learned action is effective in the reduced angle coordinates, not the full molecular action. Together, these conditions suggest a practical research question: can we design references and features that expose the path-level information a particular scientific task requires?",
+      "zh": "他们需要一个带有可评估路径概率的参考过程，并且要与数据有足够的重叠，这样比较才有信息量。他们还需要合适的候选路径，以及一个能够表示相关路径差异的评分类别。在分子实验中，学到的动作在简化角度坐标下有效，而不是在完整的分子动作中。综合来看，这些条件引出了一个实际的研究问题：我们能否设计出参考和特征，来揭示特定科学任务所需的路径级信息？"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 447.08,
+      "end": 479.398,
+      "en": "The central takeaway is that a learned path action can do more than describe observed trajectories: it can evaluate candidate routes and support new inference requests with the same objective. The orbital and selection experiments show why whole-trajectory information can matter when hidden factors persist or observations are selected. LEAP offers a useful framework for those settings, with its conclusions bounded by the assumptions and evidence tested here. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "核心结论是，学到的路径动作不仅能描述观察到的轨迹，还能评估候选路线，并以同一目标支持新的推理请求。轨道实验和选择实验说明了，当隐藏因素持续存在或观测经过筛选时，整条轨迹的信息为何可能至关重要。LEAP为这类场景提供了一个有用的框架，但其结论受限于本文所测试的假设和证据。感谢收听。如果还有进一步的问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{liaw2026actionlearningscientificsimulations,\n      title={Action Learning for Scientific Simulations}, \n      author={Sarah Liaw and Yuanqi Du and Yilun Du},\n      year={2026},\n      eprint={2610.31585},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.31585}, \n}",
+  "topics": [
+    "Optimization Methods",
+    "Probabilistic Programming",
+    "Statistical Learning"
+  ],
+  "peaks": [
+    0.515,
+    0.356,
+    0.298,
+    0.235,
+    0.2,
+    0.369,
+    0.429,
+    0.447,
+    0.653,
+    0.432,
+    0.606,
+    0.341,
+    0.707,
+    0.624,
+    0.563,
+    0.499,
+    0.382,
+    0.6,
+    0.522,
+    0.433,
+    0.464,
+    0.419,
+    0.565,
+    0.464,
+    0.354,
+    0.348,
+    0.357,
+    0.277,
+    0.468,
+    0.478,
+    0.405,
+    0.423,
+    0.354,
+    0.253,
+    0.611,
+    0.325,
+    0.337,
+    0.361,
+    0.255,
+    0.238,
+    0.48,
+    0.472,
+    0.49,
+    0.413,
+    0.404,
+    0.526,
+    1.0,
+    0.458,
+    0.599,
+    0.443,
+    0.529,
+    0.526,
+    0.4,
+    0.443,
+    0.43,
+    0.445,
+    0.417,
+    0.402,
+    0.251,
+    0.367,
+    0.318,
+    0.349,
+    0.646,
+    0.586,
+    0.483,
+    0.368,
+    0.312,
+    0.465,
+    0.456,
+    0.386,
+    0.337,
+    0.269
+  ],
+  "published": "2026-10-22",
+  "views": 361,
+  "license": "CC BY"
+}

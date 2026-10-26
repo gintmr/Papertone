@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 426.971,
+  "word_match_rate": 0.9529,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course on Real-Time Multimodal Systems, today's lecture is on A Framework for Interactive Omni Intelligence. Recent work such as MiniCPM-o 4.5: Towards Real-Time Full-Duplex Omni-Modal Interaction and DuplexOmni: Real-Time Listening, Seeing, Thinking, and Speaking for Full-Duplex Interaction reflects a move toward assistants that listen and respond continuously. This survey asks a broader question: how can such systems keep understanding current as a conversation changes? That matters when a user interrupts, corrects a request, or adds new visual evidence. Yes, Noah?",
+      "start": 0.0,
+      "end": 42.7
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, isn't speaking and listening at once already enough to make an assistant interactive?",
+      "start": 43.56,
+      "end": 48.2
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Not necessarily. A system may handle audio, video, reasoning, and generation, yet still wait for a completed user turn or fail to revise what it is saying when new evidence arrives. The paper calls those broad abilities Omni Intelligence. Interactive Omni Intelligence means using them while input, output, and the interaction itself keep changing. The distinction is between having capabilities and coordinating them in a live, revisable exchange.",
+      "start": 49.26,
+      "end": 80.2
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the key issue is whether new information can change an answer already in progress?",
+      "start": 81.02,
+      "end": 85.24
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The paper defines three ingredients. Streaming input arrives piece by piece. An evolving state incorporates evidence while earlier input is still being processed or an answer is being produced. Online response control lets the system begin, revise, or stop speech, tool use, or other actions before a fixed turn boundary. Together, these describe an assistant that can keep listening, rather than treating each exchange as a sealed prompt and answer.",
+      "start": 85.24,
+      "end": 115.4
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The survey organizes prior approaches into several families. Cascaded systems connect separate recognition, language, and speech components, with timing often managed outside the language model. Speech-native full-duplex systems learn timing from aligned speech, but are mostly speech-focused. Omni input-output systems cover broader modalities, though breadth alone does not guarantee that fresh input can revise an ongoing response. Foreground–background coordination can be paired with either model family.",
+      "start": 116.2,
+      "end": 147.5
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: what does foreground–background coordination mean in practice?",
+      "start": 148.24,
+      "end": 152.18
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Think of a conversation as having two working speeds. The foreground is the quick loop: listen, acknowledge, answer, pause, or yield. The background can take longer to retrieve information, use a tool, reason, or update memory. When that work finishes, the system should check whether the user’s request has changed before using its result. This is a design rationale in the survey, not proof that it always produces a correct answer.",
+      "start": 153.08,
+      "end": 180.86
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Consider a user who asks for a meeting tomorrow, then corrects the date to Friday while a calendar lookup is running. The returned result may apply to the old request. A robust design needs to compare it with the current conversational state, then use, revise, or discard it. The authors describe this as coordination across different time scales: a quick interaction continues while slower computation proceeds without assuming its result remains valid.",
+      "start": 181.72,
+      "end": 210.82
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Does that mean the assistant should stay silent until every background task finishes?",
+      "start": 211.68,
+      "end": 215.52
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "No. A brief acknowledgment can help keep a conversation natural while a full answer is being prepared. But the beginning of a response is not the same as delivering useful, grounded information. If the system makes a substantive claim too early, later evidence or a correction may invalidate it. The important design choice is deciding what can safely be said now, what should wait, and how to revise when the state changes.",
+      "start": 216.52,
+      "end": 242.38
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "That distinction matters in practical settings such as live assistance with a video, a spoken instruction, or a tool-supported task. A system might acknowledge a request promptly, then wait to give a specific recommendation until it has checked relevant evidence. The survey also reviews reports of capability losses, such as forgetting or misalignment between text and speech, alongside approaches intended to preserve existing abilities. Those reports are not a controlled comparison establishing which design works best.",
+      "start": 243.26,
+      "end": 274.92
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How would researchers test whether an approach really improves both responsiveness and answer quality?",
+      "start": 275.66,
+      "end": 280.06
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The survey maps evaluation along six dimensions: latency, timing quality, content quality, robustness, long-session quality, and repair. These capture different demands. A system could start speaking quickly but provide the useful information late; it could answer well in a short exchange but fail after a long conversation; or it could struggle to recover from an interruption. Existing benchmarks cover pieces of this picture, but the survey does not report a single aggregate result for its framework.",
+      "start": 280.98,
+      "end": 315.0
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "So can the survey tell us whether foreground–background designs preserve intelligence?",
+      "start": 315.92,
+      "end": 319.98
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "It cannot settle that causal question. The surveyed studies differ in model backbones, training data, scale, and evaluation settings, and do not isolate individual design choices. The paper therefore does not show that capability loss is inevitable, that a frozen backbone is superior, or that asynchronous coordination alone preserves answer quality. Its contribution is a framework for organizing the challenge and a map of evidence gaps, not a validated winning architecture.",
+      "start": 321.0,
+      "end": 350.52
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "This shifts the research question from simply asking how quickly a model can produce speech to asking whether it can maintain a useful, revisable understanding across modalities and time. Work such as MiniCPM-o 4.5 and DuplexOmni illustrates interest in full-duplex interaction, while this survey emphasizes that continuous state updates and broader multimodal coverage are distinct requirements. Future comparisons need common tests for content, timing, repair, tool use, and long conversations.",
+      "start": 351.36,
+      "end": 385.96
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "And the central lesson is that a fast first response can still be the wrong response?",
+      "start": 387.18,
+      "end": 391.06
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Yes. Real-time assistance is not just low-latency speech generation. It requires deciding what to say now, what to hold until more evidence arrives, and whether a later result still matches the user’s current intent. The survey’s multi-rate framework offers a way to think about keeping interaction responsive while longer work continues, but coordination and validation remain open challenges. A useful assistant must keep its understanding current as the conversation moves. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 391.96,
+      "end": 426.971
+    }
+  ]
+}

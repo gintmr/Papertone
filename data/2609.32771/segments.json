@@ -1,0 +1,158 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 478.928,
+  "word_match_rate": 0.9155,
+  "line_count": 21,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Continual Learning for Language Models, today's lecture is on C-plus, a method for updating released models when much of their past training data is unavailable. Work such as Continual Learning via Sparse Memory Finetuning and Retaining by Doing shows the field exploring selective updates and training strategies that reduce forgetting. C-plus takes a different route: it uses a frozen model’s own behavior to inform an update. I see Noah raising a hand. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.4
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if the model can generate examples, why not just train on its generated answers?",
+      "start": 33.88,
+      "end": 38.56
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is the key distinction. Generated answers can be wrong, so treating them as labels risks teaching the model to reproduce its own mistakes. C-plus instead uses generated examples as a preservation signal: they help decide which parts of a new-data update to soften. The practical problem is that a handful of retained examples, called anchors, cannot represent everything the original model knew. The method tries to broaden that evidence without pretending it is verified truth.",
+      "start": 39.68,
+      "end": 68.18
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The procedure begins with a frozen base model and a small set of anchors that represent past behavior. The model sees those anchors as in-context demonstrations, then generates additional inputs and records its own predictions. Those inputs and predictions form a fixed self-probe bank. The probes are not added as targets to the new-task training objective. Instead, gradients from the anchors and probes help assess which parameter changes may conflict with the behavior they represent.",
+      "start": 69.04,
+      "end": 98.58
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "So the probes guide the update, but the model is not trained to copy their answers?",
+      "start": 99.6,
+      "end": 103.52
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Exactly. During adaptation, the new examples alone determine the optimizer’s proposed parameter change. Separately, C-plus combines the anchor and probe gradients with equal weight to form a preservation signal. It compares that signal with the proposed change, then attenuates coordinates judged to conflict. Think of it as a filter on the update, not a second source of answers. The mask is recalculated as learning proceeds and smoothed over time.",
+      "start": 104.48,
+      "end": 134.32
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "That filter has limits worth keeping in view. It can reduce a proposed change, but it cannot amplify it or reverse its direction. And the compatibility test is an estimate based on the available signal, not a guarantee that every old capability is safe. The default setup uses 512 probes, two in-context examples, and exponential moving-average smoothing. Because probes inherit the frozen model’s predictions, they may preserve behavior that is itself mistaken.",
+      "start": 135.22,
+      "end": 165.2
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: does using probes work better than ordinary replay with generated answers?",
+      "start": 166.14,
+      "end": 170.72
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The paper compares those approaches directly on Qwen three, adapted to CommonsenseQA. C-plus has higher Retention than probe replay and anchor-plus-probe replay across four anchor budgets, using the same probes and update budget; those replay methods achieve near-perfect Acquisition. The comparison averages three matched seeds. The distinction is how generated data are used: replay trains on the generated inputs and answers, while C-plus uses probe gradients to shape which parts of the new-data update are applied.",
+      "start": 171.76,
+      "end": 205.5
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "And could C-plus look better simply because it makes smaller updates overall?",
+      "start": 206.46,
+      "end": 210.02
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "That is a useful challenge, and the authors include a matched diagnostic. In one Qwen three 0.6-billion-parameter CommonsenseQA setting with eight anchors, every method reaches 100% Acquisition. C-plus retains 71.05%. Norm-matched S-F-T retains 45.45%, while a randomized C-plus mask retains 47.13%. The randomized control keeps the same per-tensor mask-coefficient values but permutes where they are placed, helping test whether coordinate placement matters beyond aggregate attenuation.",
+      "start": 210.84,
+      "end": 249.36
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "This control supports the importance of probe-informed placement in that particular comparison, but it does not establish that placement is the sole cause of gains everywhere. It uses one seed, one anchor budget, and one model-task setting. The broader scarce-anchor result is stronger evidence of consistency: across 24 tested Qwen three settings with four or eight anchors, C-plus gains an average 7.73 percentage points in Retention, while all methods achieve 100% Acquisition.",
+      "start": 250.32,
+      "end": 280.7
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "How broad is that evidence beyond Qwen three and CommonsenseQA?",
+      "start": 281.56,
+      "end": 284.02
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The main evaluation covers five models: three Qwen three sizes, Gemma two 2-billion-parameter instruction-tuned, and Phi three point five Mini. It tests adaptation on CommonsenseQA, ARC-Challenge, MMLU, and MedQA, with anchor budgets from four to 128. Retention is the share of examples correct before adaptation that remain correct afterward. Acquisition is the share of initially incorrect new-task examples made correct afterward.",
+      "start": 285.94,
+      "end": 317.32
+    },
+    {
+      "i": 14,
+      "speaker": "Noah",
+      "text": "Can we take the external-benchmark results to mean the model preserves all its other abilities?",
+      "start": 318.14,
+      "end": 322.62
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "No. After CommonsenseQA adaptation, the paper reports that C-plus stays closest to the base model across five benchmarks that were neither adaptation data nor anchors. That is encouraging evidence in this setting, not proof of universal preservation. The self-probes report the frozen model’s own predictions, not independently checked facts. The authors also report a trend within the tested Qwen three sizes: C-plus recovers a larger share of S-F-T forgetting in larger models. That should not be treated as a general law about scale.",
+      "start": 323.86,
+      "end": 359.84
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "How does this fit with earlier approaches like Collaborative Parameter Learning or replay methods?",
+      "start": 360.78,
+      "end": 365.4
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Collaborative Parameter Learning compares parameter-wise gradients to protect behavior represented by retained examples; C-plus extends that basic idea when access to past examples is limited, by adding gradients from model-generated probes. Self-Synthesized Rehearsal is a different use of generation: it trains on generated examples as rehearsal data. These methods reflect a broader search for ways to adapt models without discarding useful behavior, but their mechanisms and evidence should not be collapsed into one category.",
+      "start": 366.42,
+      "end": 400.1
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The broader implication is that generated data need not serve only as synthetic labels. They can also provide fallible evidence for deciding how to modify a model. That distinction may be useful when organizations retain only a small sample of prior interactions, though the probes remain tied to the model’s own behavior. Future evaluations should test whether probe signals remain helpful across more tasks, longer adaptation sequences, and cases where the original model’s behavior is unreliable.",
+      "start": 401.14,
+      "end": 432.04
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "So the main takeaway is that probes can help guide an update without being trusted as truth?",
+      "start": 433.1,
+      "end": 437.64
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "That is the concise takeaway. C-plus uses anchors and self-generated probes to estimate which parts of a new-task update may conflict with represented past behavior, then softens those parts. Its results suggest this can improve retention under scarce-anchor conditions while still learning the new examples. But the signal is imperfect, and the evidence has defined experimental boundaries. Generated probes need not be trusted as new answers to learn; they can still offer additional, fallible evidence for choosing how to update. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 438.6,
+      "end": 478.928
+    }
+  ]
+}
