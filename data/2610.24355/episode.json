@@ -1,0 +1,250 @@
+{
+  "id": "2610.24355",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.24355",
+    "arxiv": "https://arxiv.org/abs/2610.24355"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a15777-404d-7ce8-bb5c-38e8fd7ce50b/podcast.mp3",
+  "duration": 492.172,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.84,
+      "en": "In our hypothetical course, Systems for Large-Scale Language Model Serving, today's lecture is on Koi. Work such as M-I-S-T and Compass shows how researchers are coordinating inference and planning around service objectives. Koi moves that trend up a level: it asks how a provider should deploy many changing jobs across a shared G-P-U fleet. That matters because a locally good choice can consume capacity another job needs. The paper’s central idea is to let a language model suggest plans while measured behavior and deterministic checks govern the fleet. Yes, Noah?",
+      "zh": "在我们假想的课程“大规模语言模型服务系统”中，今天的讲座讲的是Koi。MIST和Compass这类工作展示了研究者如何围绕服务目标来协调推理与规划。Koi把这个趋势又往上提了一层：它问的是，服务提供商应该如何在一个共享的GPU集群上部署许多不断变化的任务。这一点很重要，因为一个局部看起来不错的选择，可能会占掉另一个任务所需的容量。这篇论文的核心思想是，让语言模型来提出方案，同时用实测行为和确定性检查来管控整个集群。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.82,
+      "end": 43.2,
+      "en": "Hi Professor, is Koi choosing where each request goes, or deciding how the models themselves run?",
+      "zh": "教授您好，Koi是在选择每个请求发往哪里，还是在决定模型本身怎么运行？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 43.88,
+      "end": 75.06,
+      "en": "It decides how each job runs: which hardware it uses, how the model is divided across devices, which engine settings apply, and how many replicas to launch. Those choices span roughly 140 configurations, and they interact because jobs share limited capacity. A setup that suits one job may leave another without the hardware it needs. Koi operates above request-level engine and router decisions, and it also accounts for the time and disruption involved in changing deployments.",
+      "zh": "它决定每个任务如何运行：使用哪种硬件、模型如何在设备间划分、采用哪些引擎设置，以及启动多少个副本。这些选择涵盖大约140种配置，而且它们相互影响，因为任务共享有限容量。适合一个任务的配置，可能会让另一个任务得不到所需的硬件。Koi在请求级的引擎和路由器决策之上运作，同时也会考虑更改部署所涉及的时间和中断。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 75.94,
+      "end": 104.24,
+      "en": "The objectives differ across jobs. An online service may need to meet latency targets, while a batch job may need to finish by a deadline; both are service-level objectives. Koi evaluates a fleet plan against these requirements, available resources, and the costs of switching configurations. The authors illustrate the opportunity cost with an H100 and A100 scheduling conflict. That is a motivating example, not an event from the evaluation.",
+      "zh": "不同任务的目标各不相同。在线服务可能需要满足延迟目标，而批处理任务可能需要在截止时间前完成；两者都是服务级别目标。Koi 会根据这些需求、可用资源以及切换配置的成本来评估整体部署方案。作者用 H100 和 A100 的调度冲突来说明机会成本。这只是一个用于说明问题的例子，并非评估中实际发生的事件。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 105.28,
+      "end": 110.48,
+      "en": "Quick question: how does one deployment actually teach the system anything useful for the next one?",
+      "zh": "快速问一下：一次部署究竟怎么让系统学到对下一次有用的东西？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 111.42,
+      "end": 145.52,
+      "en": "Koi uses a fixed directed graph to organize possible links between deployment choices, runtime conditions, and outcomes. For example, hardware and parallelism may affect cache pressure, pipeline bubbles, or communication latency, which relate to throughput, latency, and cost. The language model proposes scoped, testable mechanisms connecting these factors. After a deployment, Koi compares predicted mediator and outcome behavior with telemetry, then updates whether the mechanism is supported, contradicted, or still uncertain.",
+      "zh": "Koi用一个固定的有向图来组织部署选择、运行时条件和结果之间可能的关联。比如，硬件和并行度可能影响缓存压力、流水线气泡或通信延迟，而这些又跟吞吐量、延迟和成本相关。语言模型会提出有边界的、可检验的机制来解释这些因素之间的连接。一次部署之后，Koi会把预测的中介变量和结果表现跟遥测数据做对比，然后更新这个机制是被支持、被否定，还是仍然不确定。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 146.4,
+      "end": 181.5,
+      "en": "The learning is deliberately bounded by evidence and scope. Persistent prediction errors can trigger CUSUM detection, rather than treating every unusual measurement as a new rule. Clear outcomes can support or contradict a proposed mechanism; mixed evidence can update graph edges using invariant causal prediction. This is an evidence-updating procedure, not proof that every edge identifies a causal effect. Crucially, the deployment is serving real work while generating evidence; Koi does not schedule separate exploratory trials.",
+      "zh": "这种学习被证据和范围有意约束着。持续的预测误差会触发CUSUM检测，而不是把每一次异常测量都当作新规则。明确的结果可以支持或反驳某个提出的机制；混合证据则可以用不变因果预测来更新图上的边。这是一个证据更新的过程，并不证明每条边都识别出了因果效应。关键在于，部署在产生证据的同时也在服务真实工作；Koi不会另行安排单独的探索性试验。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 182.38,
+      "end": 188.68,
+      "en": "So the model proposes a mechanism, but can it choose to deploy something even if the system predicts that it violates a constraint?",
+      "zh": "所以模型会提出一种机制，但它能不能在系统预测某件事违反约束的情况下，仍然选择去部署它呢？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 188.68,
+      "end": 224.36,
+      "en": "No. Per-job specialists can use the graph to focus candidate proposals, but deterministic software predicts candidate behavior and a cluster-wide selector chooses among feasible plans. It considers job objectives, uncertainty, S-L-O risk, switching cost, and shared capacity. The checks cover resource and physical limits, service objectives, swap budgets, quotas, and priorities. The language model is advisory: it cannot override feasibility checks or measured evidence. Deployments still carry operational cost and risk.",
+      "zh": "不能。针对单个作业的专家模型可以利用图来聚焦候选方案，但候选行为由确定性软件预测，再由集群级选择器在可行方案中做出选择。它会综合考虑作业目标、不确定性、SLO风险、切换成本和共享容量。检查覆盖资源与物理限制、服务目标、交换预算、配额和优先级。语言模型只起建议作用：它不能推翻可行性检查或实测证据。部署仍然会带来运维成本和风险。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 225.22,
+      "end": 257.22,
+      "en": "This division of labor is important in practice. A profile-based surrogate estimates how candidates may perform, while deterministic selection weighs those estimates across the fleet rather than optimizing jobs independently. That makes shared capacity part of the decision itself. Koi’s proposed advantage is not risk-free experimentation; it is learning from deployments the service already needs to run. The control system still has to manage reconfiguration, including loading weights, warming caches, and draining work in flight.",
+      "zh": "这种分工在实践中很重要。基于画像的代理模型估计候选方案可能的表现，而确定性选择则在整个集群范围内权衡这些估计，而不是孤立地优化每个作业。这让共享容量成为决策本身的一部分。Koi提出的优势不是无风险的实验，而是从服务本来就需要运行的部署中学习。控制系统仍然必须管理重新配置，包括加载权重、预热缓存和排空进行中的工作。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 258.02,
+      "end": 262.86,
+      "en": "How strong is the evidence that this approach helps on actual hardware, rather than only in simulation?",
+      "zh": "这种方法在实际硬件上确实有效、而不只是在模拟中有效的证据有多强？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 263.86,
+      "end": 304.2,
+      "en": "The real-cluster benchmark ran for 3 hours across 3 Google Cloud regions on 104 heterogeneous G-P-Us, with 3 baselines tested on hardware. OpenEvolve was the strongest baseline on goodput and cost per S-L-O-honoring token. Koi reported 4,119.51 goodput tokens per second versus 3,497.43, and 0.24 versus 0.30 times ten to the minus four dollars per token. Those are reported gains of 17.79% in goodput and 20% lower cost per token.",
+      "zh": "真实集群基准测试在3个谷歌云区域、104块异构GPU上运行了3小时，并在硬件上测试了3个基线。OpenEvolve在有效吞吐量和每个满足SLO的token成本上是最强基线。Koi报告的有效吞吐量为每秒4,119.51个token，对比3,497.43；每token成本为0.24对比0.30乘以十的负四次方美元。据报告，这些带来了17.79%的有效吞吐量提升和20%的每token成本降低。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 305.42,
+      "end": 340.86,
+      "en": "Goodput is not raw throughput: it counts online output that meets both latency gates, plus projected batch output from jobs meeting their deadlines. Cost per S-L-O-token divides fleet capacity cost by that qualifying output, counting idle G-P-Us as waste. In a separate 3-hour heterogeneous simulation, the overall score is the geometric mean of equally weighted quality, coverage, and efficiency pillars. GPT-only scored 35.28, the tool-using OpenCode variant 51.55, and full Koi 70.83.",
+      "zh": "有效吞吐量不是原始吞吐量：它统计的是同时满足两个延迟门槛的在线输出，加上按时完成任务的作业所预计的批量输出。每个SLO token的成本是用集群容量成本除以合格输出，空闲GPU也计入浪费。在另一个为期3小时、异构环境的模拟中，总分是质量、覆盖率和效率三个等权支柱的几何平均值。仅用GPT的版本得分为35.28，使用工具的OpenCode变体为51.55，完整的Koi为70.83。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 343.5,
+      "end": 347.54,
+      "en": "Does the ablation show that the causal graph alone is responsible for the improvement?",
+      "zh": "消融实验是否表明，仅靠因果图本身就带来了这一改进？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 348.24,
+      "end": 385.28,
+      "en": "It does not isolate that claim. In the simulation, full Koi reached 2,910.64 tokens per second, compared with 1,770.03 without the graph mechanisms and 1,621.48 without online learning. Those comparisons support the combined architecture and show that the tested components matter, but removing a component is not a clean estimate of its standalone causal contribution. The authors also report that a 12-hour run was too short to reach their assumed convergence conditions.",
+      "zh": "这并不能单独证明那个说法。在模拟中，完整的Koi达到了每秒2,910.64个token，而移除图机制后为1,770.03，移除在线学习后为1,621.48。这些对比支持了组合架构，也表明所测试的组件确实重要，但移除某个组件并不能干净地估计它单独的因果贡献。作者还报告说，12小时的运行时间太短，无法达到他们假设的收敛条件。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 386.4,
+      "end": 419.3,
+      "en": "Koi’s relationship to work such as Compass is useful to frame: both address planning around service requirements, but Koi makes the deployment controller itself an evidence-updating system. Its plans connect local configuration choices to cluster-wide consequences, rather than treating each job as an isolated optimization problem. Compared with evolutionary search, including the family represented by AlphaEvolve, Koi does not rely on separate trial deployments; ordinary service operation provides the observations used to revise scoped hypotheses.",
+      "zh": "Koi与Compass这类工作的关系值得说明：两者都围绕服务需求进行规划，但Koi把部署控制器本身变成了一个持续更新证据的系统。它的规划将局部配置选择与集群范围的后果联系起来，而不是把每个作业当作孤立的优化问题。与进化搜索（包括AlphaEvolve所代表的那一类方法）相比，Koi不依赖单独的试部署；日常的服务运行就提供了用于修正限定范围假设的观测数据。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 421.48,
+      "end": 427.36,
+      "en": "Could the learned mechanisms transfer to a different fleet or workload, or are they tied to the conditions Koi has observed?",
+      "zh": "学到的机制能否迁移到不同的集群或工作负载，还是说它们只适用于Koi已经观察到的条件？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 428.14,
+      "end": 459.3,
+      "en": "That remains an open question. The mechanisms are scoped, and the evidence is limited to telemetry and conditions Koi observes; neither the graph nor its learned support establishes universal causal relationships. The real-hardware comparison is also narrower than the simulated comparison, since only 3 baselines ran on the cluster. A useful next test would examine how well the controller adapts when hardware, workloads, and service targets shift beyond the conditions represented in its accumulated evidence.",
+      "zh": "这仍是一个开放问题。这些机制是有范围限定的，证据也仅限于Koi观测到的遥测数据和条件；无论是图本身还是其学习到的支持关系，都无法建立普适的因果关系。真实硬件上的对比也比模拟对比范围更窄，因为只有3个基线在集群上运行过。一个有用的后续测试是考察当硬件、工作负载和服务目标超出其积累证据所涵盖的条件时，控制器能多好地适应。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 459.3,
+      "end": 492.172,
+      "en": "The takeaway is that Koi turns routine deployments into scoped evidence for later fleet decisions, while deterministic controls retain authority over what actually runs. Its central proposal is not that a language model should control a cluster alone, but that model-generated hypotheses can inform a measured, constrained planning loop. The connection between serving work and learning is the paper’s key idea. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "结论是，Koi把日常部署转化为有明确范围的证据，供后续的集群决策使用，而确定性控制仍然掌握着实际运行内容的最终决定权。它的核心主张并不是让语言模型单独控制集群，而是让模型生成的假设为一个有度量、有约束的规划循环提供参考。服务运维与学习之间的联系正是这篇论文的关键思想。感谢收听。如果还有进一步的问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{sidhu2026koievidenceguidedselfcalibratingplanning,\n      title={Koi: Evidence-Guided, Self-Calibrating Planning for Multi-Cloud, Heterogeneous LLM Inference Fleets}, \n      author={Mankeerat Sidhu and Gangmuk Lim and Hetarth Chopra and Maximillian Eisenberg and Quan Hao Ng and Aryan Gosaliya and Shu Liu and Luka Govedič and Jiaxin Shan and Hongkuan Zhou and Vikram Sharma Mailthody and P. Brighten Godfrey and Ion Stoica},\n      year={2026},\n      eprint={2610.24355},\n      archivePrefix={arXiv},\n      primaryClass={cs.DC},\n      url={https://arxiv.org/abs/2610.24355}, \n}",
+  "topics": [
+    "Agents",
+    "Causal Inference",
+    "Cloud Computing"
+  ],
+  "peaks": [
+    0.588,
+    0.442,
+    0.419,
+    0.274,
+    0.346,
+    0.318,
+    0.492,
+    0.448,
+    0.517,
+    0.448,
+    0.335,
+    0.636,
+    0.471,
+    0.383,
+    0.393,
+    0.592,
+    0.349,
+    0.323,
+    0.207,
+    0.258,
+    0.2,
+    0.481,
+    0.33,
+    0.402,
+    0.324,
+    0.282,
+    0.537,
+    0.76,
+    0.364,
+    0.413,
+    0.259,
+    0.4,
+    0.349,
+    0.571,
+    0.31,
+    0.338,
+    0.304,
+    0.327,
+    0.735,
+    0.773,
+    0.772,
+    0.602,
+    0.669,
+    0.488,
+    0.557,
+    0.447,
+    0.46,
+    0.614,
+    0.369,
+    0.422,
+    0.439,
+    0.855,
+    0.835,
+    1.0,
+    0.945,
+    0.792,
+    0.654,
+    0.717,
+    0.412,
+    0.453,
+    0.409,
+    0.418,
+    0.593,
+    0.896,
+    0.757,
+    0.433,
+    0.575,
+    0.479,
+    0.372,
+    0.47,
+    0.319,
+    0.274
+  ],
+  "published": "2026-10-17",
+  "views": 359,
+  "license": "CC BY"
+}

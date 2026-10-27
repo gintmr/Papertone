@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 492.172,
+  "word_match_rate": 0.9285,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical course, Systems for Large-Scale Language Model Serving, today's lecture is on Koi. Work such as M-I-S-T and Compass shows how researchers are coordinating inference and planning around service objectives. Koi moves that trend up a level: it asks how a provider should deploy many changing jobs across a shared G-P-U fleet. That matters because a locally good choice can consume capacity another job needs. The paper’s central idea is to let a language model suggest plans while measured behavior and deterministic checks govern the fleet. Yes, Noah?",
+      "start": 0.0,
+      "end": 36.84
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is Koi choosing where each request goes, or deciding how the models themselves run?",
+      "start": 37.82,
+      "end": 43.2
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It decides how each job runs: which hardware it uses, how the model is divided across devices, which engine settings apply, and how many replicas to launch. Those choices span roughly 140 configurations, and they interact because jobs share limited capacity. A setup that suits one job may leave another without the hardware it needs. Koi operates above request-level engine and router decisions, and it also accounts for the time and disruption involved in changing deployments.",
+      "start": 43.88,
+      "end": 75.06
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The objectives differ across jobs. An online service may need to meet latency targets, while a batch job may need to finish by a deadline; both are service-level objectives. Koi evaluates a fleet plan against these requirements, available resources, and the costs of switching configurations. The authors illustrate the opportunity cost with an H100 and A100 scheduling conflict. That is a motivating example, not an event from the evaluation.",
+      "start": 75.94,
+      "end": 104.24
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: how does one deployment actually teach the system anything useful for the next one?",
+      "start": 105.28,
+      "end": 110.48
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "Koi uses a fixed directed graph to organize possible links between deployment choices, runtime conditions, and outcomes. For example, hardware and parallelism may affect cache pressure, pipeline bubbles, or communication latency, which relate to throughput, latency, and cost. The language model proposes scoped, testable mechanisms connecting these factors. After a deployment, Koi compares predicted mediator and outcome behavior with telemetry, then updates whether the mechanism is supported, contradicted, or still uncertain.",
+      "start": 111.42,
+      "end": 145.52
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The learning is deliberately bounded by evidence and scope. Persistent prediction errors can trigger CUSUM detection, rather than treating every unusual measurement as a new rule. Clear outcomes can support or contradict a proposed mechanism; mixed evidence can update graph edges using invariant causal prediction. This is an evidence-updating procedure, not proof that every edge identifies a causal effect. Crucially, the deployment is serving real work while generating evidence; Koi does not schedule separate exploratory trials.",
+      "start": 146.4,
+      "end": 181.5
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the model proposes a mechanism, but can it choose to deploy something even if the system predicts that it violates a constraint?",
+      "start": 182.38,
+      "end": 188.68
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. Per-job specialists can use the graph to focus candidate proposals, but deterministic software predicts candidate behavior and a cluster-wide selector chooses among feasible plans. It considers job objectives, uncertainty, S-L-O risk, switching cost, and shared capacity. The checks cover resource and physical limits, service objectives, swap budgets, quotas, and priorities. The language model is advisory: it cannot override feasibility checks or measured evidence. Deployments still carry operational cost and risk.",
+      "start": 188.68,
+      "end": 224.36
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "This division of labor is important in practice. A profile-based surrogate estimates how candidates may perform, while deterministic selection weighs those estimates across the fleet rather than optimizing jobs independently. That makes shared capacity part of the decision itself. Koi’s proposed advantage is not risk-free experimentation; it is learning from deployments the service already needs to run. The control system still has to manage reconfiguration, including loading weights, warming caches, and draining work in flight.",
+      "start": 225.22,
+      "end": 257.22
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How strong is the evidence that this approach helps on actual hardware, rather than only in simulation?",
+      "start": 258.02,
+      "end": 262.86
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The real-cluster benchmark ran for 3 hours across 3 Google Cloud regions on 104 heterogeneous G-P-Us, with 3 baselines tested on hardware. OpenEvolve was the strongest baseline on goodput and cost per S-L-O-honoring token. Koi reported 4,119.51 goodput tokens per second versus 3,497.43, and 0.24 versus 0.30 times ten to the minus four dollars per token. Those are reported gains of 17.79% in goodput and 20% lower cost per token.",
+      "start": 263.86,
+      "end": 304.2
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Goodput is not raw throughput: it counts online output that meets both latency gates, plus projected batch output from jobs meeting their deadlines. Cost per S-L-O-token divides fleet capacity cost by that qualifying output, counting idle G-P-Us as waste. In a separate 3-hour heterogeneous simulation, the overall score is the geometric mean of equally weighted quality, coverage, and efficiency pillars. GPT-only scored 35.28, the tool-using OpenCode variant 51.55, and full Koi 70.83.",
+      "start": 305.42,
+      "end": 340.86
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the ablation show that the causal graph alone is responsible for the improvement?",
+      "start": 343.5,
+      "end": 347.54
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "It does not isolate that claim. In the simulation, full Koi reached 2,910.64 tokens per second, compared with 1,770.03 without the graph mechanisms and 1,621.48 without online learning. Those comparisons support the combined architecture and show that the tested components matter, but removing a component is not a clean estimate of its standalone causal contribution. The authors also report that a 12-hour run was too short to reach their assumed convergence conditions.",
+      "start": 348.24,
+      "end": 385.28
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "Koi’s relationship to work such as Compass is useful to frame: both address planning around service requirements, but Koi makes the deployment controller itself an evidence-updating system. Its plans connect local configuration choices to cluster-wide consequences, rather than treating each job as an isolated optimization problem. Compared with evolutionary search, including the family represented by AlphaEvolve, Koi does not rely on separate trial deployments; ordinary service operation provides the observations used to revise scoped hypotheses.",
+      "start": 386.4,
+      "end": 419.3
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could the learned mechanisms transfer to a different fleet or workload, or are they tied to the conditions Koi has observed?",
+      "start": 421.48,
+      "end": 427.36
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "That remains an open question. The mechanisms are scoped, and the evidence is limited to telemetry and conditions Koi observes; neither the graph nor its learned support establishes universal causal relationships. The real-hardware comparison is also narrower than the simulated comparison, since only 3 baselines ran on the cluster. A useful next test would examine how well the controller adapts when hardware, workloads, and service targets shift beyond the conditions represented in its accumulated evidence.",
+      "start": 428.14,
+      "end": 459.3
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The takeaway is that Koi turns routine deployments into scoped evidence for later fleet decisions, while deterministic controls retain authority over what actually runs. Its central proposal is not that a language model should control a cluster alone, but that model-generated hypotheses can inform a measured, constrained planning loop. The connection between serving work and learning is the paper’s key idea. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 459.3,
+      "end": 492.172
+    }
+  ]
+}

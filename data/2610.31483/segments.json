@@ -1,0 +1,186 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 487.496,
+  "word_match_rate": 0.9347,
+  "line_count": 25,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our graduate course on Language Model Agents, today's lecture is on Training Small Language Models for Transferable Tool Selection. ToolOrchestra and ToolRM reflect a broader trend toward training agents to coordinate tools and evaluate tool use. This paper, from researchers at Meta and Carnegie Mellon University, asks whether that coordination can be handled by a compact model that transfers across tool collections. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 29.36
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, what does tool selection mean here: choosing an action, or choosing which tools an agent can use?",
+      "start": 30.32,
+      "end": 36.5
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It means identifying the tools needed for a request before the agent executes anything. Imagine a library with thousands of specialized instruments: an agent cannot read every description at once, so it needs a smaller shortlist. The paper trains a model to turn a request into requirements, consult a retriever for candidate tools, and choose among those candidates. Its focus is not a new retrieval algorithm, but a trainable controller that can work with one.",
+      "start": 37.1,
+      "end": 65.04
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the retriever finds candidates, but the model decides which ones are actually necessary?",
+      "start": 65.72,
+      "end": 70.02
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. The workflow has three stages: Plan, Retrieve, and Select. The model first writes ordered natural-language substeps, each describing a capability the request needs. A retriever scores tools against each substep, and the model selects a tool from the resulting candidates. For example, a travel request might require one substep for finding a flight and another for checking the weather. The system combines the selected tools into a final set.",
+      "start": 70.92,
+      "end": 99.92
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "How does the system keep the model's context manageable when the tool catalogue is huge?",
+      "start": 100.64,
+      "end": 104.84
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Each call sees only the information needed for its stage. By default, the retriever uses B-M-25, keeps tools scoring above 3, and sends at most 15 candidates to the selector. The planning call sees the user request; a selection call sees one substep and its candidates. These calls are stateless, so the model does not need the full catalogue in its context. That makes the workflow less dependent on catalogue size.",
+      "start": 105.66,
+      "end": 133.94
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Quick question: what teaches the model which tools to choose?",
+      "start": 133.94,
+      "end": 137.8
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The researchers fine-tune Qwen three models with 1.7-billion, 4-billion, and 8-billion parameters. They curate ToolBench G3 examples, retaining reference tools that can be identified from the request rather than just from a reference solution. A teacher model helps assess ambiguous cases and generate decompositions. The training set contains 20,093 instructions, with separate examples for planning and selection. After supervised fine-tuning, the authors apply G-R-P-O reinforcement learning to improve both stages.",
+      "start": 138.54,
+      "end": 171.98
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Wait, I'm confused about the reinforcement learning: what counts as a good plan?",
+      "start": 172.84,
+      "end": 177.14
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "A good plan should retrieve the relevant gold tools without adding redundant substeps. The planning reward balances precision against rank-weighted recall, giving more credit when gold tools appear near the top of retrieval results. For selection, the reward is stricter: the model earns credit only if it selects the correct tool and no others. This avoids new human judgments, but it also means the learning signal depends on the quality of the curated labels and teacher-generated examples.",
+      "start": 177.94,
+      "end": 207.58
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "Does this setup handle tasks where one step depends on the result of another?",
+      "start": 208.48,
+      "end": 212.2
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Not as formulated here. The method assumes independent substeps and exactly one tool per substep; it does not pass the output of one tool into a later selection decision. Within that scope, the results on ToolBench G3 are notable for their comparison: the 8-billion-parameter model reaches 41.5% exact-match success after supervised fine-tuning and reinforcement learning. Exact match requires the entire selected set to equal the filtered gold set, so missing or extra tools count as failures.",
+      "start": 212.84,
+      "end": 246.44
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Is that improvement mainly from the model being larger?",
+      "start": 247.52,
+      "end": 249.82
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "The results suggest that training matters more than scale alone. The 1.7-billion-parameter model reaches 37.6%, while the 4-billion-parameter model reaches 40.3%, after both training stages. The 8-billion-parameter model rises from 36.2% after supervised fine-tuning to 41.5% after reinforcement learning. A prompted Llama four Maverick baseline reaches at most 30.6% in a search-oriented workflow. These comparisons suggest that learned planning and selection can help smaller models perform this task.",
+      "start": 250.62,
+      "end": 287.16
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "How much does the approach depend on using B-M-25?",
+      "start": 287.94,
+      "end": 290.88
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The authors test that directly by replacing B-M-25 with a dense retriever trained on ToolBench, while leaving the selection models unchanged. Success improves at all three model scales, supporting the idea that the controller is not tied to one retrieval backend. This modularity matters in practice: exact tool names may favour lexical matching, while descriptive documentation may benefit from dense matching. The selector can use the candidates returned by a different retriever.",
+      "start": 290.88,
+      "end": 322.0
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "Can the models also transfer to tool collections they never saw during training?",
+      "start": 322.78,
+      "end": 326.62
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "They are evaluated without retraining on ToolBench G2, Gorilla, CRAFT, and TaskBench. The 8-billion-parameter model reaches 25.8% on G2, 29.9% on Gorilla, and 69% on CRAFT, exceeding the reported prompted baselines on those benchmarks. TaskBench is more difficult in a revealing way: the 4-billion- and 8-billion-parameter models each reach 72.8%, while a Search-R1-style Llama four Maverick baseline reaches 80.6%. Transfer is substantial, but not uniform.",
+      "start": 327.54,
+      "end": 368.32
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "Could the TaskBench result mean planning transfers less well than matching a tool to a description?",
+      "start": 369.16,
+      "end": 373.82
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "That is the authors’ interpretation. Gorilla and CRAFT focus on selecting a single tool, whereas TaskBench tests both planning and selection on multi-tool tasks outside the training domain. The difference suggests that matching a requirement to a tool description may generalize more readily than decomposing unfamiliar requests. The paper therefore shifts attention beyond retrieval rankings: a system must decide what capabilities a request needs, not merely which descriptions look relevant.",
+      "start": 374.72,
+      "end": 404.54
+    },
+    {
+      "i": 21,
+      "speaker": "Noah",
+      "text": "How does this fit with work like ToolOrchestra, which also trains models to coordinate tools?",
+      "start": 405.42,
+      "end": 410.14
+    },
+    {
+      "i": 22,
+      "speaker": "John",
+      "text": "Both papers reflect interest in training models to orchestrate tools rather than relying only on prompting. This work narrows the problem to selecting tools from retrieved candidates, and it emphasizes transfer across tool domains and retrievers. The results also connect to reinforcement-learning research on policies that act over large or changing action sets: here, retrieved tool descriptions define the available choices. Still, the evaluation measures agreement with filtered labels, not execution success or user outcomes.",
+      "start": 410.94,
+      "end": 443.42
+    },
+    {
+      "i": 23,
+      "speaker": "Noah",
+      "text": "What should researchers test next before applying this to real enterprise tool catalogues?",
+      "start": 444.4,
+      "end": 448.16
+    },
+    {
+      "i": 24,
+      "speaker": "John",
+      "text": "A next step is to test less restrictive workflows: tasks with dependent steps, multiple tools for one requirement, and feedback from actual execution. Researchers should also examine changing or proprietary tool inventories and broader language settings. The reported results come from English benchmarks, and the paper notes small variation across repeated inference runs while reporting single-run results. The central takeaway is that compact models can learn portable tool selection, but dependable agents must also handle the structure and consequences of real tasks. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 449.58,
+      "end": 487.496
+    }
+  ]
+}

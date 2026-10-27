@@ -15,7 +15,7 @@
       "cover": "cover.png",
       "path": "2610.real-time-interactive-omni-intelligence",
       "published": "2026-10-25",
-      "views": 171,
+      "views": 280,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1718d-32e8-7989-96b6-fd2611fbb6fd/podcast.mp3"
     },
     {
@@ -30,7 +30,7 @@
       "cover": "cover.png",
       "path": "2610.31642",
       "published": "2026-10-22",
-      "views": 7577,
+      "views": 10229,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a166da-aa7c-7295-8fe2-71663f320235/podcast.mp3"
     },
     {
@@ -47,7 +47,7 @@
       "cover": "cover.png",
       "path": "2610.31633",
       "published": "2026-10-22",
-      "views": 288,
+      "views": 382,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a166ac-23fd-79ff-95b5-c75b71b2d45f/podcast.mp3"
     },
     {
@@ -64,8 +64,25 @@
       "cover": "cover.png",
       "path": "2610.31585",
       "published": "2026-10-22",
-      "views": 361,
+      "views": 519,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a166e6-6dfe-7bb7-a78d-4508e2036647/podcast.mp3"
+    },
+    {
+      "id": "2610.31483",
+      "title": null,
+      "authors": [],
+      "duration": 487.496438,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Fine Tuning",
+        "Reasoning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.31483",
+      "published": "2026-10-22",
+      "views": 262,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a166e5-1ac2-7c18-b889-5afcd4b8d284/podcast.mp3"
     },
     {
       "id": "2610.meta2-online-harness-evolution",
@@ -81,7 +98,7 @@
       "cover": "cover.png",
       "path": "2610.meta2-online-harness-evolution",
       "published": "2026-10-21",
-      "views": 512,
+      "views": 552,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15f7b-f67e-7240-885e-b62e921e585d/podcast.mp3"
     },
     {
@@ -97,7 +114,7 @@
       "cover": "cover.png",
       "path": "2610.29162",
       "published": "2026-10-21",
-      "views": 379,
+      "views": 519,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a161ce-1d3b-7e66-a51a-aa8a5e1aa044/podcast.mp3"
     },
     {
@@ -114,7 +131,7 @@
       "cover": "cover.png",
       "path": "2610.28594",
       "published": "2026-10-20",
-      "views": 651,
+      "views": 689,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15c7b-d1d7-7964-8818-4eb2094f25cc/podcast.mp3"
     },
     {
@@ -129,7 +146,7 @@
       "cover": "cover.png",
       "path": "2610.28259",
       "published": "2026-10-20",
-      "views": 288,
+      "views": 326,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15c71-bf6f-7f25-81bf-aaec091e4b66/podcast.mp3"
     },
     {
@@ -146,7 +163,7 @@
       "cover": "cover.png",
       "path": "2610.26863",
       "published": "2026-10-19",
-      "views": 614,
+      "views": 650,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1575c-47d8-735e-b405-f0adc6f72925/podcast.mp3"
     },
     {
@@ -179,7 +196,7 @@
       "cover": "cover.png",
       "path": "2610.26855",
       "published": "2026-10-19",
-      "views": 282,
+      "views": 292,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a15792-dc98-75cd-9255-5260526dad5a/podcast.mp3"
     },
     {
@@ -196,7 +213,7 @@
       "cover": "cover.png",
       "path": "2610.calm",
       "published": "2026-10-17",
-      "views": 272,
+      "views": 274,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14833-f21f-7bc8-876b-52551292a6cc/podcast.mp3"
     },
     {
@@ -542,8 +559,25 @@
       "cover": "cover.png",
       "path": "2610.24628",
       "published": "2026-10-17",
-      "views": 843,
+      "views": 908,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a156e5-8055-71bd-8823-3d5e35c1a204/podcast.mp3"
+    },
+    {
+      "id": "2610.24355",
+      "title": null,
+      "authors": [],
+      "duration": 492.172438,
+      "license": "CC BY",
+      "topics": [
+        "Agents",
+        "Causal Inference",
+        "Cloud Computing"
+      ],
+      "cover": "cover.png",
+      "path": "2610.24355",
+      "published": "2026-10-17",
+      "views": 359,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a15777-404d-7ce8-bb5c-38e8fd7ce50b/podcast.mp3"
     },
     {
       "id": "2610.23839",
@@ -581,7 +615,7 @@
       "cover": "cover.png",
       "path": "2610.23839",
       "published": "2026-10-16",
-      "views": 699,
+      "views": 712,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a151db-c068-7c7c-97e7-f5992ad33d8d/podcast.mp3"
     },
     {
@@ -904,6 +938,23 @@
       "published": "2026-10-15",
       "views": 601,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14259-9b8d-74ed-a2bd-1f3027032a3b/podcast.mp3"
+    },
+    {
+      "id": "2610.20586",
+      "title": null,
+      "authors": [],
+      "duration": 462.863063,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Attention Mechanisms",
+        "Sequence Modeling",
+        "Transformers"
+      ],
+      "cover": "cover.png",
+      "path": "2610.20586",
+      "published": "2026-10-14",
+      "views": 191,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a13d53-d63e-765e-83e0-2d9b8c5c4a84/podcast.mp3"
     },
     {
       "id": "2610.20442",
@@ -4003,6 +4054,23 @@
       "published": "2026-09-28",
       "views": 462,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebba-264c-7c66-9a7d-162b7fbc4465/podcast.mp3"
+    },
+    {
+      "id": "2609.34519",
+      "title": null,
+      "authors": [],
+      "duration": 518.66075,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Reinforcement Learning",
+        "Fine Tuning",
+        "Knowledge Distillation"
+      ],
+      "cover": "cover.png",
+      "path": "2609.34519",
+      "published": "2026-09-28",
+      "views": 311,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a0ebc2-b93c-7985-a33d-8721d7faeae9/podcast.mp3"
     },
     {
       "id": "2609.34261",
