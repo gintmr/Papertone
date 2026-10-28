@@ -1,0 +1,241 @@
+{
+  "id": "2610.05107",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.05107",
+    "arxiv": "https://arxiv.org/abs/2610.05107"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a10fb1-bc7b-7b5d-bb54-4d5f5c68bf64/podcast.mp3",
+  "duration": 442.122,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 33.38,
+      "en": "In our hypothetical graduate course on Search Agents and Language Models, today’s lecture is on SearchJev: A Fast and Calibrated System-1 Model for Search Agents. Recent work such as Harness-1 and JEV-as-a-Judge reflects a broader move toward separating agent control from open-ended language generation. This paper, from researchers at Huawei Technologies and Leiden University, asks whether frequent search decisions can be made faster without losing useful confidence information. I see your hand, Noah; go ahead.",
+      "zh": "在我们这门假设开设的研究生课程“搜索智能体与语言模型”中，今天的课讲的是SearchJev：一个面向搜索智能体的快速且校准的系统1模型。Harness-1和JEV-as-a-Judge等近期工作反映出一种更广泛的趋势，即把智能体控制与开放式语言生成分离开来。这篇论文来自华为技术和莱顿大学的研究人员，它要问的是：频繁的搜索决策能否做得更快，同时又不丢失有用的置信度信息。诺亚，我看到你举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 34.5,
+      "end": 39.94,
+      "en": "Hi Professor, what kinds of decisions are we talking about, and why not let the main language model handle them all?",
+      "zh": "教授您好，您说的是哪些类型的决策？为什么不让主语言模型来处理所有这些决策呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.72,
+      "end": 69.72,
+      "en": "A search agent repeatedly makes bounded judgments: is a passage relevant, is the evidence sufficient, should it open another page, or does a claim check out? A large model can answer these, but generating a response for each small decision adds delay and makes its confidence hard to interpret. SearchJev assigns those short decisions to a smaller System-1 model, while a larger System-2 model still plans, generates queries, and writes the final answer.",
+      "zh": "搜索智能体会反复做出一系列有边界的判断：这段内容相关吗，证据够不够，要不要再打开一个页面，或者某个说法是否站得住脚？大模型当然能回答这些问题，但每做一个小决定都生成一次回复会增加延迟，而且它的置信度也很难解读。SearchJev把这些短判断交给一个较小的System-1模型，而更大的System-2模型仍然负责规划、生成查询并撰写最终答案。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.56,
+      "end": 99.4,
+      "en": "The paper also introduces SearchDecision-Bench, which places six kinds of decisions into a shared format: routing, rewriting, relevance, sufficiency, navigation, and verification. Each example provides a search state, a question about that state, and a set of legal options. For instance, the state might include a user request and retrieved passages, while the schema asks whether the evidence is enough to stop or whether the agent should keep searching.",
+      "zh": "这篇论文还提出了SearchDecision-Bench，把六类决策统一到同一个格式里：路由、改写、相关性、充分性、导航和验证。每个样本都提供一个搜索状态、一个关于该状态的问题，以及一组合法选项。比如，状态里可能包含用户请求和检索到的段落，而schema则询问证据是否足以停止，或者智能体是否应该继续搜索。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.3,
+      "end": 106.06,
+      "en": "Quick question: how does one model handle such different decisions without needing a separate classifier for each task?",
+      "zh": "快速问一下：一个模型怎么处理这么多种不同的决策，而不需要为每个任务单独训练一个分类器呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 107.04,
+      "end": 134.52,
+      "en": "The key is that the model receives the decision question and its legal options as text, alongside the current search state. It assigns each option a label, such as A or B, and reads the model’s scores for those labels directly at the first output position. It does not generate a complete structured response. That makes the interface flexible across tasks while avoiding the extra decoding and parsing involved in producing a J-S-O-N answer.",
+      "zh": "关键在于，模型把决策问题和它的合法选项作为文本接收，同时接收当前的搜索状态。它给每个选项分配一个标签，比如A或B，然后直接在第一个输出位置读取模型对这些标签的分数。它不会生成完整的结构化回复。这样一来，接口在不同任务之间就很灵活，同时避免了生成JSON答案所涉及的额外解码和解析。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.74,
+      "end": 166.84,
+      "en": "SearchJev starts from a Qwen three point five 0.8 billion or 4 billion parameter model and is fine-tuned with lora. Its training method combines cross-entropy with the Brier score, encouraging the predicted probabilities to reflect target uncertainty as well as favor the correct choice. The authors also calibrate scores on validation data using temperature scaling, separately for categorical, ordinal, and binary outputs when enough validation examples are available.",
+      "zh": "SearchJev基于Qwen 3.5的0.8亿或40亿参数模型，用LoRA进行微调。它的训练方法结合了交叉熵和Brier分数，促使预测概率既能反映目标不确定性，又能偏向正确选项。作者还用温度缩放在校验数据上校准分数，当校验样本足够时，分别针对类别型、序数型和二值型输出进行校准。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.96,
+      "end": 173.34,
+      "en": "So the probability scores are meant to guide whether a decision should be accepted or handed to the larger model?",
+      "zh": "所以这些概率分数是用来决定一个决策该被接受，还是交给更大的模型处理吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 174.18,
+      "end": 205.76,
+      "en": "Exactly. A confidence gate accepts a decision if its highest calibrated probability clears a threshold; otherwise, the decision can be escalated to System 2. A controller then turns resolved choices into actions such as searching, opening a page, retaining a document, or stopping. That division resembles selective prediction: the smaller model handles clear cases, while the more capable model can address uncertainty. It keeps planning and answer generation outside the fixed-option interface.",
+      "zh": "完全正确。置信门控会在某个决策的最高校准概率超过阈值时接受该决策；否则，该决策可以升级到系统2。然后，控制器将已解决的选项转化为行动，例如搜索、打开页面、保留文档或停止。这种分工类似于选择性预测：较小的模型处理明确的情况，而能力更强的模型可以处理不确定性。它把规划和答案生成保持在固定选项接口之外。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 206.84,
+      "end": 241.88,
+      "en": "The decision-level results show why this design is useful. On in-distribution tests, both SearchJev sizes outperform their same-size autoregressive baselines across all six decision families. SearchJev’s median decision latency is 27.6 milliseconds for the 0.8 billion parameter model and 37.1 milliseconds for the 4 billion model, compared with 144.2 and 195.2 milliseconds for the corresponding baselines. The paper reports a 5.2 to 5.3 times speedup.",
+      "zh": "决策层面的结果说明了这个设计为什么有用。在分布内测试中，两个规模的SearchJev在全部六个决策类别上都优于同等规模的自回归基线。SearchJev的中位决策延迟在0.8亿参数模型上是27.6毫秒，在40亿参数模型上是37.1毫秒，而对应的基线分别是144.2毫秒和195.2毫秒。论文报告了5.2到5.3倍的加速。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 243.12,
+      "end": 247.66,
+      "en": "How much does that faster decision-making change the performance of a complete search agent?",
+      "zh": "更快的决策对完整搜索智能体的性能有多大影响？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 247.66,
+      "end": 286.32,
+      "en": "On a 100-question BrowseComp Plus test, an agent using the 4 billion parameter SearchJev reaches 54% answer accuracy, compared with 45% for the System-2-only agent. It also uses 22.1 thousand output tokens instead of 73.7 thousand, and its median active time falls from 4,080 seconds to 1,102 seconds. The 0.8 billion model is faster still, but reaches 46% accuracy, so the results show a trade-off rather than one setting winning on every measure.",
+      "zh": "在一个包含100道题的BrowseComp Plus测试中，使用40亿参数SearchJev的智能体答案准确率达到54%，而仅使用System-2的智能体为45%。它使用的输出token数为2.21万，而非7.37万，中位活跃时间从4080秒降至1102秒。0.8亿参数的模型速度更快，但准确率只有46%，因此结果体现的是一种权衡，而非某一配置在所有指标上都胜出。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 287.24,
+      "end": 324.12,
+      "en": "Calibration improves over same-size autoregressive baselines on average, but that finding needs qualification. The reported average expected calibration error reductions are 74.4% for the smaller model and 40.7% for the larger one; Jev 1.13 still has lower mean error overall. Out-of-distribution results also vary: some decision skills transfer, while verification accuracy and calibration do not improve uniformly. So confidence scores are useful evidence, not a guarantee of reliability in a new setting.",
+      "zh": "校准效果平均而言优于同等规模的自回归基线，但这个结论需要加个限定。报告的平均期望校准误差降低幅度，小模型是74.4%，大模型是40.7%；而Jev 1.13的整体平均误差仍然更低。分布外结果也参差不齐：有些决策技能能迁移过去，但验证准确率和校准并没有一致提升。所以置信度分数是有用的证据，但不能保证在新场景下依然可靠。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 325.0,
+      "end": 330.84,
+      "en": "Could the benchmark’s labels or limited end-to-end evaluation make these results less reliable than they appear?",
+      "zh": "基准的标签或有限的端到端评估，会不会让这些结果没有看起来那么可靠？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 331.8,
+      "end": 365.26,
+      "en": "That is a reasonable concern. The benchmark combines original labels with derived and language-model-assisted supervision; the appendix reports that language models participate in labeling 33.7% of training rows. The authors apply data cleaning and lower weights to several constructed sources, but those choices cannot remove every bias. The end-to-end test also uses one retrieval setup, 100 questions, and one run per question, so broader replication is needed before assuming the reported gains will hold elsewhere.",
+      "zh": "这个担忧是合理的。这个基准把原始标签和衍生标签、语言模型辅助的监督信号混在一起；附录里提到，语言模型参与了33.7%的训练数据标注。作者对几个构建来源做了数据清洗并降低了权重，但这些处理没法消除所有偏差。端到端测试也只用了单一检索设置、100个问题，每个问题只跑一次，所以在假定报告中的提升在别处也成立之前，还需要更广泛的复现。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 366.24,
+      "end": 402.82,
+      "en": "Conceptually, SearchJev advances a useful separation of responsibilities: structured, repeated decisions can be handled with direct probability readout, while a generative model remains available for open-ended reasoning. That connects to JEV-as-a-Judge’s confidence-based escalation, but SearchJev focuses specifically on multiple search decisions within an agent. It also complements work such as Harness-1, which changes where search bookkeeping lives. Together, these approaches suggest that agent efficiency can improve by redesigning control, not only by making the central model larger or faster.",
+      "zh": "从概念上看，SearchJev推进了一种有用的职责分离：结构化、重复性的决策可以通过直接的概率读取来处理，而生成模型则保留用于开放式推理。这与JEV-as-a-Judge基于置信度的升级机制相通，但SearchJev特别聚焦于智能体内部的多次搜索决策。它也与Harness-1这类工作形成互补，后者改变了搜索记录所在的位置。这些方法共同表明，智能体的效率可以通过重新设计控制来提升，而不仅仅依靠让核心模型更大或更快。"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 403.74,
+      "end": 434.68,
+      "en": "The practical boundary is important: SearchJev’s legal-option interface cannot generate a novel query or compose a nuanced answer. Those remain System 2 tasks. Its confidence gate also depends on calibrated scores and a threshold, while the reported aggregate logs do not identify that threshold. A memorable takeaway is that an agent need not deliberate at full scale over every small choice; it can reserve expensive generation for decisions that are genuinely open-ended or uncertain.",
+      "zh": "这个实用边界很重要：SearchJev 的合法选项接口无法生成全新的查询，也无法组织出细致的答案。这些仍然属于系统2的任务。它的置信度门控还依赖于校准后的分数和一个阈值，而所报告的聚合日志并未标明该阈值。一个值得记住的要点是，智能体不必对每一个小选择都进行全规模的深思熟虑；它可以把昂贵的生成留给那些真正开放式或不确定的决策。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 435.68,
+      "end": 442.122,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有任何问题，可以询问我们的人工智能助手，或者留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{cao2026searchjevcalibratedsystem1model,\n      title={SearchJev: A Calibrated System-1 Model for Search Agents}, \n      author={Congfeng Cao and Lipeng Zuo and Konstantinos Papakostas and Qiwei Xu and Songwei Xu and Qianru Meng and Lun Zhou and Zhaochun Ren and Yougang Lyu and Xiaohui Yan},\n      year={2026},\n      eprint={2610.05107},\n      archivePrefix={arXiv},\n      primaryClass={cs.IR},\n      url={https://arxiv.org/abs/2610.05107}, \n}",
+  "topics": [
+    "NLP",
+    "Information Retrieval"
+  ],
+  "peaks": [
+    0.848,
+    0.406,
+    0.636,
+    0.53,
+    0.41,
+    0.48,
+    0.937,
+    0.675,
+    0.597,
+    0.632,
+    0.593,
+    0.896,
+    0.648,
+    0.49,
+    0.77,
+    0.538,
+    0.547,
+    0.787,
+    0.539,
+    0.722,
+    0.546,
+    0.637,
+    0.792,
+    0.745,
+    0.637,
+    0.7,
+    0.626,
+    0.682,
+    0.523,
+    0.452,
+    0.572,
+    0.4,
+    0.398,
+    0.664,
+    0.673,
+    0.644,
+    0.424,
+    0.672,
+    0.73,
+    0.69,
+    0.672,
+    0.373,
+    0.392,
+    0.2,
+    0.243,
+    0.252,
+    0.562,
+    0.419,
+    0.688,
+    0.481,
+    0.299,
+    0.339,
+    0.34,
+    0.684,
+    1.0,
+    0.645,
+    0.843,
+    0.59,
+    0.696,
+    0.566,
+    0.477,
+    0.626,
+    0.509,
+    0.436,
+    0.465,
+    0.535,
+    0.641,
+    0.443,
+    0.385,
+    0.497,
+    0.357,
+    0.904
+  ],
+  "published": "2026-10-04",
+  "views": 342,
+  "license": "CC BY-NC-SA"
+}

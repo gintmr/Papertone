@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 422.765,
+  "word_match_rate": 0.8894,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical course, Real-Time Learning for Autonomous Driving, today’s lecture is on the DINOv2–Laya hybrid driving policy described in this paper. Recent work such as Alpamayo-R1 and AutoVLA reflects a trend toward vision-language-action systems that reason about driving and generate actions. This paper takes a different route: it pairs a fast decision pass with conventional mapping and control. The practical question is whether a policy can refresh its decisions within a 50-millisecond cycle at 20 hertz. Noah, I see your hand—go ahead.",
+      "start": 0.0,
+      "end": 36.48
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does the paper show this system is faster than those action-generating models in a direct test?",
+      "start": 37.46,
+      "end": 43.08
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "No, and that distinction matters. The paper cites autoregressive vision-language-action decoders that can take more than 300 milliseconds per frame, but that is context, not a matched benchmark. Its own single-pass inference and control measurement is 32.85 milliseconds on a Ryzen 5 7500F and an RTX 4070 Ti. Adding the reported CARLA simulator communication time gives 39.25 milliseconds. Those measurements are from a simulator setup, not a real-world timing evaluation.",
+      "start": 43.82,
+      "end": 79.72
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So the central idea is to make a decision in one pass, then let a separate controller handle the vehicle?",
+      "start": 79.72,
+      "end": 85.76
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Exactly. A frozen DINOv2 image encoder extracts visual features, which are spatially pooled into 36 tokens. A small learned adapter connects those features to frozen Laya, a non-autoregressive decision model. Frozen means those backbone weights are not updated during this system’s training; non-autoregressive means the decisions arrive in one pass rather than through serial action-token generation. The adapter has 4.23 million parameters, and the model predicts a maneuver, speed level, emergency-braking probability, and six future waypoints.",
+      "start": 86.68,
+      "end": 122.06
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The division of labor is important. The maneuver choice and an HD-map spline determine route changes such as a lane change or bypass. The learned waypoint head smooths the path’s curvature; it is not an obstacle-detour planner. A safety shield can brake or reject a lane change, while a tracking controller follows the resulting path. The path blend uses a quintic curve across 14 nodes spaced 2 meters apart, with a 28-meter lookahead. The controller tracks a piecewise-linear path between nodes.",
+      "start": 122.94,
+      "end": 155.52
+    },
+    {
+      "i": 6,
+      "speaker": "Noah",
+      "text": "Quick question: if the waypoint head is not planning around obstacles, where does the route geometry come from?",
+      "start": 156.3,
+      "end": 162.26
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "Primarily from the maneuver decision and the map-based spline. The learned waypoints refine the path shape rather than discovering a new route around an obstruction. That distinction helps interpret the results: the policy is not doing every driving task by itself. The paper also reports 3.8% open-loop trajectory box overlap, while its cited closed-loop evaluation reports zero crashes. Those are different measurements, and neither establishes universal safety or validates the system on public roads.",
+      "start": 162.66,
+      "end": 193.12
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "For a representative CARLA result, the vision-estimated system completed 47 of 50 routes in Town10HD_Opt’s cross-weather suite; completion means completed episodes out of 50. A two-layer Transformer completed 42. Five paired episodes favored the system and none favored the Transformer. But the two-sided McNemar p value is 0.0625, above the conventional 0.05 threshold. The reported one-sided p value is 0.0313, a different test. So this is an observed edge, not firm two-sided evidence of superiority.",
+      "start": 193.96,
+      "end": 234.44
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Can the controller ablation tell us more about why the full system performed better?",
+      "start": 235.62,
+      "end": 239.48
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "It gives more mechanism-specific evidence, though not a complete causal diagnosis. The full hybrid stack completed 47 of 50 CARLA episodes, compared with 41 of 50 when it used learned trajectory curvature alone and removed HD-map curvature. In the full stack, map curvature receives a weight of 0.70 and trajectory curvature 0.30. That supports combining map and learned curvature in this setup, but it does not show that map curvature alone explains the difference.",
+      "start": 239.48,
+      "end": 272.24
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "A separate check in MetaDrive reports 48 arrivals out of 50 on unseen maps, over 20,765 steps and 9,520 meters. Keep that result separate from CARLA’s counts. The paper also addresses noisy visual estimates of a lead vehicle’s speed: it fits a five-step range trend over 0.25 seconds, combines that with the visual range-rate estimate, and smooths the result. In vision-estimated mode, lead-speed jitter falls from 9.62 to 1.84 kilometers per hour, and speed mean absolute error falls from 6.85 to 2.41.",
+      "start": 273.18,
+      "end": 314.74
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "And the pedestrian-distance result applies only when vehicles and pedestrians appear together?",
+      "start": 316.68,
+      "end": 321.18
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "Correct. On frames where vehicles and pedestrians co-appear, the pedestrian-distance head reports a mean absolute error of 2.64 meters, compared with 14.8 meters before the estimates were decoupled. That should not be generalized to all frames. More broadly, the paper’s contribution is an integration of spatially pooled vision, Laya’s single-pass decisions, auxiliary perception, and a separate path-tracking controller. It is a simulator study, not a public-road evaluation.",
+      "start": 321.18,
+      "end": 353.42
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "This approach adds a useful contrast to work such as Alpamayo-R1 and AutoVLA, which center on vision-language-action reasoning and generated actions. Here, the learned model makes compact decisions, while the map and controller supply geometry and tracking. The findings therefore shift attention toward how a decision model can fit within a driving control cycle, not toward a claim that one architecture wins across tasks. The timing, completion rates, and safety observations all remain tied to their reported experimental setups.",
+      "start": 354.42,
+      "end": 387.74
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The takeaway is that a fast decision pass becomes useful for driving through its partnership with conventional map-based geometry, safety logic, and tracking. The learned waypoint head alone is not the route planner, and simulator performance is not a general safety guarantee. The paper offers evidence that combining learned decisions with structured control can work within a measured simulator timing budget, while leaving direct comparisons and real-road validation for future study. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 388.64,
+      "end": 422.765
+    }
+  ]
+}
