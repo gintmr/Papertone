@@ -1,0 +1,165 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 427.415,
+  "word_match_rate": 0.9198,
+  "line_count": 22,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "Imagine a coding agent whose prompts, tools, and feedback are controlled by software that can itself be edited. In our graduate course, Agent Learning and Self-Improving Systems, today’s lecture is on Evo two. Recent work such as A Self-Improving Coding Agent and Meta-Harness explores ways to refine agent harnesses. Evo two takes the trend a step further: the system making those edits can learn from their outcomes. Yes, Noah?",
+      "start": 0.0,
+      "end": 28.08
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does that mean the agent changes its own model as well as its surrounding software?",
+      "start": 29.06,
+      "end": 33.76
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "That is the central idea, with an important distinction: Evo two improves the policy that proposes and judges harness edits through training, rather than simply changing its weights during each edit. On held-out Polyglot tasks, its harnesses score 82.1% pass at one, compared with 62.6% for the strongest baseline, G-E-A. Pass at one is success on a single attempt, averaged over three evaluation runs. These results use Qwen three point eight, twenty-seven B; the task executor stays fixed.",
+      "start": 34.8,
+      "end": 69.34
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "Quick question: what exactly counts as the harness here?",
+      "start": 70.28,
+      "end": 73.3
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "Think of the harness as an agent’s operating procedure: it organizes prompts, tools, context, and control flow. Evo two uses one shared policy in two roles, called Proposer and Reflector. First, the Proposer edits a sampled parent harness. A fixed executor then runs tasks with the candidate. That separation matters: when measured performance changes, the experiment can attribute the change to the harness, rather than to a newly changed executor.",
+      "start": 73.96,
+      "end": 104.14
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "So the Reflector is not a separate model judging the Proposer?",
+      "start": 104.88,
+      "end": 107.5
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Correct. The same policy receives different role prompts. After an edit is tested, the Reflector examines the candidate, its performance change, and execution traces. It can recommend a revision, request crossover with a strategy from another branch, or keep the candidate as is. For a revision or crossover, the Proposer makes a second, directed edit, called Type B. Evaluated harnesses can become branches in a search tree and supply strategies for later edits.",
+      "start": 107.76,
+      "end": 137.52
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the policy learns from those edit trajectories?",
+      "start": 138.46,
+      "end": 141.72
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "The training process, called EvoTIDE, recovers usable examples when a response contains concrete edits but no formal edit action, or when a later edit fails by returning to the last valid intermediate harness. Recovery does not make an invalid candidate successful; candidates still face application, startup, and task checks. The shared policy first receives S-F-T on selected successful edits and reflections, then interleaved G-R-P-O, which compares candidate responses within groups using task outcomes.",
+      "start": 142.72,
+      "end": 176.9
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Does the training only show the policy successful harnesses?",
+      "start": 178.02,
+      "end": 180.92
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "No. The parent pool samples harnesses at different depths and performance levels. That gives the policy both strong candidates that might be improved and weaker ones that may need repair. The distinction is useful for practical agent development: an editing system needs to recognize when to preserve a reliable strategy and when to change one. Still, the paper evaluates benchmark outcomes; it does not measure how much human redesign effort the approach saves.",
+      "start": 181.62,
+      "end": 208.28
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "text": "How does crossover work without simply copying another branch?",
+      "start": 209.22,
+      "end": 212.3
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The Reflector identifies a recipient harness’s weakness and selects a useful strategy from a donor branch. The Proposer then adapts that strategy to the recipient’s code rather than copying it blindly. This is one of the mechanisms that makes the search more than a sequence of isolated edits. The paper reports a separate 4.1-point Polyglot improvement attributed to crossover, but that result should not be confused with the controlled test of evolver training.",
+      "start": 213.22,
+      "end": 241.94
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "What’s the clearest evidence that training the evolver itself helps?",
+      "start": 243.24,
+      "end": 246.06
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "Table 5 provides the clearest controlled comparison. It holds the search procedure, executor, and parent harnesses fixed while varying whether the evolver’s weights are trained. On Polyglot, the untrained evolver scores 61.8 and the trained one 78.0. The paper reports a gain of 16.3 points, with a p-value of .001; the displayed rounded scores subtract to 16.2. This supports a contribution from training under those conditions, not an explanation of every overall gain.",
+      "start": 246.98,
+      "end": 282.98
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "And do the resulting harnesses transfer to other coding benchmarks?",
+      "start": 283.72,
+      "end": 286.66
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The paper tests transfer by evolving and selecting a harness on one coding benchmark, then evaluating it on the other two without further evolution. Evo two ranks first in five of six directions, not all six. For example, a harness evolved on LiveCodeBench scores 74.0 on Polyglot, compared with 63.4 for the best baseline. That is evidence of cross-benchmark usefulness in this setup, not proof of universal transfer to other tasks or interfaces.",
+      "start": 287.36,
+      "end": 317.32
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "text": "How does this differ from SICA and Meta-Harness?",
+      "start": 318.56,
+      "end": 321.52
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "Those works help establish the direction of harness evolution: an agent can inspect prior versions and results, then edit the software organizing its behavior. Evo two’s distinct emphasis is linking those edits and their execution outcomes to training the evolver. The broader shift is from searching over agent implementations with a fixed model toward asking whether experience from that search can improve the policy guiding later searches. The controlled comparison is important because the full method also includes reflection and crossover.",
+      "start": 322.6,
+      "end": 356.42
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "text": "What should we be cautious about when interpreting the results?",
+      "start": 357.56,
+      "end": 360.08
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "text": "The evidence is bounded by the tested models, benchmarks, and procedures. In particular, the Polyglot weight-training ablation does not prove that weight updates alone explain the full Table 1 advantage, and not every reported task comparison has a reported significance test. The result for SWE-bench Verified in Table 5 is 46.0 versus 51.0, with a p-value of .086, so it should not be presented as a statistically established gain.",
+      "start": 361.0,
+      "end": 393.58
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "text": "The conceptual takeaway is that harness edits are tested changes to an agent’s executable behavior, and their outcomes can also become experience for the policy that proposes future edits. Evo two joins those two feedback loops: experience may accumulate in both the harness and the evolver. That offers a useful direction for research on adaptive agents, while leaving open how broadly the approach transfers and how much human effort it actually saves. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 394.52,
+      "end": 427.415
+    }
+  ]
+}

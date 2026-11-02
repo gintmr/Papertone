@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 455.784,
+  "word_match_rate": 0.9459,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Computer Vision and Neural Networks, today’s lecture is on “Scalable Patch-Level Self-Supervised Learning.” The paper, from researchers at Meta F-A-I-R, asks how to learn useful visual features from unlabeled images, especially features that preserve spatial detail. Recent work such as “DINOv3” and “Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture” reflects a trend toward larger models and richer training objectives. This paper tests whether a more unified objective can scale. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 35.22
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, why is preserving spatial detail such a central concern?",
+      "start": 36.14,
+      "end": 40.14
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Because many practical vision tasks need more than a summary of what is in an image. Segmentation, for example, must identify which pixels belong to each object, and depth estimation depends on where regions sit relative to one another. A model can classify an image well while losing useful local information. This paper’s central proposal is to train directly on patch representations, so the learning signal can preserve both semantic content and spatial correspondence.",
+      "start": 40.96,
+      "end": 70.42
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The method is called JEM, pronounced “jem,” for Joint-Embedding Multi-view. Its starting point is a multi-view idea: different altered views of the same image should retain information relevant to downstream tasks. The authors turn that intuition into an information-theoretic objective. A student representation should align with targets produced by a teacher, while those targets must remain informative rather than collapsing into identical, unhelpful outputs.",
+      "start": 70.42,
+      "end": 99.96
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what does the teacher contribute if it comes from the same model?",
+      "start": 99.96,
+      "end": 104.72
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The teacher is an exponential moving average of the student, so its parameters change more gradually. That gives the student a comparatively stable target while both networks learn. The student and teacher see different views, and their predictions are matched at corresponding image patches. Think of two maps drawn from different photographs: the goal is to agree about corresponding locations, without making every location carry the same information.",
+      "start": 105.54,
+      "end": 132.6
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "Two forms of collapse prevention support that alignment. The global regularizer encourages predictions at each patch position to be diverse across examples, yet confident for individual examples. Calculating diversity separately by position matters: otherwise, a model might appear informative simply because it has learned where a patch sits. A structural regularizer addresses a separate risk, encouraging relationships among patches to remain meaningful rather than letting the whole image become spatially uniform.",
+      "start": 133.46,
+      "end": 163.22
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you clarify how the structural regularizer preserves those relationships?",
+      "start": 164.2,
+      "end": 167.78
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "Directly modeling every dependency among discrete patch targets would be impractical, so JEM uses a proxy. It compares pairwise similarities among student features with those among teacher features at selected intermediate layers, after learned transformations of the student features. This does not preserve every detail of the target distribution. Instead, it gives the model a tractable cue about the arrangement of patch features while allowing its final representations to become more semantic.",
+      "start": 168.94,
+      "end": 198.86
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The training views are also important. The authors use overlapping crops shifted to align with patch boundaries, plus global and smaller local views. Most student views are masked, some are visible, and independently applied color and other image transformations create further variation. Matching both masked and visible overlapping patches helps retain local correspondence. The backbone is a Vision Transformer with 16-by-16 patches, four register tokens, and no class token.",
+      "start": 199.94,
+      "end": 229.86
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "So the augmentations are not just data variety; they shape what the model has to learn?",
+      "start": 230.84,
+      "end": 235.34
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "Exactly. Independent photometric changes make it harder to rely on superficial color or appearance shortcuts, while the shared spatial grid still provides correspondence. Ablations support the importance of these choices: removing visible-patch alignment harms dense-task performance, and removing photometric augmentations reduces both classification and segmentation scores. The model is evaluated mostly with frozen-backbone probes, which helps test the learned features themselves, though it does not answer every question about full fine-tuning.",
+      "start": 235.34,
+      "end": 268.94
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The scale results are notable but should be read with the experimental setup in mind. JEM trains Vision Transformers with about 303 million, 1.13 billion, and 6.7 billion parameters, using ImageNet datasets and a curated 140-million-image collection. Against a retrained Dino version 2 baseline, JEM generally does better on dense prediction, while Dino version 2 keeps a modest classification advantage. At 7 billion parameters, JEM improves on some Dino version 3 results, but not all.",
+      "start": 270.6,
+      "end": 304.7
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How should we interpret the comparison with Dino version 3, given the different training data?",
+      "start": 305.46,
+      "end": 310.06
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "As evidence of capability, not a controlled verdict. Dino version 3 used a dataset about 12 times larger and additional refinement stages, so the comparison cannot isolate the training objective. JEM exceeds its reported scores on some benchmarks, including certain panoptic and depth results, but trails on others, such as ImageNet classification and ADE20k semantic segmentation. The more controlled comparison with retrained Dino version 2 is useful for attribution, while the larger-scale comparison gives context for performance.",
+      "start": 310.88,
+      "end": 344.76
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The broader contribution is a way to organize alignment and collapse prevention around distinct, interpretable roles, rather than simply stacking unrelated losses. This connects to joint-embedding approaches such as “I-JEPA,” which predict abstract representations instead of reconstructing pixels. JEM also highlights an important limitation shared by multi-view reasoning: the method assumes that views preserve task-relevant information. If the augmentations erase something a downstream task needs, agreement across views cannot recover it.",
+      "start": 345.82,
+      "end": 381.68
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could the structural proxy or the frozen-probe evaluation hide weaknesses that matter in practice?",
+      "start": 382.3,
+      "end": 387.1
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "Yes. Pairwise feature similarity is only a proxy for the full dependence among patch targets, and the reported frozen-backbone probes do not establish how JEM behaves under every fine-tuning or deployment setup. The curated training collection may also make exact reproduction difficult for teams without comparable data. So the paper offers a promising alternative, not a final answer: future work can test the assumptions across different view designs, data sources, and adaptation settings.",
+      "start": 388.24,
+      "end": 417.8
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The main takeaway is that scalable visual learning need not treat global semantics and local structure as separate goals. JEM uses patch-level alignment, informative targets, and a structural cue to pursue both within one framework, with strong results on several dense tasks and a demonstrated path to very large models. Its assumptions and approximations remain open to scrutiny. Remember the guiding question: do different views agree on useful content without erasing where that content belongs? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 418.78,
+      "end": 455.784
+    }
+  ]
+}

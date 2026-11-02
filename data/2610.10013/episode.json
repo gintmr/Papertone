@@ -1,0 +1,250 @@
+{
+  "id": "2610.10013",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10013",
+    "arxiv": "https://arxiv.org/abs/2610.10013"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a119ad-7006-7783-a344-e6f913d24d6b/podcast.mp3",
+  "duration": 455.784,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 35.22,
+      "en": "In Computer Vision and Neural Networks, today’s lecture is on “Scalable Patch-Level Self-Supervised Learning.” The paper, from researchers at Meta F-A-I-R, asks how to learn useful visual features from unlabeled images, especially features that preserve spatial detail. Recent work such as “DINOv3” and “Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture” reflects a trend toward larger models and richer training objectives. This paper tests whether a more unified objective can scale. I see your hand, Noah; go ahead.",
+      "zh": "在计算机视觉和神经网络方面，今天的课讲的是“可扩展的图块级自监督学习”。这篇论文来自Meta FAIR的研究人员，探讨的是如何从无标签图像中学习有用的视觉特征，尤其是能保留空间细节的特征。近期像DINOv3和“基于联合嵌入预测架构的图像自监督学习”这样的工作，反映出一种趋势：模型越来越大，训练目标也越来越丰富。这篇论文检验的是，一个更统一的目标是否能够扩展。我看到Noah举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 36.14,
+      "end": 40.14,
+      "en": "Hi Professor, why is preserving spatial detail such a central concern?",
+      "zh": "教授您好，为什么保留空间细节会是一个如此核心的问题？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.96,
+      "end": 70.42,
+      "en": "Because many practical vision tasks need more than a summary of what is in an image. Segmentation, for example, must identify which pixels belong to each object, and depth estimation depends on where regions sit relative to one another. A model can classify an image well while losing useful local information. This paper’s central proposal is to train directly on patch representations, so the learning signal can preserve both semantic content and spatial correspondence.",
+      "zh": "因为很多实际的视觉任务需要的不仅仅是对图像内容的概括。比如分割任务必须判断哪些像素属于哪个物体，深度估计则依赖于各个区域之间的相对位置。一个模型可以很好地对图像进行分类，同时却丢失了有用的局部信息。这篇论文的核心主张是直接在图像块的表示上进行训练，这样学习信号就能同时保留语义内容和空间对应关系。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.42,
+      "end": 99.96,
+      "en": "The method is called JEM, pronounced “jem,” for Joint-Embedding Multi-view. Its starting point is a multi-view idea: different altered views of the same image should retain information relevant to downstream tasks. The authors turn that intuition into an information-theoretic objective. A student representation should align with targets produced by a teacher, while those targets must remain informative rather than collapsing into identical, unhelpful outputs.",
+      "zh": "这个方法叫JEM，读作“jem”，是联合嵌入多视图的缩写。它的出发点是多视图思路：同一张图像经过不同变换后的视图，应当保留对下游任务有用的信息。作者把这个直觉转化成了一个信息论目标。学生的表示应当与教师产生的目标对齐，同时这些目标必须保持有信息量，而不能坍缩成完全相同、毫无用处的输出。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.96,
+      "end": 104.72,
+      "en": "Quick question: what does the teacher contribute if it comes from the same model?",
+      "zh": "快速问一下：如果教师模型来自同一个模型，那它到底贡献了什么？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 105.54,
+      "end": 132.6,
+      "en": "The teacher is an exponential moving average of the student, so its parameters change more gradually. That gives the student a comparatively stable target while both networks learn. The student and teacher see different views, and their predictions are matched at corresponding image patches. Think of two maps drawn from different photographs: the goal is to agree about corresponding locations, without making every location carry the same information.",
+      "zh": "教师是学生的指数移动平均，所以它的参数变化更平缓。这就给学生提供了一个相对稳定的目标，同时两个网络都在学习。学生和教师看到的是不同的视图，它们的预测在对应的图像块上做匹配。可以想象成从不同照片画出的两张地图：目标是就对应的位置达成一致，而不是让每个位置都携带相同的信息。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 133.46,
+      "end": 163.22,
+      "en": "Two forms of collapse prevention support that alignment. The global regularizer encourages predictions at each patch position to be diverse across examples, yet confident for individual examples. Calculating diversity separately by position matters: otherwise, a model might appear informative simply because it has learned where a patch sits. A structural regularizer addresses a separate risk, encouraging relationships among patches to remain meaningful rather than letting the whole image become spatially uniform.",
+      "zh": "两种防止坍缩的方式支撑这种对齐。全局正则器鼓励每个图像块位置上的预测在不同样本之间保持多样，同时对单个样本保持自信。按位置分别计算多样性很重要：否则，模型可能仅仅因为学会了某个图像块位于哪里而显得信息丰富。结构正则器则应对另一种风险，鼓励图像块之间的关系保持有意义，而不是让整张图像在空间上变得均匀。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 164.2,
+      "end": 167.78,
+      "en": "Can you clarify how the structural regularizer preserves those relationships?",
+      "zh": "你能说明一下结构正则化器是如何保留这些关系的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 168.94,
+      "end": 198.86,
+      "en": "Directly modeling every dependency among discrete patch targets would be impractical, so JEM uses a proxy. It compares pairwise similarities among student features with those among teacher features at selected intermediate layers, after learned transformations of the student features. This does not preserve every detail of the target distribution. Instead, it gives the model a tractable cue about the arrangement of patch features while allowing its final representations to become more semantic.",
+      "zh": "直接对离散patch目标之间的所有依赖关系建模并不现实，所以JEM用了一个替代方案。它会在选定的中间层上，比较学生特征之间的两两相似度与教师特征之间的两两相似度，比较前先对学生特征做可学习的变换。这并不能保留目标分布的所有细节，而是给模型提供了一个关于patch特征排布的、可计算的线索，同时让最终表征变得更具语义性。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 199.94,
+      "end": 229.86,
+      "en": "The training views are also important. The authors use overlapping crops shifted to align with patch boundaries, plus global and smaller local views. Most student views are masked, some are visible, and independently applied color and other image transformations create further variation. Matching both masked and visible overlapping patches helps retain local correspondence. The backbone is a Vision Transformer with 16-by-16 patches, four register tokens, and no class token.",
+      "zh": "训练视角也很重要。作者使用了与patch边界对齐的、有重叠的裁剪区域，再加上全局视角和更小的局部视角。大多数学生视角被掩码，有些是可见的，并且独立应用颜色变换和其他图像变换来制造更多变化。同时匹配被掩码和可见的重叠patch有助于保留局部对应关系。骨干网络是一个Vision Transformer，使用16×16的patch、四个register token，没有class token。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 230.84,
+      "end": 235.34,
+      "en": "So the augmentations are not just data variety; they shape what the model has to learn?",
+      "zh": "所以这些数据增强不只是增加数据多样性，它们还塑造了模型必须学习的内容？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 235.34,
+      "end": 268.94,
+      "en": "Exactly. Independent photometric changes make it harder to rely on superficial color or appearance shortcuts, while the shared spatial grid still provides correspondence. Ablations support the importance of these choices: removing visible-patch alignment harms dense-task performance, and removing photometric augmentations reduces both classification and segmentation scores. The model is evaluated mostly with frozen-backbone probes, which helps test the learned features themselves, though it does not answer every question about full fine-tuning.",
+      "zh": "正是如此。独立的光度变化让模型更难依赖表面的颜色或外观捷径，而共享的空间网格仍然提供了对应关系。消融实验支持了这些选择的重要性：去掉可见图块对齐会损害密集任务的表现，去掉光度增强则会降低分类和分割的得分。模型主要用冻结骨干的探针来评估，这有助于检验学到的特征本身，尽管它并不能回答关于完整微调的所有问题。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 270.6,
+      "end": 304.7,
+      "en": "The scale results are notable but should be read with the experimental setup in mind. JEM trains Vision Transformers with about 303 million, 1.13 billion, and 6.7 billion parameters, using ImageNet datasets and a curated 140-million-image collection. Against a retrained Dino version 2 baseline, JEM generally does better on dense prediction, while Dino version 2 keeps a modest classification advantage. At 7 billion parameters, JEM improves on some Dino version 3 results, but not all.",
+      "zh": "规模上的结果值得注意，但解读时要结合实验设置来看。JEM训练的视觉Transformer参数量分别约为3.03亿、11.3亿和67亿，使用的是ImageNet数据集以及一个精心筛选的1.4亿图像集合。与重新训练的Dino第2版基线相比，JEM在密集预测上总体表现更好，而Dino第2版仍保持一定的分类优势。在70亿参数规模下，JEM在某些Dino第3版的结果上有所提升，但并非全部。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 305.46,
+      "end": 310.06,
+      "en": "How should we interpret the comparison with Dino version 3, given the different training data?",
+      "zh": "考虑到训练数据不同，我们该如何解读与Dino第3版的对比？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 310.88,
+      "end": 344.76,
+      "en": "As evidence of capability, not a controlled verdict. Dino version 3 used a dataset about 12 times larger and additional refinement stages, so the comparison cannot isolate the training objective. JEM exceeds its reported scores on some benchmarks, including certain panoptic and depth results, but trails on others, such as ImageNet classification and ADE20k semantic segmentation. The more controlled comparison with retrained Dino version 2 is useful for attribution, while the larger-scale comparison gives context for performance.",
+      "zh": "作为能力证据，而非受控结论。Dino第3版使用了约12倍大的数据集，并增加了额外的精炼阶段，因此这一比较无法单独分离出训练目标的影响。JEM在某些基准上超过了其报告分数，包括某些全景和深度结果，但在其他方面落后，例如ImageNet分类和ADE20k语义分割。与重新训练的Dino第2版进行更受控的比较有助于归因，而更大规模的比较则为性能提供了背景。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 345.82,
+      "end": 381.68,
+      "en": "The broader contribution is a way to organize alignment and collapse prevention around distinct, interpretable roles, rather than simply stacking unrelated losses. This connects to joint-embedding approaches such as “I-JEPA,” which predict abstract representations instead of reconstructing pixels. JEM also highlights an important limitation shared by multi-view reasoning: the method assumes that views preserve task-relevant information. If the augmentations erase something a downstream task needs, agreement across views cannot recover it.",
+      "zh": "更广泛的贡献在于，它提出了一种围绕各自独立、可解释的角色来组织对齐与防止坍缩的方法，而不是简单地堆叠互不相关的损失函数。这与“I-JEPA”等联合嵌入方法一脉相承，后者预测的是抽象表征而非重建像素。JEM 还揭示了多视图推理共有的一个重要局限：该方法假设各视图保留了任务相关信息。如果数据增强抹掉了下游任务所需的某些信息，那么视图之间的一致性也无法将其恢复。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 382.3,
+      "end": 387.1,
+      "en": "Could the structural proxy or the frozen-probe evaluation hide weaknesses that matter in practice?",
+      "zh": "结构代理或冻结探针评估，会不会掩盖一些在实际应用中很重要的弱点？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 388.24,
+      "end": 417.8,
+      "en": "Yes. Pairwise feature similarity is only a proxy for the full dependence among patch targets, and the reported frozen-backbone probes do not establish how JEM behaves under every fine-tuning or deployment setup. The curated training collection may also make exact reproduction difficult for teams without comparable data. So the paper offers a promising alternative, not a final answer: future work can test the assumptions across different view designs, data sources, and adaptation settings.",
+      "zh": "是的。成对特征相似性只是patch目标之间完整依赖关系的一个代理指标，而已报告的冻结骨干探针并不能说明JEM在每种微调或部署设置下的表现。精心整理的训练数据集也可能让没有可比数据的团队难以精确复现。因此，这篇论文提供的是一种有前景的替代方案，而非最终答案：未来的工作可以在不同的视图设计、数据来源和适配设置下检验这些假设。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 418.78,
+      "end": 455.784,
+      "en": "The main takeaway is that scalable visual learning need not treat global semantics and local structure as separate goals. JEM uses patch-level alignment, informative targets, and a structural cue to pursue both within one framework, with strong results on several dense tasks and a demonstrated path to very large models. Its assumptions and approximations remain open to scrutiny. Remember the guiding question: do different views agree on useful content without erasing where that content belongs? Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "主要结论是，可扩展的视觉学习不必把全局语义和局部结构当作两个独立目标。JEM 通过图块级对齐、信息量丰富的目标和结构线索，在同一个框架内同时追求这两者，在多项密集任务上取得了强劲结果，并展示了通往超大规模模型的可行路径。它的假设和近似仍然有待审视。请记住那个引导性问题：不同视图是否能在不抹去内容位置的前提下，对有用内容达成一致？感谢收听。如果还有任何问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{seitzer2026scalablepatchlevelselfsupervisedlearning,\n      title={Scalable Patch-Level Self-Supervised Learning}, \n      author={Maximilian Seitzer and Gabriele Trivigno and Antonín Vobecký and Seungeun Yi and Maxime Oquab and Huy V. Vo and Oriane Siméoni and Piotr Bojanowski},\n      year={2026},\n      eprint={2610.10013},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.10013}, \n}",
+  "topics": [
+    "Image Segmentation",
+    "Multi Task Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    0.957,
+    0.63,
+    0.423,
+    0.492,
+    0.451,
+    0.496,
+    0.598,
+    0.43,
+    0.483,
+    0.476,
+    0.375,
+    0.943,
+    1.0,
+    0.862,
+    0.852,
+    0.737,
+    0.431,
+    0.337,
+    0.295,
+    0.23,
+    0.381,
+    0.754,
+    0.264,
+    0.6,
+    0.425,
+    0.317,
+    0.716,
+    0.472,
+    0.383,
+    0.319,
+    0.354,
+    0.603,
+    0.884,
+    0.778,
+    0.727,
+    0.557,
+    0.551,
+    0.393,
+    0.268,
+    0.268,
+    0.2,
+    0.24,
+    0.552,
+    0.78,
+    0.501,
+    0.579,
+    0.568,
+    0.428,
+    0.706,
+    0.887,
+    0.702,
+    0.587,
+    0.612,
+    0.69,
+    0.699,
+    0.466,
+    0.348,
+    0.319,
+    0.29,
+    0.309,
+    0.424,
+    0.575,
+    0.419,
+    0.303,
+    0.301,
+    0.204,
+    0.623,
+    0.406,
+    0.455,
+    0.449,
+    0.273,
+    0.38
+  ],
+  "published": "2026-10-07",
+  "views": 490,
+  "license": "arXiv 默认许可"
+}

@@ -1,0 +1,274 @@
+{
+  "id": "2610.13025",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.13025",
+    "arxiv": "https://arxiv.org/abs/2610.13025"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a12dbe-0a07-71e8-8399-f2d69b1756ca/podcast.mp3",
+  "duration": 427.415,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 28.08,
+      "en": "Imagine a coding agent whose prompts, tools, and feedback are controlled by software that can itself be edited. In our graduate course, Agent Learning and Self-Improving Systems, today’s lecture is on Evo two. Recent work such as A Self-Improving Coding Agent and Meta-Harness explores ways to refine agent harnesses. Evo two takes the trend a step further: the system making those edits can learn from their outcomes. Yes, Noah?",
+      "zh": "想象一个编码智能体，它的提示词、工具和反馈都由可以自我编辑的软件来控制。在我们的研究生课程“智能体学习与自我改进系统”中，今天的讲座讲的是Evo two。近期像《自我改进的编码智能体》和Meta-Harness这样的工作探索了改进智能体框架的方法。Evo two把这个趋势又推进了一步：做出这些编辑的系统能够从结果中学习。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 29.06,
+      "end": 33.76,
+      "en": "Hi Professor, does that mean the agent changes its own model as well as its surrounding software?",
+      "zh": "教授您好，这是否意味着智能体既会改变自己的模型，也会改变它周围的软件？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 34.8,
+      "end": 69.34,
+      "en": "That is the central idea, with an important distinction: Evo two improves the policy that proposes and judges harness edits through training, rather than simply changing its weights during each edit. On held-out Polyglot tasks, its harnesses score 82.1% pass at one, compared with 62.6% for the strongest baseline, G-E-A. Pass at one is success on a single attempt, averaged over three evaluation runs. These results use Qwen three point eight, twenty-seven B; the task executor stays fixed.",
+      "zh": "这就是核心思想，但有一个重要区别：Evo two通过训练来改进提出和评判harness编辑的策略，而不是在每次编辑时简单地改变其权重。在留出的Polyglot任务上，其harness在pass@1上得分82.1%，而最强基线G-E-A为62.6%。pass@1是指单次尝试的成功率，取三次评估运行的平均值。这些结果使用Qwen 3.8 27B；任务执行器保持固定。"
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "start": 70.28,
+      "end": 73.3,
+      "en": "Quick question: what exactly counts as the harness here?",
+      "zh": "快速问一下：这里到底什么才算作harness？"
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "start": 73.96,
+      "end": 104.14,
+      "en": "Think of the harness as an agent’s operating procedure: it organizes prompts, tools, context, and control flow. Evo two uses one shared policy in two roles, called Proposer and Reflector. First, the Proposer edits a sampled parent harness. A fixed executor then runs tasks with the candidate. That separation matters: when measured performance changes, the experiment can attribute the change to the harness, rather than to a newly changed executor.",
+      "zh": "把harness理解成智能体的操作流程：它负责组织提示词、工具、上下文和控制流。Evo two用同一个共享策略扮演两个角色，分别叫Proposer和Reflector。首先，Proposer对一个采样得到的父代harness进行修改。然后由一个固定的执行器用这个候选harness来跑任务。这种分离很重要：当测得的性能发生变化时，实验可以把变化归因于harness，而不是归因于一个新换的执行器。"
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "start": 104.88,
+      "end": 107.5,
+      "en": "So the Reflector is not a separate model judging the Proposer?",
+      "zh": "所以反思器并不是一个单独评判提议器的模型？"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 107.76,
+      "end": 137.52,
+      "en": "Correct. The same policy receives different role prompts. After an edit is tested, the Reflector examines the candidate, its performance change, and execution traces. It can recommend a revision, request crossover with a strategy from another branch, or keep the candidate as is. For a revision or crossover, the Proposer makes a second, directed edit, called Type B. Evaluated harnesses can become branches in a search tree and supply strategies for later edits.",
+      "zh": "没错。同一个策略会接收不同的角色提示。一次编辑经过测试后，反思器会检查候选方案、它的性能变化以及执行轨迹。它可以建议修改、请求与另一分支的策略进行交叉，或者保持候选方案不变。对于修改或交叉，提议器会进行第二次定向编辑，称为B类编辑。被评估的测试框架可以成为搜索树中的分支，并为后续编辑提供策略。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 138.46,
+      "end": 141.72,
+      "en": "Can you clarify how the policy learns from those edit trajectories?",
+      "zh": "你能说明一下策略是如何从这些编辑轨迹中学习的吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 142.72,
+      "end": 176.9,
+      "en": "The training process, called EvoTIDE, recovers usable examples when a response contains concrete edits but no formal edit action, or when a later edit fails by returning to the last valid intermediate harness. Recovery does not make an invalid candidate successful; candidates still face application, startup, and task checks. The shared policy first receives S-F-T on selected successful edits and reflections, then interleaved G-R-P-O, which compares candidate responses within groups using task outcomes.",
+      "zh": "这个训练过程叫EvoTIDE，当回复里包含具体修改但没有正式的编辑动作，或者后续某次编辑失败、需要回退到上一个有效的中间测试框架时，它能恢复出可用的样本。恢复并不会让无效候选变成有效，候选仍然要通过应用、启动和任务检查。共享策略先在接受筛选的成功编辑和反思上做S-F-T，然后进行交错的G-R-P-O，后者利用任务结果在组内比较候选回复。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 178.02,
+      "end": 180.92,
+      "en": "Does the training only show the policy successful harnesses?",
+      "zh": "训练只给策略展示成功的harness吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 181.62,
+      "end": 208.28,
+      "en": "No. The parent pool samples harnesses at different depths and performance levels. That gives the policy both strong candidates that might be improved and weaker ones that may need repair. The distinction is useful for practical agent development: an editing system needs to recognize when to preserve a reliable strategy and when to change one. Still, the paper evaluates benchmark outcomes; it does not measure how much human redesign effort the approach saves.",
+      "zh": "不是。父代池会从不同深度和性能水平的执行框架中采样。这样策略既能拿到可能被改进的强候选，也能拿到可能需要修复的弱候选。这种区分对实际的智能体开发很有用：编辑系统需要识别何时保留可靠的策略、何时改变策略。不过，论文评估的是基准结果，并没有衡量这种方法节省了多少人工重新设计的工作量。"
+    },
+    {
+      "i": 11,
+      "speaker": "Noah",
+      "start": 209.22,
+      "end": 212.3,
+      "en": "How does crossover work without simply copying another branch?",
+      "zh": "交叉是怎么运作的，才不会只是照搬另一个分支？"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 213.22,
+      "end": 241.94,
+      "en": "The Reflector identifies a recipient harness’s weakness and selects a useful strategy from a donor branch. The Proposer then adapts that strategy to the recipient’s code rather than copying it blindly. This is one of the mechanisms that makes the search more than a sequence of isolated edits. The paper reports a separate 4.1-point Polyglot improvement attributed to crossover, but that result should not be confused with the controlled test of evolver training.",
+      "zh": "Reflector会找出接收方harness的弱点，并从供体分支中选出一个有用的策略。然后Proposer会把这个策略适配到接收方的代码上，而不是盲目照搬。这正是让搜索不只是孤立编辑序列的机制之一。论文报告了交叉带来的额外4.1分Polyglot提升，但这个结果不应与对进化器训练的受控测试混为一谈。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 243.24,
+      "end": 246.06,
+      "en": "What’s the clearest evidence that training the evolver itself helps?",
+      "zh": "训练演化器本身有帮助，最清楚的证据是什么？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 246.98,
+      "end": 282.98,
+      "en": "Table 5 provides the clearest controlled comparison. It holds the search procedure, executor, and parent harnesses fixed while varying whether the evolver’s weights are trained. On Polyglot, the untrained evolver scores 61.8 and the trained one 78.0. The paper reports a gain of 16.3 points, with a p-value of .001; the displayed rounded scores subtract to 16.2. This supports a contribution from training under those conditions, not an explanation of every overall gain.",
+      "zh": "表5提供了最清晰的控制变量对比。它保持搜索流程、执行器和父级框架不变，只改变进化器权重是否经过训练。在Polyglot上，未训练的进化器得分为61.8，训练后的为78.0。论文报告了16.3个百分点的提升，p值为.001；而展示的取整分数相减为16.2。这支持了在这些条件下训练所带来的贡献，但并不能解释所有整体提升。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 283.72,
+      "end": 286.66,
+      "en": "And do the resulting harnesses transfer to other coding benchmarks?",
+      "zh": "那由此得到的测试框架能否迁移到其他编程基准上呢？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 287.36,
+      "end": 317.32,
+      "en": "The paper tests transfer by evolving and selecting a harness on one coding benchmark, then evaluating it on the other two without further evolution. Evo two ranks first in five of six directions, not all six. For example, a harness evolved on LiveCodeBench scores 74.0 on Polyglot, compared with 63.4 for the best baseline. That is evidence of cross-benchmark usefulness in this setup, not proof of universal transfer to other tasks or interfaces.",
+      "zh": "论文通过在一个编程基准上演化并挑选出一个测试框架，然后在另外两个基准上评估它、不再进一步演化，以此来测试迁移性。Evo two在六个方向中的五个里排名第一，并非全部六个。例如，一个在LiveCodeBench上演化出的框架在Polyglot上得分74.0，而最佳基线为63.4。这在该实验设置下证明了跨基准的实用性，但并不能证明它能普遍迁移到其他任务或接口。"
+    },
+    {
+      "i": 17,
+      "speaker": "Noah",
+      "start": 318.56,
+      "end": 321.52,
+      "en": "How does this differ from SICA and Meta-Harness?",
+      "zh": "这和SICA以及Meta-Harness有什么不同？"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 322.6,
+      "end": 356.42,
+      "en": "Those works help establish the direction of harness evolution: an agent can inspect prior versions and results, then edit the software organizing its behavior. Evo two’s distinct emphasis is linking those edits and their execution outcomes to training the evolver. The broader shift is from searching over agent implementations with a fixed model toward asking whether experience from that search can improve the policy guiding later searches. The controlled comparison is important because the full method also includes reflection and crossover.",
+      "zh": "这些工作有助于确立harness演进的方向：智能体可以检查之前的版本和结果，然后编辑组织其行为的软件。Evo two的独特重点在于将这些编辑及其执行结果与训练进化器联系起来。更广泛的转变是从用固定模型搜索智能体实现，转向追问从这种搜索中获得的经验能否改进指导后续搜索的策略。受控比较很重要，因为完整方法还包括反思和交叉。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 357.56,
+      "end": 360.08,
+      "en": "What should we be cautious about when interpreting the results?",
+      "zh": "在解读结果时，我们应该注意哪些问题？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 361.0,
+      "end": 393.58,
+      "en": "The evidence is bounded by the tested models, benchmarks, and procedures. In particular, the Polyglot weight-training ablation does not prove that weight updates alone explain the full Table 1 advantage, and not every reported task comparison has a reported significance test. The result for SWE-bench Verified in Table 5 is 46.0 versus 51.0, with a p-value of .086, so it should not be presented as a statistically established gain.",
+      "zh": "这些证据受限于所测试的模型、基准和流程。特别是，Polyglot 的权重训练消融实验并不能证明仅靠权重更新就能解释表1中的全部优势，而且并非每项报告的任务比较都附有显著性检验。表5中 SWE-bench Verified 的结果是46.0对51.0，p值为.086，因此不应将其呈现为统计上已确立的提升。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 394.52,
+      "end": 427.415,
+      "en": "The conceptual takeaway is that harness edits are tested changes to an agent’s executable behavior, and their outcomes can also become experience for the policy that proposes future edits. Evo two joins those two feedback loops: experience may accumulate in both the harness and the evolver. That offers a useful direction for research on adaptive agents, while leaving open how broadly the approach transfers and how much human effort it actually saves. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "概念上的要点是，对执行框架的修改是对智能体可执行行为的受测变更，而这些变更的结果也可以成为策略的经验，用来提出未来的修改。Evo two 把这两个反馈回路结合起来：经验既可能积累在执行框架中，也可能积累在演化器中。这为自适应智能体的研究提供了一个有用的方向，但该方法能推广到多广、实际能节省多少人力，仍是未解的问题。感谢收听。如果还有问题，可以询问我们的 AI 助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{xu2026evo2evolvingevolverweightharness,\n      title={Evo$^2$: Evolving the Evolver through Weight-Harness Co-Evolution}, \n      author={Chejian Xu and Shujian Zhang and Wenxuan Zhou and John Lambert and Beck Chen and Bo Li and Andrew Hard and Rajiv Mathews},\n      year={2026},\n      eprint={2610.13025},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.13025}, \n}",
+  "topics": [
+    "Agents",
+    "Fine Tuning",
+    "Optimization Methods"
+  ],
+  "peaks": [
+    0.629,
+    0.489,
+    0.392,
+    0.301,
+    0.304,
+    0.803,
+    0.695,
+    0.773,
+    0.497,
+    0.329,
+    0.533,
+    0.212,
+    0.417,
+    0.289,
+    0.212,
+    0.227,
+    0.25,
+    0.299,
+    0.485,
+    0.241,
+    0.384,
+    0.456,
+    0.314,
+    0.537,
+    0.923,
+    0.715,
+    0.459,
+    0.588,
+    0.309,
+    0.2,
+    0.679,
+    0.314,
+    0.224,
+    0.231,
+    0.243,
+    0.547,
+    0.518,
+    0.515,
+    0.279,
+    0.435,
+    0.256,
+    0.988,
+    0.443,
+    1.0,
+    0.462,
+    0.4,
+    0.252,
+    0.43,
+    0.614,
+    0.553,
+    0.365,
+    0.531,
+    0.259,
+    0.474,
+    0.489,
+    0.488,
+    0.357,
+    0.281,
+    0.318,
+    0.226,
+    0.463,
+    0.463,
+    0.461,
+    0.398,
+    0.354,
+    0.241,
+    0.373,
+    0.262,
+    0.296,
+    0.219,
+    0.288,
+    0.213
+  ],
+  "published": "2026-10-09",
+  "views": 566,
+  "license": "CC BY"
+}

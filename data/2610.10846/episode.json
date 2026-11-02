@@ -1,0 +1,256 @@
+{
+  "id": "2610.10846",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10846",
+    "arxiv": "https://arxiv.org/abs/2610.10846"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e7b-e01c-7662-9be0-f0c44258b89e/podcast.mp3",
+  "duration": 497.502,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 36.0,
+      "en": "In a graduate course on Robot Learning and World Models, today's lecture is on Cross-Embodiment Robot Foundation World Models with Latent Actions. Recent work such as Learning Latent Action World Models In The Wild explores learning movement representations from video, while this paper, from researchers at Stanford and Meta FAIR Robotics, tests how those representations can connect different robots. The field is moving toward broader data and general-purpose models; this study asks whether shared latent actions make that data useful for planning. Go ahead, Noah.",
+      "zh": "在机器人学习与世界模型的研究生课程中，今天的讲座主题是带有潜在动作的跨具身机器人基础世界模型。近期的工作如Learning Latent Action World Models In The Wild探索了从视频中学习运动表征，而这篇来自斯坦福和Meta FAIR Robotics研究人员的论文则测试了这些表征如何连接不同的机器人。该领域正朝着更广泛的数据和通用模型方向发展；这项研究追问的是，共享的潜在动作能否让这些数据对规划有用。诺亚，你来说吧。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 37.1,
+      "end": 40.4,
+      "en": "Hi Professor, what does cross-embodiment transfer mean in this paper?",
+      "zh": "教授您好，这篇论文里的跨具身迁移是什么意思？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 41.24,
+      "end": 72.68,
+      "en": "It means learning from one kind of body or control system and applying what was learned to another. A human hand, a single-arm robot, and a bimanual robot describe movement in different ways, even when they perform similar tasks. The paper asks whether a world model can learn a common movement representation across those differences, then use it to predict how an unfamiliar robot will change its surroundings. That matters because prediction can help a robot compare actions before carrying them out.",
+      "zh": "意思是从一种身体或控制系统里学习，再把学到的东西用到另一种上。人手、单臂机器人和双臂机器人描述动作的方式各不相同，哪怕它们做的是类似的任务。这篇论文问的是，世界模型能不能跨越这些差异学到一个共同的动作表征，然后用它来预测一个不熟悉的机器人会怎样改变周围环境。这很重要，因为预测能帮机器人在真正执行动作之前先比较不同动作的效果。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 73.62,
+      "end": 103.42,
+      "en": "The central proposal is a world model conditioned on learned latent actions: compact codes inferred from changes between observations. The model uses one component to infer a latent action from two successive visual embeddings, and another to predict the next embedding from the current one and that action. A motion decoder also reconstructs explicit movement labels from the latent code. Together, these pieces aim to make the codes useful for prediction while anchoring them to actual movement.",
+      "zh": "核心思路是一个以学习到的潜在动作为条件的世界模型：这些紧凑的编码是从观测之间的变化中推断出来的。模型用一个组件从两个连续的视觉嵌入中推断潜在动作，用另一个组件根据当前嵌入和该动作预测下一个嵌入。还有一个运动解码器从潜在编码重建显式的运动标签。这几部分合在一起，目标是让这些编码既能用于预测，又锚定在真实的运动上。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 104.42,
+      "end": 109.4,
+      "en": "Quick question: why not just map every robot’s action labels into vectors of the same size?",
+      "zh": "快速问一句：为什么不直接把每个机器人的动作标签映射成同样大小的向量呢？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 110.38,
+      "end": 141.8,
+      "en": "Matching vector sizes does not make their meanings match. A human hand pose, a robot end-effector command, and camera movement can have different dimensions and semantics. Separate encoders can produce equally sized outputs that still occupy incompatible spaces. The paper’s comparison is therefore important: it contrasts a model using learned latent actions with one using embeddings of explicit action labels, testing whether the representation itself affects transfer rather than assuming a shared dimension is enough.",
+      "zh": "向量大小一致并不代表含义一致。人手姿态、机器人末端执行器指令和相机运动可能具有不同的维度和语义。独立的编码器可以产出同样大小的输出，但这些输出仍然处于互不兼容的空间中。因此，论文中的这一对比很重要：它将使用学习到的潜在动作的模型与使用显式动作标签嵌入的模型进行对比，检验表征本身是否影响迁移，而不是想当然地认为共享维度就够了。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 142.84,
+      "end": 172.7,
+      "en": "The training objective combines visual prediction with motion reconstruction. The inverse dynamics model infers a code from consecutive frames; the forward model predicts the next visual embedding; and the decoder uses the code and current observation to predict labeled motion. The researchers also augment the two frames independently, so the inverse model and forward model do not rely on precisely the same visual input. This is intended to discourage codes that merely copy visual changes instead of representing movement.",
+      "zh": "训练目标把视觉预测和运动重建结合起来。逆动力学模型从连续帧中推断出一个编码；前向模型预测下一个视觉嵌入；解码器则利用这个编码和当前观测来预测带标签的运动。研究者还对这两帧分别做了独立增强，这样逆模型和前向模型就不会依赖完全相同的视觉输入。这么做是为了避免编码只是照搬视觉变化，而没有真正表示运动。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 173.74,
+      "end": 178.32,
+      "en": "Can you clarify how the model acts at test time if it infers actions from future frames?",
+      "zh": "你能说明一下，如果模型是从未来帧推断动作的，那它在测试时是如何行动的？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 179.38,
+      "end": 211.0,
+      "en": "That is a key implementation detail: the inverse model needs a future observation, so it cannot directly choose an action before the future happens. For adaptation, the researchers train an action projector, a small two-layer network that maps the new robot’s explicit commands into the pretrained latent space. The projected codes condition imagined rollouts. The model can then score candidate action sequences by comparing their predicted final image embeddings with a target or subgoal.",
+      "zh": "这是一个关键的实现细节：逆模型需要未来的观测，所以它无法在未來发生之前直接选择动作。为了做适配，研究人员训练了一个动作投影器，这是一个小型的两层网络，把新机器人的显式指令映射到预训练的潜在空间中。投影后的编码用来条件化想象出的轨迹。然后，模型可以通过比较候选动作序列预测出的最终图像嵌入与目标或子目标，来给这些候选动作序列打分。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 213.0,
+      "end": 245.36,
+      "en": "Pretraining uses 50,000 trajectories from each of three sources: human manipulation in EgoDex, a bimanual humanoid robot in AgiBot, and a Franka arm in DROID. For adaptation, the target is a bimanual Franka robot with Allegro hands, treated as unseen during pretraining. Its simulated dataset contains 7,265 trajectories across 22 pick-and-place tasks. This gives the study a concrete test of whether heterogeneous experience helps a new, more dexterous setup.",
+      "zh": "预训练用了三个来源各5万条轨迹：EgoDex里的人类操作、AgiBot里的双臂人形机器人，以及DROID里的Franka机械臂。适配阶段的目标是一个带Allegro手的双臂Franka机器人，预训练时把它当作没见过的平台。它的仿真数据集包含22个抓放任务、共7265条轨迹。这就给研究提供了一个具体测试：异构经验能否帮到一套新的、更灵巧的配置。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 245.36,
+      "end": 251.6,
+      "en": "Does the motion decoder make the latent space more aligned, or is that just suggested by visualizations?",
+      "zh": "运动解码器是真的让潜在空间更对齐了，还是说这只是可视化给人的印象？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 252.72,
+      "end": 288.54,
+      "en": "The evidence comes from several tests, not only visualizations. In UMAP plots, explicit-action embeddings remain separated by dataset, whereas the learned latent actions cluster more closely across the three sources. A model without motion decoding aligns less completely. In qualitative transfer tests, codes inferred from one embodiment lead to predictions with similar movement direction in another. Without the decoder, some predictions show visual artifacts. These results support the value of motion grounding, though they do not prove it is the only cause.",
+      "zh": "这个证据来自多项测试，而不只是可视化。在UMAP图中，显式动作嵌入仍然按数据集分开，而学到的潜在动作在三个来源之间聚得更近。没有运动解码的模型对齐得没那么完整。在定性迁移测试中，从一个具身推断出的编码能在另一个具身中产生运动方向相似的预测。没有解码器时，一些预测会出现视觉伪影。这些结果支持运动锚定的价值，但并不能证明它是唯一的原因。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 289.48,
+      "end": 293.92,
+      "en": "How much does that representation difference matter for planning, rather than just prediction quality?",
+      "zh": "这种表征差异对规划有多重要，而不只是对预测质量有影响？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 294.9,
+      "end": 341.94,
+      "en": "On unseen BFA instances, the latent-action model reports a peak signal-to-noise ratio of 27.484, a perceptual distance of 0.037, and a video distribution distance of 23.213. The pretrained explicit-action baseline reports 24.252, 0.057, and 30.349. In dexterous planning, average success is 0.22, versus 0.15 for that baseline and 0.17 for the strongest vision-language-action-only baseline. The relative improvement over the explicit-action model is 46.7%, although absolute success remains modest.",
+      "zh": "在未见过的BFA实例上，潜在动作模型报告的峰值信噪比为27.484，感知距离为0.037，视频分布距离为23.213。预训练的显式动作基线报告的结果为24.252、0.057和30.349。在灵巧规划任务中，平均成功率为0.22，而该基线为0.15，最强的仅视觉-语言-动作基线为0.17。相对于显式动作模型的相对提升为46.7%，尽管绝对成功率仍然不高。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 342.94,
+      "end": 377.68,
+      "en": "A modified LIBERO simulation provides a second planning test, with five unseen task variants and a different visual tokenizer. The latent-action model reaches 92% average success, compared with 82.4% for the explicit-action model, a gain of 9.6 percentage points. Scaling experiments also suggest that adding embodiments helps the latent-action model, while the explicit-action model can decline as heterogeneous sources are added. These findings connect representation alignment to downstream utility, but remain bounded by simulated evaluations.",
+      "zh": "一个改造过的LIBERO仿真环境提供了第二项规划测试，包含五个未见过的任务变体和不同的视觉tokenizer。潜在动作模型达到92%的平均成功率，而显式动作模型为82.4%，提升了9.6个百分点。规模扩展实验还表明，增加具身类型有助于潜在动作模型，而显式动作模型在加入异构来源时可能下降。这些发现将表征对齐与下游效用联系起来，但仍受限于仿真评估。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 378.86,
+      "end": 382.52,
+      "en": "What should we be cautious about when interpreting the scaling and ablation results?",
+      "zh": "在解读扩展实验和消融实验结果时，我们应该注意什么？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 382.52,
+      "end": 414.14,
+      "en": "The evidence is promising but narrow. Pretraining covers three datasets, and the main dexterous evaluation is simulated; the paper does not report physical-robot validation. Its pretraining also depends on motion labels, so the approach has not yet shown that it can scale in the same way to large unlabeled video collections. One ablation removes both motion decoding and cross-augmentation at once, so its reduced success rate cannot isolate the effect of either component. Broader tests are still needed.",
+      "zh": "证据看起来有前景，但范围偏窄。预训练只覆盖了三个数据集，主要的灵巧操作评估是在仿真中进行的；论文没有报告真实机器人上的验证。它的预训练还依赖运动标签，因此该方法尚未证明能以同样的方式扩展到大规模无标注视频集合。有一项消融实验同时去掉了运动解码和交叉增强，所以其成功率下降无法单独归因于其中任一组件。仍需更广泛的测试。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 415.16,
+      "end": 451.7,
+      "en": "The broader contribution is a focused argument that world-model transfer depends not only on collecting more data, but also on making action representations compatible across sources. This complements policy research such as UniVLA, which uses task-centric latent actions for robot policies, by examining latent movement codes as conditions for predictive models and planning. The two directions address related problems through different uses of representation. Future work should test real hardware, more tasks, and whether useful alignment can be learned with less labeled motion data.",
+      "zh": "更宏观的贡献在于，这篇论文集中论证了一点：世界模型的迁移不仅取决于收集更多数据，还取决于让不同来源的动作表示彼此兼容。这与 UniVLA 等策略研究形成互补——后者用任务中心的潜在动作来构建机器人策略，而本文则把潜在运动编码作为预测模型和规划的条件来考察。两个方向针对的是相关问题，只是对表示的使用方式不同。未来的工作应当测试真实硬件、更多任务，以及能否用更少的带标注运动数据学到有用的对齐。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 452.64,
+      "end": 456.92,
+      "en": "So the main takeaway is that shared action meaning may matter as much as adding more robots?",
+      "zh": "所以主要的结论是，共享的动作含义可能和增加更多机器人同样重要？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 458.06,
+      "end": 497.502,
+      "en": "Exactly: heterogeneous data becomes more useful when a model can interpret movement across embodiments in a compatible way. This paper shows one route, pairing learned latent actions with explicit motion supervision and testing the result through prediction and planning. Its gains are measurable, but the simulation-heavy evidence and reliance on labels leave important questions open. The memorable takeaway is not simply to gather more robot data; it is to ask whether the model can understand the actions represented by that data. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "正是如此：当模型能够以兼容的方式解读不同具身形态之间的运动时，异构数据就会变得更有用。这篇论文展示了一条路径，即把学习到的潜在动作与显式的运动监督相结合，并通过预测和规划来检验结果。它的收益是可衡量的，但大量依赖仿真的证据以及对标签的依赖，留下了一些重要问题。值得记住的要点不是简单地收集更多机器人数据，而是要问模型能否理解这些数据所表示的动作。感谢收听。如果你还有任何问题，请询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{huang2026crossembodimentrobotfoundationworld,\n      title={Cross-Embodiment Robot Foundation World Models with Latent Actions}, \n      author={Huang Huang and Sriram Yenamandra and Arjun Majumdar and Elie Aljalbout and Tushar Nagarajan and Tsung-Yen Yang and Akshara Rai and Michael Rabbat and Li Fei-Fei and Jiajun Wu and Tingfan Wu and Franziska Meier},\n      year={2026},\n      eprint={2610.10846},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.10846}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    1.0,
+    0.602,
+    0.841,
+    0.605,
+    0.375,
+    0.492,
+    0.639,
+    0.577,
+    0.477,
+    0.361,
+    0.591,
+    0.577,
+    0.534,
+    0.497,
+    0.472,
+    0.502,
+    0.622,
+    0.406,
+    0.466,
+    0.461,
+    0.49,
+    0.65,
+    0.625,
+    0.639,
+    0.424,
+    0.768,
+    0.704,
+    0.42,
+    0.439,
+    0.403,
+    0.439,
+    0.498,
+    0.68,
+    0.399,
+    0.251,
+    0.577,
+    0.595,
+    0.273,
+    0.301,
+    0.247,
+    0.227,
+    0.363,
+    0.616,
+    0.251,
+    0.308,
+    0.219,
+    0.343,
+    0.3,
+    0.2,
+    0.787,
+    0.729,
+    0.675,
+    0.585,
+    0.498,
+    0.402,
+    0.848,
+    0.841,
+    0.742,
+    0.582,
+    0.405,
+    0.573,
+    0.357,
+    0.219,
+    0.228,
+    0.209,
+    0.473,
+    0.621,
+    0.51,
+    0.317,
+    0.368,
+    0.314,
+    0.31
+  ],
+  "published": "2026-10-07",
+  "views": 481,
+  "license": "CC BY"
+}
