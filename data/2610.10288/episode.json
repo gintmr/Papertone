@@ -1,0 +1,274 @@
+{
+  "id": "2610.10288",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.10288",
+    "arxiv": "https://arxiv.org/abs/2610.10288"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a119be-25bb-7ac2-b67f-661002a65250/podcast.mp3",
+  "duration": 527.203,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 38.06,
+      "en": "In a graduate seminar on embodied perception and robot learning, today's lecture is on TouchScale: 500 Hours of Human Vision and Touch for Visual-Tactile Learning. Recent work such as MAPLE: Encoding Dexterous Robotic Manipulation Priors Learned From Egocentric Videos and EgoDex: Learning Dexterous Manipulation from Large-Scale Egocentric Video shows how the field is scaling up first-person human data. Researchers from institutions including Google DeepMind and Texas A&M University ask a complementary question: what if those recordings also captured touch? Yes, Noah?",
+      "zh": "在一场关于具身感知与机器人学习的研究生研讨课上，今天的讲座主题是TouchScale：500小时人类视觉与触觉数据，用于视触觉学习。近期的工作，比如MAPLE：从第一人称视频中学习灵巧机器人操作先验的编码方法，以及EgoDex：从大规模第一人称视频中学习灵巧操作，展示了这个领域正在如何规模化利用第一人称人类数据。来自Google DeepMind和德州农工大学等机构的研究者提出了一个互补的问题：如果这些记录同时也捕捉了触觉呢？好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 39.06,
+      "end": 45.8,
+      "en": "Hi Professor, if egocentric video is already scaling, what does touch add that cameras cannot reliably tell us?",
+      "zh": "教授您好，如果第一人称视频已经在规模化扩展了，那触觉能补充哪些摄像头无法可靠传达的信息呢？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 46.68,
+      "end": 74.44,
+      "en": "A camera records visible movement, but contact is often hidden: it may show a hand holding a cup without revealing exactly where pressure falls or how firmly the fingers grip. TouchScale pairs first-person video with measurements from sensors worn on both hands. Its collection contains about 500 hours, 87,000 episodes, and 1,964 task descriptions, giving researchers a shared resource to study how vision and touch work together.",
+      "zh": "摄像头能记录可见的动作，但接触往往藏在画面之外：它可能拍到一只手握着杯子，却看不出压力具体落在哪里，也看不出手指握得有多紧。TouchScale把第一人称视频和双手佩戴的传感器测量数据配成一对。它的数据集包含约500小时、87000个片段和1964条任务描述，为研究者提供了一个共享资源，用来研究视觉和触觉如何协同工作。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 75.36,
+      "end": 108.88,
+      "en": "The collection spans more than 1,500 objects, roughly 20 participants, and varied environments, from kitchens and workbenches to offices and bedrooms. Repeated activities change object positions, layouts, and grasp choices, so the data includes meaningful variation rather than one fixed demonstration. The central contribution is not just volume: the same wearable sensing and synchronization pipeline is used throughout, making it easier to examine the effect of adding data without mixing incompatible collection protocols.",
+      "zh": "这个数据集涵盖1500多个物体、大约20名参与者，以及从厨房、工作台到办公室、卧室等多种环境。重复进行的活动会改变物体位置、布局和抓取方式，因此数据中包含有意义的差异，而不是单一固定的演示。其核心贡献不只是数据量：整个数据集始终采用同一套可穿戴传感与同步流程，这让研究者更容易考察增加数据带来的效果，而不会混入互不兼容的采集协议。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 108.88,
+      "end": 114.68,
+      "en": "Quick question: what exactly do the participants wear, and how are the streams synchronized?",
+      "zh": "快速问一下：参与者到底穿戴了什么设备，这些数据流又是怎么同步的？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 115.58,
+      "end": 143.02,
+      "en": "The system records head-mounted video with depth, video from cameras on both wrists, and tactile measurements from flexible gloves. Each glove has 880 sensing points across the fingers and palm, with less than 2 millimeters of spatial resolution. Video runs at 30 frames per second; touch is recorded at 50 hertz wirelessly or 100 hertz by wire. The streams are synchronized, and the original timestamps are retained.",
+      "zh": "这个系统会记录头戴式深度视频、双腕摄像头的视频，以及柔性手套的触觉测量数据。每只手套在手指和手掌上共有880个传感点，空间分辨率小于2毫米。视频帧率为每秒30帧；触觉数据可以无线方式以50赫兹记录，或有线方式以100赫兹记录。各数据流之间保持同步，并保留原始时间戳。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 144.0,
+      "end": 174.5,
+      "en": "The authors test three broader ideas. First, can tactile patterns learned from one glove transfer to a different sensor? Second, can touch prediction improve visual features used for action recognition? Third, can human vision-and-touch recordings help a robot policy even without human action labels? In that final test, the human data trains a tactile prediction pathway, while robot demonstrations are still used afterward to train the policy for the target tasks.",
+      "zh": "作者测试了三个更宏观的设想。第一，从一只手套学到的触觉模式能否迁移到不同的传感器上？第二，触觉预测能否改进用于动作识别的视觉特征？第三，人类的视觉与触觉记录能否在没有人类动作标签的情况下帮助机器人策略？在最后这项测试中，人类数据训练一条触觉预测通路，而机器人演示随后仍被用来训练目标任务的策略。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 175.52,
+      "end": 179.98,
+      "en": "So the human recordings teach the robot about contact, but not which movements to make?",
+      "zh": "所以人类的记录教会了机器人什么是接触，但没教它该做哪些动作？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 179.98,
+      "end": 215.64,
+      "en": "Exactly. The tactile-prediction experiment trains TouchAnything on TouchScale or EgoTouch, then evaluates the models on EgoTactile without further training. Since the sensors differ, their measurements are mapped into 12 shared anatomical hand regions for comparison. Against a size-matched EgoTouch model, TouchScale improves contact overlap from 0.134 to 0.181 and volumetric overlap from 0.185 to 0.243, while also reducing localization and pressure errors.",
+      "zh": "正是如此。触觉预测实验先在TouchScale或EgoTouch上训练TouchAnything，然后在EgoTactile上评估模型，不再进一步训练。由于传感器不同，它们的测量值被映射到12个共享的手部解剖区域进行比较。与规模匹配的EgoTouch模型相比，TouchScale将接触重叠从0.134提升到0.181，体积重叠从0.185提升到0.243，同时还降低了定位和压力误差。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 216.56,
+      "end": 221.14,
+      "en": "How should we interpret the zero-shot result if the two datasets use different sensor layouts?",
+      "zh": "如果两个数据集使用不同的传感器布局，我们该如何解读零样本结果？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 222.18,
+      "end": 254.58,
+      "en": "That difference is part of the challenge the experiment addresses. Models keep each dataset's native tactile layout during training, then predictions are compared using the shared hand regions. This makes the evaluation less dependent on matching sensor grids, though it cannot remove every difference between collection setups. Increasing TouchScale training data also raises zero-shot contact overlap on EgoTactile from 0.311 at 10% of the data to 0.383 at the full scale.",
+      "zh": "这一差异正是该实验要应对的部分挑战。训练时，模型保留各数据集原生的触觉布局，然后通过共享的手部区域来比较预测结果。这样一来，评估对传感器网格匹配的依赖就降低了，尽管它无法消除采集设置之间的所有差异。增加TouchScale的训练数据也提高了在EgoTactile上的零样本接触重叠度，从使用10%数据时的0.311提升到全量数据时的0.383。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 255.52,
+      "end": 292.3,
+      "en": "The second experiment asks whether tactile supervision transfers beyond touch prediction. Hiera B visual encoders are pretrained on TouchScale and three comparison datasets with the same prediction objective, initialization, and training budget. On three action-recognition benchmarks, TouchScale pretraining reaches average accuracy of 24.45% with linear probing and 49.62% after fine-tuning. That suggests the learned visual features carry useful interaction information, not merely details needed to reconstruct tactile patterns.",
+      "zh": "第二个实验要问的是，触觉监督能否迁移到触觉预测之外。Hiera B视觉编码器在TouchScale和三个对比数据集上做预训练，预测目标、初始化和训练预算都保持一致。在三个动作识别基准上，TouchScale预训练在线性探测下达到24.45%的平均准确率，微调后达到49.62%。这说明学到的视觉特征携带了有用的交互信息，而不只是重建触觉模式所需的细节。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 293.3,
+      "end": 295.32,
+      "en": "Does that establish an advantage over large visual-only pretraining?",
+      "zh": "这是否能证明它比大规模纯视觉预训练更有优势？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 297.7,
+      "end": 332.8,
+      "en": "No. The comparison is among visual-tactile datasets, so it does not establish how TouchScale compares with large visual-only pretraining. The robot experiment is more direct about practical use. During mid-training, N-zero V-T-L-A predicts future tactile changes from current touch and visual-language context. Its main vision-language-action backbone stays frozen, and the human recordings provide no action labels. The model is then post-trained using robot demonstrations, alongside a baseline that skips this human-data stage.",
+      "zh": "不能。这个比较是在视觉-触觉数据集之间进行的，因此无法确定TouchScale与大规模纯视觉预训练相比如何。机器人实验则更直接地反映了实际使用效果。在中期训练期间，N-zero V-T-L-A根据当前触觉和视觉-语言上下文预测未来的触觉变化。其主要的视觉-语言-动作主干保持冻结，人类录制数据不提供动作标签。随后，模型使用机器人演示进行后训练，同时设置了一个跳过这一人类数据阶段的基线作为对照。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 333.7,
+      "end": 371.28,
+      "en": "The robot evaluation uses an x-arm six with a tactile-sensing hand, testing compliance sorting, bottle-cap removal, test-tube transfer, and whiteboard wiping. Each task has 50 teleoperated training demonstrations and 20 evaluation trials. Average success rises from 22.5% for the baseline to 57.5% after TouchScale mid-training. Success improves on every task, but the small task set and single robot platform mean these results should be treated as evidence of transfer in this setup, not a guarantee across robots.",
+      "zh": "机器人评测用的是x-arm six配触觉感知手，测试了柔性分拣、拧瓶盖、试管转移和白板擦拭这几项任务。每个任务有50次遥操作训练演示和20次评测试验。平均成功率从基线的22.5%提升到TouchScale中训练后的57.5%。每项任务的成功率都有提升，但任务集小、机器人平台单一，意味着这些结果只能看作该设置下迁移能力的证据，不能保证跨机器人通用。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 371.28,
+      "end": 378.44,
+      "en": "Could the policy improve simply because tactile prediction gets better, or do we know that causes the success gains?",
+      "zh": "策略变好，究竟只是因为触觉预测变好了，还是我们确知这就是成功率提升的原因？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 379.44,
+      "end": 410.52,
+      "en": "We do not know that it causes them. The robot's future-tactile prediction improves after TouchScale mid-training, but after robot post-training its relationship with action-prediction error is weak. The data-scale experiment shows a broader upward pattern in task success, from 22.5% with no human mid-training to 57.5% with the full dataset, though some intermediate results level off. Better tactile prediction and better actions are associated here, but the mechanism remains uncertain.",
+      "zh": "我们并不确定是它导致了这些提升。经过TouchScale中期训练后，机器人对未来触觉的预测有所改善，但在机器人后训练之后，它与动作预测误差的关系很弱。数据规模实验显示任务成功率呈现更广泛的上升趋势，从没有人类中期训练时的22.5%提升到使用完整数据集时的57.5%，不过一些中间结果趋于平缓。在这里，更好的触觉预测和更好的动作是相关联的，但机制仍不确定。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 412.0,
+      "end": 447.68,
+      "en": "TouchScale connects naturally to work such as EgoDex and MAPLE, which use egocentric observations to learn manipulation-relevant representations. Its distinct emphasis is synchronized touch at scale, and its robot experiment avoids requiring human action retargeting. That makes it relevant where people can provide rich interaction recordings more readily than aligned human-and-robot demonstrations. The broader shift is from treating video as a complete record of interaction toward modeling what happens at contact, while still testing whether that information transfers to action.",
+      "zh": "TouchScale与EgoDex和MAPLE这类工作自然衔接，它们都利用第一人称视角的观测来学习与操作相关的表征。它的独特之处在于大规模同步触觉，而且其机器人实验不需要人类动作重定向。这使得它在人们更容易提供丰富交互记录、而非对齐的人类与机器人演示的场景中具有相关性。更广泛的转变在于，从把视频视为交互的完整记录，转向对接触时发生的情况进行建模，同时仍在检验这些信息能否迁移到动作上。"
+    },
+    {
+      "i": 18,
+      "speaker": "Noah",
+      "start": 447.68,
+      "end": 454.34,
+      "en": "How far should we generalize from these results, given the limited robot tasks and the absence of human action labels?",
+      "zh": "考虑到机器人任务有限且缺少人类动作标签，我们应该在多大程度上推广这些结果？"
+    },
+    {
+      "i": 19,
+      "speaker": "John",
+      "start": 456.52,
+      "end": 485.46,
+      "en": "Cautiously. Four tasks, 20 trials per task, and one robot embodiment cannot establish broad deployment performance. The dataset also does not include human action labels, so it cannot directly answer which human movements would help a robot most. Still, its consistent pipeline enables controlled data-scale comparisons, and its reconstructed object models may support further study. Independent tests across embodiments, settings, and tasks will be important for understanding where the gains persist.",
+      "zh": "谨慎看待。四个任务、每个任务20次试验，再加上单一机器人本体，无法确立广泛的部署性能。数据集也不包含人类动作标签，因此无法直接回答哪些人类动作对机器人帮助最大。不过，其一致的流程支持受控的数据规模比较，重建的物体模型也可能支持进一步研究。跨本体、跨环境和跨任务的独立测试，对于理解这些收益在哪些情况下持续存在将很重要。"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 486.42,
+      "end": 519.88,
+      "en": "The main takeaway is that touch can add supervision missing from ordinary first-person video, and that synchronized human touch may help a robot even when human actions are not labeled or mapped to robot commands. TouchScale provides a substantial resource and promising evidence across prediction, representation learning, and manipulation, while leaving important questions about generalization and causality open. The memorable point is simple: to understand physical interaction, seeing the hand move may not be enough; we may also need to measure what it feels.",
+      "zh": "主要结论是，触觉可以提供普通第一人称视频中缺失的监督信号，而且即使人类动作没有被标注、也没有映射到机器人指令，同步的人类触觉数据仍可能对机器人有帮助。TouchScale 提供了可观的资源和有前景的证据，覆盖预测、表征学习和操作三个方面，同时也在泛化和因果性上留下了重要问题。最值得记住的一点很简单：要理解物理交互，光看手的动作可能不够，我们可能还需要测量它感受到了什么。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 520.86,
+      "end": 527.203,
+      "en": "Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "感谢收听。如果还有更多问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{li2026touchscale500hourshuman,\n      title={TouchScale: 500 Hours of Human Vision and Touch for Visual-Tactile Learning}, \n      author={Dayou Li and Hao Wang and Qianqian Yang and Zihao Zhu and Haoquan Fang and Ziyao Zeng and Yan Han and Zihan Wang and Yan Wang and Baoru Huang and Dilin Wang and Kenji Shimada and Yiyue Luo and Manling Li and Teresa Lv and Mustafa Mukadam and Rakesh Ranjan and Ruohan Zhang and Qi He and Changliu Liu and Xu Chen and Marco Pavone and Bangya Liu and Jiachen Li and Masayoshi Tomizuka and Zhiwen Fan},\n      year={2026},\n      eprint={2610.10288},\n      archivePrefix={arXiv},\n      primaryClass={cs.CV},\n      url={https://arxiv.org/abs/2610.10288}, \n}",
+  "topics": [
+    "Data Curation",
+    "Multimodal Learning",
+    "Representation Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.589,
+    0.62,
+    0.589,
+    0.51,
+    0.463,
+    0.537,
+    0.577,
+    0.36,
+    0.33,
+    0.569,
+    0.493,
+    0.511,
+    0.358,
+    0.2,
+    0.611,
+    0.465,
+    0.361,
+    0.522,
+    0.778,
+    0.655,
+    0.53,
+    0.505,
+    0.53,
+    0.668,
+    0.751,
+    0.567,
+    0.641,
+    0.65,
+    0.553,
+    0.354,
+    0.238,
+    0.229,
+    0.324,
+    0.322,
+    0.839,
+    0.491,
+    0.627,
+    0.678,
+    0.462,
+    0.842,
+    0.577,
+    0.491,
+    0.373,
+    0.512,
+    0.566,
+    0.358,
+    0.322,
+    0.281,
+    0.26,
+    0.299,
+    0.743,
+    0.788,
+    0.664,
+    0.554,
+    0.59,
+    0.556,
+    0.42,
+    0.476,
+    0.49,
+    0.37,
+    0.75,
+    0.743,
+    0.542,
+    0.347,
+    0.312,
+    0.418,
+    0.401,
+    0.258,
+    0.34,
+    0.244,
+    0.645
+  ],
+  "published": "2026-10-07",
+  "views": 405,
+  "license": "arXiv 默认许可"
+}

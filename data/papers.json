@@ -15,7 +15,7 @@
       "cover": "cover.png",
       "path": "2610.real-time-interactive-omni-intelligence",
       "published": "2026-10-25",
-      "views": 365,
+      "views": 388,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1718d-32e8-7989-96b6-fd2611fbb6fd/podcast.mp3"
     },
     {
@@ -32,7 +32,7 @@
       "cover": "cover.png",
       "path": "2610.dino-laya-closed-loop-driving",
       "published": "2026-10-25",
-      "views": 337,
+      "views": 352,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a170c0-fa6f-7a44-af99-184356240f0b/podcast.mp3"
     },
     {
@@ -1477,6 +1477,23 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a1247c-3ab7-7c00-a9bf-425dbd0970c9/podcast.mp3"
     },
     {
+      "id": "2610.14643",
+      "title": null,
+      "authors": [],
+      "duration": 525.792063,
+      "license": "CC BY-SA",
+      "topics": [
+        "AI for Health",
+        "Generative Models",
+        "Information Extraction"
+      ],
+      "cover": "cover.png",
+      "path": "2610.14643",
+      "published": "2026-10-10",
+      "views": 275,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a13836-44af-7780-bc4a-8e10f5a9005d/podcast.mp3"
+    },
+    {
       "id": "2610.14423",
       "title": null,
       "authors": [],
@@ -2378,6 +2395,23 @@
       "published": "2026-10-07",
       "views": 1040,
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11964-f456-7972-bfc2-218f88d03d85/podcast.mp3"
+    },
+    {
+      "id": "2610.10288",
+      "title": null,
+      "authors": [],
+      "duration": 527.202563,
+      "license": "arXiv 默认许可",
+      "topics": [
+        "Data Curation",
+        "Multimodal Learning",
+        "Representation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.10288",
+      "published": "2026-10-07",
+      "views": 405,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a119be-25bb-7ac2-b67f-661002a65250/podcast.mp3"
     },
     {
       "id": "2610.10013",
