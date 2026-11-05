@@ -1906,6 +1906,21 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e87-7266-7be2-8909-72d122b0dc13/podcast.mp3"
     },
     {
+      "id": "2610.12235",
+      "title": null,
+      "authors": [],
+      "duration": 524.459813,
+      "license": "CC BY",
+      "topics": [
+        "NLP"
+      ],
+      "cover": "cover.png",
+      "path": "2610.12235",
+      "published": "2026-10-08",
+      "views": 225,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a11e70-86e6-7d28-ba6d-78915b3b1410/podcast.mp3"
+    },
+    {
       "id": "2610.12176",
       "title": "Recursive Self-Improvement through Multi-Agent Self-Supervision",
       "authors": [

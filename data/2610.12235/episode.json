@@ -1,0 +1,272 @@
+{
+  "id": "2610.12235",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.12235",
+    "arxiv": "https://arxiv.org/abs/2610.12235"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a11e70-86e6-7d28-ba6d-78915b3b1410/podcast.mp3",
+  "duration": 524.46,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.02,
+      "en": "In our graduate seminar on Automated Machine Learning Research, today's lecture is on Language Models as A-I Research World Models. Recent work such as AutoScientists and Towards Execution-Grounded Automated A-I Research has explored how agents can propose and run experiments. This paper, from a team including researchers at Amazon and the University of California, Santa Cruz, shifts attention to a bottleneck: deciding which experiments deserve scarce compute. Yes, Noah?",
+      "zh": "在我们关于自动化机器学习研究的研究生研讨课上，今天的讲座主题是把语言模型作为AI研究的世界模型。最近的工作，比如AutoScientists和Towards Execution-Grounded Automated AI Research，已经探索了智能体如何提出并运行实验。这篇论文来自一个包括亚马逊和加州大学圣克鲁兹分校研究人员的团队，它把注意力转向了一个瓶颈：决定哪些实验值得投入稀缺的计算资源。是的，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.08,
+      "end": 39.92,
+      "en": "Hi Professor, is the central idea that a language model can predict which research experiment will work before we spend the compute to run it?",
+      "zh": "教授，核心思想是不是语言模型能在我们花算力跑实验之前，就预测出哪个研究会成功？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 40.34,
+      "end": 66.36,
+      "en": "Exactly. The authors treat a research setup as an environment, a proposed change as an action, and the measured result as its consequence. A research world model uses records of completed experiments to forecast the gain from an unseen intervention. The practical goal is not simply to generate more ideas or automate execution, but to help researchers choose among ideas when running every candidate is too costly.",
+      "zh": "完全正确。作者把研究设置当作环境，把提出的改动当作动作，把测量结果当作其后果。研究世界模型利用已完成实验的记录，来预测未见过干预带来的增益。实际目标不只是生成更多想法或自动化执行，而是在运行每个候选都过于昂贵时，帮助研究人员在想法之间做选择。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 67.44,
+      "end": 94.14,
+      "en": "The study tests three kinds of evidence: no experimental history, history from the target environment, and history only from other environments. The candidate outcome is withheld in every case. Importantly, the model is not fine-tuned on this collection; it receives serialized experiment records in its prompt. That makes the question more like learning from a lab notebook at decision time than permanently changing the model’s internal parameters.",
+      "zh": "这项研究测试了三种证据：没有实验历史、来自目标环境的历史，以及仅来自其他环境的历史。每种情况下，候选结果都会被隐藏。重要的是，模型并没有在这个数据集上做微调，而是在提示中接收序列化的实验记录。这就让问题更像是在决策时从实验记录本中学习，而不是永久改变模型的内部参数。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 95.22,
+      "end": 99.16,
+      "en": "Quick question: what does one of these experimental records actually contain?",
+      "zh": "快速问一下：这些实验记录里到底包含什么内容？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 100.06,
+      "end": 129.28,
+      "en": "Each record describes the environment and reference setup, the intervention, its measured outcome, and relevant execution details. For example, it might capture a training configuration and a change to its optimizer, along with the resulting performance. The model predicts the candidate’s gain relative to the reference system, with the target defined as the median gain across experimental rollouts. So the record supplies context, not just a bare label saying whether a change succeeded.",
+      "zh": "每条记录都描述了环境和参考设置、干预措施、测得的 outcome 以及相关的执行细节。比如，它可能记录一个训练配置、对其优化器所做的改动，以及由此带来的性能变化。模型预测的是候选方案相对于参考系统的增益，目标值定义为各实验轨迹上增益的中位数。所以记录提供的是上下文，而不只是一个说明改动是否成功的干巴巴标签。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 129.28,
+      "end": 166.36,
+      "en": "The evidence base is substantial but varied: 2,653 records across 9 environments, representing 171,862 H-one-hundred G-P-U-hours. The settings include language-model pretraining, diffusion pretraining, math distillation, code reinforcement learning, and inference optimization. The default model is Claude Opus 5. The researchers compare it with a version given no history, plus k-nearest-neighbor and ridge-regression baselines using the same records and candidate inputs.",
+      "zh": "证据基础相当可观，但来源多样：涵盖9个环境中的2653条记录，代表171862个H100 GPU小时。这些场景包括语言模型预训练、扩散模型预训练、数学蒸馏、代码强化学习以及推理优化。默认模型是Claude Opus 5。研究者将其与一个不提供历史记录的版本进行比较，并加入使用相同记录和候选输入的k近邻与岭回归基线。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 167.44,
+      "end": 175.06,
+      "en": "So the records matter because they reveal how a change behaved in a particular setup, rather than just whether that change sounds plausible in general?",
+      "zh": "所以这些记录之所以重要，是因为它们揭示了某个改动在特定设置下实际表现如何，而不只是这个改动在一般情况下听起来是否合理？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 176.3,
+      "end": 209.98,
+      "en": "That’s right, and the first critical result is that target-environment records improve both prediction and ranking. Across 5 in-environment evaluations, mean Spearman correlation rises from 0.506 without history to 0.774 with it. The history-conditioned model also outperforms the tested k-nearest-neighbor and ridge baselines on mean absolute error and ranking in each environment. In effect, experimental history helps the model connect interventions to outcomes in context.",
+      "zh": "没错，而且第一个关键结果是，目标环境的记录同时提升了预测和排序表现。在5个环境内评估中，平均Spearman相关系数从没有历史记录时的0.506上升到有历史记录时的0.774。在均方绝对误差和排序方面，以历史为条件的模型在每个环境中也优于所测试的k近邻和岭回归基线。实际上，实验历史帮助模型在具体情境中把干预与结果联系起来。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 211.58,
+      "end": 244.98,
+      "en": "The second insight is that some evidence transfers. Across 5 autoregressive pretraining environments, cross-environment records lift mean Spearman correlation from 0.628 to 0.729. The model appears able to use experimental experience beyond the setup where it was collected. But transfer is not automatic: a similar optimizer change in a source environment can point the wrong way if the target’s starting recipe differs. History can inform a forecast, but it cannot guarantee one.",
+      "zh": "第二个洞见是，有些证据是可以迁移的。在5个自回归预训练环境中，跨环境记录把平均Spearman相关系数从0.628提升到了0.729。模型似乎能够利用超出其采集环境之外的实验经验。但迁移并不是自动发生的：如果目标环境的起始配方不同，源环境中类似的优化器改动可能会指向错误的方向。历史可以为预测提供参考，但无法保证预测一定正确。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 245.72,
+      "end": 250.06,
+      "en": "Could you clarify why the language model transfers better than the similarity-based baselines?",
+      "zh": "你能解释一下为什么语言模型比基于相似度的基线迁移得更好吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 251.08,
+      "end": 281.98,
+      "en": "The authors suggest that matching interventions by surface similarity may miss the interaction between a change and its reference recipe. A language model can read the descriptions of both the setup and the intervention, then reason over their relationship. That is a plausible explanation, not a proven mechanism. In aggregate cross-environment tests, the model’s macro-average correlation is 0.73, compared with 0.36 for k-nearest neighbors and 0.25 for ridge regression.",
+      "zh": "作者认为，仅按表面相似度来匹配干预措施，可能会忽略改动与其参考配方之间的相互作用。语言模型可以读取实验设置和干预措施的描述，然后推理二者之间的关系。这是一个合理的解释，但尚未得到机制层面的验证。在汇总的跨环境测试中，该模型的宏平均相关系数为0.73，而k近邻为0.36，岭回归为0.25。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 283.04,
+      "end": 314.76,
+      "en": "The third critical insight is decision value. The researchers simulate selecting 3 candidates from pools of 16, using Regret at 3 and N-D-C-G at 3 to assess whether the chosen experiments are worthwhile. With in-environment history, the mean reduction in Regret at 3 is 58.2% across the tested settings. With cross-environment history, regret falls by 52.2% on average relative to the model without history, with improvement in 4 of 5 targets.",
+      "zh": "第三个关键洞见是决策价值。研究者模拟了从16个候选池中选出3个候选实验的过程，用Regret at 3和N-D-C-G at 3来评估所选实验是否值得做。在有环境内历史记录的情况下，所测试设置中Regret at 3的平均降幅为58.2%。在有跨环境历史记录的情况下，相比没有历史记录的模型，后悔值平均下降52.2%，5个目标中有4个得到改善。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 315.82,
+      "end": 320.56,
+      "en": "How does this help over repeated research rounds, rather than just selecting one batch of experiments?",
+      "zh": "这对多轮重复研究有什么帮助，而不只是选一批实验？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 320.56,
+      "end": 354.78,
+      "en": "For that test, candidate arrivals were simulated across 8 rounds, with a total budget of 24 experiments. On OLMo three, the model using in-environment records achieved a 15.8% higher mean final best gain than the no-history version; cross-environment records raised it by 11.6%. The history-based models also found useful candidates sooner, as measured by normalized area under the discovery curve. This tests whether forecasts can improve an ongoing search, not only a one-time ranking.",
+      "zh": "在这项测试中，候选方案的到来被模拟为8轮，总预算为24次实验。在OLMo three上，使用环境内记录的模型相比无历史版本，平均最终最佳增益高出15.8%；跨环境记录则将其提升了11.6%。基于历史的模型也能更快找到有用的候选方案，衡量标准是归一化的发现曲线下面积。这检验的是预测能否改进持续进行的搜索，而不仅仅是一次性的排序。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 355.68,
+      "end": 386.52,
+      "en": "There is also a cost argument. Scoring 16 candidates using the measured Claude Opus 5 A-P-I cost was estimated at about $6.30, while the median environment’s average experiment cost was estimated at about $127. That comparison suggests forecasting could be economical in these settings, though it leaves out the full expense of collecting, curating, and maintaining reliable experimental records. Those records are infrastructure, not free inputs.",
+      "zh": "还有一个成本方面的考量。按照实测的 Claude Opus 5 API 费用来算，给16个候选打分大约要花6.30美元，而中位数环境下平均每次实验的成本估计约为127美元。这一对比说明，在这些场景中做预测可能是划算的，不过它没有算上收集、整理和维护可靠实验记录的全部开销。这些记录属于基础设施，并不是免费的输入。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 387.56,
+      "end": 392.96,
+      "en": "Does the evidence establish that this approach will work across every research domain and as systems evolve?",
+      "zh": "这些证据能证明这种方法适用于所有研究领域，并且在系统演进后依然有效吗？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 393.88,
+      "end": 424.2,
+      "en": "No, and that boundary matters. Cross-environment evaluation is limited to autoregressive pretraining, while the multi-round study covers only OLMo three and 5 evaluations. The work uses fixed reference systems and predicts median gains rather than calibrated uncertainty. It also relies on a commercial model API, which limits bitwise reproducibility. So the results support the approach in the tested settings, but broader transfer and reliable uncertainty estimates remain open questions.",
+      "zh": "不，而且这个边界很重要。跨环境评估仅限于自回归预训练，而多轮研究只覆盖了OLMo 3和5的评估。这项工作使用的是固定参考系统，预测的是中位数增益，而不是经过校准的不确定性。它还依赖商业模型API，这限制了逐位可复现性。因此，结果在测试设置下支持该方法，但更广泛的迁移和可靠的不确定性估计仍是未解决的问题。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 425.2,
+      "end": 454.42,
+      "en": "The paper connects naturally to work such as AutoScientists, which organizes agents to pursue experiments and share successes or dead ends. Its contribution is complementary: it asks how accumulated experimental outcomes can guide the next choice. That shifts attention from making agents execute more research to making their decisions better informed. A shared record of failures and successes could help teams reuse knowledge across setups, provided the context behind each result is preserved.",
+      "zh": "这篇论文与AutoScientists等工作自然衔接，后者组织智能体开展实验并共享成功或死胡同。它的贡献是互补的：它追问积累的实验结果如何指导下一步选择。这就把注意力从让智能体执行更多研究，转向让它们的决策更有依据。只要每个结果背后的上下文得以保留，一份共享的失败与成功记录就能帮助团队在不同设置间复用知识。"
+    },
+    {
+      "i": 19,
+      "speaker": "Noah",
+      "start": 455.4,
+      "end": 460.8,
+      "en": "Could this kind of forecasting also accelerate capability research, not just make research more efficient?",
+      "zh": "这种预测能力是否也能加速能力研究，而不只是让研究更高效？"
+    },
+    {
+      "i": 20,
+      "speaker": "John",
+      "start": 461.9,
+      "end": 492.0,
+      "en": "Yes. The same ability to allocate experiments efficiently could support beneficial research or accelerate capability development, so the authors appropriately note that risk. More broadly, a useful research world model must be tested as environments change and must communicate when its evidence is weak. The key research challenge is not only accumulating records, but deciding which records apply, how much to trust them, and how to detect when a familiar-looking experiment is actually different.",
+      "zh": "是的。这种高效分配实验的能力，同样可以用来支持有益的研究，也可能加速能力发展，所以作者恰当地指出了这一风险。更广泛地说，一个有用的研究世界模型必须随着环境变化接受检验，并且在证据不足时明确表达出来。关键的研究挑战不仅在于积累记录，还在于判断哪些记录适用、该信任到什么程度，以及如何识别一个看似熟悉的实验实际上已经不同。"
+    },
+    {
+      "i": 21,
+      "speaker": "John",
+      "start": 492.98,
+      "end": 524.46,
+      "en": "The takeaway is that experimental history can act like a lab’s accumulated judgment: not a substitute for running experiments, but a way to spend limited runs more selectively. In this study, records improved forecasts, candidate selection, and multi-round discovery, including some transfer across training environments. The next step is to test that pattern across changing systems and more domains. Thanks for listening. If you have any further questions, ask our A-I assistant or drop a comment.",
+      "zh": "结论是，实验历史可以像实验室积累的判断力一样发挥作用：它不是做实验的替代品，而是让有限的实验次数花得更有的放矢。在这项研究中，历史记录改善了预测、候选方案筛选和多轮发现，其中还包括一些跨训练环境的迁移。下一步是在不断变化的系统和更多领域中检验这一模式。感谢收听。如果还有问题，可以问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{wang2026languagemodelsairesearch,\n      title={Language Models as AI Research World Models}, \n      author={Zijun Wang and Zewen Liu and Minhua Lin and Zhaotian Weng and Zhan Shi and Bing He and Yisi Sang and Dakuo Wang and Benoit Dumoulin and Wei Jin and Yuyin Zhou and Cihang Xie and Hanqing Lu},\n      year={2026},\n      eprint={2610.12235},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL},\n      url={https://arxiv.org/abs/2610.12235}, \n}",
+  "topics": [
+    "NLP"
+  ],
+  "peaks": [
+    0.723,
+    0.427,
+    0.323,
+    0.226,
+    0.392,
+    0.465,
+    0.35,
+    0.277,
+    0.312,
+    0.675,
+    0.595,
+    0.614,
+    0.522,
+    0.391,
+    0.257,
+    0.243,
+    0.2,
+    0.355,
+    0.462,
+    0.248,
+    0.253,
+    0.452,
+    0.279,
+    0.802,
+    0.545,
+    0.46,
+    0.437,
+    0.313,
+    0.204,
+    0.48,
+    0.585,
+    0.488,
+    0.36,
+    0.421,
+    0.727,
+    0.455,
+    0.37,
+    0.582,
+    0.344,
+    0.283,
+    0.252,
+    0.235,
+    0.202,
+    0.482,
+    0.333,
+    0.493,
+    0.318,
+    0.256,
+    0.414,
+    0.826,
+    0.587,
+    0.467,
+    0.569,
+    0.391,
+    0.523,
+    0.327,
+    0.312,
+    0.235,
+    0.707,
+    0.581,
+    0.412,
+    0.46,
+    0.44,
+    0.741,
+    1.0,
+    0.682,
+    0.397,
+    0.647,
+    0.64,
+    0.492,
+    0.352,
+    0.34
+  ],
+  "published": "2026-10-08",
+  "views": 225,
+  "license": "CC BY"
+}
