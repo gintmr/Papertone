@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 448.835,
+  "word_match_rate": 0.8947,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Deep Reinforcement Learning Methods, today's lecture is on Action O-P-D, a method for distilling tool-using agents through semantic actions. Recent work such as Self-Distilled Reasoner and O-P-R-D reflects a broader move toward learning from student-generated experience, while changing what feedback is transferred. This paper shifts attention from matching a teacher’s token probabilities to matching the meaning of decisions. That matters because a tool call can change a booking or account, so fluent wording alone is not enough. Yes, Noah?",
+      "start": 0.0,
+      "end": 32.84
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does semantic matching mean the student must phrase its response like the teacher?",
+      "start": 33.92,
+      "end": 38.42
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "No. The target is the decision, not the wording. Imagine a user asking to change an airline booking: a basic-economy ticket cannot be changed. In one selected example, the base agent modifies the booking anyway, while the trained agent explains the restriction and escalates without changing it. Across the first 4 trials, success went from 2 of 4 to 4 of 4, while prohibited modifications went from 2 of 4 to zero. It is an illustrative case, not proof of a general effect.",
+      "start": 39.46,
+      "end": 69.92
+    },
+    {
+      "i": 3,
+      "speaker": "Noah",
+      "text": "So what counts as the same action if the wording changes?",
+      "start": 71.04,
+      "end": 73.76
+    },
+    {
+      "i": 4,
+      "speaker": "John",
+      "text": "The method defines a state as the visible task, available tools, and relevant interaction history. For a tool call, the tool name and arguments describe the action; for a message, its intent and information do. At a state the student actually encounters, Action O-P-D compares student candidates with sampled teacher responses. That focuses supervision on the immediate choice, while student-generated states help address the mismatch between teacher demonstrations and the states a deployed student may reach.",
+      "start": 74.74,
+      "end": 106.56
+    },
+    {
+      "i": 5,
+      "speaker": "Noah",
+      "text": "Quick question: how does the system decide whether two actions match?",
+      "start": 107.42,
+      "end": 110.92
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "At one student state, the method samples 3 teacher responses and 4 student candidates. Tool names and canonicalized arguments are checked programmatically. A frozen language model judges remaining argument differences and whether nonidentical messages share intent and factual content. Invalid actions receive a separate penalty. A valid action without a teacher match gets no agreement reward; a match earns a base reward, with a smaller bonus when it matches additional teacher samples.",
+      "start": 111.84,
+      "end": 142.96
+    },
+    {
+      "i": 7,
+      "speaker": "John",
+      "text": "An important distinction is that agreement is not correctness. If the teacher makes a mistaken or poor choice, semantic matching can still reward a student for agreeing with it. The matcher itself can also misjudge meaning, producing false matches or missed matches. One response is selected to advance the environment trajectory, but every response in a retained group can train the policy. That separates which action gets committed from which sampled behaviors contribute learning signals.",
+      "start": 144.02,
+      "end": 172.1
+    },
+    {
+      "i": 8,
+      "speaker": "Noah",
+      "text": "Does this translate into gains beyond the tasks used for training?",
+      "start": 173.22,
+      "end": 176.24
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The authors trained for 100 steps on 6,697 curated A-W-M and EnvScaler tool-use tasks, then evaluated on four benchmark families excluded from that pool. Their equally weighted average combines BFCL accuracy, ToolSandbox similarity, AppWorld task-goal completion, and tau-squared-bench pass-one success. Across all 4 student-and-teacher configurations, that average improved by 3.3 to 6.9 percentage points. For the quen three four B student with deepseek V-four Flash, it rose from 30.8% to 37.7%.",
+      "start": 177.18,
+      "end": 215.48
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can you clarify what that average does and does not tell us?",
+      "start": 217.32,
+      "end": 221.6
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "It is a study-specific summary, not a win on every metric and not a reliability measure. The benchmarks contribute different metrics, averaged equally, and tau-squared-bench pass one means success on a single trial. Each configuration is one training run. The tested quen three eight B students ended with higher averages than the quen three four B students, and deepseek V-four Flash produced higher student averages than quen three point seven Flash. Those patterns describe these configurations; they do not establish a general scaling law.",
+      "start": 222.46,
+      "end": 256.66
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The ablation also helps interpret the design. On held-out tasks, Action O-P-D reached 40% average pass one and 14.2% pass four. Its pass-one score exceeded validity-only reward, while its pass-four score tied the binary-reward variant. The comparison supports the combined design, but does not isolate semantic reward alone: the ablation changes which groups can train when all their rewards are equal. So the evidence favors a useful combination, not a claim that every component wins independently.",
+      "start": 257.48,
+      "end": 291.14
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "How does it compare with on-policy distillation that uses token probabilities?",
+      "start": 292.22,
+      "end": 295.78
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "On tau-squared-bench, a direct comparison used a quen three four B student, a quen three thirty-two B teacher, 178 training tasks, and evaluation at step 50. Action O-P-D scored 40% pass one, versus 39.6% for sampled-token on-policy distillation. But on pass four, success across all 4 trials, Action O-P-D scored 14.2%, below 17.5% for that method and 19.2% for offline distillation. The result is competitive, not uniformly superior.",
+      "start": 295.78,
+      "end": 335.18
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The interface difference is meaningful: Action O-P-D needs teacher generations, but not teacher token probabilities or compatible tokenization. That does not show lower end-to-end cost or faster training; generation and semantic matching still take resources, and the comparison does not equalize total compute. This contrasts with work such as Self-Distilled Reasoner, which transfers token-level distributions under different contexts. Action O-P-D explores a more action-centered supervision unit for agents whose choices alter later states.",
+      "start": 336.14,
+      "end": 369.54
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could the approach work without a stronger teacher, and what limits that claim?",
+      "start": 370.44,
+      "end": 373.96
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The paper’s Self-Action O-P-D experiment offers a limited extension: a same-weight quen three four B teacher receives privileged task information, while the student sees public context. After 50 steps, held-out tau-squared-bench averages improved over the base model by 4.8 points on pass one and 2.5 on pass four. This is evidence of feasibility with privileged guidance, not of an unassisted model teaching itself. Longer tasks may also expose gaps in the fixed sets of sampled teacher and student actions.",
+      "start": 373.96,
+      "end": 410.24
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The central takeaway is that distillation for tool-using agents need not require copying teacher wording or accessing token probabilities; it can compare action meaning at states the student actually visits. That opens a useful interface for black-box teachers, while leaving real limits: teachers can be wrong, matchers can misread meaning, and more samples may improve coverage only at additional generation and matching cost. The memorable point is simple: teach the decision, but do not confuse agreement with correctness. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 411.28,
+      "end": 448.835
+    }
+  ]
+}

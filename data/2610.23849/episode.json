@@ -1,0 +1,248 @@
+{
+  "id": "2610.23849",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.23849",
+    "arxiv": "https://arxiv.org/abs/2610.23849"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a151fb-3e7c-7572-b845-c965ca58368a/podcast.mp3",
+  "duration": 456.724,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.24,
+      "en": "In a graduate course on Robot Learning and Contact-Rich Manipulation, today's lecture is on Blind Precise Assembly: Proprioceptive Sim-to-Real Peg-in-Hole for Diverse Parts. Work such as AlphaNIST and InsertionWM reflects a field exploring shared assembly policies and visual world models. This paper, from an M-I-T team, asks whether a robot can instead use changes in its own joint motion to guide precise contact. That matters when tight fits are hard to see or model. Yes, Noah?",
+      "zh": "在一门关于机器人学习与富接触操作的研究生课程中，今天的讲座主题是盲精确装配：面向多种零件的本体感觉仿真到现实轴孔装配。AlphaNIST和InsertionWM等工作反映了该领域正在探索共享装配策略和视觉世界模型。这篇来自麻省理工学院团队的文章提出，机器人能否转而利用自身关节运动的变化来引导精确接触。当紧密配合难以看清或难以建模时，这一点很重要。好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.1,
+      "end": 36.1,
+      "en": "Hi Professor, does blind here mean the robot has no sensors at all?",
+      "zh": "教授您好，这里的“盲”是指机器人完全没有传感器吗？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 36.58,
+      "end": 65.68,
+      "en": "No. Blind means the acting policy receives no images, force or torque readings, tactile input, hole pose, or part model. It does receive encoder-derived information about its own joints and gripper. The practical example is a peg that must enter a close-fitting hole: the policy begins with the peg already touching the fixture near the opening, then searches locally. The paper demonstrates this task on hardware; gear meshing and nut threading are simulated demonstrations.",
+      "zh": "不是。这里的“盲”是指执行策略收不到图像、力或力矩读数、触觉输入、孔位姿或零件模型。它确实会收到由编码器得出的自身关节和夹爪信息。实际例子是一根必须插入紧密配合孔洞的销钉：策略开始时销钉已经接触开口附近的夹具，然后在局部范围内搜索。论文在硬件上演示了这一任务；齿轮啮合和螺母拧入则是仿真演示。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 66.84,
+      "end": 99.02,
+      "en": "The central idea is to treat proprioception—the robot’s own joint positions and velocities—as an indirect contact signal. When a peg touches the hole’s rim, the arm’s motion differs from what its commands would produce without contact. The policy reads a 0.6-second history of joint positions and velocities, along with gripper motion and prior actions, then adjusts its joint targets. In effect, it uses the mismatch between intended and observed motion to decide where to search next.",
+      "zh": "核心思路是把本体感知，也就是机器人自身的关节位置和速度，当作一种间接的接触信号。当销钉碰到孔边缘时，机械臂的运动就会偏离没有接触时指令本该产生的运动。策略会读取过去0.6秒的关节位置和速度历史，连同夹爪运动和之前的动作，然后调整关节目标。实际上，它就是利用意图运动与实际运动之间的偏差来决定下一步往哪儿搜索。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 99.8,
+      "end": 103.66,
+      "en": "Quick question: how does the policy learn what those motion changes mean?",
+      "zh": "快速问一下：策略是怎么学会理解这些运动变化的含义的？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 104.44,
+      "end": 134.56,
+      "en": "Training supplies extra guidance, but not to the deployed actor. A decoder predicts simulated contact states from the history representation, helping train the encoder; the decoder is removed for deployment. The training critic also gets privileged simulator information, while the actor does not. The arm learns three simulated tasks: peg insertion, gear meshing, and nut threading. This setup encourages the policy’s history to retain information about contact, without giving the acting policy a direct contact label.",
+      "zh": "训练阶段会提供额外的引导信号，但不会提供给部署时的执行器。一个解码器从历史表征中预测模拟的接触状态，帮助训练编码器；部署时这个解码器会被移除。训练时的评论家网络还能获得模拟器的特权信息，而执行器没有。机械臂学习三个模拟任务：插销、齿轮啮合和螺母拧入。这种设置促使策略的历史表征保留接触相关信息，同时又不给执行策略直接的接触标签。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 135.36,
+      "end": 169.08,
+      "en": "The authors test whether the policy’s history matters, rather than simply assuming it does. A probe can predict task modes from the history representation more accurately than from the current observation alone: 61 to 73% versus 41 to 64%, with 14% chance performance. In a latent-swap test, replacing a state’s history representation with one from another mode changes the action more than a same-mode swap. That supports mode-relevant history, but does not prove the representation is entirely about contact.",
+      "zh": "作者没有直接假定策略的历史信息一定重要，而是对此做了检验。一个探针从历史表征预测任务模式的准确率高于仅凭当前观测：分别为61%到73%和41%到64%，而随机猜测的准确率为14%。在潜变量替换测试中，把某个状态的历史表征替换为来自另一模式的表征，对动作的影响大于同模式内的替换。这支持了历史信息与模式相关，但并不能证明该表征完全关乎接触。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 169.86,
+      "end": 173.96,
+      "en": "Can you clarify what the latent-swap result tells us, and what it cannot establish?",
+      "zh": "你能说清楚潜变量交换的结果告诉了我们什么，又不能确立什么吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 174.86,
+      "end": 204.38,
+      "en": "It shows that the policy’s action depends on historical information in a way that varies with the task mode. For example, a searching state paired with an engaged-mode latent tends to produce a larger action change than a swap between two searching states. Across the reported tasks, some different-mode swaps change actions 1.3 to 3 times as much as same-mode swaps. This is evidence for history-dependent behavior, not proof that contact alone caused the action or explains every part of the latent.",
+      "zh": "这表明策略的动作依赖历史信息，且依赖方式随任务模式而变化。例如，搜索状态搭配接合模式的潜变量，往往比两个搜索状态之间的交换产生更大的动作变化。在报告的各项任务中，一些不同模式间的交换所引起的动作变化是同一模式内交换的1.3到3倍。这为依赖历史的行为提供了证据，但并不能证明仅凭接触就导致了该动作，也不能解释潜变量的每一部分。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 205.18,
+      "end": 238.92,
+      "en": "A useful comparison separates movement distance from speed. In simulation, the blind peg policy travels a median 37 millimeters laterally before seating, versus 95 millimeters for a scripted spiral. But that spiral is an unusually favorable baseline: it starts flush with the opening and gets the peg orientation and best search direction. The blind policy is slower than the visual policy in the tested task, with median seating times of 0.80 seconds versus 0.44 seconds.",
+      "zh": "一个有用的比较是把移动距离和速度分开来看。在仿真中，盲插销策略在就位前横向移动的中位数是37毫米，而脚本化螺旋是95毫米。但这个螺旋是一个格外有利的基线：它一开始就与开口齐平，并且获得了插销的朝向和最佳搜索方向。在测试任务中，盲策略比视觉策略更慢，就位时间中位数分别为0.80秒和0.44秒。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 239.8,
+      "end": 245.14,
+      "en": "So does the blind policy generalize better because it searches through contact rather than matching visual features?",
+      "zh": "那么，盲策略泛化得更好，是因为它通过接触来搜索，而不是靠匹配视觉特征吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 246.1,
+      "end": 282.48,
+      "en": "That is the authors’ interpretation, not a uniquely established cause. Their matched simulation comparison holds task, resets, randomization, rewards, actions, and success checks constant, while comparing proprioceptive and wrist-camera policies. Both work well on training-like pegs. On held-out random convex pegs, however, the blind policy succeeds in 36.2% of episodes, compared with 3.9% for vision. The blind policy still fails in most of those episodes, so this is an advantage on that test, not universal robustness.",
+      "zh": "这是作者的解读，并非唯一确定的因果关系。他们匹配的仿真对比保持任务、重置、随机化、奖励、动作和成功检查不变，同时比较本体感觉策略和腕部相机策略。两者在类似训练的桩上表现都很好。然而在留出的随机凸形桩上，盲策略在36.2%的回合中成功，而视觉策略只有3.9%。盲策略在大多数这些回合中仍然失败，所以这是该测试上的优势，而非普遍鲁棒性。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 283.28,
+      "end": 317.04,
+      "en": "Keep that simulation result separate from the hardware evaluation: the deployed peg policy was trained on a broader mix of polygonal, smooth, and mixed cross-sections. With its parameters unchanged, it seats pegs in 173 of 237 real trials, or 73%, on a Flexiv Rizon 4S arm. It also succeeds on three held-out pegs with tighter clearance, a larger cross-section, and a taller handle. The hardware demonstration concerns peg insertion only, not the simulated gear and nut policies.",
+      "zh": "把这个仿真结果和硬件评估分开看：实际部署的peg策略是在多边形、光滑和混合截面更广泛的混合数据上训练的。参数不变的情况下，它在Flexiv Rizon 4S机械臂上的237次真实试验中成功插入173次，成功率73%。它还在三个留出的peg上成功，这些peg间隙更紧、截面更大、手柄更高。硬件演示只涉及peg插入，不涉及仿真中的齿轮和螺母策略。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 318.0,
+      "end": 321.06,
+      "en": "How should we relate this to visual assembly work such as InsertionWM?",
+      "zh": "我们该怎么把这一点和InsertionWM这类视觉装配工作联系起来呢？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 324.24,
+      "end": 357.98,
+      "en": "InsertionWM uses a visual world model alongside proprioception, while this paper tests whether joint-history feedback alone can guide local contact search. These approaches address different sensing and modeling choices, so the results do not establish that vision is generally inadequate. The paper’s matched simulation study does show a specific tradeoff: vision is faster on in-distribution peg insertion, while the blind policy handles some unseen shapes more reliably. The comparison gives evidence about these tested policies, not every possible visual or contact-based design.",
+      "zh": "InsertionWM把视觉世界模型和本体感觉结合起来，而这篇论文测试的是仅靠关节历史反馈能否引导局部接触搜索。这两种方法对应的是不同的传感和建模选择，所以结果并不能说明视觉普遍不够用。论文的匹配仿真研究确实揭示了一个具体的权衡：视觉在分布内的插销插入上更快，而盲策略在某些未见过的形状上更可靠。这个比较提供的证据只针对所测试的这些策略，而不是所有可能的视觉或接触式设计。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 358.84,
+      "end": 386.36,
+      "en": "The broader implication is that joint encoders may offer useful contact information without adding a force sensor, especially when the task starts near the place where contact must be resolved. But the boundary is important: this is a last-mile skill, not a search from anywhere. Trials begin with the peg touching the fixture near the hole, and the policy searches locally; it does not recover a peg that slips from the gripper and lands far away.",
+      "zh": "更广泛的含义是，关节编码器或许能在不额外加装力传感器的情况下提供有用的接触信息，尤其是当任务从接触必须被解决的位置附近开始时。但这一边界很重要：这是一项最后一英里的技能，而不是从任意位置开始的搜索。试验开始时，销钉已经接触靠近孔的固定装置，策略在局部进行搜索；它无法找回从夹爪滑落并掉到远处的销钉。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 387.1,
+      "end": 389.28,
+      "en": "What would be the next useful test of this approach?",
+      "zh": "这种方法接下来最有用的测试是什么？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 390.24,
+      "end": 423.5,
+      "en": "A natural next step is to test how far contact-guided policies can expand their starting conditions and recover from larger disturbances, while keeping sensing and training assumptions explicit. Researchers could also compare richer visual and proprioceptive combinations under matched protocols. For now, the paper’s contribution is narrower and clearer: a history of the robot’s own motion can support precise, contact-started peg insertion, transfer to real hardware, and improve performance on particular unseen geometries in simulation.",
+      "zh": "一个自然的下一步，是测试接触引导的策略能在多大程度上扩展起始条件、从更大的扰动中恢复，同时把传感和训练假设讲清楚。研究者还可以在匹配的实验协议下，比较更丰富的视觉与本体感觉组合。就目前而言，这篇论文的贡献更窄也更清晰：机器人自身运动的历史，可以支撑精确的、从接触开始的插销插入，迁移到真实硬件，并在仿真中提升特定未见几何上的表现。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 424.46,
+      "end": 456.724,
+      "en": "The memorable takeaway is that a robot can learn to feel a fit through its joints: contact changes motion, and motion history can guide the next adjustment. That does not make the skill universal, nor does it eliminate vision’s strengths. It shows that for a local assembly problem, proprioception can carry enough information to search and seat a peg, including on hardware without fine-tuning. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "最值得记住的一点是，机器人可以通过关节学会感知配合：接触会改变运动，而运动历史可以指导下一次调整。这并不意味着这项技能具有普适性，也不意味着它取代了视觉的优势。它表明，对于一个局部装配问题，本体感觉可以提供足够的信息来搜索并插入销钉，甚至在无需微调的硬件上也能做到。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{bronars2026blindpreciseassemblyproprioceptive,\n      title={Blind Precise Assembly: Proprioceptive Sim-to-Real Peg-in-Hole for Diverse Parts}, \n      author={Antonia Bronars and Younghyo Park and Kushal Kedia and Pulkit Agrawal},\n      year={2026},\n      eprint={2610.23849},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.23849}, \n}",
+  "topics": [
+    "Robotics"
+  ],
+  "peaks": [
+    0.687,
+    0.404,
+    0.237,
+    0.349,
+    0.213,
+    0.437,
+    0.489,
+    0.412,
+    0.363,
+    0.263,
+    0.384,
+    0.418,
+    0.29,
+    0.282,
+    0.208,
+    0.221,
+    0.542,
+    0.492,
+    0.463,
+    0.38,
+    0.411,
+    0.588,
+    0.489,
+    0.398,
+    0.35,
+    0.52,
+    0.42,
+    0.403,
+    0.303,
+    0.27,
+    0.2,
+    0.282,
+    0.45,
+    0.548,
+    0.459,
+    0.471,
+    0.526,
+    0.437,
+    0.431,
+    0.376,
+    0.35,
+    0.473,
+    0.265,
+    0.312,
+    0.651,
+    1.0,
+    0.763,
+    0.533,
+    0.718,
+    0.514,
+    0.535,
+    0.943,
+    0.568,
+    0.615,
+    0.607,
+    0.44,
+    0.445,
+    0.295,
+    0.295,
+    0.219,
+    0.2,
+    0.561,
+    0.416,
+    0.511,
+    0.307,
+    0.387,
+    0.424,
+    0.6,
+    0.474,
+    0.587,
+    0.336,
+    0.44
+  ],
+  "published": "2026-10-16",
+  "views": 462,
+  "license": "CC BY"
+}

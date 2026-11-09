@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 449.776,
+  "word_match_rate": 0.9366,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Test-Time Learning for Scientific Discovery, today's lecture is on Harness T-T-T: Learn to Optimize Harness at Test-Time for Scientific Discovery. Recent work such as Learning to Discover at Test Time and Meta-Harness shows two active directions: improving the solver through experience, and revising the systems that guide it. Researchers including teams at Stanford and Johns Hopkins contribute to this landscape. Harness T-T-T asks whether we can learn the search procedure itself. Yes, Noah?",
+      "start": 0.0,
+      "end": 34.12
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, does that mean the paper improves the agent without changing the model that generates solutions?",
+      "start": 35.24,
+      "end": 40.18
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. The executor, which proposes candidate solutions, stays frozen. Instead, a separate proposer learns to revise the executor’s harness: its prompts, skills, tools, middleware, and execution settings. Think of the executor as a researcher following a protocol, and the harness as the protocol itself. The central idea is to use test-time feedback to improve that protocol, so the same model can search more effectively without changing its weights.",
+      "start": 41.3,
+      "end": 71.66
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That distinction matters because these discovery tasks are judged by the strongest valid result found within a finite compute budget, not by the average quality of attempts. A good search strategy may matter as much as a capable model. Harness T-T-T retains the best program found so far, then tests proposed harnesses by letting each guide a rollout from that shared starting point. The harness becomes an editable, reusable artifact.",
+      "start": 72.64,
+      "end": 101.08
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: what can a harness actually change beyond the prompt?",
+      "start": 102.22,
+      "end": 105.72
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "It can include reusable skills, generated Python tools, middleware that shapes what happens between execution steps, and controls such as sampling or iteration limits. A proposal may edit only some components; the rest are inherited from a parent harness. This is useful because a task-specific tool or comparison routine can change how the executor explores, even though the executor’s underlying model remains fixed.",
+      "start": 105.72,
+      "end": 134.6
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The proposer is the part that learns across rounds. It receives the current task state and a compact experience digest rather than the entire history of candidates. Only its lora adapter is trained; the executor is not. The digest is meant to preserve useful lessons without making the proposer sift through an ever-growing archive. Harness selection also keeps a runner-up parent to retain some diversity.",
+      "start": 134.6,
+      "end": 162.48
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "How does the system tell whether a harness helped, when each one gets only one stochastic rollout?",
+      "start": 162.48,
+      "end": 168.7
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That is a real credit-assignment problem: a score reflects both the harness and randomness in the executor’s behavior. The paper uses a group-relative policy-gradient method called R-L-O-O, with leave-one-out advantages, reward shaping, and extra emphasis on stronger proposals. Near-ties are collapsed, and all-valid tied groups are excluded from training. The authors describe the combined objective as a heuristic, not an unbiased gradient estimate.",
+      "start": 169.42,
+      "end": 200.08
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The practical scale is substantial. In the standard nine-billion-parameter configuration, each task runs for 20 rounds, with 32 harness proposals per round and up to 20 evaluator calls per rollout. The 27-billion-parameter configuration uses fewer proposals and calls to manage cost. Across 14 tasks, including mathematical constructions, systems work, G-P-U kernels, astrodynamics, and biological denoising, the evaluation tests varied forms of discovery.",
+      "start": 201.1,
+      "end": 234.22
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "Can generated tools see the evaluator’s hidden implementation or the correct answer?",
+      "start": 235.82,
+      "end": 239.58
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "They are not supposed to. Generated tools use a restricted interface for reading task inputs and program state, staging edits, and requesting scores. Their code must pass schema and static checks, plus a sandboxed self-test; failed tools can be repaired twice before being discarded. These controls aim to reduce leakage, but the authors note that trusted runtime and validation components are not in the public artifact, so independent verification remains limited.",
+      "start": 240.42,
+      "end": 270.6
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "The results are promising but not uniform. With a frozen nine-billion-parameter Qwen executor, Harness T-T-T beats OpenEvolve on all 11 tasks shared with Finch, and beats Finch on those 11 as reported. It has the strongest open-weight result at or below 10 billion parameters on nine tasks. For circle packing, the score rises from 1.17 with OpenEvolve to 2.636. Yet it trails some methods on autocorrelation II and transaction scheduling.",
+      "start": 270.6,
+      "end": 302.84
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "And the Erdős result—does it set the best reported value?",
+      "start": 303.96,
+      "end": 306.96
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "No. Harness T-T-T reports 0.380919, slightly improving on the cited human reference of 0.380927. But the table includes a stronger published frontier of 0.380859, which it does not surpass. That distinction illustrates why a striking task-level comparison needs careful context. More broadly, the paper’s ablations suggest proposer training adds value beyond editing the harness in context, while wider proposal search can improve outcomes at greater computational cost.",
+      "start": 308.02,
+      "end": 347.1
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The work connects naturally to T-T-T-Discover, which learns from evaluated attempts, and Meta-Harness, which refines harnesses around fixed models. Harness T-T-T combines those themes by training the proposer while keeping the executor frozen. It also reports improved results with a larger configuration and successful use with G-P-T five point five, but continued search is part of those transfer experiments, so they do not isolate transfer alone.",
+      "start": 348.04,
+      "end": 377.26
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "So should we view harness learning as a replacement for model training, or as another component?",
+      "start": 378.18,
+      "end": 382.66
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "As another component. The paper suggests that learning how to organize search can complement scaling models or training executors directly. But its evidence has limits: main results use selected single-campaign outcomes, some ablations cover few tasks, and comparisons can differ in starting programs and budgets. Repeated runs and independent audits of the safety controls would strengthen the case. The broader research question is how to evaluate search procedures fairly, not just how to find one strong result.",
+      "start": 382.66,
+      "end": 413.5
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The takeaway is that an agent’s capabilities are shaped not only by the model that proposes solutions, but also by the tools, workflow, and decision rules that direct its effort. Harness T-T-T makes that surrounding process an explicit object of learning and reuse. Its results support further study, while its evaluation and verification limits call for care. In scientific discovery, improving the search protocol may be as important as improving the researcher. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 414.4,
+      "end": 449.776
+    }
+  ]
+}

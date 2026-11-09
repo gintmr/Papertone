@@ -1,0 +1,249 @@
+{
+  "id": "2610.30320",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.30320",
+    "arxiv": "https://arxiv.org/abs/2610.30320"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a166de-ae9c-732b-b8a5-c8eeab0bfe13/podcast.mp3",
+  "duration": 477.962,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 32.24,
+      "en": "In a graduate course on Robot Learning and World Models, today’s lecture is on Self-Distilling Future Video Representations for World Action Models. Recent work such as World Action Models are Zero-shot Policies and FLARE: Robot Learning with Implicit World Modeling reflects a growing effort to use video-model knowledge for robot control. This paper, from researchers at K-A-I-S-T, asks whether the features used to predict actions can be made more useful without costly video generation. Yes, Noah?",
+      "zh": "在一门关于机器人学习与世界模型的研究生课程中，今天的讲座主题是《面向世界动作模型的未来视频表征自蒸馏》。近期的工作，比如《世界动作模型即零样本策略》和《FLARE：基于隐式世界建模的机器人学习》，反映出人们越来越多地尝试利用视频模型的知识来做机器人控制。这篇论文来自KAIST的研究人员，它要问的是：用来预测动作的特征，能不能在不做昂贵的视频生成的前提下变得更有用？好，Noah？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 33.26,
+      "end": 38.88,
+      "en": "Hi Professor, if these models already use video, what is the main problem this paper is trying to solve?",
+      "zh": "教授您好，如果这些模型已经用到了视频，那这篇论文想解决的主要问题是什么？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.66,
+      "end": 73.4,
+      "en": "The central issue is that a video model can produce a useful-looking prediction while its internal representation remains a weak guide for action. World Action Models, or W-A-Ms, often avoid iterative video denoising by processing noise once and sending an intermediate feature representation to an action decoder. FRED focuses on improving that representation. Its direction is notable: rather than only asking whether a model predicts plausible video, it asks whether its features capture the future motion a robot needs to act.",
+      "zh": "核心问题在于，视频模型可以生成看起来有用的预测，但其内部表征对动作的指导作用仍然很弱。世界动作模型（W-A-M）通常不进行迭代式的视频去噪，而是只处理一次噪声，然后把中间的特征表征送给动作解码器。FRED 的重点就是改进这个表征。它的方向值得注意：它不只问模型能否预测出合理的视频，还问它的特征是否捕捉到了机器人行动所需的未来运动。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 74.18,
+      "end": 106.1,
+      "en": "The authors first observe a gap between features produced from noise and features extracted from actual future observations. Training makes the noise-derived features more informative about motion, but they remain less informative than features from observed futures. FRED uses self-distillation to narrow that gap: a student model processes noise, while a momentum teacher processes a noisy version of the true future. The teacher’s internal features become targets, giving the student a direct signal about useful future structure.",
+      "zh": "作者首先观察到，从噪声中生成的特征与从真实未来观测中提取的特征之间存在差距。训练会让噪声生成的特征包含更多运动信息，但它们的信息量仍不如从真实未来观测中提取的特征。FRED用自蒸馏来缩小这一差距：学生模型处理噪声，而动量教师模型处理真实未来的加噪版本。教师模型的内部特征成为目标，从而为学生模型提供关于有用未来结构的直接信号。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 106.86,
+      "end": 111.02,
+      "en": "Quick question: does the teacher need to be a separate model trained with extra labels?",
+      "zh": "快速问一下：教师模型需要是一个用额外标签单独训练的独立模型吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 112.02,
+      "end": 141.2,
+      "en": "No. The teacher is an exponential moving average copy of the student, so it evolves alongside training rather than relying on an external vision encoder or additional action labels. The teacher sees a moderately noisy future observation, and its features are compared with the student’s features through projection heads and patch-wise distribution matching. Centering and sharpening help prevent collapse. In this way, the future observation acts like a training-time guide, not an extra sensor required when the robot is deployed.",
+      "zh": "不需要。教师模型是学生模型的指数移动平均副本，所以它会随着训练一起演进，而不依赖外部的视觉编码器或额外的动作标签。教师模型看到的是一段带中等噪声的未来观测，它的特征通过投影头与学生的特征做逐patch的分布匹配来进行比较。中心化和锐化有助于防止坍缩。这样一来，未来观测就像训练时的引导信号，而不是机器人部署时需要额外加装的传感器。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 142.06,
+      "end": 171.58,
+      "en": "A second contribution is temporal context. Instead of conditioning only on the current image, the model receives a short history of observations, which can reveal whether an object is already moving or whether the robot is approaching it. The overall video objective combines ordinary flow-matching training with the distillation loss. The action decoder has its own training objective, but its loss does not update the video backbone; the tested ablation found that blocking those gradients worked better.",
+      "zh": "第二个贡献是时间上下文。模型不再只以当前图像为条件，而是接收一小段历史观测，这能揭示物体是否已经在移动，或者机器人是否正在靠近它。整体的视频目标把普通的流匹配训练和蒸馏损失结合在一起。动作解码器有自己的训练目标，但它的损失不会更新视频主干；测试过的消融实验发现，阻断这些梯度效果更好。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 172.3,
+      "end": 176.86,
+      "en": "So at deployment, does the robot still have to generate a full future video before acting?",
+      "zh": "那么在实际部署时，机器人还是得先生成完整的未来视频才能行动吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 177.74,
+      "end": 208.26,
+      "en": "No. At inference, the video model processes noise in a single pass and supplies its intermediate representation to the action decoder. The decoder then generates actions using 4 denoising steps. This division preserves the efficiency of a single-step video representation while allowing a separate module to produce a sequence of robot commands. It is a little like using a map’s compressed route information rather than rendering every possible scene along the route before choosing a turn.",
+      "zh": "不需要。在推理时，视频模型单次处理噪声，并把其中间表示提供给动作解码器。解码器随后用4步去噪生成动作。这种分工既保留了单步视频表示的效率，又让一个独立模块生成机器人指令序列。这有点像是在选择转弯之前，使用地图压缩后的路线信息，而不是把沿途每一种可能的场景都渲染出来。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 209.02,
+      "end": 250.02,
+      "en": "The real-world tests examine generalization rather than only familiar training scenes. Models trained on DROID robot data were evaluated in a new environment with a Franka Research 3 arm, without fine-tuning there. Tasks included long-horizon manipulation, changed objects and surroundings, unfamiliar action verbs, and choosing a specified object among distractors. With a 5-billion-parameter backbone, FRED reached 46.7% progress on long-horizon tasks and 37.5% on out-of-domain tasks, exceeding the strongest reported competing single-step W-A-Ms in those categories.",
+      "zh": "真实环境测试考察的是泛化能力，而不只是熟悉的训练场景。在DROID机器人数据上训练的模型，被放到配有Franka Research 3机械臂的新环境中评估，且没有在新环境中做微调。任务包括长时程操作、更换物体和周围环境、不熟悉的动作动词，以及从干扰物中选出指定物体。在50亿参数的骨干网络下，FRED在长时程任务上达到46.7%的进度，在域外任务上达到37.5%，在这两类任务上都超过了已报告的最强竞争性单步W-A-M模型。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 251.12,
+      "end": 256.2,
+      "en": "How should we interpret the human-video results, given that those videos have no robot action labels?",
+      "zh": "既然这些人类视频没有机器人动作标签，我们该如何解读这些人类视频的结果？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 257.02,
+      "end": 292.96,
+      "en": "The OpenArm experiments show both the promise and the boundary of that transfer. With robot demonstrations alone, FRED had zero success on skills shown only in human videos. Adding 1,187 human videos raised average success on those skills to 50%, with instruction following at 97.2%. Task outcomes still varied: novel-object placement reached 66.7%, while placing a bottle on a basket reached 25%. The evidence suggests human video can help, but does not guarantee reliable execution.",
+      "zh": "OpenArm实验既展示了这种迁移的潜力，也暴露了它的边界。仅靠机器人演示时，FRED在只在人类视频中出现的技能上成功率为零。加入1187段人类视频后，这些技能的平均成功率提升到了50%，指令遵循率达到97.2%。任务结果仍有差异：新物体放置达到66.7%，而把瓶子放到篮子上的任务只有25%。证据表明人类视频能提供帮助，但并不能保证可靠的执行。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 292.96,
+      "end": 329.06,
+      "en": "The results also help distinguish representation quality from video quality. Across tested variants, success correlated more strongly with the accuracy of a lightweight probe on noise-generated features than with one-step video quality. That is an association, not proof that better features alone cause better control. Efficiency remained favorable: the 14-billion-parameter FRED model took 0.406 seconds per reported inference, compared with 3.255 seconds for DreamZero, which uses multi-step video denoising.",
+      "zh": "结果还帮助区分了表征质量和视频质量。在测试过的各个变体中，成功率与轻量级探针在噪声生成特征上的准确率相关性更强，而与单步视频质量的相关性较弱。这只是一种关联，并不能证明更好的特征本身就能带来更好的控制。效率方面依然占优：140亿参数的FRED模型每次报告推理耗时0.406秒，而采用多步视频去噪的DreamZero则为3.255秒。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 329.88,
+      "end": 333.62,
+      "en": "Could the gains simply come from having more temporal input, rather than from self-distillation?",
+      "zh": "收益是否可能仅仅来自更多的时间输入，而非自蒸馏？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 335.22,
+      "end": 371.66,
+      "en": "The ablations suggest both changes contribute. In simulation, the base model reached 61.4% success, while full FRED reached 68.8%; removing self-distillation reduced that to 65.1%, and removing historical context reduced it to 64.8%. Those comparisons do not isolate every interaction, but they support the claim that neither ingredient is incidental. The paper’s broader point is that a representation objective should be evaluated in the role the features actually serve: here, conditioning robot actions.",
+      "zh": "消融实验表明这两项改动都有贡献。在仿真中，基础模型成功率达到61.4%，而完整的FRED达到68.8%；去掉自蒸馏后降到65.1%，去掉历史上下文后降到64.8%。这些对比没有分离出所有交互作用，但支持了这样一个结论：两个要素都不是可有可无的。论文更宏观的观点是，表征目标应该按照特征实际承担的角色来评估：在这里，就是为机器人动作提供条件。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 371.66,
+      "end": 407.08,
+      "en": "This shifts attention within the world-modeling trend. DreamZero jointly predicts video and action, while FRED emphasizes making a single-pass video representation more action-informative. Its use of future observations as self-distillation targets also differs from relying on an external encoder. The human-video results connect to the broader goal of learning beyond robot demonstrations, yet transfer remains implicit rather than explicitly aligning human and robot embodiments. That leaves an important research question: how should systems represent skills consistently across different bodies?",
+      "zh": "这改变了世界建模趋势中的关注点。DreamZero 联合预测视频和动作，而 FRED 强调让单次前向的视频表征包含更多动作相关信息。它把未来观测用作自蒸馏目标，这也不同于依赖外部编码器。人类视频上的结果呼应了超越机器人演示数据来学习这一更宏大的目标，但迁移仍是隐式的，并没有显式对齐人类和机器人的具身形态。这就留下一个重要研究问题：系统应当如何在不同身体之间一致地表征技能？"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 407.98,
+      "end": 412.58,
+      "en": "What limitation should researchers keep in mind before treating these results as broadly established?",
+      "zh": "研究人员在把这些结果当作广泛成立的结论之前，应该注意什么局限？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 413.54,
+      "end": 446.46,
+      "en": "The real-world task sets are modest, with most results based on 12 trials per task, so performance may vary across robots, settings, and task distributions. Human-only skills also remain imperfect, and the method adds no separate language-grounding supervision. A strong instruction-following score does not mean the requested behavior was completed. These caveats suggest useful next steps: larger evaluations, stronger grounding objectives, and explicit cross-embodiment learning rather than relying only on shared visual patterns.",
+      "zh": "真实世界的任务集规模不大，大多数结果基于每个任务12次试验，因此性能可能因机器人、设置和任务分布而异。纯人类技能也仍不完美，而且该方法没有额外加入独立的语言 grounding 监督。指令遵循得分高并不意味着所要求的行为已经完成。这些注意事项指出了有用的下一步：更大规模的评估、更强的 grounding 目标，以及显式的跨具身学习，而不是只依赖共享的视觉模式。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 447.4,
+      "end": 477.962,
+      "en": "The main takeaway is that efficient robot control may depend not just on what a video model predicts, but on what its internal features let an action model understand about the future. FRED trains those features directly using future observations as targets, while keeping inference to a single video-model pass. Its results are encouraging but bounded by small evaluations and incomplete transfer. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "主要结论是，高效的机器人控制可能不仅取决于视频模型预测了什么，还取决于其内部特征能让动作模型对未来理解到什么程度。FRED直接以未来观测为目标来训练这些特征，同时将推理保持在单次视频模型前向传播。其结果令人鼓舞，但受限于小规模评估和不完整的迁移。感谢收听。如有进一步问题，请咨询我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{jang2026selfdistillingfuturevideorepresentations,\n      title={Self-Distilling Future Video Representations for World Action Models}, \n      author={Huiwon Jang and Suhyeok Jang and Hyeonmo Kang and Seungku Kim and Jinwoo Shin and Sihyun Yu},\n      year={2026},\n      eprint={2610.30320},\n      archivePrefix={arXiv},\n      primaryClass={cs.RO},\n      url={https://arxiv.org/abs/2610.30320}, \n}",
+  "topics": [
+    "Computer Vision",
+    "Robotics"
+  ],
+  "peaks": [
+    1.0,
+    0.643,
+    0.721,
+    0.348,
+    0.297,
+    0.643,
+    0.629,
+    0.609,
+    0.33,
+    0.558,
+    0.317,
+    0.601,
+    0.501,
+    0.426,
+    0.324,
+    0.26,
+    0.442,
+    0.795,
+    0.395,
+    0.235,
+    0.314,
+    0.338,
+    0.732,
+    0.779,
+    0.389,
+    0.339,
+    0.604,
+    0.473,
+    0.429,
+    0.241,
+    0.355,
+    0.6,
+    0.861,
+    0.688,
+    0.537,
+    0.668,
+    0.349,
+    0.514,
+    0.834,
+    0.589,
+    0.429,
+    0.2,
+    0.441,
+    0.228,
+    0.459,
+    0.557,
+    0.3,
+    0.334,
+    0.385,
+    0.304,
+    0.555,
+    0.57,
+    0.529,
+    0.49,
+    0.646,
+    0.381,
+    0.626,
+    0.594,
+    0.425,
+    0.564,
+    0.323,
+    0.442,
+    0.784,
+    0.724,
+    0.527,
+    0.272,
+    0.479,
+    0.708,
+    0.557,
+    0.551,
+    0.554,
+    0.447
+  ],
+  "published": "2026-10-21",
+  "views": 258,
+  "license": "arXiv 默认许可"
+}

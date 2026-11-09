@@ -1,0 +1,137 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 437.185,
+  "word_match_rate": 0.934,
+  "line_count": 18,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In our hypothetical course, Research Methods for Learning Systems, today’s lecture is on Athanor. Recent work such as Autodata and Agent0 explores how agents can create data or improve their own reasoning. Athanor takes a related but distinct direction: it asks agents to run the long post-training research loop themselves, rather than simply generate a training recipe. That matters because an experiment can take hours to evaluate. Yes, Noah?",
+      "start": 0.0,
+      "end": 28.76
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, is Athanor mainly a new training algorithm, or does it change how research experiments are run?",
+      "start": 29.78,
+      "end": 35.3
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "It changes the research environment more than it invents a new learning algorithm. Four agents start with a raw quen three four B base model and decide what to test: which data to use, how to train, and what to try after seeing results. Athanor supplies commands for launching jobs and evaluations, handling data, and saving or retrieving checkpoints. Think of it as a shared laboratory with a durable notebook, not an automated scientist that chooses the research questions.",
+      "start": 36.14,
+      "end": 64.76
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "That notebook matters because post-training is a chain of decisions. Agents can inspect their own and teammates’ results, notes, data, and checkpoints, then submit another experiment. Training and evaluation run asynchronously, so agents can work on other research while they wait. When a job finishes, results return with records linking them to the code, data, and parent checkpoint. This makes each result traceable and recoverable, while leaving the choices about what to test with the agents.",
+      "start": 65.64,
+      "end": 96.74
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: did the agents get to see the held-out evaluation while they were deciding what to try?",
+      "start": 97.62,
+      "end": 102.26
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "No. They could request a frozen development evaluation, but the held-out suite stayed sealed until the campaign ended. The two suites cover six capabilities: mathematics, logic, code, knowledge, instruction following, and multi-step action. Their tasks are paired by capability but use different material. That separation is important: the agents could respond to development feedback, while the final held-out measurement offers a check on whether the resulting model also works on unseen questions.",
+      "start": 103.08,
+      "end": 136.36
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "The reported score is the plain mean of those six task scores, not a single specialized benchmark. In the final measurement, the team scored 67.3 on development and 48.2 on held-out; the vendor’s instruct model scored 66.5 and 47.9. Paired 95% confidence intervals for the differences include zero on both suites. So the careful interpretation is that the results are level with the instruct model, not that Athanor definitively beats it.",
+      "start": 136.36,
+      "end": 169.44
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "Can you walk us through what the agents actually trained, rather than just how they used the environment?",
+      "start": 170.06,
+      "end": 174.78
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "They assembled familiar methods into a recipe. S-F-T, or supervised fine-tuning, used mixtures of examples for all six capabilities. G-R-P-O, reinforcement learning with rule-based rewards, followed. The agents also merged checkpoints from different branches and extrapolated weights from the base model. Finally, rejection-sampling fine-tuning used selected answers: for each problem, keep the shortest of four answers judged correct, then average results across agents. The contribution is in the choices and assembly, not a novel training objective.",
+      "start": 175.64,
+      "end": 210.98
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "text": "Wait, I’m confused about the repetition fix. Can we tell whether greedy rollouts caused the improvement?",
+      "start": 211.84,
+      "end": 216.92
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "text": "Not cleanly. The evaluator used greedy decoding on five tasks, where the model sometimes repeated answers. The first G-R-P-O run used sampled answers, which rarely looped, and did not fix the problem. An agent then tried greedy rollouts one-quarter of the time, but also rebuilt the problem set. The follow-up reduced loops on its small validation set and scored 57.3 on the full evaluation, up from 49.7. That supports the agent’s diagnosis, but it does not isolate which change caused the gain.",
+      "start": 217.9,
+      "end": 253.02
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The recipe’s stages should also not be read as a controlled ladder where each method adds a known amount. The final submission came from a branching lineage across agents: merges and further training built on different ancestors. Under the campaign protocol, the three-seed submission marker was 66.1, distinct from the final measurement’s 67.3. This distinction helps keep trajectory evidence, the submitted model, and the paper’s final evaluation from being mistaken for one directly comparable series.",
+      "start": 253.86,
+      "end": 286.96
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "text": "What did asynchronous execution buy them in practice, and does the paper show that it made research faster?",
+      "start": 287.88,
+      "end": 292.92
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "text": "The campaign ran for 104 hours. Sessions spent 87% of their time waiting on jobs, while jobs held the G-P-Us for 93% of available G-P-U hours. Those numbers show that agents could work while jobs ran and that the hardware was occupied; they do not establish fewer experiments, less elapsed time, or reduced computation. Athanor’s design thesis is that execution friction can become a bottleneck as agents improve. This campaign did not compare the environment against one without its execution services.",
+      "start": 293.76,
+      "end": 328.1
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "That places Athanor alongside, but not directly on the same score scale as, work such as PostTrainBench, where agents post-train for one target benchmark at a time under a 10-hour budget. Athanor tests a broader scope: one model across six capabilities, including a sealed set of task twins. Work such as Autodata focuses on agentic data creation, while Athanor organizes the experiment-and-evaluation loop. These projects reflect a wider shift toward agents doing more of the iterative work of machine-learning research.",
+      "start": 328.1,
+      "end": 361.98
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "text": "So how far can we generalize from one held-out result, especially when the agents used public data?",
+      "start": 362.72,
+      "end": 368.14
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "text": "The evidence is bounded: one model, one campaign, and a particular set of held-out tasks. The team did better than the instruct model on code and multi-step action, but trailed on logic and mathematics; action performance helped offset those gaps. The longer output limit did not remove the logic gap, and the vendor’s hybrid and Thinking releases scored higher. The agents made no teacher-model calls, but much of the public reasoning data had itself been distilled from stronger models by its publishers.",
+      "start": 368.88,
+      "end": 398.56
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "The broader implication is that managed execution can support a long, auditable research campaign, but this result does not prove that infrastructure alone improves research outcomes. The authors interpret early recipe convergence and the small number of tested alternatives as limits on further progress. That is a reading of one campaign, not proof that idea diversity is the only bottleneck. The memorable takeaway is that capable research agents need both room to choose experiments and evidence reliable enough to learn from. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 399.52,
+      "end": 437.185
+    }
+  ]
+}

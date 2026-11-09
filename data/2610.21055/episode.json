@@ -1,0 +1,242 @@
+{
+  "id": "2610.21055",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.21055",
+    "arxiv": "https://arxiv.org/abs/2610.21055"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a14258-3fb7-7411-9391-83cab14a3580/podcast.mp3",
+  "duration": 437.185,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 28.76,
+      "en": "In our hypothetical course, Research Methods for Learning Systems, today’s lecture is on Athanor. Recent work such as Autodata and Agent0 explores how agents can create data or improve their own reasoning. Athanor takes a related but distinct direction: it asks agents to run the long post-training research loop themselves, rather than simply generate a training recipe. That matters because an experiment can take hours to evaluate. Yes, Noah?",
+      "zh": "在我们这门假想的课程“学习系统研究方法”中，今天的课讲的是 Athanor。像 Autodata 和 Agent0 这样的近期工作，探索的是智能体如何创造数据或提升自身的推理能力。Athanor 走的是一个相关但不同的方向：它让智能体自己去跑漫长的后训练研究循环，而不只是生成一份训练配方。这一点很重要，因为一个实验可能要花好几个小时才能评估完。好，Noah，你有什么问题？"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 29.78,
+      "end": 35.3,
+      "en": "Hi Professor, is Athanor mainly a new training algorithm, or does it change how research experiments are run?",
+      "zh": "教授您好，Athanor主要是一种新的训练算法，还是改变了研究实验的运行方式？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 36.14,
+      "end": 64.76,
+      "en": "It changes the research environment more than it invents a new learning algorithm. Four agents start with a raw quen three four B base model and decide what to test: which data to use, how to train, and what to try after seeing results. Athanor supplies commands for launching jobs and evaluations, handling data, and saving or retrieving checkpoints. Think of it as a shared laboratory with a durable notebook, not an automated scientist that chooses the research questions.",
+      "zh": "它更多是改变了研究环境，而不是发明了一种新的学习算法。四个智能体从原始的Qwen3-4B基础模型出发，自行决定要测试什么：用哪些数据、怎么训练、看到结果之后接下来试什么。Athanor提供了一系列命令，用来启动任务和评估、处理数据、保存或取回检查点。可以把它理解为一个带持久笔记本的共享实验室，而不是一个替人选择研究问题的自动化科学家。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 65.64,
+      "end": 96.74,
+      "en": "That notebook matters because post-training is a chain of decisions. Agents can inspect their own and teammates’ results, notes, data, and checkpoints, then submit another experiment. Training and evaluation run asynchronously, so agents can work on other research while they wait. When a job finishes, results return with records linking them to the code, data, and parent checkpoint. This makes each result traceable and recoverable, while leaving the choices about what to test with the agents.",
+      "zh": "这个笔记本很重要，因为后训练是一连串的决策。智能体可以查看自己和队友的结果、笔记、数据和检查点，然后提交下一个实验。训练和评估是异步运行的，所以智能体在等待时可以去做其他研究。任务完成后，结果返回时会附带记录，把它们和代码、数据以及父检查点关联起来。这让每个结果都可追溯、可恢复，同时把测试什么的选择权留给智能体。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 97.62,
+      "end": 102.26,
+      "en": "Quick question: did the agents get to see the held-out evaluation while they were deciding what to try?",
+      "zh": "快速问一下：智能体在决定尝试什么的时候，能看到留出的评估结果吗？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 103.08,
+      "end": 136.36,
+      "en": "No. They could request a frozen development evaluation, but the held-out suite stayed sealed until the campaign ended. The two suites cover six capabilities: mathematics, logic, code, knowledge, instruction following, and multi-step action. Their tasks are paired by capability but use different material. That separation is important: the agents could respond to development feedback, while the final held-out measurement offers a check on whether the resulting model also works on unseen questions.",
+      "zh": "没有。他们可以申请使用冻结的开发集评测，但留出集在整个训练周期结束前一直处于封存状态。这两套评测覆盖六项能力：数学、逻辑、代码、知识、指令遵循和多步行动。它们的任务按能力配对，但使用不同的材料。这种分离很重要：智能体可以根据开发集的反馈做出调整，而最终的留出集测量则用来检验由此得到的模型在未见问题上是否同样有效。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.36,
+      "end": 169.44,
+      "en": "The reported score is the plain mean of those six task scores, not a single specialized benchmark. In the final measurement, the team scored 67.3 on development and 48.2 on held-out; the vendor’s instruct model scored 66.5 and 47.9. Paired 95% confidence intervals for the differences include zero on both suites. So the careful interpretation is that the results are level with the instruct model, not that Athanor definitively beats it.",
+      "zh": "报告的分数是这六项任务分数的简单平均值，而不是某个专门的基准。在最终测量中，团队在开发集上得分67.3，在留出集上得分48.2；厂商的指令模型得分是66.5和47.9。两个套件上差异的配对95%置信区间都包含零。所以谨慎的解读是：结果与指令模型持平，而不是Athanor明确胜过它。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 170.06,
+      "end": 174.78,
+      "en": "Can you walk us through what the agents actually trained, rather than just how they used the environment?",
+      "zh": "你能不能带我们具体看看这些智能体到底训练了什么，而不只是它们怎么用这个环境？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 175.64,
+      "end": 210.98,
+      "en": "They assembled familiar methods into a recipe. S-F-T, or supervised fine-tuning, used mixtures of examples for all six capabilities. G-R-P-O, reinforcement learning with rule-based rewards, followed. The agents also merged checkpoints from different branches and extrapolated weights from the base model. Finally, rejection-sampling fine-tuning used selected answers: for each problem, keep the shortest of four answers judged correct, then average results across agents. The contribution is in the choices and assembly, not a novel training objective.",
+      "zh": "他们把熟悉的方法组合成了一套配方。SFT，也就是监督微调，用了混合样例来覆盖全部六种能力。接着是GRPO，基于规则奖励的强化学习。智能体还合并了不同分支的检查点，并从基础模型外推了权重。最后是拒绝采样微调，用的是筛选过的答案：对每道题，在四个判定正确的答案里保留最短的那个，然后对各个智能体的结果取平均。贡献在于这些选择和组合方式，而不是提出了新的训练目标。"
+    },
+    {
+      "i": 9,
+      "speaker": "Noah",
+      "start": 211.84,
+      "end": 216.92,
+      "en": "Wait, I’m confused about the repetition fix. Can we tell whether greedy rollouts caused the improvement?",
+      "zh": "等等，这个重复问题的修复我有点搞不清楚。我们能判断出是贪心轨迹带来了改进吗？"
+    },
+    {
+      "i": 10,
+      "speaker": "John",
+      "start": 217.9,
+      "end": 253.02,
+      "en": "Not cleanly. The evaluator used greedy decoding on five tasks, where the model sometimes repeated answers. The first G-R-P-O run used sampled answers, which rarely looped, and did not fix the problem. An agent then tried greedy rollouts one-quarter of the time, but also rebuilt the problem set. The follow-up reduced loops on its small validation set and scored 57.3 on the full evaluation, up from 49.7. That supports the agent’s diagnosis, but it does not isolate which change caused the gain.",
+      "zh": "说不清楚。评估器在五个任务上用了贪心解码，模型有时会重复答案。第一次G-R-P-O运行用的是采样答案，很少出现循环，但并没有解决这个问题。后来有个agent尝试在四分之一的时间里用贪心轨迹，但同时也重建了问题集。后续实验在它的小验证集上减少了循环，完整评估得分57.3，高于之前的49.7。这支持了agent的诊断，但没法单独确定是哪个改动带来了提升。"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 253.86,
+      "end": 286.96,
+      "en": "The recipe’s stages should also not be read as a controlled ladder where each method adds a known amount. The final submission came from a branching lineage across agents: merges and further training built on different ancestors. Under the campaign protocol, the three-seed submission marker was 66.1, distinct from the final measurement’s 67.3. This distinction helps keep trajectory evidence, the submitted model, and the paper’s final evaluation from being mistaken for one directly comparable series.",
+      "zh": "这套流程的各个阶段也不该被理解成一个受控的阶梯，好像每种方法都贡献了已知的增量。最终提交来自智能体之间一条分叉的谱系：合并和进一步训练建立在不同的祖先之上。在本次竞赛协议下，三seed提交标记为66.1，与最终测量的67.3不同。这一区分有助于避免把轨迹证据、提交的模型和论文的最终评估误当成一个可直接比较的序列。"
+    },
+    {
+      "i": 12,
+      "speaker": "Noah",
+      "start": 287.88,
+      "end": 292.92,
+      "en": "What did asynchronous execution buy them in practice, and does the paper show that it made research faster?",
+      "zh": "异步执行在实践中给他们带来了什么，论文是否证明它让研究变得更快了？"
+    },
+    {
+      "i": 13,
+      "speaker": "John",
+      "start": 293.76,
+      "end": 328.1,
+      "en": "The campaign ran for 104 hours. Sessions spent 87% of their time waiting on jobs, while jobs held the G-P-Us for 93% of available G-P-U hours. Those numbers show that agents could work while jobs ran and that the hardware was occupied; they do not establish fewer experiments, less elapsed time, or reduced computation. Athanor’s design thesis is that execution friction can become a bottleneck as agents improve. This campaign did not compare the environment against one without its execution services.",
+      "zh": "这次实验持续了104小时。会话有87%的时间在等待任务，而任务占用了93%的可用GPU时长。这些数字说明智能体能在任务运行期间继续工作，也说明硬件确实被占满了；但它们并不能证明实验次数更少、耗时更短或计算量更小。Athanor的设计主张是，随着智能体能力提升，执行环节的摩擦可能成为瓶颈。这次实验并没有将该环境与一个不含其执行服务的环境进行对比。"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 328.1,
+      "end": 361.98,
+      "en": "That places Athanor alongside, but not directly on the same score scale as, work such as PostTrainBench, where agents post-train for one target benchmark at a time under a 10-hour budget. Athanor tests a broader scope: one model across six capabilities, including a sealed set of task twins. Work such as Autodata focuses on agentic data creation, while Athanor organizes the experiment-and-evaluation loop. These projects reflect a wider shift toward agents doing more of the iterative work of machine-learning research.",
+      "zh": "这让Athanor与PostTrainBench这类工作并列，但并不直接处于同一评分尺度上。PostTrainBench中，智能体在10小时预算内一次针对一个目标基准做后训练。Athanor测试的范围更广：一个模型覆盖六种能力，其中包括一组密封的任务孪生。Autodata等工作聚焦于智能体化的数据创建，而Athanor组织的是实验与评估的循环。这些项目反映出一种更广泛的转变：智能体正在承担越来越多机器学习研究中迭代性的工作。"
+    },
+    {
+      "i": 15,
+      "speaker": "Noah",
+      "start": 362.72,
+      "end": 368.14,
+      "en": "So how far can we generalize from one held-out result, especially when the agents used public data?",
+      "zh": "那么，从一个留出结果中我们究竟能推广到什么程度，尤其是当智能体使用了公开数据时？"
+    },
+    {
+      "i": 16,
+      "speaker": "John",
+      "start": 368.88,
+      "end": 398.56,
+      "en": "The evidence is bounded: one model, one campaign, and a particular set of held-out tasks. The team did better than the instruct model on code and multi-step action, but trailed on logic and mathematics; action performance helped offset those gaps. The longer output limit did not remove the logic gap, and the vendor’s hybrid and Thinking releases scored higher. The agents made no teacher-model calls, but much of the public reasoning data had itself been distilled from stronger models by its publishers.",
+      "zh": "证据是有限的：一个模型、一次研究活动，以及一组特定的留出任务。团队在代码和多步行动上比指令模型表现更好，但在逻辑和数学上落后；行动表现帮助弥补了这些差距。更长的输出限制并没有消除逻辑差距，而厂商的混合版和Thinking版本得分更高。智能体没有调用教师模型，但许多公开的推理数据本身就是其发布者从更强的模型蒸馏而来的。"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 399.52,
+      "end": 437.185,
+      "en": "The broader implication is that managed execution can support a long, auditable research campaign, but this result does not prove that infrastructure alone improves research outcomes. The authors interpret early recipe convergence and the small number of tested alternatives as limits on further progress. That is a reading of one campaign, not proof that idea diversity is the only bottleneck. The memorable takeaway is that capable research agents need both room to choose experiments and evidence reliable enough to learn from. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "更广泛的含义是，受管理的执行方式能够支撑一场长期、可审计的研究活动，但这个结果并不能证明单靠基础设施就能改善研究成果。作者把早期配方趋同以及测试过的替代方案数量少，解读为进一步推进的局限。那只是对单次研究活动的一种解读，并不能证明想法多样性是唯一的瓶颈。最值得记住的一点是，有能力的研究智能体既需要自主选择实验的空间，也需要足够可靠、可供学习的证据。感谢收听。如果还有任何问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{zhou2026athanoragentnativeautonomousposttraining,\n      title={Athanor: An Agent-Native System for Autonomous Post-Training Research}, \n      author={Yufa Zhou and Yichen Wang and Jiakun Fan and Ziqi Shu and Zhichao Liu and Anru R. Zhang and Neiwen Ling and Zijun Wei},\n      year={2026},\n      eprint={2610.21055},\n      archivePrefix={arXiv},\n      primaryClass={cs.AI},\n      url={https://arxiv.org/abs/2610.21055}, \n}",
+  "topics": [
+    "Agents",
+    "Data Curation",
+    "Fine Tuning"
+  ],
+  "peaks": [
+    0.823,
+    0.756,
+    0.891,
+    0.693,
+    0.656,
+    1.0,
+    0.807,
+    0.338,
+    0.526,
+    0.582,
+    0.447,
+    0.862,
+    0.547,
+    0.495,
+    0.461,
+    0.399,
+    0.711,
+    0.602,
+    0.2,
+    0.345,
+    0.381,
+    0.329,
+    0.648,
+    0.331,
+    0.584,
+    0.488,
+    0.417,
+    0.272,
+    0.934,
+    0.853,
+    0.569,
+    0.828,
+    0.395,
+    0.513,
+    0.408,
+    0.845,
+    0.601,
+    0.481,
+    0.472,
+    0.404,
+    0.357,
+    0.453,
+    0.81,
+    0.649,
+    0.43,
+    0.472,
+    0.493,
+    0.518,
+    0.523,
+    0.555,
+    0.367,
+    0.432,
+    0.263,
+    0.271,
+    0.594,
+    0.482,
+    0.593,
+    0.439,
+    0.544,
+    0.46,
+    0.783,
+    0.919,
+    0.769,
+    0.721,
+    0.522,
+    0.679,
+    0.488,
+    0.45,
+    0.446,
+    0.449,
+    0.341,
+    0.294
+  ],
+  "published": "2026-10-15",
+  "views": 502,
+  "license": "arXiv 默认许可"
+}

@@ -1,0 +1,123 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 404.897,
+  "word_match_rate": 0.8957,
+  "line_count": 16,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In Advanced Generative Modeling, today’s lecture is on SMD, a method for distilling image and video generators into few-step models. Recent work such as pi-Flow and Parallel Decoding Distillation explores ways to reduce the many sequential model calls used in generation. SMD takes a different route: it asks whether a simple student can learn useful large updates from teacher guidance along its own path. The point matters for interactive use. I see your hand, Noah—go ahead.",
+      "start": 0.0,
+      "end": 30.88
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, when you say “four steps,” do you mean four model calls for the whole image?",
+      "start": 31.66,
+      "end": 36.48
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "For the image-generation results we’ll discuss, yes: four network evaluations make up the student’s sampling path. Normally, a generator repeatedly refines noise through many small updates; fewer evaluations mean each update must do more work. The paper counts these calls as its main proxy for inference cost. That count is not a direct measurement of elapsed time, so it does not establish a particular wall-clock speedup. A project-page hummingbird-and-flower output gives us an illustrative four-evaluation sample, not a benchmark comparison.",
+      "start": 37.32,
+      "end": 69.8
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The central training idea is on-policy distillation. Instead of learning only from states produced by the teacher, the student generates its own rollout. At each coarse transition, it makes one prediction. The frozen teacher is then queried at intermediate states along that student transition, and those teacher predictions become regression targets. In plain terms, the student practices where it will actually travel, while receiving finer-grained guidance about how the teacher would move there.",
+      "start": 70.7,
+      "end": 99.78
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: if the teacher’s direction changes during a coarse step, how can one student prediction fit all those targets?",
+      "start": 100.34,
+      "end": 106.54
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "That tension motivates Pivot, a training-only residual branch. It varies over the transition, allowing the student’s training proxy to represent local changes in the teacher’s direction. The residual is constrained so its net contribution across the interval is zero: it can bend the proxy path without changing the student’s coarse endpoint. At inference, Pivot disappears. The deployed student uses its ordinary update, with no teacher queries or extra residual evaluations.",
+      "start": 107.44,
+      "end": 136.42
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "SMD adds a second training refinement: the student matches a selected teacher prediction while being pushed away from a reference prediction from that same teacher. The reference is not always unconditional, nor is it automatically a worse prediction; its construction depends on the model’s guidance setup. The authors interpret repulsion as a way to steer away from undesirable modes, but the experiments test particular references and weights, not that interpretation as a separately measured cause.",
+      "start": 137.74,
+      "end": 167.52
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So the reference choice matters as much as the idea of repulsion itself?",
+      "start": 167.52,
+      "end": 172.02
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "That is what the comparisons suggest. In the tested ablation, an unconditional reference with a moderate weight improved Qwen Image’s One I-G Overall from 0.539 to 0.542, and Wan 2.1’s V-Bench Total from 83.50 to 84.18. A larger unconditional weight reduced the Wan result to 83.71, while a conditional reference at the moderate weight gave 82.85. The benefit is therefore setting-dependent, not a rule that repelling any reference helps.",
+      "start": 172.78,
+      "end": 209.9
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "The clearest test of Pivot compares it with no residual branch. For Qwen Image, One I-G Overall moves from 0.535 without Pivot to 0.538 with pretrained Pivot and 0.541 with random initialization. For Wan 2.1, V-Bench Total rises from 83.09 to 84.14 with pretrained Pivot and 84.10 with random initialization. These results support the branch in the tested settings, but the paper reports one run per ablation setting and does not isolate curvature as the only explanation.",
+      "start": 210.7,
+      "end": 248.46
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How does this compare with pi-Flow and Parallel Decoding Distillation, beyond the scores?",
+      "start": 248.46,
+      "end": 253.82
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "The design difference is important. pi-Flow learns a policy that supplies dense velocity updates between network evaluations, while Parallel Decoding Distillation uses parallel output heads to predict interval mean velocities. SMD’s student makes one coarse prediction per interval; Pivot helps during training but is removed at inference. In the reported Flux one point one dev comparison, SMD at four evaluations scores 0.715 on GenEval and 84.8 on D-P-G Bench, versus pi-Flow at 0.675 and 84.3.",
+      "start": 254.64,
+      "end": 292.12
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "Those benchmarks measure prompt alignment: GenEval focuses on compositional prompts, while D-P-G Bench tests dense prompts. The 50-evaluation teacher scores 0.664 and 84.2, respectively, so SMD exceeds it on these two Flux metrics. That is not a general result across models or prompts. On Qwen Image, SMD’s GenEval score is 0.873 versus the teacher’s 0.874, and its One I-G Diversity score of 0.144 trails pi-Flow and P-D-D.",
+      "start": 294.06,
+      "end": 331.04
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the paper therefore suggest that simpler students are replacing more elaborate few-step designs?",
+      "start": 331.04,
+      "end": 336.76
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "A narrower implication is better supported: useful few-step supervision need not require a deployed dense-velocity policy or parallel decoder. SMD shows that a basic student can learn from teacher queries along its own path, with a temporary branch representing local variation. That connects to the broader effort to reduce sequential evaluations, including FreeFlow’s data-free flow-map distillation, but these methods address different settings. Comparisons should stay tied to their reported models, tasks, and evaluation procedures.",
+      "start": 337.7,
+      "end": 369.92
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The practical takeaway is a training-and-deployment distinction: SMD spends added effort during training to help a simple student learn coarse transitions, then removes Pivot and teacher queries for inference. Four evaluations are the reported sampling budget, not a promise of a fixed time saving or universal quality. Its strongest teacher-beating evidence is limited to two Flux metrics, while other results include trade-offs. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 370.94,
+      "end": 404.897
+    }
+  ]
+}
