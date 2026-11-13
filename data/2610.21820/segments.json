@@ -1,0 +1,144 @@
+{
+  "source": "official_text + asr_alignment",
+  "word_level": false,
+  "model": "tiny",
+  "language": "en",
+  "duration": 450.951,
+  "word_match_rate": 0.9143,
+  "line_count": 19,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "text": "In a hypothetical graduate course called Theoretical Foundations of Deep Learning, we are asking how architecture shapes learned representations. Today's lecture is on a theory of neural collapse in deep linear networks. Recent work such as Explaining Neural Scaling Laws and A Spectral Condition for Feature Learning examines how data, width, and feature learning shape network behavior. This paper brings that conversation to representation geometry. I see your hand, Noah; go ahead.",
+      "start": 0.0,
+      "end": 31.74
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "text": "Hi Professor, if we have a fixed model budget, is the basic question whether to spend it on depth or width?",
+      "start": 32.72,
+      "end": 38.56
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "text": "Exactly. The paper asks how that choice affects variation among examples within the same class, not just predictive performance. It uses neural collapse as a lens: N-C-one tracks within-class feature variability relative to differences between classes. The authors derive how that quantity should change across layers, then compare the prediction with a trained linear network. That example shows an approximate geometric decline, but the exact law has a narrower theoretical scope.",
+      "start": 39.46,
+      "end": 69.5
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "text": "The starting point is a feature kernel: a table of pairwise similarities between training examples. Given that table and the labels, the authors express several neural-collapse measurements without needing the feature coordinates themselves. N-C-one compares within-class variation with between-class separation. N-C-two measures whether centered class means point like the vertices of a regular simplex. N-C-three measures their alignment with directions used by a bias-free ridge readout.",
+      "start": 70.38,
+      "end": 98.64
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "text": "Quick question: are all 3 measurements new, or is the contribution mainly the depth prediction?",
+      "start": 100.1,
+      "end": 104.92
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "text": "The kernel identity for N-C-one was known from earlier work by Kothapalli and Tirer. This paper extends that kernel-based view with identities for the angular N-C-two measurement and the ridge-readout N-C-three measurement. But turning a kernel identity into a prediction across layers takes another ingredient: a theory of how learned kernels evolve. The result applies to balanced classes and relies on nonzero normalizations; the readout condition matters for N-C-three.",
+      "start": 105.84,
+      "end": 135.34
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "text": "For that evolution, the authors build on a finite-width feature-learning theory that couples forward and backward equations for the most probable layerwise kernels given the data. In their linear setting, exchangeability means that class structure is symmetric under permutations of examples. This symmetry reduces a complicated kernel recursion to 3 channels: the global mean, differences between class means, and within-class fluctuations. The centered measurements ignore the global-mean channel.",
+      "start": 136.88,
+      "end": 166.88
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "text": "So under that symmetry, do all 3 collapse measurements change as we go deeper?",
+      "start": 166.88,
+      "end": 171.98
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "text": "No. In the exchangeable setting, N-C-two and N-C-three are already ideal and stay at zero. N-C-one is the changing quantity. The key technical insight is that the forward and backward recursions conserve a product of kernel and conjugate-kernel eigenvalues separately in the between-class and within-class channels. As a result, each channel has a layer-invariant transfer factor. Their ratio gives N-C-one a geometric trajectory, provided the between-class factor exceeds the within-class factor.",
+      "start": 172.9,
+      "end": 205.16
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "text": "At large width and when observation-noise regularization is sufficiently small compared with the terminal channel eigenvalues, the leading prediction says that each layer contracts N-C-one by roughly a width-dependent amount. Across depth, the accumulated effect is controlled by depth relative to width. The contraction rate is not fitted to a measured curve: it is determined self-consistently by the input geometry, prior schedule, depth, and width. Outside the small-regularization regime, the exact fixed-point result is needed.",
+      "start": 206.12,
+      "end": 239.12
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "text": "How should we interpret the evidence: do the equation checks validate the trained-network prediction?",
+      "start": 240.12,
+      "end": 244.66
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "text": "They are different checks. In Figure 1, panels a through c compare a closed-form prediction with numerical solutions of the same exchangeable population-kernel equations. They agree closely across widths and show data dependence and the depth-to-width pattern. That verifies the reduction and its numerical solution, but it is not an independent test on trained networks. Panel d makes that separate comparison, using an S-G-L-D-trained finite linear network.",
+      "start": 244.66,
+      "end": 276.62
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "text": "That finite-network example uses a sampled Gaussian task with 4 classes, 10 training examples per class, and input dimension 100. The prediction uses measured input-channel values, and the trained network’s N-C-one declines approximately geometrically across several orders of magnitude. The curves do not match exactly: the trained values begin above the prediction and approach it at greater depth. So this is encouraging evidence in one finite setting, not proof of a universal law.",
+      "start": 277.6,
+      "end": 308.82
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "text": "Does the paper’s nonlinear experiment extend the exact depth-to-width law?",
+      "start": 309.66,
+      "end": 313.66
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "text": "No. In a 4-class XOR task with error-function activations, theory and trained networks show similar directions of change for N-C-one, N-C-two, and N-C-three across layers. Agreement is stronger earlier, while trained networks often show stronger collapse by the end. This supports the usefulness of kernel observables for describing some representation changes, but it does not test the exact depth-to-width law for nonlinear networks.",
+      "start": 314.4,
+      "end": 343.14
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "text": "The paper’s relationship to prior work is also specific. Kothapalli and Tirer made N-C-one computable from a kernel and labels; this paper adds angular and readout-related kernel measurements. Wang and colleagues also derived geometric within-class compression, using assumptions about nearly orthogonal inputs and trained weights. The present route instead derives data and width dependence from self-consistent finite-width equations. These are complementary theoretical approaches, not evidence that one supersedes the other.",
+      "start": 344.06,
+      "end": 375.56
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "text": "Could this theory actually save computation when choosing an architecture?",
+      "start": 375.56,
+      "end": 379.84
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "text": "It offers a way to estimate a depth-to-width ratio for a target level of representation compression, potentially without training every candidate architecture. But the paper does not measure runtime, compute savings, or fewer training attempts. Nor does it establish accuracy or downstream benefits. The wider implication is methodological: representation-level predictions may help connect data, priors, and architecture before a full sweep. Extending such predictions to nonlinear networks and general data geometry remains open.",
+      "start": 380.88,
+      "end": 413.74
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "text": "The opening budget choice comes back to distinct propagation of within-class fluctuations and between-class structure: their channel factors determine how N-C-one changes with depth relative to width. That is an exact geometric result within a balanced, exchangeable deep linear theory, with a promising but approximate finite-network check. The lasting research question is how to derive similarly explicit representation predictions for broader data and nonlinear architectures. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "start": 414.6,
+      "end": 450.951
+    }
+  ]
+}

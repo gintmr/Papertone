@@ -969,6 +969,23 @@
       "audio_url": "https://paper-podcasts.alphaxiv.org/01a14263-8abe-70b3-801f-5c7d049033ad/podcast.mp3"
     },
     {
+      "id": "2610.21820",
+      "title": null,
+      "authors": [],
+      "duration": 450.951313,
+      "license": "CC BY",
+      "topics": [
+        "Geometric Deep Learning",
+        "Optimization Methods",
+        "Representation Learning"
+      ],
+      "cover": "cover.png",
+      "path": "2610.21820",
+      "published": "2026-10-15",
+      "views": 324,
+      "audio_url": "https://paper-podcasts.alphaxiv.org/01a1425d-9b26-7793-95f1-db2fc21591fb/podcast.mp3"
+    },
+    {
       "id": "2610.21412",
       "title": "JevAgentHarness: Benchmarking, Deploying and Training Decision Models That Share Control with LLMs",
       "authors": [

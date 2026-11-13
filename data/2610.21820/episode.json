@@ -1,0 +1,250 @@
+{
+  "id": "2610.21820",
+  "title": null,
+  "authors": [],
+  "abstract": "",
+  "links": {
+    "alphaxiv": "https://www.alphaxiv.org/abs/2610.21820",
+    "arxiv": "https://arxiv.org/abs/2610.21820"
+  },
+  "audio": "https://paper-podcasts.alphaxiv.org/01a1425d-9b26-7793-95f1-db2fc21591fb/podcast.mp3",
+  "duration": 450.951,
+  "segments": [
+    {
+      "i": 0,
+      "speaker": "John",
+      "start": 0.0,
+      "end": 31.74,
+      "en": "In a hypothetical graduate course called Theoretical Foundations of Deep Learning, we are asking how architecture shapes learned representations. Today's lecture is on a theory of neural collapse in deep linear networks. Recent work such as Explaining Neural Scaling Laws and A Spectral Condition for Feature Learning examines how data, width, and feature learning shape network behavior. This paper brings that conversation to representation geometry. I see your hand, Noah; go ahead.",
+      "zh": "在一门假设的研究生课程“深度学习理论基础”中，我们探讨架构如何塑造学习到的表征。今天的课讲的是深度线性网络中神经坍缩的理论。近期的工作，比如《解释神经缩放定律》和《特征学习的谱条件》，考察了数据、宽度和特征学习如何塑造网络行为。这篇论文把这一讨论带到了表征几何的层面。诺亚，我看到你举手了，请讲。"
+    },
+    {
+      "i": 1,
+      "speaker": "Noah",
+      "start": 32.72,
+      "end": 38.56,
+      "en": "Hi Professor, if we have a fixed model budget, is the basic question whether to spend it on depth or width?",
+      "zh": "教授您好，如果我们有固定的模型预算，那基本问题是不是该把它花在深度上还是宽度上？"
+    },
+    {
+      "i": 2,
+      "speaker": "John",
+      "start": 39.46,
+      "end": 69.5,
+      "en": "Exactly. The paper asks how that choice affects variation among examples within the same class, not just predictive performance. It uses neural collapse as a lens: N-C-one tracks within-class feature variability relative to differences between classes. The authors derive how that quantity should change across layers, then compare the prediction with a trained linear network. That example shows an approximate geometric decline, but the exact law has a narrower theoretical scope.",
+      "zh": "没错。这篇论文问的是这个选择如何影响同一类别内样本之间的差异，而不只是预测表现。它把神经坍缩当作一个观察视角：N-C-one 追踪的是类内特征变异相对于类间差异的大小。作者推导了这个量在各层之间应当如何变化，然后把预测结果和一个训练好的线性网络做比较。这个例子显示出一种近似的几何式下降，但精确规律的理论适用范围更窄。"
+    },
+    {
+      "i": 3,
+      "speaker": "John",
+      "start": 70.38,
+      "end": 98.64,
+      "en": "The starting point is a feature kernel: a table of pairwise similarities between training examples. Given that table and the labels, the authors express several neural-collapse measurements without needing the feature coordinates themselves. N-C-one compares within-class variation with between-class separation. N-C-two measures whether centered class means point like the vertices of a regular simplex. N-C-three measures their alignment with directions used by a bias-free ridge readout.",
+      "zh": "起点是特征核：一张记录训练样本两两相似度的表。有了这张表和标签，作者无需特征坐标本身就能表达多种神经坍缩度量。N-C-one比较类内变异与类间分离。N-C-two衡量中心化后的类均值是否像正单纯形的顶点那样指向。N-C-three衡量它们与无偏置岭读出所用方向的对齐程度。"
+    },
+    {
+      "i": 4,
+      "speaker": "Noah",
+      "start": 100.1,
+      "end": 104.92,
+      "en": "Quick question: are all 3 measurements new, or is the contribution mainly the depth prediction?",
+      "zh": "快速问一下：这三个测量都是新的，还是主要贡献在于深度预测？"
+    },
+    {
+      "i": 5,
+      "speaker": "John",
+      "start": 105.84,
+      "end": 135.34,
+      "en": "The kernel identity for N-C-one was known from earlier work by Kothapalli and Tirer. This paper extends that kernel-based view with identities for the angular N-C-two measurement and the ridge-readout N-C-three measurement. But turning a kernel identity into a prediction across layers takes another ingredient: a theory of how learned kernels evolve. The result applies to balanced classes and relies on nonzero normalizations; the readout condition matters for N-C-three.",
+      "zh": "N-C-one的核恒等式在Kothapalli和Tirer的早期工作中已经已知。本文用角度N-C-two测量和岭读出N-C-three测量的恒等式扩展了这一基于核的视角。但要把核恒等式转化为跨层预测，还需要另一个要素：关于学习到的核如何演化的理论。该结果适用于平衡类别，并依赖于非零归一化；读出条件对N-C-three很重要。"
+    },
+    {
+      "i": 6,
+      "speaker": "John",
+      "start": 136.88,
+      "end": 166.88,
+      "en": "For that evolution, the authors build on a finite-width feature-learning theory that couples forward and backward equations for the most probable layerwise kernels given the data. In their linear setting, exchangeability means that class structure is symmetric under permutations of examples. This symmetry reduces a complicated kernel recursion to 3 channels: the global mean, differences between class means, and within-class fluctuations. The centered measurements ignore the global-mean channel.",
+      "zh": "为了刻画这种演化，作者基于一个有限宽度的特征学习理论，该理论针对给定数据下最可能的逐层核，将前向方程和反向方程耦合起来。在他们的线性设定中，可交换性意味着类别结构在样本置换下是对称的。这种对称性把复杂的核递推简化为3个通道：全局均值、类均值之间的差异，以及类内波动。中心化后的测量忽略了全局均值通道。"
+    },
+    {
+      "i": 7,
+      "speaker": "Noah",
+      "start": 166.88,
+      "end": 171.98,
+      "en": "So under that symmetry, do all 3 collapse measurements change as we go deeper?",
+      "zh": "那么在这种对称性下，随着层数加深，这三个坍缩度量都会变化吗？"
+    },
+    {
+      "i": 8,
+      "speaker": "John",
+      "start": 172.9,
+      "end": 205.16,
+      "en": "No. In the exchangeable setting, N-C-two and N-C-three are already ideal and stay at zero. N-C-one is the changing quantity. The key technical insight is that the forward and backward recursions conserve a product of kernel and conjugate-kernel eigenvalues separately in the between-class and within-class channels. As a result, each channel has a layer-invariant transfer factor. Their ratio gives N-C-one a geometric trajectory, provided the between-class factor exceeds the within-class factor.",
+      "zh": "不会。在可交换设定下，N-C-二和N-C-三已经是理想状态，保持在零。N-C-一是变化量。关键的技术洞见是，前向和反向递归在类间和类内通道中分别守恒核与共轭核特征值的乘积。因此，每个通道都有一个层不变的传递因子。只要类间因子超过类内因子，它们的比值就使N-C-一呈现几何轨迹。"
+    },
+    {
+      "i": 9,
+      "speaker": "John",
+      "start": 206.12,
+      "end": 239.12,
+      "en": "At large width and when observation-noise regularization is sufficiently small compared with the terminal channel eigenvalues, the leading prediction says that each layer contracts N-C-one by roughly a width-dependent amount. Across depth, the accumulated effect is controlled by depth relative to width. The contraction rate is not fitted to a measured curve: it is determined self-consistently by the input geometry, prior schedule, depth, and width. Outside the small-regularization regime, the exact fixed-point result is needed.",
+      "zh": "在大宽度下，当观测噪声正则化相对于终端通道特征值足够小时，主导预测表明每一层都会以大致依赖于宽度的幅度收缩N-C-one。跨深度来看，累积效应由深度相对于宽度的比例控制。收缩率并非拟合自实测曲线：它是由输入几何、先验调度、深度和宽度自洽决定的。在小正则化区间之外，则需要精确的不动点结果。"
+    },
+    {
+      "i": 10,
+      "speaker": "Noah",
+      "start": 240.12,
+      "end": 244.66,
+      "en": "How should we interpret the evidence: do the equation checks validate the trained-network prediction?",
+      "zh": "我们该怎么解读这些证据：方程验证能证明对训练网络的预测成立吗？"
+    },
+    {
+      "i": 11,
+      "speaker": "John",
+      "start": 244.66,
+      "end": 276.62,
+      "en": "They are different checks. In Figure 1, panels a through c compare a closed-form prediction with numerical solutions of the same exchangeable population-kernel equations. They agree closely across widths and show data dependence and the depth-to-width pattern. That verifies the reduction and its numerical solution, but it is not an independent test on trained networks. Panel d makes that separate comparison, using an S-G-L-D-trained finite linear network.",
+      "zh": "这些是不同的检验。图1的a到c面板把闭式预测与同一可交换总体核方程的数值解做了比较。二者在不同宽度下高度吻合，并体现出数据依赖性和深度-宽度模式。这验证了约化及其数值解，但并不是对训练网络的独立检验。d面板做了这一单独比较，用的是经SGLD训练的有限线性网络。"
+    },
+    {
+      "i": 12,
+      "speaker": "John",
+      "start": 277.6,
+      "end": 308.82,
+      "en": "That finite-network example uses a sampled Gaussian task with 4 classes, 10 training examples per class, and input dimension 100. The prediction uses measured input-channel values, and the trained network’s N-C-one declines approximately geometrically across several orders of magnitude. The curves do not match exactly: the trained values begin above the prediction and approach it at greater depth. So this is encouraging evidence in one finite setting, not proof of a universal law.",
+      "zh": "这个有限网络示例使用了一个采样的高斯任务，包含4个类别，每类10个训练样本，输入维度为100。预测使用了实测的输入通道值，而训练网络的N-C-one在跨越几个数量级时大致呈几何级数下降。两条曲线并不完全吻合：训练值起始时高于预测值，并随着深度增加逐渐逼近预测值。因此，这在一个有限设定中是有力的证据，但并非普遍规律的证明。"
+    },
+    {
+      "i": 13,
+      "speaker": "Noah",
+      "start": 309.66,
+      "end": 313.66,
+      "en": "Does the paper’s nonlinear experiment extend the exact depth-to-width law?",
+      "zh": "这篇论文的非线性实验是否扩展了精确的深度-宽度定律？"
+    },
+    {
+      "i": 14,
+      "speaker": "John",
+      "start": 314.4,
+      "end": 343.14,
+      "en": "No. In a 4-class XOR task with error-function activations, theory and trained networks show similar directions of change for N-C-one, N-C-two, and N-C-three across layers. Agreement is stronger earlier, while trained networks often show stronger collapse by the end. This supports the usefulness of kernel observables for describing some representation changes, but it does not test the exact depth-to-width law for nonlinear networks.",
+      "zh": "不。在采用误差函数激活的四类XOR任务中，理论与训练后的网络在N-C-one、N-C-two和N-C-three上跨层表现出相似的变化方向。早期一致性更强，而训练后的网络在末端往往表现出更强的坍缩。这支持了核可观测量在描述某些表示变化方面的有用性，但并未检验非线性网络的精确深度-宽度定律。"
+    },
+    {
+      "i": 15,
+      "speaker": "John",
+      "start": 344.06,
+      "end": 375.56,
+      "en": "The paper’s relationship to prior work is also specific. Kothapalli and Tirer made N-C-one computable from a kernel and labels; this paper adds angular and readout-related kernel measurements. Wang and colleagues also derived geometric within-class compression, using assumptions about nearly orthogonal inputs and trained weights. The present route instead derives data and width dependence from self-consistent finite-width equations. These are complementary theoretical approaches, not evidence that one supersedes the other.",
+      "zh": "这篇论文与先前工作的关系也很具体。Kothapalli和Tirer让N-C-one可以从核和标签计算出来；这篇论文则增加了角度和读出相关的核测量。Wang及其同事也推导出了类内几何压缩，用的是关于近似正交输入和训练权重的假设。本文的路线则是从自洽的有限宽度方程中推导出数据和宽度的依赖关系。这些是互补的理论方法，并不是一个取代另一个的证据。"
+    },
+    {
+      "i": 16,
+      "speaker": "Noah",
+      "start": 375.56,
+      "end": 379.84,
+      "en": "Could this theory actually save computation when choosing an architecture?",
+      "zh": "这个理论真的能在选择架构时节省计算量吗？"
+    },
+    {
+      "i": 17,
+      "speaker": "John",
+      "start": 380.88,
+      "end": 413.74,
+      "en": "It offers a way to estimate a depth-to-width ratio for a target level of representation compression, potentially without training every candidate architecture. But the paper does not measure runtime, compute savings, or fewer training attempts. Nor does it establish accuracy or downstream benefits. The wider implication is methodological: representation-level predictions may help connect data, priors, and architecture before a full sweep. Extending such predictions to nonlinear networks and general data geometry remains open.",
+      "zh": "它提供了一种方法，可以针对目标水平的表征压缩来估计深度与宽度的比例，而且可能无需训练每一个候选架构。但论文并没有测量运行时间、计算节省或更少的训练尝试次数，也没有确立准确率或下游收益。更广泛的意义在于方法论层面：表征层面的预测或许有助于在全面扫描之前，把数据、先验和架构联系起来。将这类预测扩展到非线性网络和一般数据几何，仍然是未解决的问题。"
+    },
+    {
+      "i": 18,
+      "speaker": "John",
+      "start": 414.6,
+      "end": 450.951,
+      "en": "The opening budget choice comes back to distinct propagation of within-class fluctuations and between-class structure: their channel factors determine how N-C-one changes with depth relative to width. That is an exact geometric result within a balanced, exchangeable deep linear theory, with a promising but approximate finite-network check. The lasting research question is how to derive similarly explicit representation predictions for broader data and nonlinear architectures. Thanks for listening. If you have any further questions, ask our AI assistant or drop a comment.",
+      "zh": "开头的预算选择，归根结底取决于类内波动与类间结构的不同传播方式：它们的通道因子决定了N-C-one随深度相对于宽度如何变化。这在平衡、可交换的深层线性理论中是一个精确的几何结果，并有一个有前景但近似的有限网络验证。持久的研究问题在于，如何为更广泛的数据和非线性架构推导出同样明确的表示预测。感谢收听。如果还有进一步的问题，可以询问我们的AI助手或留言评论。"
+    }
+  ],
+  "cover": "cover.png",
+  "bibtex": "@misc{gawade2026closedformdepthwidthlaw,\n      title={A Closed Form Depth-Width Law for Neural Collapse in Deep Linear Networks}, \n      author={Pankhil Gawade and Kirsten Fischer and Guy Wolf and Ewa Szczurek},\n      year={2026},\n      eprint={2610.21820},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG},\n      url={https://arxiv.org/abs/2610.21820}, \n}",
+  "topics": [
+    "Geometric Deep Learning",
+    "Optimization Methods",
+    "Representation Learning"
+  ],
+  "peaks": [
+    1.0,
+    0.632,
+    0.529,
+    0.451,
+    0.445,
+    0.576,
+    0.644,
+    0.356,
+    0.358,
+    0.391,
+    0.355,
+    0.649,
+    0.765,
+    0.43,
+    0.368,
+    0.37,
+    0.747,
+    0.711,
+    0.588,
+    0.545,
+    0.666,
+    0.498,
+    0.983,
+    0.718,
+    0.549,
+    0.561,
+    0.526,
+    0.625,
+    0.389,
+    0.419,
+    0.2,
+    0.342,
+    0.311,
+    0.59,
+    0.478,
+    0.464,
+    0.431,
+    0.467,
+    0.548,
+    0.7,
+    0.528,
+    0.605,
+    0.595,
+    0.425,
+    0.436,
+    0.431,
+    0.407,
+    0.415,
+    0.368,
+    0.589,
+    0.853,
+    0.545,
+    0.603,
+    0.519,
+    0.39,
+    0.598,
+    0.488,
+    0.397,
+    0.355,
+    0.295,
+    0.671,
+    0.409,
+    0.422,
+    0.354,
+    0.366,
+    0.283,
+    0.679,
+    0.542,
+    0.48,
+    0.52,
+    0.391,
+    0.453
+  ],
+  "published": "2026-10-15",
+  "views": 324,
+  "license": "CC BY"
+}
